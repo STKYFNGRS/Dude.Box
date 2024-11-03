@@ -1,3 +1,3 @@
 Welcome to Dude.Box
 
-A mens lifestyle brand. 
+Stuff, for dudes.
