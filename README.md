@@ -1,3 +1,3 @@
 Welcome to Dude.Box
 
-Stuff, for dudes. 
+Stuff, for dudes.
