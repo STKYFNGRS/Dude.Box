@@ -16,7 +16,7 @@ export default function Home() {
 
       <footer className="row-start-2">
         <p>
-          &copy; {new Date().getFullYear()} Made with ❤️ dude dot box LLC. All rights reserved.
+          Made with ❤️ by dude dot box LLC. &copy; {new Date().getFullYear()}. All rights reserved.
         </p>
       </footer>
       <Analytics />
