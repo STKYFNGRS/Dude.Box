@@ -8,9 +8,9 @@ export default function Home() {
     <Layout>
       <div className="flex flex-col items-center justify-center h-screen p-4">
         <Link href="/" passHref>
-          <Image  src="/logo.jpg" // Path to your logo image
+          <Image  src="/Dude logo 3.jpg" // Path to your logo image
             alt="Dude Logo"
-            width={100} // Base width to satisfy Next.js requirements
+            width={200} // Base width to satisfy Next.js requirements
             height={100} // Base height to satisfy Next.js requirements
             priority  />
         </Link>
