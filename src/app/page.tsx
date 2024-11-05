@@ -1,6 +1,11 @@
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "./components/Layout";
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+};
+
 export default function Home() {
   return (
     <Layout>
