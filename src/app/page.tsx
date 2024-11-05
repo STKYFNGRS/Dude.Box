@@ -10,16 +10,30 @@ export default function Home() {
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 200 100" 
           width="200" 
-          height="100" 
-          style={{ maxWidth: "200px", maxHeight: "100px" }} // Ensures fixed size
-          className="absolute-center" // Helper class to center it as per mobile
+          height="100"
+          style={{ display: "block" }} // Prevents scaling issues
         >
-          <g transform="translate(40, 20)">
-            <rect x="0" y="0" width="120" height="50" fill="none" stroke="#FFFFFF" strokeWidth="2" />
-            <text x="60" y="40" fontFamily="Arial" fontWeight="900" fontSize="40" textAnchor="middle">
-              <tspan fill="#FFFFFF">DUDE</tspan>
-            </text>
-          </g>
+          <rect 
+            x="10" 
+            y="20" 
+            width="180" 
+            height="60" 
+            fill="none" 
+            stroke="#FFFFFF" 
+            strokeWidth="2" 
+          />
+          <text 
+            x="100" 
+            y="55" 
+            fontFamily="Arial" 
+            fontWeight="900" 
+            fontSize="54" 
+            textAnchor="middle" 
+            fill="#FFFFFF"
+            dominantBaseline="middle"
+          >
+            DUDE
+          </text>
         </svg>
       </main>
 
