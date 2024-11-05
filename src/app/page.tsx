@@ -6,13 +6,14 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center overflow-hidden p-4">
+      <div className="flex flex-col items-center justify-center h-screen overflow-hidden px-4 text-center">
         <Link href="/" passHref>
           <Image 
             src="/Logo_White.svg"
             alt="Dude Logo"
-            width={200} // Adjust width as needed
-            height={100} // Adjust height to match visual requirements
+            width={150} // Adjust width as needed for larger screens
+            height={100}
+            className="w-40 h-auto sm:w-48" // Responsive width adjustment
             priority
           />
         </Link>
