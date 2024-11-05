@@ -38,7 +38,8 @@ const Header = () => {
         <nav className="absolute top-16 left-0 w-full bg-black text-center py-4">
           <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Home</Link>
           <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300">About</Link>
-          <Link href="/contact" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Contact</Link>
+          <Link href="/shop" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Shop</Link>
+          <Link href="/mint" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Mint</Link>
         </nav>
       )}
     </header>
