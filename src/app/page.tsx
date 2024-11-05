@@ -10,7 +10,7 @@ export default function Home() {
         <Link href="/" passHref>
           <Image  src="/logo.jpg" // Path to your logo image
             alt="Dude Logo"
-            width={200} // Base width to satisfy Next.js requirements
+            width={100} // Base width to satisfy Next.js requirements
             height={100} // Base height to satisfy Next.js requirements
             priority  />
         </Link>
