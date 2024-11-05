@@ -15,7 +15,7 @@ const Header = () => {
     <header className="w-full bg-black text-white flex items-center justify-between p-4">
       <Link href="/" passHref>
         <Image 
-          src="/Logo_White.svg" 
+          src="/Dude logo 3.jpg" 
           alt="Dude Logo" 
           width={200} 
           height={50} 
