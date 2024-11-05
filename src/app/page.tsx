@@ -6,18 +6,15 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center h-screen overflow-hidden px-4 text-center">
+      <div className="flex flex-col items-center justify-center h-screen p-4">
         <Link href="/" passHref>
-          <Image 
-            src="/Logo_White.svg"
+          <Image  src="/logo.jpg" // Path to your logo image
             alt="Dude Logo"
-            width={150} // Adjust width as needed for larger screens
-            height={100}
-            className="w-40 h-auto sm:w-48" // Responsive width adjustment
-            priority
-          />
+            width={200} // Base width to satisfy Next.js requirements
+            height={100} // Base height to satisfy Next.js requirements
+            priority  />
         </Link>
-        <p className="text-lg mt-4">Coming Soon</p>
+        <p className="text-lg mt-4 text-center">Coming Soon</p>
         <Analytics />
       </div>
     </Layout>
