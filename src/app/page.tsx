@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen mx-auto p-4">
+      <div className="flex flex-col items-center justify-center overflow-hidden p-4">
         <Link href="/" passHref>
           <Image 
             src="/Logo_White.svg"
