@@ -1,7 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "./components/Layout";
-import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Home() {
   return (
