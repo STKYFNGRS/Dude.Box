@@ -16,7 +16,7 @@ export default function Home() {
           <Link href="/" passHref>
         <Image 
           src="/hunt pick 2.png" 
-          alt="Image of child picking his nose" 
+          alt="Image of boy picking his nose" 
           width={400} 
           height={100} 
           priority
