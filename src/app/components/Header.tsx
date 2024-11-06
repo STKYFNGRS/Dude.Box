@@ -43,7 +43,7 @@ const Header = () => {
         <div className="fixed top-0 left-0 w-full h-auto bg-black text-center z-40">
           <nav
             id="mobile-menu"
-            className="pt-16 pb-8 px-4 flex flex-col space-y-4"
+            className="pt-16 pb-8 px-2 flex flex-col space-y-2"
             aria-hidden={!isOpen}
             role="menu"
             tabIndex={-1}
