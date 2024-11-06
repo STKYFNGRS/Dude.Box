@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <header className="w-full bg-black text-white flex items-center justify-between p-4">
-      <Link href="/" passHref>
+      <Link href="/shop" passHref>
         <Image 
           src="/Dude logo 3.jpg" 
           alt="Dude Logo" 
