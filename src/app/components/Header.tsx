@@ -87,6 +87,14 @@ const Header = () => {
               About
             </Link>
             <Link 
+              href="/roadmap" 
+              onClick={toggleMenu} 
+              className="block py-3 bg-gray-900 hover:bg-gray-800 transition-colors duration-200 border border-gray-700 rounded-lg" 
+              role="menuitem"
+            >
+              Roadmap
+            </Link>
+            <Link 
               href="/shop" 
               onClick={toggleMenu} 
               className="block py-3 bg-gray-900 hover:bg-gray-800 transition-colors duration-200 border border-gray-700 rounded-lg" 
