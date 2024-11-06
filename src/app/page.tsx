@@ -13,7 +13,7 @@ export default function Home() {
     <Layout>
       <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-b from-black to-gray-900 text-white min-h-screen">
         <div className="relative">
-          <Link href="/" passHref>
+          <Link href="/about" passHref>
             <Image 
               src="/hunt pick 2.png" 
               alt="Image of boy picking his nose" 
