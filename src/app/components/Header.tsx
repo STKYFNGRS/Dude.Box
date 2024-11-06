@@ -26,6 +26,8 @@ const Header = () => {
       {/* Always show Hamburger Icon */}
       <button
         onClick={toggleMenu}
+        aria-expanded={isOpen}
+        aria-controls="mobile-menu"
         className="text-white focus:outline-none"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
@@ -33,13 +35,18 @@ const Header = () => {
         </svg>
       </button>
 
-      {/* Hide Desktop Menu, use Mobile Menu instead */}
+      {/* Mobile Menu */}
       {isOpen && (
-        <nav className="absolute top-16 left-0 w-full bg-black text-center py-4">
-          <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Home</Link>
-          <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300">About</Link>
-          <Link href="/shop" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Shop</Link>
-          <Link href="/mint" onClick={toggleMenu} className="block py-2 hover:text-gray-300">Mint</Link>
+        <nav
+          id="mobile-menu"
+          className="absolute top-16 left-0 w-full bg-black text-center py-4"
+          aria-hidden={!isOpen}
+          role="menu"
+        >
+          <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Home</Link>
+          <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">About</Link>
+          <Link href="/shop" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Shop</Link>
+          <Link href="/mint" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Mint</Link>
         </nav>
       )}
     </header>
