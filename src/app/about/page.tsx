@@ -18,7 +18,7 @@ export default function Home() {
           {/* Mission Statement */}
           <h2 className="text-2xl font-semibold mt-6 mb-2">Our Mission</h2>
           <p className="text-lg">
-            To design quality, stylish clothing for men while raising awareness and generating support for mental health initiatives. At dude.box, we aim to spark conversations, break down stigmas, and make meaningful contributions to the mental health community with every item we sell.
+            To design stylish and fun products for men while raising awareness and generating support for mental health initiatives. At dude.box, we aim to spark conversations, break down stigmas, and make meaningful contributions to the mental health community with every item we sell.
           </p>
         </div>
         
