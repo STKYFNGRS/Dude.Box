@@ -1,37 +1,69 @@
-"use client"; // Ensure this component is client-side for useState
+"use client";
 
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
 
-
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center p-4">
-        {/* About Us Section */}
-        <div className="max-w-2xl text-center">
-          <h1 className="text-3xl font-bold mb-4">About dude.box</h1>
-          <p className="text-lg mb-4">
-            dude.box is more than just a men&apos;s brand; it&apos;s a movement. We believe that every man deserves to feel seen, understood, and supported, not just in his personal life but in the world around him. That&apos;s why we&apos;re committed to making a positive impact on men&apos;s mental health through every piece we create. From casual essentials to statement pieces, dude.box is designed to empower men to feel comfortable, confident, and ready to tackle whatever life throws at them.
+      <div className="flex flex-col items-center justify-center p-4 bg-black text-white">
+        <div className="max-w-3xl text-center">
+          {/* Hero Section */}
+          <h1 className="text-4xl font-bold mb-6">Welcome to dude.box</h1>
+          <p className="text-xl mb-8 text-gray-200">
+            We&apos;re not just another men&apos;s brand. We&apos;re building something different here - 
+            a community where guys can be real, feel supported, and look good doing it.
           </p>
           
           {/* Mission Statement */}
-          <h2 className="text-2xl font-semibold mt-6 mb-2">Our Mission</h2>
-          <p className="text-lg">
-            To design stylish and fun products for men while raising awareness and generating support for mental health initiatives. At dude.box, we aim to spark conversations, break down stigmas, and make meaningful contributions to the mental health community with every item we sell.
-          </p>
-
-          {/* From the founder */}
-          <h3 className="text-2xl font-semibold mt-6 mb-2">From the founder</h3>
-          <p className="text-lg mb-4">
-            Welcome to dude.box. I&apos;m Alex Moore, a regular dude, husband, dad, veteran who&apos;s been around long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you some polished fairy tale. I&apos;m building this brand from the ground up, not because I needed another hobby, but because I saw a gap, a need, hell, a crisis, and can&apos;t sit on the sidelines anymore.
-          </p>
-          <p className="text-lg mb-4">
-            I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its noise and chaos, and maybe that&apos;s why Dude isn&apos;t just another brand to me. It&apos;s a vehicle, a lifeline, a way to carve out a space for  something bigger: a physical location where men can walk in, breathe out, and shed the armor. A mixed use office and retail space for free one-on-one counseling with an on staff therapist, group sessions, AA meetings, or just a change of clothes and a haircut, whatever it takes to help another dude keep going.
-          </p>
-          <p className="text-lg">
-            So here&apos;s the deal. Buy our stuff if you like it. Wear it if it feels right. But know that every dollar you spend here pushes us closer to a place where men, just like you and me can find a little bit of solid ground in a world that loves to keep us off-balance.
-          </p>
+          <div className="bg-gray-900 p-8 rounded-lg mb-12">
+            <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
+            <p className="text-lg text-gray-200">
+              To create products that guys actually want to wear while building spaces where they can
+              be themselves. Every purchase helps us get closer to opening physical locations offering
+              free counseling, group support, and a place to just breathe.
+            </p>
+          </div>
+          
+          {/* Vision Section */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-semibold mb-4">The Vision</h2>
+            <div className="text-lg text-gray-200">
+              <p className="mb-4">
+                Imagine walking into a place where you don&apos;t have to have it all figured out.
+                Where getting help isn&apos;t a sign of weakness, but of strength. That&apos;s what we&apos;re building:
+              </p>
+              <ul className="text-left mx-auto max-w-xl space-y-2 mb-4">
+                <li>• Free one-on-one counseling with licensed therapists</li>
+                <li>• Space for AA meetings and support groups</li>
+                <li>• Professional services like resume writing, haircuts and styling</li>
+                <li>• A community of guys who get it</li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Founder's Message */}
+          <div className="bg-gray-900 p-8 rounded-lg">
+            <h3 className="text-2xl font-semibold mb-4">From the founder</h3>
+            <div className="text-left">
+              <p className="text-lg mb-4 text-gray-200">
+                I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
+                long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
+                some polished fairy tale. I&apos;m building this brand because I see a crisis, and
+                can&apos;t sit on the sidelines anymore.
+              </p>
+              <p className="text-lg mb-4 text-gray-200">
+                I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
+                noise and chaos. That&apos;s why dude.box isn&apos;t just another brand. It&apos;s a
+                vehicle for change, a way to create the support system I wish I&apos;d had.
+              </p>
+              <p className="text-lg text-gray-200">
+                So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right.
+                But know that every dollar you spend here pushes us closer to creating a place
+                where men can find solid ground in a world that loves to keep us off-balance.
+              </p>
+            </div>
+          </div>
         </div>
         
         <Analytics />
