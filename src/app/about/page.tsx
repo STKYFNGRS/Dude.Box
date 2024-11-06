@@ -1,4 +1,4 @@
-"use client"; // Add this if you're using client-side only code
+"use client"; // Add this to ensure client-side rendering
 
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
@@ -9,9 +9,9 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center p-4">
         {/* About Us Section */}
         <div className="max-w-2xl text-center">
-          <h1 className="text-3xl font-bold mb-4">About dude.box</h1>
+          <h1 className="text-3xl font-bold mb-4">About Dude</h1>
           <p className="text-lg mb-4">
-            Dude.box is more than just a men's clothing brand; it's a movement. We believe that every man deserves to feel seen, understood, and supported, not just in his personal life but in the world around him. That's why we’re committed to making a positive impact on men’s mental health through every piece we create. From casual essentials to statement pieces, Dude is designed to empower men to feel comfortable, confident, and ready to tackle whatever life throws at them.
+            Dude is more than just a men&apos;s clothing brand; it&apos;s a movement. We believe that every man deserves to feel seen, understood, and supported, not just in his personal life but in the world around him. That&apos;s why we&apos;re committed to making a positive impact on men&apos;s mental health through every piece we create. From casual essentials to statement pieces, Dude is designed to empower men to feel comfortable, confident, and ready to tackle whatever life throws at them.
           </p>
           
           {/* Mission Statement */}
