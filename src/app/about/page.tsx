@@ -6,17 +6,19 @@ import Layout from "../components/Layout";
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center p-4 bg-black text-white">
+      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-b from-black to-gray-900 text-white min-h-screen">
         <div className="max-w-3xl text-center">
           {/* Hero Section */}
-          <h1 className="text-4xl font-bold mb-6">Welcome to dude.box</h1>
+          <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+            Welcome to dude.box
+          </h1>
           <p className="text-xl mb-8 text-gray-200">
             We&apos;re not just another men&apos;s brand. We&apos;re building something different here - 
             a community where guys can be real, feel supported, and look good doing it.
           </p>
           
           {/* Mission Statement */}
-          <div className="bg-gray-900 p-8 rounded-lg mb-12">
+          <div className="bg-gray-900 p-8 rounded-lg mb-12 transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-lg text-gray-200">
               To create products that guys actually want to wear while building spaces where they can
@@ -33,17 +35,29 @@ export default function Home() {
                 Imagine walking into a place where you don&apos;t have to have it all figured out.
                 Where getting help isn&apos;t a sign of weakness, but of strength. That&apos;s what we&apos;re building:
               </p>
-              <ul className="text-left mx-auto max-w-xl space-y-2 mb-4">
-                <li>• Free one-on-one counseling with licensed therapists</li>
-                <li>• Space for AA meetings and support groups</li>
-                <li>• Professional services like resume writing, haircuts and styling</li>
-                <li>• A community of guys who get it</li>
+              <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
+                <li className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                  Free one-on-one counseling with licensed therapists
+                </li>
+                <li className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                  Space for AA meetings and support groups
+                </li>
+                <li className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                  Professional services like resume writing, haircuts and styling
+                </li>
+                <li className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                  A community of guys who get it
+                </li>
               </ul>
             </div>
           </div>
           
           {/* Founder's Message */}
-          <div className="bg-gray-900 p-8 rounded-lg">
+          <div className="bg-gray-900 p-8 rounded-lg transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
             <h3 className="text-2xl font-semibold mb-4">From the founder</h3>
             <div className="text-left">
               <p className="text-lg mb-4 text-gray-200">
