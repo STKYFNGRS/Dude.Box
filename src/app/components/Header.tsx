@@ -28,6 +28,7 @@ const Header = () => {
         onClick={toggleMenu}
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
+        aria-label="Toggle navigation menu"
         className="text-white focus:outline-none"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
@@ -42,6 +43,7 @@ const Header = () => {
           className="absolute top-16 left-0 w-full bg-black text-center py-4"
           aria-hidden={!isOpen}
           role="menu"
+          tabIndex="-1"
         >
           <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Home</Link>
           <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">About</Link>
