@@ -38,18 +38,18 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <nav
-          id="mobile-menu"
-          className="absolute top-16 left-0 w-full bg-black text-center py-4"
-          aria-hidden={!isOpen}
-          role="menu"
-          tabIndex="-1"
-        >
-          <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Home</Link>
-          <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">About</Link>
-          <Link href="/shop" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Shop</Link>
-          <Link href="/mint" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Mint</Link>
-        </nav>
+       <nav
+       id="mobile-menu"
+       className="absolute top-16 left-0 w-full bg-black text-center py-4"
+       aria-hidden={!isOpen}
+       role="menu"
+       tabIndex={-1} // Removed quotes around -1
+     >
+       <Link href="/" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Home</Link>
+       <Link href="/about" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">About</Link>
+       <Link href="/shop" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Shop</Link>
+       <Link href="/mint" onClick={toggleMenu} className="block py-2 hover:text-gray-300" role="menuitem">Mint</Link>
+     </nav>
       )}
     </header>
   );
