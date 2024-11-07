@@ -11,7 +11,7 @@ export default function Roadmap() {
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-700 text-center">
             <h1 className="text-3xl font-bold mb-4">Roadmap Coming Soon</h1>
             <p className="text-lg text-gray-200 mb-4">
-              We&apos;re mapping out our journey to revolutionize men&apos;s mental health support.
+              We&apos;re mapping out our journey to revolutionize mental health support.
               Stay tuned for our detailed plan of action.
             </p>
             <div className="text-gray-400">
