@@ -21,7 +21,7 @@ export default function Home() {
           <div className="bg-gray-900 p-8 rounded-lg mb-12 transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-lg text-gray-200">
-              To create products that guys actually want while building spaces where they can
+              To create products that dudes actually want while building spaces where they can
               be themselves. Every purchase helps us get closer to opening physical locations offering
               free counseling, group support, and a place to just breathe.
             </p>
@@ -50,7 +50,7 @@ export default function Home() {
                 </li>
                 <li className="flex items-center">
                   <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                  A community of guys who get it
+                  A community of dudes who get it
                 </li>
               </ul>
             </div>
@@ -74,7 +74,7 @@ export default function Home() {
               <p className="text-lg text-gray-200">
                 So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right.
                 But know that every dollar you spend here pushes us closer to creating a place
-                where men can find solid ground in a world that loves to keep us off-balance.
+                where dudes can find solid ground in a world that loves to keep us off-balance.
               </p>
             </div>
           </div>
