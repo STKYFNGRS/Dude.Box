@@ -46,54 +46,7 @@ export default function Roadmap() {
     }
   ];
 
-  const pathOptions = [
-    {
-      title: "Property Acquisition Path",
-      steps: [
-        "Target: $1.5M for initial location",
-        "Down payment: $300K (20%)",
-        "Monthly mortgage: ~$8K",
-        "Build-out costs: $400K",
-        "Initial operating capital: $300K",
-        "Total needed: $1M liquid + mortgage"
-      ],
-      pros: [
-        "Build equity over time",
-        "Full control over property",
-        "Potential appreciation",
-        "Tax benefits"
-      ],
-      cons: [
-        "Higher initial capital needed",
-        "Property maintenance responsibility",
-        "Less flexibility for location changes",
-        "Higher risk"
-      ]
-    },
-    {
-      title: "Leasing Path",
-      steps: [
-        "Target: 3,500-5,000 sq ft space",
-        "Lease: $25-35 per sq ft annually",
-        "Security deposit: 3-6 months rent",
-        "Build-out costs: $400K",
-        "Initial operating capital: $300K",
-        "Total needed: $800K liquid"
-      ],
-      pros: [
-        "Lower initial capital requirement",
-        "More location flexibility",
-        "Reduced maintenance responsibility",
-        "Faster deployment possible"
-      ],
-      cons: [
-        "No equity building",
-        "Subject to rent increases",
-        "Less control over property",
-        "Potential lease non-renewal"
-      ]
-    }
-  ];
+  
 
   return (
     <Layout>
