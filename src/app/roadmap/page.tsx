@@ -2,7 +2,7 @@
 
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
-import { ArrowRight, Store, ShoppingBag, Users, Landmark } from "lucide-react";
+import { ArrowRight, Store, ShoppingBag, Users, Landmark, Coffee, Gamepad } from "lucide-react";
 
 export default function Roadmap() {
   const phases = [
@@ -12,7 +12,8 @@ export default function Roadmap() {
         "Launch core product line focusing on quality basics",
         "Build initial community through social media and content",
         "Establish brand identity and mission awareness",
-        "Target: $500K in first-year revenue"
+        "Target: $1.5M in first-year revenue from online sales",
+        "Initial team building and operations setup"
       ]
     },
     {
@@ -22,7 +23,8 @@ export default function Roadmap() {
         "Yet to be determined amount of unique NFTs representing founding community members",
         "NFT holders get early access to products and events",
         "Exclusive merchandise drops for community members",
-        "Community input on future product lines"
+        "Community input on future product lines",
+        "Target: $2.5M in annual revenue across all channels"
       ]
     },
     {
@@ -32,21 +34,21 @@ export default function Roadmap() {
         "Announce retail partnerships",
         "Launch subscription box service",
         "Develop partnerships with mental health professionals",
-        "Target: $2M in annual revenue"
+        "Target: $3.5M in annual revenue",
+        "Begin location scouting and property analysis"
       ]
     },
     {
       title: "Phase 4: Location Planning",
       items: [
-        "Site selection and market analysis",
+        "Site selection and market analysis in San Diego",
         "Architectural planning and design",
         "Local community engagement",
-        "Initial staff recruitment and training"
+        "Initial staff recruitment and training",
+        "Target: $4M+ in annual revenue with physical location"
       ]
     }
   ];
-
-  
 
   return (
     <Layout>
@@ -108,7 +110,6 @@ export default function Roadmap() {
               </p>
             </div>
           </div>
-
           {/* Location Strategy */}
           <h2 className="text-3xl font-semibold mb-8 text-center">Our Physical Home</h2>
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
@@ -135,16 +136,16 @@ export default function Roadmap() {
                         <span>Premium retail experience (2,000 sq ft)</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Store className="w-4 h-4" />
-                        <span>Social lounge with coffee & mocktail bar</span>
+                        <Coffee className="w-4 h-4" />
+                        <span>Social lounge with coffee & mocktail bar (800 sq ft)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Gamepad className="w-4 h-4" />
+                        <span>Entertainment area with pool tables and gaming (1,000 sq ft)</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
-                        <span>Entertainment area with pool tables and gaming stations</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        <span>Private counseling spaces</span>
+                        <span>Counseling spaces and offices (700 sq ft)</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
@@ -152,7 +153,7 @@ export default function Roadmap() {
                       </li>
                       <li className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
-                        <span>Community meeting rooms</span>
+                        <span>Community meeting rooms (500 sq ft)</span>
                       </li>
                     </ul>
                   </div>
@@ -165,7 +166,7 @@ export default function Roadmap() {
                       </li>
                       <li className="flex items-center gap-2">
                         <Store className="w-4 h-4" />
-                        <span>Warehouse and fulfillment center (2,000 sq ft)</span>
+                        <span>Warehouse and fulfillment center (1,500 sq ft)</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Store className="w-4 h-4" />
@@ -219,7 +220,7 @@ export default function Roadmap() {
                   <ul className="space-y-2 text-gray-200">
                     <li className="flex items-center gap-2">
                       <Landmark className="w-4 h-4" />
-                      <span>Estimated Property Cost: $2.5M - $3M</span>
+                      <span>Property Purchase: $2.5M - $3M</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Landmark className="w-4 h-4" />
@@ -231,14 +232,24 @@ export default function Roadmap() {
                     </li>
                     <li className="flex items-center gap-2">
                       <Landmark className="w-4 h-4" />
-                      <span>Total Project Investment: $3.5M - $4.2M</span>
+                      <span>Total Cash Investment Needed: $3.5M - $4.2M</span>
                     </li>
                   </ul>
+                  <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Funding Strategy</h5>
+                    <ul className="space-y-2 text-sm text-gray-300">
+                      <li>• Initial operations revenue (Years 1-2)</li>
+                      <li>• NFT Community Pass sale proceeds</li>
+                      <li>• No mortgage needed - full cash purchase</li>
+                      <li>• Significantly reduces long-term operating costs</li>
+                      <li>• Enables immediate full property utilization</li>
+                    </ul>
+                  </div>
                 </div>
 
                 {/* Venue Revenue Potential */}
                 <div>
-                  <h4 className="text-xl font-semibold mb-3">Venue Revenue Potential</h4>
+                <h4 className="text-xl font-semibold mb-3">Venue Revenue Potential</h4>
                   <ul className="space-y-2 text-gray-200">
                     <li className="flex items-center gap-2">
                       <Landmark className="w-4 h-4" />
@@ -254,16 +265,214 @@ export default function Roadmap() {
                     </li>
                     <li className="flex items-center gap-2">
                       <Landmark className="w-4 h-4" />
-                      <span>Potential Annual Venue Revenue: $180K - $240K</span>
+                      <span>Projected Annual Venue Revenue: $243K - $324K</span>
                     </li>
                   </ul>
+                  <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Additional Benefits</h5>
+                    <ul className="space-y-2 text-sm text-gray-300">
+                      <li>• Full control over space utilization</li>
+                      <li>• Flexibility for community programming</li>
+                      <li>• No rental restrictions on events</li>
+                      <li>• Property value appreciation potential</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Staffing Plan */}
+          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
+            <h4 className="text-xl font-semibold mb-6">Staffing Requirements (San Diego Market)</h4>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Retail & Community Operations */}
+              <div className="space-y-4">
+                <h5 className="font-semibold text-gray-200">Front of House Staff</h5>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-center justify-between">
+                    <span>General Manager (1)</span>
+                    <span>$88K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Retail Supervisors (2)</span>
+                    <span>$61K/yr each</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Retail Associates (4 PT)</span>
+                    <span>$45K/yr each</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Barista/Mocktail Staff (3 PT)</span>
+                    <span>$45K/yr each</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Event Coordinator (1)</span>
+                    <span>$61K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Community Outreach Manager (1)</span>
+                    <span>$74K/yr</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Operations & Support */}
+              <div className="space-y-4">
+                <h5 className="font-semibold text-gray-200">Back of House Staff</h5>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-center justify-between">
+                    <span>Operations Manager (1)</span>
+                    <span>$81K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Product Designer (1)</span>
+                    <span>$88K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>E-commerce Manager (1)</span>
+                    <span>$74K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Warehouse Staff (2)</span>
+                    <span>$47K/yr each</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Marketing Manager (1)</span>
+                    <span>$81K/yr</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Mental Health Coordinator (1)</span>
+                    <span>$74K/yr</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Mental Health Staff */}
+              <div className="space-y-4 md:col-span-2">
+                <h5 className="font-semibold text-gray-200">Mental Health Professionals</h5>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-center justify-between">
+                    <span>Licensed Therapists (2)</span>
+                    <span>$108K/yr each</span>
+                  </li>
+                  <li className="text-sm text-gray-300 mt-2">
+                    Note: Therapists provide free community mental health services as part of our core mission. 
+                    This is a cost center that directly supports our community impact goals.
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
+              <p className="text-gray-200">
+                Total Annual Staff Cost: ~$1.7M (including 20% benefits overhead)
+              </p>
+            </div>
+          </div>
+
+          {/* Revenue Projections */}
+          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
+            <h4 className="text-xl font-semibold mb-6">Annual Revenue Streams (San Diego Market)</h4>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Primary Revenue */}
+              <div className="space-y-4">
+                <h5 className="font-semibold text-gray-200">Core Business Revenue</h5>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-center justify-between">
+                    <span>Online Sales</span>
+                    <span>$1.62M - $2.03M</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Physical Retail</span>
+                    <span>$1.08M - $1.35M</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Subscription Boxes</span>
+                    <span>$540K - $675K</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Secondary Revenue */}
+              <div className="space-y-4">
+                <h5 className="font-semibold text-gray-200">Auxiliary Revenue</h5>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-center justify-between">
+                    <span>Venue Rentals</span>
+                    <span>$243K - $324K</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Mocktail Bar</span>
+                    <span>$203K - $270K</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Coffee Shop</span>
+                    <span>$162K - $243K</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Gaming/Entertainment</span>
+                    <span>$68K - $101K</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Operating Expenses Breakdown */}
+            <div className="mt-8 space-y-4">
+              <h5 className="font-semibold text-gray-200">Operating Expenses Breakdown</h5>
+              <ul className="space-y-2 text-gray-200">
+                <li className="flex items-center justify-between">
+                  <span>Staff Costs (inc. benefits)</span>
+                  <span>$1.71M/yr</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Property Taxes & Insurance</span>
+                  <span>$120K/yr</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Utilities & Maintenance</span>
+                  <span>$180K/yr</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Inventory & COGS</span>
+                  <span>$400K - $500K/yr</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Marketing & Advertising</span>
+                  <span>$120K - $150K/yr</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Technology & Operations</span>
+                  <span>$50K - $60K/yr</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Financial Summary */}
+            <div className="mt-6 space-y-4 p-4 bg-gray-800/50 rounded-lg">
+              <div className="flex justify-between text-gray-200">
+                <span className="font-semibold">Total Projected Annual Revenue:</span>
+                <span>$3.92M - $5.0M</span>
+              </div>
+              <div className="flex justify-between text-gray-200">
+                <span className="font-semibold">Estimated Operating Expenses:</span>
+                <span>$2.58M - $2.72M</span>
+              </div>
+              <div className="flex justify-between text-gray-200">
+                <span className="font-semibold">Projected Net Profit:</span>
+                <span>$1.34M - $2.28M</span>
+              </div>
+              <p className="text-sm text-gray-300 mt-4">
+                Note: While increased staff costs impact our operating expenses, our commitment to providing 
+                living wages aligns with our mission and values. Property costs remain lower due to our 
+                cash purchase strategy, helping to offset increased staffing expenses while maintaining 
+                healthy profit margins.
+              </p>
+            </div>
+          </div>
+
           {/* Timeline Disclaimer */}
-          <div className="text-center text-gray-400 text-sm">
+          <div className="text-center text-gray-400 text-sm mb-8">
             <p>
               This roadmap represents our current vision and plans. Timelines and specific 
               details may evolve based on market conditions and community needs.
