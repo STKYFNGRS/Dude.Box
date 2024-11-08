@@ -7,13 +7,14 @@ import { ArrowRight, Store, ShoppingBag, Users, Landmark, Coffee, Gamepad } from
 export default function Roadmap() {
   const phases = [
     {
-      title: "Phase 1: Online Foundation (Current)",
+      title: "Phase 1: Online Foundation",
       items: [
         "Launch core product line focusing on quality basics",
         "Build initial community through social media and content",
         "Establish brand identity and mission awareness",
         "Target: $1.5M in first-year revenue from online sales",
-        "Initial team building and operations setup"
+        "Initial team building and operations setup",
+        "Establish $800K emergency fund"
       ]
     },
     {
@@ -21,10 +22,9 @@ export default function Roadmap() {
       items: [
         "Launch dude.box NFT Collection - Community Access Passes",
         "20,000 unique NFTs representing founding community members",
-        "NFT holders get early access to products and events",
-        "Exclusive merchandise drops for community members",
-        "Community input on future product lines",
-        "Target: $2.5M in annual revenue across all channels"
+        "Development of NFT infrastructure and community platform",
+        "NFT platform testing and deployment",
+        "Target: $2.0M in annual revenue across all channels"
       ]
     },
     {
@@ -33,18 +33,20 @@ export default function Roadmap() {
         "Expand product lines based on community feedback",
         "Announce retail partnerships",
         "Launch subscription box service",
+        "Scale NFT holder engagement features",
         "Develop partnerships with mental health professionals",
         "Target: $3.5M in annual revenue",
         "Begin location scouting and property analysis"
       ]
     },
     {
-      title: "Phase 4: Location Planning",
+      title: "Phase 4: Physical Location",
       items: [
         "Site selection and market analysis in San Diego",
         "Architectural planning and design",
         "Local community engagement",
         "Initial staff recruitment and training",
+        "NFT holder physical space integration",
         "Target: $4M+ in annual revenue with physical location"
       ]
     }
@@ -83,33 +85,100 @@ export default function Roadmap() {
           </div>
 
           {/* NFT Information */}
-          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
-            <h2 className="text-2xl font-semibold mb-6">Community Access Pass NFTs</h2>
-            <div className="text-gray-200 space-y-4">
-              <p>
-                Our NFTs represent membership in the founding community of dude.box. 
-                Each unique NFT provides:
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  <span>Access to exclusive community events and content</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>Early access to product drops and collaborations</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Store className="w-5 h-5" />
-                  <span>Input on future product lines and community initiatives</span>
-                </li>
-              </ul>
-              <p className="text-sm mt-6">
-                Note: NFTs are intended for community access and engagement only. They do not represent 
-                any ownership in dude.box or entitle holders to any profits or returns.
-              </p>
-            </div>
-          </div>
+          
+        
+  <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
+    <h2 className="text-2xl font-semibold mb-6">Community Access Pass NFTs</h2>
+    <div className="text-gray-200 space-y-4">
+      <p>
+        Our NFTs represent membership in the founding community of dude.box. 
+        Each unique NFT provides enhanced community benefits and influence:
+      </p>
+      <div className="space-y-6">
+        {/* Voting Power */}
+        <div className="p-4 bg-gray-800/50 rounded-lg">
+          <h3 className="font-semibold mb-3 text-xl">Enhanced Voting Power</h3>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Weighted voting rights on product launches and initiatives</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Early adopter voting multiplier for founding members</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5" />
+              <span>Exclusive design choice voting on special editions</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Product Access */}
+        <div className="p-4 bg-gray-800/50 rounded-lg">
+          <h3 className="font-semibold mb-3 text-xl">Exclusive Products</h3>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5" />
+              <span>Access to NFT-holder-only limited edition products</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Store className="w-5 h-5" />
+              <span>First look and early access to all product drops</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Store className="w-5 h-5" />
+              <span>Special edition merchandise exclusives</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Community Recognition */}
+        <div className="p-4 bg-gray-800/50 rounded-lg">
+          <h3 className="font-semibold mb-3 text-xl">Community Status</h3>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Tiered badge system with engagement rewards</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Milestone perks for long-term holders</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Annual Community Appreciation event access</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Events and Access */}
+        <div className="p-4 bg-gray-800/50 rounded-lg">
+          <h3 className="font-semibold mb-3 text-xl">Premium Access</h3>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Priority booking for physical location events</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Quarterly virtual events with team leadership</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              <span>Behind-the-scenes access to brand development</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <p className="text-sm mt-6">
+        Note: NFTs are intended for community access and engagement only. They do not represent 
+        any ownership in dude.box or entitle holders to any profits or returns.
+      </p>
+    </div>
+  </div>
+  
           {/* Location Strategy */}
           <h2 className="text-3xl font-semibold mb-8 text-center">Our Physical Home</h2>
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
@@ -285,192 +354,247 @@ export default function Roadmap() {
           <h2 className="text-3xl font-semibold mb-8 text-center">The Bottom Line</h2>
           {/* Staffing Plan */}
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
-            <h4 className="text-xl font-semibold mb-6">Staffing Requirements (San Diego Market)</h4>
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Retail & Community Operations */}
-              <div className="space-y-4">
-                <h5 className="font-semibold text-gray-200">Front of House Staff</h5>
-                <ul className="space-y-3 text-gray-200">
-                  <li className="flex items-center justify-between">
-                    <span>General Manager (1)</span>
-                    <span>$88K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Retail Supervisors (2)</span>
-                    <span>$61K/yr each</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Retail Associates (4 PT)</span>
-                    <span>$45K/yr each</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Barista/Mocktail Staff (3 PT)</span>
-                    <span>$45K/yr each</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Event Coordinator (1)</span>
-                    <span>$61K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Community Outreach Manager (1)</span>
-                    <span>$74K/yr</span>
-                  </li>
-                </ul>
-              </div>
+    <h4 className="text-xl font-semibold mb-6">Staffing Requirements (San Diego Market)</h4>
+    <div className="grid md:grid-cols-2 gap-8">
+      {/* Retail & Community Operations */}
+      <div className="space-y-4">
+        <h5 className="font-semibold text-gray-200">Front of House Staff</h5>
+        <ul className="space-y-3 text-gray-200">
+          <li className="flex items-center justify-between">
+            <span>General Manager (1)</span>
+            <span>$100K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Retail Supervisors (2)</span>
+            <span>$61K/yr each</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Retail Associates (4 PT)</span>
+            <span>$45K/yr each</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Barista/Mocktail Staff (3 PT)</span>
+            <span>$45K/yr each</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Event Coordinator (1)</span>
+            <span>$61K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Community Outreach Manager (1)</span>
+            <span>$74K/yr</span>
+          </li>
+        </ul>
+      </div>
 
-              {/* Operations & Support */}
-              <div className="space-y-4">
-                <h5 className="font-semibold text-gray-200">Back of House Staff</h5>
-                <ul className="space-y-3 text-gray-200">
-                  <li className="flex items-center justify-between">
-                    <span>Operations Manager (1)</span>
-                    <span>$81K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Product Designer (1)</span>
-                    <span>$88K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>E-commerce Manager (1)</span>
-                    <span>$74K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Warehouse Staff (2)</span>
-                    <span>$47K/yr each</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Marketing Manager (1)</span>
-                    <span>$81K/yr</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Mental Health Coordinator (1)</span>
-                    <span>$74K/yr</span>
-                  </li>
-                </ul>
-              </div>
+      {/* Operations & Support */}
+      <div className="space-y-4">
+        <h5 className="font-semibold text-gray-200">Back of House Staff</h5>
+        <ul className="space-y-3 text-gray-200">
+          <li className="flex items-center justify-between">
+            <span>Operations Manager (1)</span>
+            <span>$95K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Product Designer (1)</span>
+            <span>$88K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>E-commerce Manager (1)</span>
+            <span>$74K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Warehouse Staff (2)</span>
+            <span>$47K/yr each</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Marketing Manager (1)</span>
+            <span>$81K/yr</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Mental Health Coordinator (1)</span>
+            <span>$74K/yr</span>
+          </li>
+        </ul>
+      </div>
 
-              {/* Mental Health Staff */}
-              <div className="space-y-4 md:col-span-2">
-                <h5 className="font-semibold text-gray-200">Mental Health Professionals</h5>
-                <ul className="space-y-3 text-gray-200">
-                  <li className="flex items-center justify-between">
-                    <span>Licensed Therapists (2)</span>
-                    <span>$108K/yr each</span>
-                  </li>
-                  <li className="text-sm text-gray-300 mt-2">
-                    Note: Therapists provide free community mental health services as part of our core mission. 
-                    This is a cost center that directly supports our community impact goals.
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
-              <p className="text-gray-200">
-                Total Annual Staff Cost: ~$1.7M (including 20% benefits overhead)
-              </p>
-            </div>
+      {/* Technology & Mental Health Staff */}
+      <div className="space-y-4 md:col-span-2">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Tech Section */}
+          <div className="space-y-4">
+            <h5 className="font-semibold text-gray-200">Technology</h5>
+            <ul className="space-y-3 text-gray-200">
+              <li className="flex items-center justify-between">
+                <span>Technical Director (1)</span>
+                <span>$250K/yr</span>
+              </li>
+              <li className="text-sm text-gray-300 mt-2">
+                Oversees all technical aspects including e-commerce platform, 
+                NFT integration, and digital community features.
+              </li>
+            </ul>
           </div>
 
+          {/* Mental Health Section */}
+          <div className="space-y-4">
+            <h5 className="font-semibold text-gray-200">Mental Health Professionals</h5>
+            <ul className="space-y-3 text-gray-200">
+              <li className="flex items-center justify-between">
+                <span>Licensed Therapists (2)</span>
+                <span>$108K/yr each</span>
+              </li>
+              <li className="text-sm text-gray-300 mt-2">
+                Note: Therapists provide free community mental health services as part of our core mission. 
+                This is a cost center that directly supports our community impact goals.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Seasonal Staff Section */}
+      <div className="space-y-4 md:col-span-2">
+        <h5 className="font-semibold text-gray-200">Seasonal & Event Staff</h5>
+        <ul className="space-y-3 text-gray-200">
+          <li className="flex items-center justify-between">
+            <span>Peak Season Support (Up to 8 PT)</span>
+            <span>$85K/yr total</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Event Staff Pool (Up to 5 PT)</span>
+            <span>$90K/yr total</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Holiday Coverage (Up to 4 PT)</span>
+            <span>$50K/yr total</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div className="mt-6 p-4 bg-gray-800/50 rounded-lg">
+      <div className="space-y-3">
+        <p className="text-gray-200">
+          Total Annual Staff Cost: ~$2.22M (including 20% benefits overhead)
+        </p>
+        <p className="text-sm text-gray-300">
+          Benefits package includes health insurance, retirement matching, paid time off, 
+          professional development allowance, and mental health support services.
+        </p>
+      </div>
+    </div>
+  </div>
           {/* Revenue Projections */}
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
-            <h4 className="text-xl font-semibold mb-6">Annual Revenue Streams (San Diego Market)</h4>
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Primary Revenue */}
-              <div className="space-y-4">
-                <h5 className="font-semibold text-gray-200">Core Business Revenue</h5>
-                <ul className="space-y-3 text-gray-200">
-                  <li className="flex items-center justify-between">
-                    <span>Online Sales</span>
-                    <span>$1.62M - $2.03M</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Physical Retail</span>
-                    <span>$1.08M - $1.35M</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Subscription Boxes</span>
-                    <span>$540K - $675K</span>
-                  </li>
-                </ul>
-              </div>
+    <h4 className="text-xl font-semibold mb-6">Annual Revenue Streams (San Diego Market)</h4>
+    <div className="grid md:grid-cols-2 gap-8">
+      {/* Primary Revenue */}
+      <div className="space-y-4">
+        <h5 className="font-semibold text-gray-200">Core Business Revenue</h5>
+        <ul className="space-y-3 text-gray-200">
+          <li className="flex items-center justify-between">
+            <span>Online Sales</span>
+            <span>$1.62M - $2.03M</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Physical Retail</span>
+            <span>$1.08M - $1.35M</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Subscription Boxes</span>
+            <span>$540K - $675K</span>
+          </li>
+        </ul>
+      </div>
 
-              {/* Secondary Revenue */}
-              <div className="space-y-4">
-                <h5 className="font-semibold text-gray-200">Auxiliary Revenue</h5>
-                <ul className="space-y-3 text-gray-200">
-                  <li className="flex items-center justify-between">
-                    <span>Venue Rentals</span>
-                    <span>$243K - $324K</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Mocktail Bar</span>
-                    <span>$203K - $270K</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Coffee Shop</span>
-                    <span>$162K - $243K</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>Gaming/Entertainment</span>
-                    <span>$68K - $101K</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      {/* Secondary Revenue */}
+      <div className="space-y-4">
+        <h5 className="font-semibold text-gray-200">Auxiliary Revenue</h5>
+        <ul className="space-y-3 text-gray-200">
+          <li className="flex items-center justify-between">
+            <span>Venue Rentals</span>
+            <span>$243K - $324K</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Mocktail Bar</span>
+            <span>$203K - $270K</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Coffee Shop</span>
+            <span>$162K - $243K</span>
+          </li>
+          <li className="flex items-center justify-between">
+            <span>Gaming/Entertainment</span>
+            <span>$68K - $101K</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-            {/* Operating Expenses Breakdown */}
-            <div className="mt-8 space-y-4">
-              <h5 className="font-semibold text-gray-200">Operating Expenses Breakdown</h5>
-              <ul className="space-y-2 text-gray-200">
-                <li className="flex items-center justify-between">
-                  <span>Staff Costs (inc. benefits)</span>
-                  <span>$1.71M/yr</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Property Taxes & Insurance</span>
-                  <span>$120K/yr</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Utilities & Maintenance</span>
-                  <span>$180K/yr</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Inventory & COGS</span>
-                  <span>$400K - $500K/yr</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Marketing & Advertising</span>
-                  <span>$120K - $150K/yr</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Technology & Operations</span>
-                  <span>$50K - $60K/yr</span>
-                </li>
-              </ul>
-            </div>
+    {/* Operating Expenses Breakdown */}
+    <div className="mt-8 space-y-4">
+    <h5 className="font-semibold text-gray-200">Operating Expenses Breakdown</h5>
+    <ul className="space-y-2 text-gray-200">
+      <li className="flex items-center justify-between">
+        <span>Staff Costs (inc. benefits)</span>
+        <span>$2.22M/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Property Taxes & Insurance</span>
+        <span>$120K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Utilities & Maintenance</span>
+        <span>$180K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Inventory & COGS</span>
+        <span>$400K - $500K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Marketing & Advertising</span>
+        <span>$200K - $250K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Technology & Operations</span>
+        <span>$100K - $125K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Cloud Services & Software</span>
+        <span>$60K - $75K/yr</span>
+      </li>
+      <li className="flex items-center justify-between">
+        <span>Community Platform Development</span>
+        <span>$40K - $50K/yr</span>
+      </li>
+    </ul>
+  </div>
 
-            {/* Financial Summary */}
-            <div className="mt-6 space-y-4 p-4 bg-gray-800/50 rounded-lg">
-              <div className="flex justify-between text-gray-200">
-                <span className="font-semibold">Total Projected Annual Revenue:</span>
-                <span>$3.92M - $5.0M</span>
-              </div>
-              <div className="flex justify-between text-gray-200">
-                <span className="font-semibold">Estimated Operating Expenses:</span>
-                <span>$2.58M - $2.72M</span>
-              </div>
-              <div className="flex justify-between text-gray-200">
-                <span className="font-semibold">Projected Net Profit:</span>
-                <span>$1.34M - $2.28M</span>
-              </div>
-              <p className="text-sm text-gray-300 mt-4">
-                Note: While increased staff costs impact our operating expenses, our commitment to providing 
-                living wages aligns with our mission and values. Property costs remain lower due to our 
-                cash purchase strategy, helping to offset increased staffing expenses while maintaining 
-                healthy profit margins.
-              </p>
-            </div>
-          </div>
+    {/* Financial Summary */}
+    <div className="mt-6 space-y-4 p-4 bg-gray-800/50 rounded-lg">
+    <div className="flex justify-between text-gray-200">
+      <span className="font-semibold">Total Projected Annual Revenue:</span>
+      <span>$3.92M - $5.0M</span>
+    </div>
+    <div className="flex justify-between text-gray-200">
+      <span className="font-semibold">Estimated Operating Expenses:</span>
+      <span>$3.32M - $3.55M</span>
+    </div>
+    <div className="flex justify-between text-gray-200">
+      <span className="font-semibold">Projected Net Profit:</span>
+      <span>$600K - $1.45M</span>
+    </div>
+    <p className="text-sm text-gray-300 mt-4">
+      Note: Our increased investment in top-tier technical leadership, robust marketing strategies, 
+      and community engagement platforms reflects our commitment to sustainable growth. While this 
+      impacts our initial profit margins, it positions us for stronger long-term success and 
+      community engagement. The absence of property mortgage costs continues to provide 
+      significant operational flexibility, while our enhanced marketing and technology budgets 
+      ensure we can effectively grow and engage our community.
+    </p>
+  </div>
+  </div>
 
           {/* Timeline Disclaimer */}
           <div className="text-center text-gray-400 text-sm mb-8">
