@@ -38,6 +38,9 @@ const Footer = () => {
                           <path d="M20.9,2H3.1A1.1,1.1,0,0,0,2,3.1V20.9A1.1,1.1,0,0,0,3.1,22h9.58V14.25h-2.6v-3h2.6V9a3.64,3.64,0,0,1,3.88-4,20.26,20.26,0,0,1,2.33.12v2.7H17.3c-1.26,0-1.5.6-1.5,1.47v1.93h3l-.39,3H15.8V22h5.1A1.1,1.1,0,0,0,22,20.9V3.1A1.1,1.1,0,0,0,20.9,2Z"/>
                       </svg>
                   </a>
+                  <a href="https://www.x.com/dudedotbox" target="_blank" rel="noopener noreferrer">
+                  <svg fill="currentColor" width ="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                  </a>
               </div>
           </div>
       </footer>
@@ -45,3 +48,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
