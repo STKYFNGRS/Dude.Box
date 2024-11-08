@@ -213,6 +213,7 @@ export default function Roadmap() {
               </div>
 
               {/* Financial Details */}
+              
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Investment Details */}
                 <div>
@@ -281,7 +282,7 @@ export default function Roadmap() {
               </div>
             </div>
           </div>
-
+          <h2 className="text-3xl font-semibold mb-8 text-center">The Bottom Line</h2>
           {/* Staffing Plan */}
           <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
             <h4 className="text-xl font-semibold mb-6">Staffing Requirements (San Diego Market)</h4>
