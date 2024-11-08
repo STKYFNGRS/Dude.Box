@@ -157,50 +157,156 @@ export default function Roadmap() {
           </div>
 
           {/* Location Strategy */}
-          <h2 className="text-3xl font-semibold mb-8 text-center">Physical Location Strategy</h2>
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {pathOptions.map((option, index) => (
-              <div key={index} className="bg-gray-900 p-6 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
-                <h3 className="text-2xl font-semibold mb-4">{option.title}</h3>
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="font-semibold mb-2">Financial Requirements</h4>
+          <h2 className="text-3xl font-semibold mb-8 text-center">Our Physical Home</h2>
+          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
+            <div className="space-y-8">
+              {/* Vision Overview */}
+              <div>
+                <h3 className="text-2xl font-semibold mb-4">Mixed-Use Community Hub</h3>
+                <p className="text-gray-200 mb-6">
+                  Our vision centers on acquiring a 10,000 sq ft property that will serve
+                  as more than just a retail space - it will be the physical embodiment of our
+                  mission to support and strengthen our community while housing our operations.
+                </p>
+              </div>
+
+              {/* Space Allocation */}
+              <div>
+                <h4 className="text-xl font-semibold mb-3">Thoughtful Space Design</h4>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <h5 className="font-semibold text-gray-200">Community & Retail Spaces</h5>
                     <ul className="space-y-2 text-gray-200">
-                      {option.steps.map((step, stepIndex) => (
-                        <li key={stepIndex} className="flex items-center gap-2">
-                          <Landmark className="w-4 h-4" />
-                          <span>{step}</span>
-                        </li>
-                      ))}
+                      <li className="flex items-center gap-2">
+                        <Store className="w-4 h-4" />
+                        <span>Premium retail experience (2,000 sq ft)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Store className="w-4 h-4" />
+                        <span>Social lounge with coffee & mocktail bar</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>Entertainment area with pool tables and gaming stations</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>Private counseling spaces</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>Multi-purpose event venue (1,500 sq ft)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>Community meeting rooms</span>
+                      </li>
                     </ul>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-semibold mb-2">Advantages</h4>
-                      <ul className="space-y-1 text-gray-200 text-sm">
-                        {option.pros.map((pro, proIndex) => (
-                          <li key={proIndex} className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            <span>{pro}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-2">Considerations</h4>
-                      <ul className="space-y-1 text-gray-200 text-sm">
-                        {option.cons.map((con, conIndex) => (
-                          <li key={conIndex} className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                            <span>{con}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                  <div className="space-y-3">
+                    <h5 className="font-semibold text-gray-200">Operations Hub</h5>
+                    <ul className="space-y-2 text-gray-200">
+                      <li className="flex items-center gap-2">
+                        <Store className="w-4 h-4" />
+                        <span>Product design studio (1,500 sq ft)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Store className="w-4 h-4" />
+                        <span>Warehouse and fulfillment center (2,000 sq ft)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Store className="w-4 h-4" />
+                        <span>Shipping and receiving area (500 sq ft)</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-            ))}
+
+              {/* Community Impact */}
+              <div>
+                <h4 className="text-xl font-semibold mb-3">Impact Through Ownership</h4>
+                <ul className="grid md:grid-cols-2 gap-4">
+                  <li className="bg-gray-800/50 p-4 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Financial Sustainability</h5>
+                    <p className="text-sm text-gray-300">
+                      Property ownership creates long-term equity and financial stability,
+                      allowing us to invest more in our community programs.
+                    </p>
+                  </li>
+                  <li className="bg-gray-800/50 p-4 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Community Anchor</h5>
+                    <p className="text-sm text-gray-300">
+                      A permanent location establishes deep roots in the community and
+                      demonstrates our long-term commitment to the area.
+                    </p>
+                  </li>
+                  <li className="bg-gray-800/50 p-4 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Program Freedom</h5>
+                    <p className="text-sm text-gray-300">
+                      Full control over our space allows us to adapt and expand our
+                      services based on community needs without restrictions.
+                    </p>
+                  </li>
+                  <li className="bg-gray-800/50 p-4 rounded-lg">
+                    <h5 className="font-semibold mb-2 text-gray-200">Value Creation</h5>
+                    <p className="text-sm text-gray-300">
+                      Investment in real estate provides appreciation potential while
+                      serving as a model for future locations.
+                    </p>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Financial Details */}
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Investment Details */}
+                <div>
+                  <h4 className="text-xl font-semibold mb-3">Property Investment Overview</h4>
+                  <ul className="space-y-2 text-gray-200">
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Estimated Property Cost: $2.5M - $3M</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Build-out & Improvements: $600K - $800K</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Initial Operating Capital: $400K</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Total Project Investment: $3.5M - $4.2M</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Venue Revenue Potential */}
+                <div>
+                  <h4 className="text-xl font-semibold mb-3">Venue Revenue Potential</h4>
+                  <ul className="space-y-2 text-gray-200">
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Corporate Events: $2,500 - $5,000 per event</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Weekend Private Events: $1,500 - $3,000 per event</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Weekday Community Events: $500 - $1,000 per event</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      <span>Potential Annual Venue Revenue: $180K - $240K</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Timeline Disclaimer */}
