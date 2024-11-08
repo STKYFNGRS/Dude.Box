@@ -112,7 +112,7 @@ export default function Roadmap() {
           {/* Phases */}
           <div className="space-y-8 mb-16">
             {phases.map((phase, index) => (
-              <div key={index} className="bg-gray-900 p-6 rounded-lg border border-gray-800">
+              <div key={index} className="bg-gray-900 p-6 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
                 <h2 className="text-2xl font-semibold mb-4">{phase.title}</h2>
                 <ul className="space-y-2">
                   {phase.items.map((item, itemIndex) => (
@@ -127,7 +127,7 @@ export default function Roadmap() {
           </div>
 
           {/* NFT Information */}
-          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 mb-16">
+          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800 mb-16">
             <h2 className="text-2xl font-semibold mb-6">Community Access Pass NFTs</h2>
             <div className="text-gray-200 space-y-4">
               <p>
@@ -159,7 +159,7 @@ export default function Roadmap() {
           <h2 className="text-3xl font-semibold mb-8 text-center">Physical Location Strategy</h2>
           <div className="grid md:grid-cols-2 gap-8 mb-16">
             {pathOptions.map((option, index) => (
-              <div key={index} className="bg-gray-900 p-6 rounded-lg border border-gray-800">
+              <div key={index} className="bg-gray-900 p-6 rounded-lg border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
                 <h3 className="text-2xl font-semibold mb-4">{option.title}</h3>
                 <div className="space-y-6">
                   <div>
