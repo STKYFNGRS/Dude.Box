@@ -19,7 +19,7 @@ export default function Roadmap() {
       title: "Phase 2: Community Building",
       items: [
         "Launch dude.box NFT Collection - Community Access Passes",
-        "3,333 unique NFTs representing founding community members",
+        "Yet to be determined amount of unique NFTs representing founding community members",
         "NFT holders get early access to products and events",
         "Exclusive merchandise drops for community members",
         "Community input on future product lines"
@@ -29,6 +29,7 @@ export default function Roadmap() {
       title: "Phase 3: Revenue Generation",
       items: [
         "Expand product lines based on community feedback",
+        "Announce retail partnerships",
         "Launch subscription box service",
         "Develop partnerships with mental health professionals",
         "Target: $2M in annual revenue"
