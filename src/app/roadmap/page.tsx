@@ -7,23 +7,23 @@ import { ArrowRight, Store, ShoppingBag, Users, Landmark, Coffee, Gamepad } from
 export default function Roadmap() {
   const phases = [
     {
-      title: "Phase 1: Online Foundation",
+      title: "Phase 1: Online Foundation (We are here)",
       items: [
-        "Launch core product line focusing on quality basics",
         "Build initial community through social media and content",
         "Establish brand identity and mission awareness",
-        "Target: $1.5M in first-year revenue from online sales",
+        "Launch core product line focusing on quality basics",
         "Initial team building and operations setup",
+        "Target: $1.5M in first-year revenue from online sales",
         "Establish $800K emergency fund"
       ]
     },
     {
       title: "Phase 2: Community Building",
       items: [
-        "Launch dude.box NFT Collection - Community Access Passes",
-        "20,000 unique NFTs representing founding community members",
         "Development of NFT infrastructure and community platform",
         "NFT platform testing and deployment",
+        "Launch dude.box NFT Collection - Community Access Passes",
+        "20,000 unique NFTs representing founding community members",
         "Target: $2.0M in annual revenue across all channels"
       ]
     },
