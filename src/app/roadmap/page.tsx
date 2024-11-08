@@ -599,8 +599,7 @@ export default function Roadmap() {
           {/* Timeline Disclaimer */}
           <div className="text-center text-gray-400 text-sm mb-8">
             <p>
-              This roadmap represents our current vision and plans. Timelines and specific 
-              details may evolve based on market conditions and community needs.
+            As we grow together, our roadmap may evolve to meet new opportunities and community needs.
             </p>
           </div>
         </div>
