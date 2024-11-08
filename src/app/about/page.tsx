@@ -2,6 +2,7 @@
 
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -59,23 +60,34 @@ export default function Home() {
           {/* Founder's Message */}
           <div className="bg-gray-900 p-8 rounded-lg transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
             <h3 className="text-2xl font-semibold mb-4">From the founder</h3>
-            <div className="text-left">
-              <p className="text-lg mb-4 text-gray-200">
-                I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
-                long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
-                some polished fairy tale. I&apos;m building this brand because I see a crisis, and
-                can&apos;t sit on the sidelines anymore.
-              </p>
-              <p className="text-lg mb-4 text-gray-200">
-                I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
-                noise and chaos. That&apos;s why dude.box isn&apos;t just another brand. It&apos;s a
-                vehicle for change, a way to create the support system I wish I&apos;d had.
-              </p>
-              <p className="text-lg text-gray-200">
-                So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right.
-                But know that every dollar you spend here pushes us closer to creating a place
-                where dudes can find solid ground in a world that loves to keep us off-balance.
-              </p>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="relative w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
+                <Image
+                  src="/family2.jpg"
+                  alt="Alex Moore with family"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <div className="text-left">
+                <p className="text-lg mb-4 text-gray-200">
+                  I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
+                  long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
+                  some polished fairy tale. I&apos;m building this brand because I see a crisis, and
+                  can&apos;t sit on the sidelines anymore.
+                </p>
+                <p className="text-lg mb-4 text-gray-200">
+                  I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
+                  noise and chaos. That&apos;s why dude.box isn&apos;t just another brand. It&apos;s a
+                  vehicle for change, a way to create the support system I wish I&apos;d had.
+                </p>
+                <p className="text-lg text-gray-200">
+                  So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right.
+                  But know that every dollar you spend here pushes us closer to creating a place
+                  where dudes can find solid ground in a world that loves to keep us off-balance.
+                </p>
+              </div>
             </div>
           </div>
         </div>
