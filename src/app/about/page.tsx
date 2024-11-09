@@ -34,7 +34,7 @@ export default function Home() {
   <div className="text-lg text-gray-200">
     <p className="mb-4">
       Imagine walking into a place where you don&apos;t have to have it all figured out.
-      Where getting help isn&apost a sign of weakness, but of strength. That&apos;s what we&apos;re building:
+      Where getting help isn&apos;t a sign of weakness, but of strength. That&apos;s what we&apos;re building:
     </p>
     
     {/* Core Services */}
