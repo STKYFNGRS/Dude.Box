@@ -220,7 +220,7 @@ export default function Home() {
         </div>
         <div className="bg-gray-800/50 p-4 rounded-lg">
           <h5 className="font-semibold text-blue-400">Phase 2</h5>
-          <p className="text-sm text-gray-300">Launch first physical location in San Diego</p>
+          <p className="text-sm text-gray-300">Launch first physical location in San Diego, California</p>
         </div>
         <div className="bg-gray-800/50 p-4 rounded-lg">
           <h5 className="font-semibold text-blue-400">Phase 3</h5>
@@ -236,7 +236,7 @@ export default function Home() {
       </p>
       <p className="text-gray-200">
         Every purchase, every NFT, every member brings us closer to opening our first location 
-        and providing free mental health support to those who need it most.
+        and providing free mental health support to those who need it.
       </p>
     </div>
   </div>
