@@ -34,7 +34,7 @@ export default function Home() {
   <div className="text-lg text-gray-200">
     <p className="mb-4">
       Imagine walking into a place where you don&apos;t have to have it all figured out.
-      Where getting help isn&apost a sign of weakness, but of strength. That&aposs what we&aposre building:
+      Where getting help isn&apost a sign of weakness, but of strength. That&apos;s what we&apos;re building:
     </p>
     
     {/* Core Services */}
@@ -47,11 +47,11 @@ export default function Home() {
         </li>
         <li className="flex items-center">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-          Space for AA meetings and support groups
+          Free use space for AA meetings and other community support groups
         </li>
         <li className="flex items-center">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-          Professional services like resume writing, haircuts and styling
+          Access to professional services like resume writing, job search, interview preparation, haircuts and more
         </li>
         <li className="flex items-center">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
