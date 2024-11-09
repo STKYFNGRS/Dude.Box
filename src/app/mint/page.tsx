@@ -35,8 +35,8 @@ export default function Mint() {
 
           {/* Coming Soon Banner */}
           <div className="bg-blue-500/20 border border-blue-500/40 rounded-lg p-4 mb-12 text-center">
-            <h2 className="text-xl font-semibold text-blue-400">Minting Opens Soon</h2>
-            <p className="text-gray-200">Stay tuned whitelist opportunities and early access</p>
+            <h2 className="text-xl font-semibold text-blue-400">Under Construction</h2>
+            <p className="text-gray-200">Stay tuned for whitelist opportunities and early access</p>
           </div>
 
           {/* Purpose Statement */}
