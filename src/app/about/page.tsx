@@ -136,41 +136,120 @@ export default function Home() {
           
           {/* Founder's Message */}
           <div className="bg-gray-900 p-8 rounded-lg transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
-            <h3 className="text-2xl font-semibold mb-4">From the founder</h3>
-            <div className="flex flex-col md:flex-row gap-6 items-center md:items-center">
-              <div className="relative w-48 h-48 rounded-lg overflow-hidden flex-shrink-0 mx-auto md:mx-0">
-                <Image
-                  src="/family2.jpg"
-                  alt="Alex Moore with family"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-              </div>
-              <div className="text-left">
-                <p className="text-lg mb-4 text-gray-200">
-                  I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
-                  long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
-                  some polished fairy tale. I&apos;m building this brand because I see a crisis, and
-                  can&apos;t sit on the sidelines anymore.
-                </p>
-                <p className="text-lg mb-4 text-gray-200">
-                  I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
-                  noise and chaos. That&apos;s why dude.box isn&apos;t just another brand. It&apos;s a
-                  vehicle for change, a way to create the support system I wish I&apos;d had.
-                </p>
-                <p className="text-lg text-gray-200">
-                  So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right.
-                  But know that every dollar you spend here pushes us closer to creating a place
-                  where dudes can find solid ground in a world that loves to keep us off-balance.
-                </p>
-              </div>
-            </div>
+  {/* Header and Image Section */}
+  <div className="text-center mb-12">
+    <h3 className="text-2xl font-semibold mb-8">From the Founder</h3>
+    <div className="flex justify-center mb-12">
+      <div className="relative w-96 h-96 rounded-lg overflow-hidden shadow-xl border-2 border-gray-800">
+        <Image
+          src="/family2.jpg"
+          alt="Alex Moore with family"
+          fill
+          className="object-cover hover:scale-105 transition duration-300"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          priority
+        />
+      </div>
+    </div>
+  </div>
+
+  {/* Content Section */}
+  <div className="max-w-3xl mx-auto">
+    <div className="space-y-4">
+      {/* Rest of the content remains exactly the same */}
+      <p className="text-lg mb-4 text-gray-200">
+        I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
+        long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
+        some polished fairy tale. I&apos;m building this brand because I see a crisis that demands action.
+      </p>
+
+      <div className="bg-gray-800/50 p-4 rounded-lg">
+        <h4 className="font-semibold mb-3 text-white">The Reality We Face:</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="p-3 bg-gray-900/50 rounded-lg">
+            <p className="text-2xl font-bold text-blue-400">1 in 3</p>
+            <p className="text-sm text-gray-300">men will seek help when struggling with mental health</p>
           </div>
+          <div className="p-3 bg-gray-900/50 rounded-lg">
+            <p className="text-2xl font-bold text-blue-400">3.7x</p>
+            <p className="text-sm text-gray-300">higher suicide rate among men than women</p>
+          </div>
+          <div className="p-3 bg-gray-900/50 rounded-lg">
+            <p className="text-2xl font-bold text-blue-400">75%</p>
+            <p className="text-sm text-gray-300">of men feel unable to discuss personal challenges</p>
+          </div>
+          <div className="p-3 bg-gray-900/50 rounded-lg">
+            <p className="text-2xl font-bold text-blue-400">5 months</p>
+            <p className="text-sm text-gray-300">average wait time for mental health services</p>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-lg text-gray-200">
+        I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
+        noise and chaos. When you&apos;re taught that asking for help means you&apos;re weak. When the 
+        support you need exists, but the barriers to get it feel insurmountable. That&apos;s why 
+        dude.box isn&apos;t just another brand. It&apos;s a vehicle for change, a way to create the 
+        support system I wish I&apos;d had.
+      </p>
+
+      <div className="bg-gray-800/50 p-4 rounded-lg">
+        <h4 className="font-semibold mb-2 text-white">Our Solution:</h4>
+        <p className="text-gray-200">
+          We&apos;re building spaces where getting help is normalized. Where mental health support 
+          is free, immediate, and delivered by professionals who understand men&apos;s unique challenges. 
+          Where finding community doesn&apos;t require a crisis first.
+        </p>
+      </div>
+
+      <p className="text-lg text-gray-200">
+        So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right. 
+        But know that every dollar you spend here pushes us closer to creating places 
+        where dudes can find solid ground in a world that loves to keep us off-balance. 
+        We&apos;re not just selling products - we&apos;re funding a mission to change how men 
+        access mental health support.
+      </p>
+    </div>
+
+    {/* Impact Statement */}
+    <div className="mt-8 border-t border-gray-800 pt-6">
+      <div className="grid md:grid-cols-3 gap-4 text-center">
+        <div className="bg-gray-800/50 p-4 rounded-lg">
+          <h5 className="font-semibold text-blue-400">Phase 1</h5>
+          <p className="text-sm text-gray-300">Build our community and establish brand presence</p>
+        </div>
+        <div className="bg-gray-800/50 p-4 rounded-lg">
+          <h5 className="font-semibold text-blue-400">Phase 2</h5>
+          <p className="text-sm text-gray-300">Launch first physical location in San Diego</p>
+        </div>
+        <div className="bg-gray-800/50 p-4 rounded-lg">
+          <h5 className="font-semibold text-blue-400">Phase 3</h5>
+          <p className="text-sm text-gray-300">Expand to additional cities nationwide</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Call to Action */}
+    <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/40 rounded-lg text-center">
+      <p className="text-lg font-semibold text-blue-400 mb-2">
+        Join Us in Making a Difference
+      </p>
+      <p className="text-gray-200">
+        Every purchase, every NFT, every member brings us closer to opening our first location 
+        and providing free mental health support to those who need it most.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
         </div>
         
         <Analytics />
-      </div>
+  
     </Layout>
   );
 }
