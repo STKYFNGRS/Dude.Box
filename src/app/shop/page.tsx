@@ -64,7 +64,7 @@ const products = [
   },
   {
     id: 8,
-    name: "Dude Basic Tee",
+    name: "Our Dude Tee",
     description: "Daily Comfort",
     price: 29.99,
     image: "/api/placeholder/300/300",
