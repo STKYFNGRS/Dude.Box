@@ -14,8 +14,6 @@ const products = [
     image: "/product-images/Dude Mood Coffee Mug.jpg",
     category: "Accessories"
   },
-
-  
   {
     id: 2,
     name: "Dude Dawn Patrol",
@@ -40,7 +38,6 @@ const products = [
     image: "/product-images/Dark Roast Coffee Dude Front.jpg",
     category: "Coffee"
   },
- 
   {
     id: 5,
     name: "It's a Pickleball Kit, Dude",
@@ -49,7 +46,6 @@ const products = [
     image: "/product-images/Pickleball.jpg",
     category: "Sports"
   },
-
   {
     id: 6,
     name: "Dude Comfort Hoodie",
@@ -74,8 +70,6 @@ const products = [
     image: "/product-images/Slides.jpg",
     category: "Footwear"
   },
-  
- 
 ];
 
 export default function Shop() {
