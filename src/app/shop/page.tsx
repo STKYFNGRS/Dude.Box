@@ -8,18 +8,18 @@ import { ShoppingBag } from "lucide-react";
 const products = [
   {
     id: 1,
-    name: "We Ride At Dawn",
+    name: "Dude Dawn Patrol",
     description: "A Light Roast For Clear Minds",
     price: 19.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Light Roast Coffee Dude Front.jpg",
     category: "Coffee"
   },
   {
     id: 2,
-    name: "Welcome to the Dark Side, Dude",
+    name: "Dude Dark Side",
     description: "A French Roast That Punches Back",
     price: 19.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Dark Roast Coffee Dude Front.jpg",
     category: "Coffee"
   },
   {
@@ -27,7 +27,7 @@ const products = [
     name: "Dude Recovery Slides",
     description: "Because Your Feet Earned This",
     price: 34.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Slides.jpg",
     category: "Footwear"
   },
   {
@@ -35,7 +35,7 @@ const products = [
     name: "Dude Peak Roast",
     description: "Because Mornings Don't Have To Suck",
     price: 19.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Medium Roast Coffee Dude Front.jpg",
     category: "Coffee"
   },
   {
@@ -43,31 +43,31 @@ const products = [
     name: "Dude Mood Mug",
     description: "Thermal Reactive Coffee Cup",
     price: 24.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Dude Mood Coffee Mug.jpg",
     category: "Accessories"
   },
   {
     id: 6,
-    name: "Dude Hoodie",
-    description: "You Need This",
+    name: "Dude Comfort Hoodie",
+    description: "Where Warmth Meets Wellness",
     price: 49.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Dude Hoodie.jpg",
     category: "Apparel"
   },
   {
     id: 7,
     name: "It's a Pickleball Kit, Dude",
-    description: "Game On",
+    description: "Game On, Guards Down",
     price: 39.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Pickleball.jpg",
     category: "Sports"
   },
   {
     id: 8,
-    name: "Our Dude Tee",
-    description: "Daily Comfort",
+    name: "Dude Basic Tee",
+    description: "Daily Comfort for Mental Wellness",
     price: 29.99,
-    image: "/api/placeholder/300/300",
+    image: "/product-images/Dude Tee.jpg",
     category: "Apparel"
   }
 ];
