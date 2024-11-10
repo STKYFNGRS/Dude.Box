@@ -32,7 +32,7 @@ const products = [
   },
   {
     id: 4,
-    name: "Dude Dark Side",
+    name: "Welcome To The Dark Side, Dude",
     description: "A French Roast That Punches Back",
     price: 19.99,
     image: "/product-images/Dark Roast Coffee Dude Front.jpg",
