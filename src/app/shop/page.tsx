@@ -6,21 +6,22 @@ import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
 
 const products = [
+
   {
     id: 1,
-    name: "Dude Dawn Patrol",
-    description: "A Light Roast For Clear Minds",
-    price: 19.99,
-    image: "/product-images/Light Roast Coffee Dude Front.jpg",
-    category: "Coffee"
+    name: "Dude Comfort Hoodie",
+    description: "Where Warmth Meets Wellness",
+    price: 49.99,
+    image: "/product-images/Dude Hoodie.jpg",
+    category: "Apparel"
   },
   {
     id: 2,
-    name: "Dude Dark Side",
-    description: "A French Roast That Punches Back",
-    price: 19.99,
-    image: "/product-images/Dark Roast Coffee Dude Front.jpg",
-    category: "Coffee"
+    name: "Dude Basic Tee",
+    description: "Daily Comfort for Mental Wellness",
+    price: 29.99,
+    image: "/product-images/Dude Tee.jpg",
+    category: "Apparel"
   },
   {
     id: 3,
@@ -30,32 +31,9 @@ const products = [
     image: "/product-images/Slides.jpg",
     category: "Footwear"
   },
+  
   {
     id: 4,
-    name: "Dude Peak Roast",
-    description: "Because Mornings Don't Have To Suck",
-    price: 19.99,
-    image: "/product-images/Medium Roast Coffee Dude Front.jpg",
-    category: "Coffee"
-  },
-  {
-    id: 5,
-    name: "Dude Mood Mug",
-    description: "Thermal Reactive Coffee Cup",
-    price: 24.99,
-    image: "/product-images/Dude Mood Coffee Mug.jpg",
-    category: "Accessories"
-  },
-  {
-    id: 6,
-    name: "Dude Comfort Hoodie",
-    description: "Where Warmth Meets Wellness",
-    price: 49.99,
-    image: "/product-images/Dude Hoodie.jpg",
-    category: "Apparel"
-  },
-  {
-    id: 7,
     name: "It's a Pickleball Kit, Dude",
     description: "Game On, Guards Down",
     price: 39.99,
@@ -63,13 +41,37 @@ const products = [
     category: "Sports"
   },
   {
+    id: 5,
+    name: "Dude Dawn Patrol",
+    description: "A Light Roast For Clear Minds",
+    price: 19.99,
+    image: "/product-images/Light Roast Coffee Dude Front.jpg",
+    category: "Coffee"
+  },
+  {
+    id: 6,
+    name: "Dude Peak Roast",
+    description: "Because Mornings Don't Have To Suck",
+    price: 19.99,
+    image: "/product-images/Medium Roast Coffee Dude Front.jpg",
+    category: "Coffee"
+  },
+  {
+    id: 7,
+    name: "Dude Dark Side",
+    description: "A French Roast That Punches Back",
+    price: 19.99,
+    image: "/product-images/Dark Roast Coffee Dude Front.jpg",
+    category: "Coffee"
+  },
+  {
     id: 8,
-    name: "Dude Basic Tee",
-    description: "Daily Comfort for Mental Wellness",
-    price: 29.99,
-    image: "/product-images/Dude Tee.jpg",
-    category: "Apparel"
-  }
+    name: "Dude Mood Mug",
+    description: "Thermal Reactive Coffee Cup",
+    price: 24.99,
+    image: "/product-images/Dude Mood Coffee Mug.jpg",
+    category: "Accessories"
+  },
 ];
 
 export default function Shop() {
