@@ -16,7 +16,7 @@ const products = [
   },
   {
     id: 2,
-    name: "Dude Dawn Patrol",
+    name: "We Ride At Dawn",
     description: "A Light Roast For Clear Minds",
     price: 19.99,
     image: "/product-images/Light Roast Coffee Dude Front.jpg",
@@ -57,7 +57,7 @@ const products = [
   {
     id: 7,
     name: "Dude Basic Tee",
-    description: "Daily Comfort for Mental Wellness",
+    description: "Daily Comfort",
     price: 29.99,
     image: "/product-images/Dude Tee.jpg",
     category: "Apparel"
