@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';  // Add useState here
+import { Suspense, useState } from 'react';  
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
 import Image from "next/image";
