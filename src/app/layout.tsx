@@ -1,3 +1,5 @@
+'use client';
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -16,16 +18,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body>
         <CartProvider>
-        {children}
-        <Toaster />
-        <SpeedInsights/>
+          {children}
+          <Toaster />
+          <SpeedInsights/>
         </CartProvider>
       </body>
     </html>

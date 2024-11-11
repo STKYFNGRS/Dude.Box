@@ -26,7 +26,6 @@ interface Product {
   sizeVariants?: SizeVariant[];
 }
 
-
 // Product data - you'll need to update these with actual Shopify variant IDs
 const products: Product[] = [
   {
@@ -127,16 +126,6 @@ const products: Product[] = [
     ]
   }
 ];
-
-
-
-
-
-
-
-
-
-
 
 function LoadingSkeleton() {
   return (
