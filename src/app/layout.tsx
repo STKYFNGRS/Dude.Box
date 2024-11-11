@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { Providers } from '../app/providers';
+import { Providers } from '@/app/providers';
 
 export const metadata: Metadata = {
   title: 'Dude',
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-black">
         <Providers>{children}</Providers>
       </body>
     </html>

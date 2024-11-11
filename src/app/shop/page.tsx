@@ -2,10 +2,10 @@
 
 import { Suspense, useState } from 'react';  
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "../components/Layout";
+import Layout from "@/app/components/Layout";
 import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
-import { useCart } from '../../components/CartContext';
+import { useCart } from '@/app/components/CartContext';
 
 // Types
 interface SizeVariant {

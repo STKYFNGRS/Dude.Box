@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ShoppingBag, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useCart } from './CartContext';
+import { useCart } from '../app/components/CartContext';
 import { ShopifyProduct } from '@/types/shopify';
 
 interface ProductCardProps {
