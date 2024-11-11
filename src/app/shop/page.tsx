@@ -1,11 +1,22 @@
-"use client";
+'use client';
 
+import { Suspense } from 'react';
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "../components/Layout";
 import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
 
-const products = [
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  image: string;
+}
+
+// Product data
+const products: Product[] = [
   {
     id: 1,
     name: "Dude Mood Mug",
@@ -72,6 +83,57 @@ const products = [
   },
 ];
 
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden animate-pulse">
+          <div className="p-4">
+            <div className="aspect-square bg-gray-900 rounded-md mb-4" />
+            <div className="h-6 bg-gray-900 rounded w-3/4 mb-2" />
+            <div className="h-4 bg-gray-900 rounded w-1/2 mb-2" />
+            <div className="h-4 bg-gray-900 rounded w-1/3 mb-4" />
+            <div className="h-10 bg-gray-900 rounded w-full" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProductCard({ product }: { product: Product }) {
+  const handleAddToCart = () => {
+    console.log(`Add to cart: ${product.name}`);
+    // Add cart functionality here
+  };
+
+  return (
+    <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all">
+      <div className="p-4">
+        <div className="aspect-square relative mb-4 bg-gray-900 rounded-md overflow-hidden">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+        <p className="text-gray-300 text-sm mb-4">{product.description}</p>
+        <div className="text-sm text-gray-400 mb-2">{product.category}</div>
+        <div className="text-xl font-bold mb-4">${product.price}</div>
+        <button 
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors"
+          onClick={handleAddToCart}
+        >
+          <ShoppingBag className="mr-2 h-4 w-4" />
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Shop() {
   return (
     <Layout>
@@ -89,39 +151,13 @@ export default function Shop() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <div 
-                key={product.id} 
-                className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all"
-              >
-                <div className="p-4">
-                  <div className="aspect-square relative mb-4 bg-gray-900 rounded-md overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                  <p className="text-gray-300 text-sm mb-4">{product.description}</p>
-                  <div className="text-sm text-gray-400 mb-2">{product.category}</div>
-                  <div className="text-xl font-bold mb-4">${product.price}</div>
-                  <button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center transition-colors"
-                    onClick={() => {
-                      // Add Shopify purchase handling here
-                      console.log(`Add to cart: ${product.name}`);
-                    }}
-                  >
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<LoadingSkeleton />}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </Suspense>
 
           {/* Mission Statement */}
           <div className="mt-12 text-center text-gray-400 max-w-3xl mx-auto">
