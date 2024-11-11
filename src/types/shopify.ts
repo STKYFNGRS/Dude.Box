@@ -1,18 +1,29 @@
-export interface ShopifyImage {
+// Basic Shopify types
+interface ShopifyResponse<T> {
+  data: T;
+ }
+ 
+ export interface ShopifyUserError {
+  field: string;
+  message: string;
+ }
+ 
+ export interface ShopifyImage {
   url: string;
   altText?: string;
-}
-
-export interface ShopifyVariant {
+ }
+ 
+ export interface ShopifyVariant {
   id: string;
   title: string;
   price: {
     amount: string;
     currencyCode: string;
   };
-}
-
-export interface ShopifyProduct {
+ }
+ 
+ // Product types
+ export interface ShopifyProduct {
   id: string;
   title: string;
   description: string;
@@ -42,37 +53,10 @@ export interface ShopifyProduct {
       };
     }>;
   };
-}
-
-export interface CartItem {
-  id: string;
-  title: string;
-  price: number;
-  quantity: number;
-  image: string;
-  variantId: string;
-}
-
-export interface ShopifyCartCreateResponse {
-  cartCreate?: {
-    cart: {
-      id: string;
-      checkoutUrl: string;
-    };
-  };
-}
-
-export interface ShopifyCartResponse {
-  cart?: {
-    lines: {
-      edges: Array<{
-        node: CartNode;
-      }>;
-    };
-  };
-}
-
-export interface CartNode {
+ }
+ 
+ // Cart types
+ export interface CartNode {
   id: string;
   quantity: number;
   merchandise: {
@@ -93,4 +77,68 @@ export interface CartNode {
       };
     };
   };
-}
+ }
+ 
+ export interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+  variantId: string;
+ }
+ 
+ // Shopify API Response types
+ export interface ShopifyCartCreateData {
+  cartCreate: {
+    cart: {
+      id: string;
+      checkoutUrl: string;
+    } | null;
+    userErrors: ShopifyUserError[];
+  };
+ }
+ 
+ export type ShopifyCartCreateResponse = ShopifyResponse<{
+  cartCreate: {
+    cart: {
+      id: string;
+      checkoutUrl: string;
+    } | null;
+    userErrors: ShopifyUserError[];
+  };
+}>;
+ 
+ export interface ShopifyCartQueryData {
+  cart: {
+    id: string;
+    lines: {
+      edges: Array<{
+        node: CartNode;
+      }>;
+    };
+  } | null;
+ }
+ 
+ export type ShopifyCartQueryResponse = ShopifyResponse<{
+  cart: {
+    id: string;
+    lines: {
+      edges: Array<{
+        node: CartNode;
+      }>;
+    };
+  };
+}>;
+ 
+ // Type guards
+ export function isCartCreateResponse(data: unknown): data is ShopifyCartCreateResponse {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'data' in data &&
+    typeof (data as Record<string, unknown>).data === 'object' &&
+    (data as Record<string, unknown>).data !== null &&
+    'cartCreate' in (data as Record<string, { cartCreate: unknown }>).data
+  );
+ }

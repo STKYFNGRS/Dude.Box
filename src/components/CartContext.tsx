@@ -1,8 +1,17 @@
 'use client';
 
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
-import type { CartItem, CartNode } from '@/types/shopify';
+import { 
+  CartItem,
+  CartNode,
+  ShopifyUserError,
+  ShopifyCartCreateResponse,
+  ShopifyCartQueryResponse 
+} from '@/types/shopify';
+
+// Rest of your CartContext.tsx code...
 
 interface CartContextType {
   items: CartItem[];
@@ -17,7 +26,6 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Validate environment variables
 if (!process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN) {
   throw new Error('NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is not defined');
 }
@@ -34,19 +42,19 @@ const client = createStorefrontApiClient({
   apiVersion: '2024-01'
 });
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const [cartId, setCartId] = useState<string | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const createCart = async (): Promise<string> => {
     try {
-      console.log('Creating cart...');
       const mutation = `#graphql
         mutation CartCreate {
-          cartCreate(input: {}) {
+          cartCreate {
             cart {
               id
+              checkoutUrl
             }
             userErrors {
               field
@@ -55,52 +63,61 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         }
       `;
+  
+      const response = await client.request<ShopifyCartCreateResponse>(mutation);
 
-      const response = await client.request(mutation);
-      console.log('Cart creation response:', response);
-
-      if (!response?.data?.cartCreate?.cart?.id) {
-        console.error('Cart creation failed:', response?.data?.cartCreate?.userErrors);
-        throw new Error('Failed to create cart: Invalid response structure');
-      }
-
-      const newCartId = response.data.cartCreate.cart.id;
-      console.log('Cart created successfully:', newCartId);
-      return newCartId;
-    } catch (error) {
-      console.error('Cart creation error:', error);
-      throw new Error('Failed to create cart');
+      if (!response?.data?.data?.cartCreate) {
+      throw new Error('No response data received from Shopify API');
     }
-  };
 
+    const { cart, userErrors } = response.data.data.cartCreate;
 
-  const fetchCart = async (id: string) => {
-    setIsLoading(true);
-    try {
-      const query = `#graphql
-        query GetCart($cartId: ID!) {
-          cart(id: $cartId) {
-            id
-            lines(first: 100) {
-              edges {
-                node {
-                  id
-                  quantity
-                  merchandise {
-                    ... on ProductVariant {
-                      id
+    if (userErrors.length > 0) {
+      console.error('Shopify returned user errors:', userErrors);
+      throw new Error(`Shopify errors: ${userErrors.map((e: ShopifyUserError) => e.message).join(', ')}`);
+    }
+
+    if (!cart?.id) {
+      throw new Error('Cart creation failed: Missing cart ID in response');
+    }
+
+    return cart.id;
+  } catch (error) {
+    console.error('Detailed cart creation error:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    throw new Error(`Failed to create cart: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+  
+const fetchCart = async (id: string): Promise<void> => {
+  setIsLoading(true);
+  try {
+    const query = `#graphql
+      query GetCart($cartId: ID!) {
+        cart(id: $cartId) {
+          id
+          lines(first: 100) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    priceV2 {
+                      amount
+                      currencyCode
+                    }
+                    product {
                       title
-                      priceV2 {
-                        amount
-                        currencyCode
-                      }
-                      product {
-                        title
-                        images(first: 1) {
-                          edges {
-                            node {
-                              url
-                            }
+                      images(first: 1) {
+                        edges {
+                          node {
+                            url
                           }
                         }
                       }
@@ -111,34 +128,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             }
           }
         }
-      `;
-
-      const response = await client.request(query, {
-        variables: { cartId: id }
-      });
-
-      if (!response?.data?.cart?.lines?.edges) {
-        return;
       }
+    `;
 
-      const cartLines = response.data.cart.lines.edges;
-      setItems(cartLines.map(({ node }: { node: CartNode }) => ({
-        id: node.id,
-        title: node.merchandise.product.title,
-        price: parseFloat(node.merchandise.priceV2.amount),
-        quantity: node.quantity,
-        image: node.merchandise.product.images.edges[0]?.node.url ?? '',
-        variantId: node.merchandise.id
-      })));
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      // Clear cart if it's invalid
-      if (String(error).includes('Cart not found')) {
-        setCartId(null);
-        localStorage.removeItem('shopifyCartId');
-      }
-    } finally {
-      setIsLoading(false);
+    const response = await client.request<ShopifyCartQueryResponse>(query, {
+      variables: { cartId: id }
+    });
+
+    if (!response?.data?.data?.cart?.lines?.edges) {
+      setItems([]);
+      return;
+    }
+
+    const cartData = response.data.data.cart;
+    setItems(cartData.lines.edges.map(({ node }: { node: CartNode }) => ({
+      id: node.id,
+      title: node.merchandise.product.title,
+      price: parseFloat(node.merchandise.priceV2.amount),
+      quantity: node.quantity,
+      image: node.merchandise.product.images.edges[0]?.node.url ?? '',
+      variantId: node.merchandise.id
+    })));
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    if (String(error).includes('Cart not found')) {
+      setCartId(null);
+      localStorage.removeItem('shopifyCartId');
+    }
+  } finally {
+    setIsLoading(false);
     }
   };
 
@@ -308,7 +326,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useCart = () => {
+
+export const useCart = (): CartContextType => {
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');
