@@ -5,42 +5,37 @@ import Image from 'next/image';
 import { ShoppingBag, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from './CartContext';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  image: string;
-  variantId: string;
-}
+import { ShopifyProduct } from '@/types/shopify';
 
 interface ProductCardProps {
-  product: Product;
+  product: ShopifyProduct;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { toast } = useToast();
   const { addToCart } = useCart();
+  
+  const price = parseFloat(product.priceRange.minVariantPrice.amount);
+  const imageUrl = product.images.edges[0]?.node.url;
+  const variantId = product.variants.edges[0]?.node.id;
 
   const handleAddToCart = async () => {
     try {
       setIsAdding(true);
       
       await addToCart({
-        id: product.id.toString(),
-        title: product.name,
-        price: product.price,
+        id: product.id,
+        title: product.title,
+        price,
         quantity: 1,
-        image: product.image,
-        variantId: product.variantId
+        image: imageUrl,
+        variantId: variantId
       });
       
       toast({
         title: "Added to cart",
-        description: `${product.name} has been added to your cart.`,
+        description: `${product.title} has been added to your cart.`,
         duration: 2000,
       });
     } catch {
@@ -57,28 +52,25 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all">
-      {/* Image Container */}
       <div className="relative aspect-square">
         <Image
-          src={product.image}
-          alt={product.name}
+          src={imageUrl}
+          alt={product.title}
           fill
           className="object-cover transition-transform group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
         
-        {/* Category Badge */}
         <div className="absolute top-2 right-2">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {product.category}
+            {product.handle}
           </span>
         </div>
       </div>
 
-      {/* Product Details */}
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-blue-400 transition-colors">
-          {product.name}
+          {product.title}
         </h3>
         
         <p className="text-gray-300 text-sm mb-4 line-clamp-2">
@@ -88,7 +80,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex flex-col gap-3">
           <div className="flex items-baseline justify-between">
             <span className="text-2xl font-bold text-white">
-              ${product.price.toFixed(2)}
+              ${price.toFixed(2)}
             </span>
           </div>
 
