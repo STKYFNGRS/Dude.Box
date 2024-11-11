@@ -24,7 +24,7 @@ const products = [
   },
   {
     id: 3,
-    name: "Dude Peak Roast",
+    name: "Peak Dude Roast",
     description: "Because Mornings Don't Have To Suck",
     price: 19.99,
     image: "/product-images/Medium Roast Coffee Dude Front.jpg",
