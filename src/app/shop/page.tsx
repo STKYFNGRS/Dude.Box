@@ -63,7 +63,7 @@ const products: Product[] = [
     price: 19.99,
     image: "/product-images/Dark Roast Coffee Dude Front.jpg",
     category: "Coffee",
-    variantId: "" // Need Shopify variant ID
+    variantId: "" // Need Shopify variant
   },
   {
     id: 5,
