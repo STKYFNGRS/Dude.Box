@@ -1,19 +1,11 @@
 'use client';
 
-import type { Metadata } from "next";
-import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { CartProvider } from '@/components/CartContext';
-import { Toaster } from "@/components/ui/toaster";
-
-console.log('Shopify configuration:', {
-  domain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN,
-  hasToken: !!process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN
-});
+import { Metadata } from 'next';
+import { Providers } from '../app/providers';
 
 export const metadata: Metadata = {
-  title: "Dude",
-  description: "Dude",
+  title: 'Dude',
+  description: 'Supporting everyday Dudes',
 };
 
 export default function RootLayout({
@@ -24,11 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CartProvider>
-          {children}
-          <Toaster />
-          <SpeedInsights/>
-        </CartProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
