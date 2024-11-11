@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Link from 'next/link';
 import Image from 'next/image';
 
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-b from-black to-gray-900 text-white">
