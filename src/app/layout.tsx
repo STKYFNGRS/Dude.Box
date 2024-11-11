@@ -1,10 +1,5 @@
-import { Metadata } from 'next';
-import { Providers } from '@/app/providers';
-
-export const metadata: Metadata = {
-  title: 'Dude',
-  description: 'Supporting everyday Dudes',
-};
+import '@/app/globals.css';
+import { ServerLayout } from '@/app/components/ServerLayout';
 
 export default function RootLayout({
   children,
@@ -12,9 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-black">
-        <Providers>{children}</Providers>
+    <html lang="en" className="dark">
+      <body suppressHydrationWarning={true}>
+        <ServerLayout>
+          {children}
+        </ServerLayout>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import { ShoppingBag, X, Plus, Minus } from 'lucide-react';
 import { useState } from 'react';
-import { useCart } from '../app/components/CartContext';
+import { useCart } from '@/app/components/CartContext';  // Update this import
 import Image from 'next/image';
 
 export function CartDrawer() {

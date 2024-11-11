@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';  
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "@/app/components/Layout";
+import Layout from "@/app/layout";
 import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from '@/app/components/CartContext';

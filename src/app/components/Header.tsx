@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CartDrawer } from '../../components/CartDrawer';
+import { CartDrawer } from '@/components/CartDrawer';  // Update this import
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

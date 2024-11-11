@@ -1,7 +1,7 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "../components/Layout";
+import Layout from "@/app/layout";
 import { ArrowRight, Store, Users, Landmark, Coffee, Gamepad } from "lucide-react";
 
 export default function Roadmap() {
