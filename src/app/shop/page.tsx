@@ -81,7 +81,15 @@ const products: Product[] = [
     price: 49.99,
     image: "/product-images/Dude Hoodie.jpg",
     category: "Apparel",
-    variantId: "" // Need Shopify variant ID
+    variantId: "gid://shopify/ProductVariant/13770242355059580237", // Default to XL size
+    sizeVariants: [
+      { size: "S", variantId: "gid://shopify/ProductVariant/2149321637120640523", price: 49.99 },
+      { size: "M", variantId: "gid://shopify/ProductVariant/28311494208242985258", price: 49.99 },
+      { size: "L", variantId: "gid://shopify/ProductVariant/3293190012195205780", price: 49.99 },
+      { size: "XL", variantId: "gid://shopify/ProductVariant/13770242355059580237", price: 49.99 },
+      { size: "2XL", variantId: "gid://shopify/ProductVariant/42070007226088609001", price: 54.99 },
+      { size: "3XL", variantId: "gid://shopify/ProductVariant/23849466172648052366", price: 54.99 }
+    ]
   },
   {
     id: 7,
@@ -90,7 +98,7 @@ const products: Product[] = [
     price: 24.38,
     image: "/product-images/Dude Tee.jpg",
     category: "Apparel",
-    variantId: "gid://shopify/ProductVariant/2149321637120640523", // Default to S size
+    variantId: "gid://shopify/ProductVariant/13770242355059580237", // Default to XL size
     sizeVariants: [
       { size: "S", variantId: "gid://shopify/ProductVariant/2149321637120640523", price: 24.38 },
       { size: "M", variantId: "gid://shopify/ProductVariant/28311494208242985258", price: 24.38 },
@@ -107,7 +115,16 @@ const products: Product[] = [
     price: 34.99,
     image: "/product-images/Slides.jpg",
     category: "Footwear",
-    variantId: "" // Need Shopify variant ID
+    variantId: "gid://shopify/ProductVariant/13770242355059580237", // Default to XL size
+    sizeVariants: [
+      { size: "6", variantId: "gid://shopify/ProductVariant/59710980996692476373", price: 45.42 },
+      { size: "7", variantId: "gid://shopify/ProductVariant/12524152547570741750", price: 45.42 },
+      { size: "8", variantId: "gid://shopify/ProductVariant/52683579495256812387", price: 45.42 },
+      { size: "9", variantId: "gid://shopify/ProductVariant/17694580639856724143", price: 45.42 },
+      { size: "10", variantId: "gid://shopify/ProductVariant/13580709585001155700", price: 45.42 },
+      { size: "11", variantId: "gid://shopify/ProductVariant/13529858914142490279", price: 45.42 },
+      { size: "12", variantId: "gid://shopify/ProductVariant/24419442339251658478", price: 45.42 }
+    ]
   }
 ];
 
