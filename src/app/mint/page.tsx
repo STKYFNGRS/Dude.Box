@@ -1,7 +1,7 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "../components/Layout";
+import Layout from "@/app/layout";
 import { Store, ShoppingBag, Users, Star, Shield, Trophy, Image as ImageIcon } from "lucide-react";
 
 export default function Mint() {
