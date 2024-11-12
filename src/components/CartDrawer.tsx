@@ -11,7 +11,6 @@ export function CartDrawer() {
     itemCount, 
     removeFromCart, 
     updateQuantity,
-    initiateCheckout,
     isLoading,
     checkoutUrl, // Add checkoutUrl from context
     total // Use total from context instead of calculating it again
