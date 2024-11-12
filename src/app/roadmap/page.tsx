@@ -56,7 +56,7 @@ export default function Roadmap() {
     <ClientLayout>
       <div className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
         {/* Added mt-24 for top margin below header */}
-        <div className="w-full max-w-4xl px-4 py-8 mt-24">
+        <div className="w-full max-w-4xl px-4 py-8 mt-28">
           {/* Header Section */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
