@@ -166,16 +166,16 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-
+  
       const response = await client.request(query, {
         variables: { cartId: id }
       });
-
+  
       const cartData = response?.data?.cart;
       if (!cartData?.lines?.edges) {
         throw new Error('Invalid cart data structure');
       }
-
+  
       setCheckoutUrl(cartData.checkoutUrl);
       setItems(cartData.lines.edges.map(({ node }: { node: CartNode }) => ({
         id: node.id,
@@ -185,19 +185,22 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
         image: node.merchandise.product.images.edges[0]?.node.url ?? '',
         variantId: node.merchandise.id
       })));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching cart:', error);
-      if (String(error).includes('Cart not found')) {
-        setCartId(null);
-        setCheckoutUrl(null);
-        localStorage.removeItem('shopifyCartId');
-        localStorage.removeItem('shopifyCheckoutUrl');
-        if (isInitialized) {
-          toast({
-            variant: "destructive",
-            title: "Cart Error",
-            description: "Cart not found. Creating a new cart.",
-          });
+      // Type guard to check if error is Error-like
+      if (error instanceof Error || (typeof error === 'object' && error && 'toString' in error)) {
+        if (String(error).includes('Cart not found')) {
+          setCartId(null);
+          setCheckoutUrl(null);
+          localStorage.removeItem('shopifyCartId');
+          localStorage.removeItem('shopifyCheckoutUrl');
+          if (isInitialized) {
+            toast({
+              variant: "destructive",
+              title: "Cart Error",
+              description: "Cart not found. Creating a new cart.",
+            });
+          }
         }
       }
     } finally {

@@ -12,13 +12,16 @@ export function CartDrawer() {
     removeFromCart, 
     updateQuantity,
     initiateCheckout,
-    isLoading 
+    isLoading,
+    checkoutUrl, // Add checkoutUrl from context
+    total // Use total from context instead of calculating it again
   } = useCart();
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const handleCheckout = async () => {
-    await initiateCheckout();
+  const handleCheckout = () => {
+    if (!checkoutUrl) {
+      return;
+    }
+    window.location.href = checkoutUrl;
   };
 
   return (
@@ -27,6 +30,7 @@ export function CartDrawer() {
       <button
         onClick={() => setIsOpen(true)}
         className="relative p-2 hover:bg-gray-800 rounded-full transition-colors"
+        aria-label="Open shopping cart"
       >
         <ShoppingCart className="h-6 w-6" />
         {itemCount > 0 && (
@@ -39,7 +43,11 @@ export function CartDrawer() {
       {/* Cart Drawer */}
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsOpen(false)} />
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50" 
+            onClick={() => setIsOpen(false)}
+            aria-label="Close shopping cart"
+          />
           
           <div className="absolute top-0 right-0 w-full max-w-md h-full bg-gray-900 shadow-xl">
             <div className="flex flex-col h-full">
@@ -49,6 +57,7 @@ export function CartDrawer() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-gray-800 rounded-full"
+                  aria-label="Close cart"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -70,6 +79,7 @@ export function CartDrawer() {
                             alt={item.title}
                             fill
                             className="object-cover rounded"
+                            sizes="(max-width: 80px) 100vw, 80px"
                           />
                         </div>
                         
@@ -81,6 +91,8 @@ export function CartDrawer() {
                             <button
                               onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
                               className="p-1 hover:bg-gray-700 rounded"
+                              aria-label="Decrease quantity"
+                              disabled={isLoading}
                             >
                               <Minus className="h-4 w-4" />
                             </button>
@@ -88,12 +100,16 @@ export function CartDrawer() {
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               className="p-1 hover:bg-gray-700 rounded"
+                              aria-label="Increase quantity"
+                              disabled={isLoading}
                             >
                               <Plus className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => removeFromCart(item.id)}
                               className="ml-auto text-red-500 hover:text-red-400"
+                              aria-label={`Remove ${item.title} from cart`}
+                              disabled={isLoading}
                             >
                               Remove
                             </button>
@@ -115,7 +131,7 @@ export function CartDrawer() {
                   <Button
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={handleCheckout}
-                    disabled={isLoading}
+                    disabled={isLoading || !checkoutUrl}
                   >
                     {isLoading ? 'Processing...' : 'Checkout'}
                   </Button>
