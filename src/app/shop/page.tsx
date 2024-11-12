@@ -191,12 +191,12 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/7",
-      title: "Pickleball",
+      title: "It's A Pickleball Kit, Dude",
       description: "Premium quality pickleball with the iconic Dude Box logo.",
       handle: "dude-box-pickleball",
       priceRange: {
         minVariantPrice: {
-          amount: "24.99",
+          amount: "51.99",
           currencyCode: "USD"
         }
       },
@@ -213,7 +213,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262454"
+              id: "gid://shopify/ProductVariant/21092167863112677120"
             }
           }
         ]
@@ -221,12 +221,12 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/8",
-      title: "Slides",
-      description: "Comfortable and stylish slides featuring the Dude Box logo.",
+      title: "Dude Recovery Slides",
+      description: "Because Your Feet Earned This.",
       handle: "dude-box-slides",
       priceRange: {
         minVariantPrice: {
-          amount: "29.99",
+          amount: "45.42",
           currencyCode: "USD"
         }
       },
@@ -243,7 +243,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262455"
+              id: "gid://shopify/ProductVariant/24419442339251658478"
             }
           }
         ]
