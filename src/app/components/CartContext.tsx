@@ -97,7 +97,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       }
 
       if (cartData.userErrors.length > 0) {
-        const errorMessage = cartData.userErrors.map(error => error.message).join(', ');
+        const errorMessage = cartData.userErrors.map((error: { message: string }) => error.message).join(', ');
+
         throw new Error(`Shopify API errors: ${errorMessage}`);
       }
 
