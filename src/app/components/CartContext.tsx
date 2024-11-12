@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 import { useToast } from '@/components/ui/use-toast';
 import { CartItem } from '@/types/shopify';
@@ -21,27 +21,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Move environment checks outside of component to prevent layout shifts
-const checkEnvironment = () => {
-  if (typeof window === 'undefined') return; // Skip on server-side
-
-  if (!process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN) {
-    console.error('NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is not defined');
-    return false;
-  }
-
-  if (!process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
-    console.error('NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN is not defined');
-    return false;
-  }
-
-  return true;
-};
-
-const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN?.replace('https://', '').replace('http://', '') || '';
-
 const client = createStorefrontApiClient({
-  storeDomain: `https://${storeDomain}`,
+  storeDomain: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}`,
   publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
   apiVersion: '2024-01'
 });
@@ -54,14 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   const [itemCount, setItemCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Calculate total price
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
   const createCart = useCallback(async (): Promise<string> => {
-    if (!checkEnvironment()) {
-      return '';
-    }
-
     try {
       const mutation = `#graphql
         mutation CartCreate {
@@ -79,6 +53,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       `;
   
       const response = await client.request(mutation);
+      console.log('Cart creation response:', response);
 
       const cart = response?.data?.cartCreate?.cart;
       const userErrors = response?.data?.cartCreate?.userErrors || [];
@@ -103,7 +78,77 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     }
   }, [toast]);
 
-  // Rest of the functions remain the same...
+  const addToCart = useCallback(async (product: CartItem) => {
+    console.log('addToCart called with:', product);
+    if (!cartId) {
+      console.error('No cart ID available');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const mutation = `#graphql
+        mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+          cartLinesAdd(cartId: $cartId, lines: $lines) {
+            cart {
+              id
+              lines {
+                edges {
+                  node {
+                    id
+                    quantity
+                    merchandise {
+                      ... on ProductVariant {
+                        id
+                        title
+                        product {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const response = await client.request(mutation, {
+        variables: {
+          cartId,
+          lines: [{ merchandiseId: product.variantId, quantity: product.quantity }]
+        }
+      });
+
+      if (response?.data?.cartLinesAdd?.userErrors?.length > 0) {
+        throw new Error(response.data.cartLinesAdd.userErrors[0].message);
+      }
+
+      setItems(prevItems => [...prevItems, product]);
+      setItemCount(prev => prev + product.quantity);
+      setIsOpen(true);
+      
+      toast({
+        title: "Added to cart",
+        description: `${product.title} has been added to your cart.`
+      });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to add item to cart. Please try again."
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [cartId, toast]);
+
   const removeFromCart = useCallback(async (variantId: string) => {
     if (!cartId) return;
     setIsLoading(true);
@@ -121,7 +166,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-  
+
       await client.request(mutation, {
         variables: {
           cartId,
@@ -131,7 +176,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
 
       setItems(prevItems => prevItems.filter(item => item.id !== variantId));
       setItemCount(prev => prev - 1);
-      
+
       toast({
         title: "Removed from cart",
         description: "Item has been removed from your cart."
@@ -165,7 +210,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-  
+
       await client.request(mutation, {
         variables: {
           cartId,
@@ -178,7 +223,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           item.id === variantId ? { ...item, quantity } : item
         )
       );
-      
+
       toast({
         title: "Cart updated",
         description: "Item quantity has been updated."
@@ -203,7 +248,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       const newCartId = await createCart();
       setCartId(newCartId);
       localStorage.setItem('shopifyCartId', newCartId);
-      
+
       toast({
         title: "Cart cleared",
         description: "All items have been removed from your cart."
@@ -218,51 +263,31 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     }
   }, [cartId, createCart, toast]);
 
-  const addToCart = useCallback(async (product: CartItem) => {
-    if (!cartId) return;
-    setIsLoading(true);
-    try {
-      const mutation = `#graphql
-        mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-          cartLinesAdd(cartId: $cartId, lines: $lines) {
-            cart {
-              id
-            }
-            userErrors {
-              field
-              message
-            }
-          }
+  // Initialize cart
+  useEffect(() => {
+    const initCart = async () => {
+      const storedCartId = localStorage.getItem('shopifyCartId');
+      if (storedCartId) {
+        console.log('Found stored cart ID:', storedCartId);
+        setCartId(storedCartId);
+      } else {
+        console.log('Creating new cart...');
+        const newCartId = await createCart();
+        if (newCartId) {
+          console.log('Created new cart ID:', newCartId);
+          localStorage.setItem('shopifyCartId', newCartId);
+          setCartId(newCartId);
         }
-      `;
-  
-      await client.request(mutation, {
-        variables: {
-          cartId,
-          lines: [{ merchandiseId: product.variantId, quantity: product.quantity }]
-        }
-      });
+      }
+    };
 
-      setItems(prevItems => [...prevItems, product]);
-      setItemCount(prev => prev + product.quantity);
-      
-      toast({
-        title: "Added to cart",
-        description: `${product.title} has been added to your cart.`
-      });
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to add item to cart. Please try again."
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [cartId, toast]);
+    initCart();
+  }, [createCart]); // Added createCart to dependencies
 
-  const value = {
+  // Calculate total price
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const contextValue = {
     items,
     cartId,
     addToCart,
@@ -277,7 +302,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   };
 
   return (
-    <CartContext.Provider value={value}>
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ShoppingBag, Check } from "lucide-react";
+import { ShoppingCart } from "lucide-react"; // Changed from importing multiple unused icons
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from '../app/components/CartContext';
 import { ShopifyProduct } from '@/types/shopify';
@@ -12,17 +12,26 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [isAdding, setIsAdding] = useState(false);
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const [adding, setAdding] = useState(false); // Renamed from isAdding to match usage
   
   const price = parseFloat(product.priceRange.minVariantPrice.amount);
   const imageUrl = product.images.edges[0]?.node.url;
   const variantId = product.variants.edges[0]?.node.id;
 
   const handleAddToCart = async () => {
+    console.log('Adding to cart:', {
+      id: product.id,
+      title: product.title,
+      price,
+      quantity: 1,
+      image: imageUrl,
+      variantId
+    });
+    
     try {
-      setIsAdding(true);
+      setAdding(true);
       
       await addToCart({
         id: product.id,
@@ -38,7 +47,8 @@ export function ProductCard({ product }: ProductCardProps) {
         description: `${product.title} has been added to your cart.`,
         duration: 2000,
       });
-    } catch {
+    } catch (error) {
+      console.error('Error adding to cart:', error);
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
@@ -46,7 +56,7 @@ export function ProductCard({ product }: ProductCardProps) {
         duration: 2000,
       });
     } finally {
-      setIsAdding(false);
+      setAdding(false);
     }
   };
 
@@ -86,21 +96,21 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <button 
             className={`w-full py-2 px-4 rounded-md flex items-center justify-center transition-all gap-2
-              ${isAdding 
+              ${adding 
                 ? 'bg-green-600 hover:bg-green-700' 
                 : 'bg-blue-600 hover:bg-blue-700'} 
               text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             onClick={handleAddToCart}
-            disabled={isAdding}
+            disabled={adding}
           >
-            {isAdding ? (
+            {adding ? (
               <>
-                <Check className="h-4 w-4" />
-                Added
+                <ShoppingCart className="h-4 w-4" />
+                Adding...
               </>
             ) : (
               <>
-                <ShoppingBag className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4" />
                 Add to Cart
               </>
             )}
