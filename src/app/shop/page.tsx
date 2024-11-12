@@ -71,8 +71,8 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/3",
-      title: "Night Watch",
-      description: "Dark Roast Coffee - A bold, full-bodied blend for the nighttime guardians. Rich chocolate and caramel notes.",
+      title: "Dude Dark Side",
+      description: "Dark Roast Coffee - A bold, full-bodied blend.",
       handle: "night-watch-coffee",
       priceRange: {
         minVariantPrice: {
@@ -101,8 +101,8 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/4",
-      title: "The Balanced Blade",
-      description: "Medium Roast Coffee - Perfect harmony of strength and smoothness. Notes of nuts and dark chocolate.",
+      title: "Dude Peak Roast",
+      description: "Medium Roast Coffee - Perfect harmony",
       handle: "balanced-blade-coffee",
       priceRange: {
         minVariantPrice: {
