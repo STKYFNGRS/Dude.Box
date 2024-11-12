@@ -80,14 +80,14 @@ const products: Product[] = [
     price: 49.99,
     image: "/product-images/Dude Hoodie.jpg",
     category: "Apparel",
-    variantId: "gid://shopify/ProductVariant/13770242355059580237", // Default to XL size
+    variantId: "gid://shopify/ProductVariant/51764716636600704872", // Default to XL size
     sizeVariants: [
-      { size: "S", variantId: "gid://shopify/ProductVariant/2149321637120640523", price: 49.99 },
-      { size: "M", variantId: "gid://shopify/ProductVariant/28311494208242985258", price: 49.99 },
-      { size: "L", variantId: "gid://shopify/ProductVariant/3293190012195205780", price: 49.99 },
-      { size: "XL", variantId: "gid://shopify/ProductVariant/13770242355059580237", price: 49.99 },
-      { size: "2XL", variantId: "gid://shopify/ProductVariant/42070007226088609001", price: 54.99 },
-      { size: "3XL", variantId: "gid://shopify/ProductVariant/23849466172648052366", price: 54.99 }
+      { size: "S", variantId: "gid://shopify/ProductVariant/26341620398126159390", price: 49.99 },
+      { size: "M", variantId: "gid://shopify/ProductVariant/17010009501291988678", price: 49.99 },
+      { size: "L", variantId: "gid://shopify/ProductVariant/19130984416263454794", price: 49.99 },
+      { size: "XL", variantId: "gid://shopify/ProductVariant/51764716636600704872", price: 49.99 },
+      { size: "2XL", variantId: "gid://shopify/ProductVariant/27573838674395979512", price: 54.99 },
+      { size: "3XL", variantId: "gid://shopify/ProductVariant/22663278805189656334", price: 54.99 }
     ]
   },
   {
@@ -101,7 +101,7 @@ const products: Product[] = [
     sizeVariants: [
       { size: "S", variantId: "gid://shopify/ProductVariant/2149321637120640523", price: 24.38 },
       { size: "M", variantId: "gid://shopify/ProductVariant/28311494208242985258", price: 24.38 },
-      { size: "L", variantId: "gid://shopify/ProductVariant/3293190012195205780", price: 24.38 },
+      { size: "L", variantId: "gid://shopify/ProductVariant/32931900121952057801", price: 24.38 },
       { size: "XL", variantId: "gid://shopify/ProductVariant/13770242355059580237", price: 24.38 },
       { size: "2XL", variantId: "gid://shopify/ProductVariant/42070007226088609001", price: 26.78 },
       { size: "3XL", variantId: "gid://shopify/ProductVariant/23849466172648052366", price: 30.77 }
@@ -114,7 +114,7 @@ const products: Product[] = [
     price: 34.99,
     image: "/product-images/Slides.jpg",
     category: "Footwear",
-    variantId: "gid://shopify/ProductVariant/13770242355059580237", // Default to XL size
+    variantId: "gid://shopify/ProductVariant/24419442339251658478", // Default to XL size
     sizeVariants: [
       { size: "6", variantId: "gid://shopify/ProductVariant/59710980996692476373", price: 45.42 },
       { size: "7", variantId: "gid://shopify/ProductVariant/12524152547570741750", price: 45.42 },

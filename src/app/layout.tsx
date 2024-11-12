@@ -1,5 +1,7 @@
 import '@/app/globals.css';
-import { ServerLayout } from '@/app/components/ServerLayout';
+import { Providers } from '@/app/providers';
+import { CartProvider } from '@/app/components/CartContext';
+import { ClientLayout } from '@/app/components/Client-Layout';
 
 export default function RootLayout({
   children,
@@ -9,9 +11,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body suppressHydrationWarning={true}>
-        <ServerLayout>
-          {children}
-        </ServerLayout>
+        <Providers>
+          <CartProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </CartProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -21,6 +21,8 @@ interface CartContextType {
   isLoading: boolean;
   total: number;
   itemCount: number;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -49,6 +51,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [itemCount, setItemCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false); 
 
   useEffect(() => {
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -378,12 +381,15 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       clearCart,
       isLoading,
       total,
-      itemCount
+      itemCount,
+      isOpen,
+      setIsOpen
     }}>
       {children}
     </CartContext.Provider>
   );
 }
+
 
 export const useCart = (): CartContextType => {
   const context = useContext(CartContext);
