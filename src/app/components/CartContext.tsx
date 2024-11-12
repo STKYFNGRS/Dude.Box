@@ -1,9 +1,15 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 import { useToast } from '@/components/ui/use-toast';
-import { CartItem } from '@/types/shopify';
+import { 
+  CartItem,
+  CartNode,
+  // Remove unused imports
+  // ShopifyCartCreateResponse,
+  // ShopifyCartQueryResponse 
+} from '@/types/shopify';
 
 interface CartContextType {
   items: CartItem[];
@@ -21,21 +27,52 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const client = createStorefrontApiClient({
-  storeDomain: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}`,
-  publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
+// Move environment checks outside of component
+const checkEnvironment = () => {
+  if (typeof window === 'undefined') return false;
+
+  const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+  const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
+  if (!domain || !token) {
+    console.error('Missing required Shopify environment variables');
+    return false;
+  }
+
+  return {
+    domain: domain.replace(/^https?:\/\//, '').trim(),
+    token: token.trim()
+  };
+};
+
+const env = checkEnvironment();
+const client = env ? createStorefrontApiClient({
+  storeDomain: `https://${env.domain}`,
+  publicAccessToken: env.token,
   apiVersion: '2024-01'
-});
+}) : null;
 
 export function CartProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const { toast } = useToast();
   const [cartId, setCartId] = useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [itemCount, setItemCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const createCart = useCallback(async (): Promise<string> => {
+  useEffect(() => {
+    const count = items.reduce((sum, item) => sum + item.quantity, 0);
+    setItemCount(count);
+  }, [items]);
+
+  const createCart = useCallback(async () => {
+    if (!client || !env) {
+      console.error('Shopify client not properly initialized');
+      return { id: '', checkoutUrl: '' };
+    }
+
     try {
       const mutation = `#graphql
         mutation CartCreate {
@@ -53,38 +90,163 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       `;
   
       const response = await client.request(mutation);
-      console.log('Cart creation response:', response);
 
-      const cart = response?.data?.cartCreate?.cart;
-      const userErrors = response?.data?.cartCreate?.userErrors || [];
-
-      if (userErrors.length > 0) {
-        throw new Error(userErrors[0].message);
+      const cartData = response?.data?.cartCreate;
+      
+      if (!cartData) {
+        throw new Error('Invalid response format from Shopify API');
       }
 
-      if (!cart?.id) {
-        throw new Error('Cart creation failed: Missing cart ID in response');
+      if (cartData.userErrors.length > 0) {
+        const errorMessage = cartData.userErrors.map(error => error.message).join(', ');
+        throw new Error(`Shopify API errors: ${errorMessage}`);
       }
 
-      return cart.id;
+      if (!cartData.cart?.id || !cartData.cart?.checkoutUrl) {
+        throw new Error('Missing cart ID or checkout URL from Shopify');
+      }
+
+      return {
+        id: cartData.cart.id,
+        checkoutUrl: cartData.cart.checkoutUrl
+      };
     } catch (error) {
       console.error('Cart creation error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to create cart. Please try again.",
-      });
-      return '';
+      if (isInitialized) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to create cart",
+        });
+      }
+      throw error;
     }
-  }, [toast]);
-
-  const addToCart = useCallback(async (product: CartItem) => {
-    console.log('addToCart called with:', product);
-    if (!cartId) {
-      console.error('No cart ID available');
+  }, [toast, isInitialized]);
+  
+  const fetchCart = useCallback(async (id: string): Promise<void> => {
+    if (!id || !client) {
+      console.error('Invalid cart ID or client not initialized');
       return;
     }
+    
+    setIsLoading(true);
+    try {
+      const query = `#graphql
+        query GetCart($cartId: ID!) {
+          cart(id: $cartId) {
+            id
+            checkoutUrl
+            lines(first: 100) {
+              edges {
+                node {
+                  id
+                  quantity
+                  merchandise {
+                    ... on ProductVariant {
+                      id
+                      title
+                      priceV2 {
+                        amount
+                        currencyCode
+                      }
+                      product {
+                        title
+                        images(first: 1) {
+                          edges {
+                            node {
+                              url
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
 
+      const response = await client.request(query, {
+        variables: { cartId: id }
+      });
+
+      const cartData = response?.data?.cart;
+      if (!cartData?.lines?.edges) {
+        throw new Error('Invalid cart data structure');
+      }
+
+      setCheckoutUrl(cartData.checkoutUrl);
+      setItems(cartData.lines.edges.map(({ node }: { node: CartNode }) => ({
+        id: node.id,
+        title: node.merchandise.product.title,
+        price: parseFloat(node.merchandise.priceV2.amount),
+        quantity: node.quantity,
+        image: node.merchandise.product.images.edges[0]?.node.url ?? '',
+        variantId: node.merchandise.id
+      })));
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      if (String(error).includes('Cart not found')) {
+        setCartId(null);
+        setCheckoutUrl(null);
+        localStorage.removeItem('shopifyCartId');
+        localStorage.removeItem('shopifyCheckoutUrl');
+        if (isInitialized) {
+          toast({
+            variant: "destructive",
+            title: "Cart Error",
+            description: "Cart not found. Creating a new cart.",
+          });
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast, isInitialized]);
+
+  useEffect(() => {
+    const initCart = async () => {
+      if (!client) return;
+
+      try {
+        const storedCartId = localStorage.getItem('shopifyCartId');
+        const storedCheckoutUrl = localStorage.getItem('shopifyCheckoutUrl');
+        
+        if (storedCartId && storedCheckoutUrl) {
+          setCartId(storedCartId);
+          setCheckoutUrl(storedCheckoutUrl);
+          await fetchCart(storedCartId);
+        } else {
+          const { id, checkoutUrl: newCheckoutUrl } = await createCart();
+          if (id && newCheckoutUrl) {
+            localStorage.setItem('shopifyCartId', id);
+            localStorage.setItem('shopifyCheckoutUrl', newCheckoutUrl);
+            setCartId(id);
+            setCheckoutUrl(newCheckoutUrl);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing cart:', error);
+        localStorage.removeItem('shopifyCartId');
+        localStorage.removeItem('shopifyCheckoutUrl');
+        setCartId(null);
+        setCheckoutUrl(null);
+      } finally {
+        setIsInitialized(true);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      initCart();
+    }
+  }, [createCart, fetchCart]);
+
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const addToCart = useCallback(async (product: CartItem) => {
+    if (!cartId || !client) return;
     setIsLoading(true);
     try {
       const mutation = `#graphql
@@ -92,23 +254,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           cartLinesAdd(cartId: $cartId, lines: $lines) {
             cart {
               id
-              lines {
-                edges {
-                  node {
-                    id
-                    quantity
-                    merchandise {
-                      ... on ProductVariant {
-                        id
-                        title
-                        product {
-                          title
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              checkoutUrl
             }
             userErrors {
               field
@@ -117,7 +263,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-
+  
       const response = await client.request(mutation, {
         variables: {
           cartId,
@@ -125,14 +271,11 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
         }
       });
 
-      if (response?.data?.cartLinesAdd?.userErrors?.length > 0) {
-        throw new Error(response.data.cartLinesAdd.userErrors[0].message);
+      if (!response?.data?.cartLinesAdd) {
+        throw new Error('Failed to add item to cart');
       }
 
-      setItems(prevItems => [...prevItems, product]);
-      setItemCount(prev => prev + product.quantity);
-      setIsOpen(true);
-      
+      await fetchCart(cartId);
       toast({
         title: "Added to cart",
         description: `${product.title} has been added to your cart.`
@@ -142,15 +285,16 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add item to cart. Please try again."
+        description: error instanceof Error ? error.message : "Failed to add item to cart"
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, toast]);
+  }, [cartId, fetchCart, toast]);
 
   const removeFromCart = useCallback(async (variantId: string) => {
-    if (!cartId) return;
+    if (!cartId || !client) return;
     setIsLoading(true);
     try {
       const mutation = `#graphql
@@ -158,6 +302,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
             cart {
               id
+              checkoutUrl
             }
             userErrors {
               field
@@ -166,17 +311,19 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-
-      await client.request(mutation, {
+  
+      const response = await client.request(mutation, {
         variables: {
           cartId,
           lineIds: [variantId]
         }
       });
 
-      setItems(prevItems => prevItems.filter(item => item.id !== variantId));
-      setItemCount(prev => prev - 1);
-
+      if (!response?.data?.cartLinesRemove) {
+        throw new Error('Failed to remove item from cart');
+      }
+  
+      await fetchCart(cartId);
       toast({
         title: "Removed from cart",
         description: "Item has been removed from your cart."
@@ -186,15 +333,16 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to remove item from cart. Please try again."
+        description: error instanceof Error ? error.message : "Failed to remove item from cart"
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, toast]);
-
+  }, [cartId, fetchCart, toast]);
+  
   const updateQuantity = useCallback(async (variantId: string, quantity: number) => {
-    if (!cartId) return;
+    if (!cartId || !client) return;
     setIsLoading(true);
     try {
       const mutation = `#graphql
@@ -202,6 +350,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           cartLinesUpdate(cartId: $cartId, lines: $lines) {
             cart {
               id
+              checkoutUrl
             }
             userErrors {
               field
@@ -210,20 +359,19 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           }
         }
       `;
-
-      await client.request(mutation, {
+  
+      const response = await client.request(mutation, {
         variables: {
           cartId,
           lines: [{ id: variantId, quantity }]
         }
       });
 
-      setItems(prevItems => 
-        prevItems.map(item => 
-          item.id === variantId ? { ...item, quantity } : item
-        )
-      );
-
+      if (!response?.data?.cartLinesUpdate) {
+        throw new Error('Failed to update quantity');
+      }
+  
+      await fetchCart(cartId);
       toast({
         title: "Cart updated",
         description: "Item quantity has been updated."
@@ -233,22 +381,27 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update quantity. Please try again."
+        description: error instanceof Error ? error.message : "Failed to update quantity"
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, toast]);
-
+  }, [cartId, fetchCart, toast]);
+  
   const clearCart = useCallback(async () => {
-    setItems([]);
-    setItemCount(0);
-    if (!cartId) return;
+    if (!client) return;
+    setIsLoading(true);
     try {
-      const newCartId = await createCart();
-      setCartId(newCartId);
-      localStorage.setItem('shopifyCartId', newCartId);
-
+      const { id, checkoutUrl: newCheckoutUrl } = await createCart();
+      if (!id || !newCheckoutUrl) {
+        throw new Error('Failed to create new cart');
+      }
+      localStorage.setItem('shopifyCartId', id);
+      localStorage.setItem('shopifyCheckoutUrl', newCheckoutUrl);
+      setCartId(id);
+      setCheckoutUrl(newCheckoutUrl);
+      setItems([]);
       toast({
         title: "Cart cleared",
         description: "All items have been removed from your cart."
@@ -258,51 +411,42 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to clear cart. Please try again."
+        description: error instanceof Error ? error.message : "Failed to clear cart"
       });
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-  }, [cartId, createCart, toast]);
+  }, [createCart, toast]);
 
-  // Initialize cart
-  useEffect(() => {
-    const initCart = async () => {
-      const storedCartId = localStorage.getItem('shopifyCartId');
-      if (storedCartId) {
-        console.log('Found stored cart ID:', storedCartId);
-        setCartId(storedCartId);
-      } else {
-        console.log('Creating new cart...');
-        const newCartId = await createCart();
-        if (newCartId) {
-          console.log('Created new cart ID:', newCartId);
-          localStorage.setItem('shopifyCartId', newCartId);
-          setCartId(newCartId);
-        }
-      }
-    };
-
-    initCart();
-  }, [createCart]); // Added createCart to dependencies
-
-  // Calculate total price
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const contextValue = {
-    items,
-    cartId,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    isLoading,
-    total,
-    itemCount,
-    isOpen,
-    setIsOpen
-  };
+  const initiateCheckout = useCallback(() => {
+    if (!checkoutUrl) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Unable to proceed to checkout. Please try again."
+      });
+      return;
+    }
+    window.location.href = checkoutUrl;
+  }, [checkoutUrl, toast]);
 
   return (
-    <CartContext.Provider value={contextValue}>
+    <CartContext.Provider value={{
+      items,
+      cartId,
+      checkoutUrl,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      initiateCheckout,
+      isLoading,
+      total,
+      itemCount,
+      isOpen,
+      setIsOpen
+    }}>
       {children}
     </CartContext.Provider>
   );
@@ -314,4 +458,4 @@ export const useCart = (): CartContextType => {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
-};
+}
