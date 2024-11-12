@@ -60,6 +60,12 @@ export function ProductCard({ product }: ProductCardProps) {
           className="object-cover transition-transform group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
+        
+        <div className="absolute top-2 right-2">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {product.handle}
+          </span>
+        </div>
       </div>
 
       <div className="p-4">
