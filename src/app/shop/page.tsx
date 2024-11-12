@@ -4,32 +4,257 @@ import { ClientLayout } from '@/app/components/Client-Layout';
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from 'react';
 import { ProductCard } from '@/components/ProductCard';
-import { products } from '@/data/products';
-import LoadingSkeleton from '@/components/Loading';  // Changed to default import
-
-// Define the Product type
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  image: string;
-  variantId: string;
-  sizeVariants?: {
-    size: string;
-    variantId: string;
-    price: number;
-  }[];
-}
-
-
+import LoadingSkeleton from '@/components/Loading';
+import { ShopifyProduct } from '@/types/shopify';
 
 export default function Shop() {
+  const transformedProducts: ShopifyProduct[] = [
+    {
+      id: "gid://shopify/Product/1",
+      title: "Dude Mood Mug",
+      description: "Thermal Reactive Coffee Cup - Watch as your mug transforms with hot liquid, revealing the true mood of a dude.",
+      handle: "dude-mood-mug",
+      priceRange: {
+        minVariantPrice: {
+          amount: "24.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Dude Mood Coffee Mug.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262448"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/2",
+      title: "We Ride At Dawn",
+      description: "Light Roast Coffee - A bright and energetic blend perfect for those early morning conquests. Notes of citrus and honey.",
+      handle: "we-ride-at-dawn-coffee",
+      priceRange: {
+        minVariantPrice: {
+          amount: "19.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Light Roast Coffee Dude Front.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262449"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/3",
+      title: "Night Watch",
+      description: "Dark Roast Coffee - A bold, full-bodied blend for the nighttime guardians. Rich chocolate and caramel notes.",
+      handle: "night-watch-coffee",
+      priceRange: {
+        minVariantPrice: {
+          amount: "19.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Dark Roast Coffee Dude Front.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262450"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/4",
+      title: "The Balanced Blade",
+      description: "Medium Roast Coffee - Perfect harmony of strength and smoothness. Notes of nuts and dark chocolate.",
+      handle: "balanced-blade-coffee",
+      priceRange: {
+        minVariantPrice: {
+          amount: "19.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Medium Roast Coffee Dude Front.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262451"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/5",
+      title: "Dude Box Essential T",
+      description: "Classic Black T-Shirt - Premium cotton blend with the iconic Dude Box logo.",
+      handle: "dude-box-essential-t",
+      priceRange: {
+        minVariantPrice: {
+          amount: "29.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Dude Tee.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262452"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/6",
+      title: "Dawn Patrol Hoodie",
+      description: "Premium Black Hoodie - Comfortable, durable, and perfect for those early morning missions.",
+      handle: "dawn-patrol-hoodie",
+      priceRange: {
+        minVariantPrice: {
+          amount: "59.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Dude Hoodie.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262453"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/7",
+      title: "Pickleball",
+      description: "Premium quality pickleball with the iconic Dude Box logo.",
+      handle: "dude-box-pickleball",
+      priceRange: {
+        minVariantPrice: {
+          amount: "24.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Pickleball.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262454"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/8",
+      title: "Slides",
+      description: "Comfortable and stylish slides featuring the Dude Box logo.",
+      handle: "dude-box-slides",
+      priceRange: {
+        minVariantPrice: {
+          amount: "29.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Slides.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262455"
+            }
+          }
+        ]
+      }
+    }
+  ];
+
   return (
     <ClientLayout>
-      <div className="flex flex-col items-center justify-start flex-grow min-h-[calc(100vh-64px)] bg-gradient-to-b from-black to-gray-900 pt-8">
-        <div className="w-full max-w-7xl px-4 py-8">
+      <div className="pt-24 min-h-screen bg-gradient-to-b from-black to-gray-900">
+        <div className="w-full max-w-7xl mx-auto px-4 py-12">
           {/* Collection Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
@@ -44,7 +269,7 @@ export default function Shop() {
           {/* Product Grid */}
           <Suspense fallback={<LoadingSkeleton />}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {products.map((product: Product) => (
+              {transformedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
