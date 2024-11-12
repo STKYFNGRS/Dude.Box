@@ -124,7 +124,7 @@ export function CartDrawer() {
               {items.length > 0 && (
                 <div className="p-4 border-t border-gray-800">
                   <div className="flex justify-between mb-4">
-                    <span>Total</span>
+                    <span>Sub-Total</span>
                     <span className="font-semibold">${total.toFixed(2)}</span>
                   </div>
                   <Button

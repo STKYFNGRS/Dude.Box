@@ -9,7 +9,7 @@ export const products: Product[] = [
       price: 24.99,
       image: "/product-images/Dude Mood Coffee Mug.jpg",
       category: "Accessories",
-      variantId: "gid://shopify/ProductVariant/51671353262448"
+      variantId: "gid://shopify/ProductVariant/60311584461663273532"
     },
     {
       id: 2,
