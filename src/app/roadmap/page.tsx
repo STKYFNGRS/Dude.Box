@@ -1,7 +1,7 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "@/app/layout";
+import { ClientLayout } from "@/app/components/Client-Layout";
 import { ArrowRight, Store, Users, Landmark, Coffee, Gamepad } from "lucide-react";
 
 export default function Roadmap() {
@@ -53,9 +53,10 @@ export default function Roadmap() {
   ];
 
   return (
-    <Layout>
-      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-b from-black to-gray-900 text-white min-h-screen">
-        <div className="max-w-4xl w-full">
+    <ClientLayout>
+      <div className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+        {/* Added mt-24 for top margin below header */}
+        <div className="w-full max-w-4xl px-4 py-8 mt-24">
           {/* Header Section */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
@@ -512,6 +513,6 @@ export default function Roadmap() {
         </div>
         <Analytics />
       </div>
-    </Layout>
+    </ClientLayout>
   );
 }
