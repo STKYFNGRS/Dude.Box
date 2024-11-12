@@ -131,12 +131,12 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/5",
-      title: "Dude Box Essential T",
-      description: "Classic Black T-Shirt - Premium cotton blend with the iconic Dude Box logo.",
+      title: "Dude Tee",
+      description: "Classic Black T-Shirt - Premium cotton blend.",
       handle: "dude-box-essential-t",
       priceRange: {
         minVariantPrice: {
-          amount: "29.99",
+          amount: "24.38",
           currencyCode: "USD"
         }
       },
