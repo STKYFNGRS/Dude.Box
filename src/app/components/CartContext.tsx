@@ -6,18 +6,17 @@ import { useToast } from '@/components/ui/use-toast';
 import { 
   CartItem,
   CartNode,
-  // Remove unused imports
-  // ShopifyCartCreateResponse,
-  // ShopifyCartQueryResponse 
 } from '@/types/shopify';
 
 interface CartContextType {
   items: CartItem[];
   cartId: string | null;
+  checkoutUrl: string | null;
   addToCart: (product: CartItem) => Promise<void>;
   removeFromCart: (variantId: string) => Promise<void>;
   updateQuantity: (variantId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  initiateCheckout: () => void;
   isLoading: boolean;
   total: number;
   itemCount: number;
