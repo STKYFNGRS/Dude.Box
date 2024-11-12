@@ -6,7 +6,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { 
   CartItem,
   CartNode,
-  ShopifyUserError,
   ShopifyCartCreateResponse,
   ShopifyCartQueryResponse 
 } from '@/types/shopify';
@@ -27,15 +26,22 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-if (typeof window !== 'undefined') {
+// Move environment checks outside of component to prevent layout shifts
+const checkEnvironment = () => {
+  if (typeof window === 'undefined') return; // Skip on server-side
+
   if (!process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN) {
-    throw new Error('NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is not defined');
+    console.error('NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is not defined');
+    return false;
   }
 
   if (!process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
-    throw new Error('NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN is not defined');
+    console.error('NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN is not defined');
+    return false;
   }
-}
+
+  return true;
+};
 
 const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN?.replace('https://', '').replace('http://', '') || '';
 
@@ -51,7 +57,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [itemCount, setItemCount] = useState(0);
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -59,6 +66,10 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   }, [items]);
 
   const createCart = useCallback(async (): Promise<string> => {
+    if (!checkEnvironment()) {
+      return '';
+    }
+
     try {
       const mutation = `#graphql
         mutation CartCreate {
@@ -78,42 +89,40 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       const response = await client.request<ShopifyCartCreateResponse>(mutation);
 
       if (!response?.data?.data?.cartCreate) {
-        throw new Error('No response data received from Shopify API');
+        console.warn('No response data received from Shopify API');
+        return '';
       }
 
       const { cart, userErrors } = response.data.data.cartCreate;
 
       if (userErrors.length > 0) {
-        console.error('Shopify returned user errors:', userErrors);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: userErrors.map(e => e.message).join(', '),
-        });
-        throw new Error(`Shopify errors: ${userErrors.map((e: ShopifyUserError) => e.message).join(', ')}`);
+        console.warn('Shopify returned user errors:', userErrors);
+        return '';
       }
 
       if (!cart?.id) {
-        throw new Error('Cart creation failed: Missing cart ID in response');
+        console.warn('Cart creation failed: Missing cart ID in response');
+        return '';
       }
 
       return cart.id;
     } catch (error) {
-      console.error('Detailed cart creation error:', {
-        error,
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to create cart. Please try again.",
-      });
-      throw new Error(`Failed to create cart: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.warn('Cart creation error:', error);
+      // Only show toast for user-initiated actions, not initial load
+      if (isInitialized) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to create cart. Please try again.",
+        });
+      }
+      return '';
     }
-  }, [toast]);
+  }, [toast, isInitialized]);
   
   const fetchCart = useCallback(async (id: string): Promise<void> => {
+    if (!id) return;
+    
     setIsLoading(true);
     try {
       const query = `#graphql
@@ -171,42 +180,47 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
         variantId: node.merchandise.id
       })));
     } catch (error) {
-      console.error('Error fetching cart:', error);
+      console.warn('Error fetching cart:', error);
       if (String(error).includes('Cart not found')) {
         setCartId(null);
         localStorage.removeItem('shopifyCartId');
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Cart not found. Creating a new cart.",
-        });
+        // Only show toast for user-initiated actions
+        if (isInitialized) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Cart not found. Creating a new cart.",
+          });
+        }
       }
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, isInitialized]);
 
   useEffect(() => {
     const initCart = async () => {
+      if (!checkEnvironment()) return;
+
       try {
-        console.log('Initializing cart...');
         const storedCartId = localStorage.getItem('shopifyCartId');
         
         if (storedCartId) {
-          console.log('Found stored cart ID:', storedCartId);
           setCartId(storedCartId);
           await fetchCart(storedCartId);
         } else {
-          console.log('No stored cart ID found, creating new cart...');
           const newCartId = await createCart();
-          console.log('Storing new cart ID:', newCartId);
-          localStorage.setItem('shopifyCartId', newCartId);
-          setCartId(newCartId);
+          if (newCartId) {
+            localStorage.setItem('shopifyCartId', newCartId);
+            setCartId(newCartId);
+          }
         }
       } catch (error) {
-        console.error('Error initializing cart:', error);
+        console.warn('Error initializing cart:', error);
         localStorage.removeItem('shopifyCartId');
         setCartId(null);
+      } finally {
+        setIsInitialized(true);
       }
     };
 
@@ -214,6 +228,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       initCart();
     }
   }, [createCart, fetchCart]);
+
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -389,7 +404,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     </CartContext.Provider>
   );
 }
-
 
 export const useCart = (): CartContextType => {
   const context = useContext(CartContext);

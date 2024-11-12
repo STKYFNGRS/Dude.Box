@@ -1,6 +1,6 @@
-import { ShoppingBag, X, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus } from 'lucide-react'; // Changed from ShoppingBag to ShoppingCart
 import { useState } from 'react';
-import { useCart } from '@/app/components/CartContext';  // Update this import
+import { useCart } from '@/app/components/CartContext';
 import Image from 'next/image';
 
 export function CartDrawer() {
@@ -16,7 +16,7 @@ export function CartDrawer() {
         onClick={() => setIsOpen(true)}
         className="relative p-2 hover:bg-gray-800 rounded-full transition-colors"
       >
-        <ShoppingBag className="h-6 w-6" />
+        <ShoppingCart className="h-6 w-6" /> {/* Changed to ShoppingCart */}
         {itemCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
             {itemCount}

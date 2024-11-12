@@ -1,14 +1,14 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "@/app/layout";
 import { Store, ShoppingBag, Users, Star, Shield, Trophy, Image as ImageIcon } from "lucide-react";
+import { ClientLayout } from '@/app/components/Client-Layout';
 
 export default function Mint() {
   return (
-    <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
-        <div className="w-full max-w-3xl p-4">
+    <ClientLayout>
+    <div className="flex flex-col items-center justify-center flex-grow">
+      <div className="w-full max-w-7xl p-4">
           {/* Hero Section */}
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
@@ -152,6 +152,6 @@ export default function Mint() {
         </div>
         <Analytics />
       </div>
-    </Layout>
+    </ClientLayout>
   );
 }

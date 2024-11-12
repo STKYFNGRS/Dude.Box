@@ -18,11 +18,11 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 w-full bg-black text-white flex items-center justify-between p-4 z-30">
       <Link href="/shop" passHref className="relative z-40">
-        <Image 
-          src="/Dude logo 3.jpg" 
-          alt="Dude Logo" 
-          width={200} 
-          height={50} 
+        <Image
+          src="/Dude logo 3.jpg"
+          alt="Dude Logo"
+          width={200}
+          height={50}
           priority
           className="hover:opacity-90 transition-opacity"
         />
@@ -30,7 +30,7 @@ const Header = () => {
 
       <div className="flex items-center gap-4">
         <CartDrawer />
-        
+
         {/* Hamburger Icon when menu is closed */}
         {!isOpen && (
           <button
