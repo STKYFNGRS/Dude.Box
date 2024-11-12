@@ -12,7 +12,7 @@ export default function Shop() {
     {
       id: "gid://shopify/Product/1",
       title: "Dude Mood Mug",
-      description: "Thermal Reactive Coffee Cup - Watch as your mug transforms with hot liquid, revealing the true mood of a dude.",
+      description: "Thermal Reactive Coffee Cup.",
       handle: "dude-mood-mug",
       priceRange: {
         minVariantPrice: {
@@ -42,7 +42,7 @@ export default function Shop() {
     {
       id: "gid://shopify/Product/2",
       title: "We Ride At Dawn",
-      description: "Light Roast Coffee - A bright and energetic blend perfect for those early morning conquests. Notes of citrus and honey.",
+      description: "Light Roast For A Clear Mind.",
       handle: "we-ride-at-dawn-coffee",
       priceRange: {
         minVariantPrice: {
@@ -161,8 +161,8 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/6",
-      title: "Dawn Patrol Hoodie",
-      description: "Premium Black Hoodie - Comfortable, durable, and perfect for those early morning missions.",
+      title: "Dude Comfort Hoodie",
+      description: "Premium Black Hoodie",
       handle: "dawn-patrol-hoodie",
       priceRange: {
         minVariantPrice: {
@@ -258,7 +258,7 @@ export default function Shop() {
           {/* Collection Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
-              The Origin Collection
+              The Origin Collection (Coming Soon)
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto">
               Our first drop. Eight pieces designed to support your journey from dawn to dusk, 
