@@ -260,7 +260,7 @@ export default function Shop() {
           {/* Collection Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
-              The Origin Collection (Coming Soon)
+              The Origin Collection 
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto">
               Our first drop. Eight pieces designed to support your journey from dawn to dusk, 

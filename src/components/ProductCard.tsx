@@ -2,36 +2,58 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ShoppingCart } from "lucide-react"; // Changed from importing multiple unused icons
+import { ShoppingBag, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useCart } from '../app/components/CartContext';
-import { ShopifyProduct } from '@/types/shopify';
+import { useCart } from '@/app/components/CartContext';
+
+interface Product {
+  id: string;
+  title: string;
+  description: string;
+  handle: string;
+  priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode?: string;
+    };
+  };
+  images: {
+    edges: Array<{
+      node: {
+        url: string;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: {
+        id: string;
+        title?: string;
+        price?: {
+          amount: string;
+          currencyCode: string;
+        };
+      };
+    }>;
+  };
+}
 
 interface ProductCardProps {
-  product: ShopifyProduct;
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const [isAdding, setIsAdding] = useState(false);
   const { toast } = useToast();
   const { addToCart } = useCart();
-  const [adding, setAdding] = useState(false); // Renamed from isAdding to match usage
   
   const price = parseFloat(product.priceRange.minVariantPrice.amount);
   const imageUrl = product.images.edges[0]?.node.url;
   const variantId = product.variants.edges[0]?.node.id;
 
   const handleAddToCart = async () => {
-    console.log('Adding to cart:', {
-      id: product.id,
-      title: product.title,
-      price,
-      quantity: 1,
-      image: imageUrl,
-      variantId
-    });
-    
     try {
-      setAdding(true);
+      setIsAdding(true);
       
       await addToCart({
         id: product.id,
@@ -47,8 +69,7 @@ export function ProductCard({ product }: ProductCardProps) {
         description: `${product.title} has been added to your cart.`,
         duration: 2000,
       });
-    } catch (error) {
-      console.error('Error adding to cart:', error);
+    } catch {
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
@@ -56,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
         duration: 2000,
       });
     } finally {
-      setAdding(false);
+      setIsAdding(false);
     }
   };
 
@@ -70,12 +91,6 @@ export function ProductCard({ product }: ProductCardProps) {
           className="object-cover transition-transform group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
-        
-        <div className="absolute top-2 right-2">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {product.handle}
-          </span>
-        </div>
       </div>
 
       <div className="p-4">
@@ -96,21 +111,21 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <button 
             className={`w-full py-2 px-4 rounded-md flex items-center justify-center transition-all gap-2
-              ${adding 
+              ${isAdding 
                 ? 'bg-green-600 hover:bg-green-700' 
                 : 'bg-blue-600 hover:bg-blue-700'} 
               text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             onClick={handleAddToCart}
-            disabled={adding}
+            disabled={isAdding}
           >
-            {adding ? (
+            {isAdding ? (
               <>
-                <ShoppingCart className="h-4 w-4" />
-                Adding...
+                <Check className="h-4 w-4" />
+                Added
               </>
             ) : (
               <>
-                <ShoppingCart className="h-4 w-4" />
+                <ShoppingBag className="h-4 w-4" />
                 Add to Cart
               </>
             )}
