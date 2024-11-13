@@ -63,44 +63,15 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262449"
+              id: "gid://shopify/ProductVariant/51671353426288"
             }
           }
         ]
       }
     },
+ 
     {
       id: "gid://shopify/Product/3",
-      title: "Dude Dark Side",
-      description: "Dark Roast Coffee - A bold, full-bodied blend.",
-      handle: "night-watch-coffee",
-      priceRange: {
-        minVariantPrice: {
-          amount: "19.99",
-          currencyCode: "USD"
-        }
-      },
-      images: {
-        edges: [
-          {
-            node: {
-              url: "/product-images/Dark Roast Coffee Dude Front.jpg"
-            }
-          }
-        ]
-      },
-      variants: {
-        edges: [
-          {
-            node: {
-              id: "gid://shopify/ProductVariant/51671353262450"
-            }
-          }
-        ]
-      }
-    },
-    {
-      id: "gid://shopify/Product/4",
       title: "Dude Peak Roast",
       description: "Medium Roast Coffee - Perfect harmony",
       handle: "balanced-blade-coffee",
@@ -123,7 +94,38 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262451"
+              id: "gid://shopify/ProductVariant/51671352279408"
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      id: "gid://shopify/Product/4",
+      title: "The Dark Side of Dude",
+      description: "A French Roast That Punches Back.",
+      handle: "night-watch-coffee",
+      priceRange: {
+        minVariantPrice: {
+          amount: "19.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Dark Roast Coffee Dude Front.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671353262448"
             }
           }
         ]
@@ -132,7 +134,7 @@ export default function Shop() {
     {
       id: "gid://shopify/Product/5",
       title: "Dude Tee",
-      description: "Classic Black T-Shirt - Premium cotton blend.",
+      description: "Classic Black T-Shirt - Premium Cotton For daily comfort",
       handle: "dude-box-essential-t",
       priceRange: {
         minVariantPrice: {
@@ -153,7 +155,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262452"
+              id: "gid://shopify/ProductVariant/51671100129648"
             }
           }
         ]
@@ -183,7 +185,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/51671353262453"
+              id: "gid://shopify/ProductVariant/51671341138288"
             }
           }
         ]
@@ -213,7 +215,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/21092167863112677120"
+              id: "gid://shopify/ProductVariant/51671335960944"
             }
           }
         ]

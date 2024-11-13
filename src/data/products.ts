@@ -18,6 +18,60 @@ export const products: Product[] = [
       price: 19.99,
       image: "/product-images/Light Roast Coffee Dude Front.jpg",
       category: "Coffee",
+      variantId: "gid://shopify/ProductVariant/51671353426288" 
+    },
+    {
+      id: 3,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
+      variantId: "" // Need Shopify variant ID
+    },
+    {
+      id: 4,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
+      variantId: "" // Need Shopify variant ID
+    },
+    {
+      id: 5,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
+      variantId: "" // Need Shopify variant ID
+    },
+    {
+      id: 6,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
+      variantId: "" // Need Shopify variant ID
+    },
+    {
+      id: 7,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
+      variantId: "" // Need Shopify variant ID
+    },
+    {
+      id: 8,
+      name: "We Ride At Dawn",
+      description: "A Light Roast For Clear Minds",
+      price: 19.99,
+      image: "/product-images/Light Roast Coffee Dude Front.jpg",
+      category: "Coffee",
       variantId: "" // Need Shopify variant ID
     },
     // ... rest of your products
