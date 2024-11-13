@@ -245,7 +245,7 @@ export default function Shop() {
         edges: [
           {
             node: {
-              id: "gid://shopify/ProductVariant/24419442339251658478"
+              id: "gid://shopify/ProductVariant/51671352508784"
             }
           }
         ]
