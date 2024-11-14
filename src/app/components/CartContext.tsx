@@ -178,17 +178,23 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       }
   
       setCheckoutUrl(cartData.checkoutUrl);
-      setItems(cartData.lines.edges.map(({ node }: { node: CartNode }) => ({
-        id: node.id,
-        title: node.merchandise.product.title,
-        price: parseFloat(node.merchandise.priceV2.amount),
-        quantity: node.quantity,
-        image: node.merchandise.product.images.edges[0]?.node.url ?? '',
-        variantId: node.merchandise.id
-      })));
+      const validItems = cartData.lines.edges
+        .map(({ node }: { node: CartNode }) => {
+          if (!node?.merchandise?.product) return null;
+          return {
+            id: node.id,
+            title: node.merchandise.product.title,
+            price: parseFloat(node.merchandise.priceV2.amount),
+            quantity: node.quantity,
+            image: node.merchandise.product.images.edges[0]?.node?.url ?? '',
+            variantId: node.merchandise.id
+          };
+        })
+        .filter((item: CartItem | null): item is CartItem => item !== null);
+  
+      setItems(validItems);
     } catch (error: unknown) {
       console.error('Error fetching cart:', error);
-      // Type guard to check if error is Error-like
       if (error instanceof Error || (typeof error === 'object' && error && 'toString' in error)) {
         if (String(error).includes('Cart not found')) {
           setCartId(null);

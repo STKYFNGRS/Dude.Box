@@ -16,7 +16,7 @@ export default function Shop() {
       handle: "dude-mood-mug",
       priceRange: {
         minVariantPrice: {
-          amount: "14.99",
+          amount: "11.99",
           currencyCode: "USD"
         }
       },
