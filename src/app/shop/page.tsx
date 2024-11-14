@@ -46,7 +46,7 @@ export default function Shop() {
       handle: "we-ride-at-dawn-coffee",
       priceRange: {
         minVariantPrice: {
-          amount: "19.99",
+          amount: "15.99",
           currencyCode: "USD"
         }
       },
@@ -77,7 +77,7 @@ export default function Shop() {
       handle: "balanced-blade-coffee",
       priceRange: {
         minVariantPrice: {
-          amount: "19.99",
+          amount: "15.99",
           currencyCode: "USD"
         }
       },
@@ -108,7 +108,7 @@ export default function Shop() {
       handle: "night-watch-coffee",
       priceRange: {
         minVariantPrice: {
-          amount: "19.99",
+          amount: "15.99",
           currencyCode: "USD"
         }
       },
