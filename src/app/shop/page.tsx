@@ -228,7 +228,7 @@ export default function Shop() {
       handle: "dude-box-slides",
       priceRange: {
         minVariantPrice: {
-          amount: "45.42",
+          amount: "38.99",
           currencyCode: "USD"
         }
       },
