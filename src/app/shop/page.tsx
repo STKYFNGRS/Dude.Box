@@ -138,7 +138,7 @@ export default function Shop() {
       handle: "dude-box-essential-t",
       priceRange: {
         minVariantPrice: {
-          amount: "24.38",
+          amount: "19.99",
           currencyCode: "USD"
         }
       },
@@ -168,7 +168,7 @@ export default function Shop() {
       handle: "dawn-patrol-hoodie",
       priceRange: {
         minVariantPrice: {
-          amount: "59.99",
+          amount: "29.99",
           currencyCode: "USD"
         }
       },
