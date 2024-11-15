@@ -17,18 +17,21 @@ import {
 // Size variants for different product types with prices
 const PRODUCT_SIZES = {
   'Dude Tee': [
-    { size: 'S', variantId: 'gid://shopify/ProductVariant/51671100129648', price: 19.99 },
-    { size: 'M', variantId: 'gid://shopify/ProductVariant/51671100162416', price: 19.99 },
-    { size: 'L', variantId: 'gid://shopify/ProductVariant/51671100195184', price: 19.99 },
-    { size: 'XL', variantId: 'gid://shopify/ProductVariant/51671100227952', price: 19.99 },
-    { size: '2XL', variantId: 'gid://shopify/ProductVariant/51671100260720', price: 19.99 }
+    { size: 'S', variantId: 'gid://shopify/ProductVariant/51671100031344', price: 19.99 },
+    { size: 'M', variantId: 'gid://shopify/ProductVariant/51671100064112', price: 19.99 },
+    { size: 'L', variantId: 'gid://shopify/ProductVariant/51671100096880', price: 19.99 },
+    { size: 'XL', variantId: 'gid://shopify/ProductVariant/51671100129648', price: 19.99 },
+    { size: '2XL', variantId: 'gid://shopify/ProductVariant/51671100162416', price: 19.99 },
+    { size: '3XL', variantId: 'gid://shopify/ProductVariant/51671100195184', price: 19.99 }
   ],
   'Dude Comfort Hoodie': [
-    { size: 'S', variantId: 'gid://shopify/ProductVariant/51671341138288', price: 29.99 },
-    { size: 'M', variantId: 'gid://shopify/ProductVariant/51671341171056', price: 29.99 },
-    { size: 'L', variantId: 'gid://shopify/ProductVariant/51671341203824', price: 29.99 },
-    { size: 'XL', variantId: 'gid://shopify/ProductVariant/51671341236592', price: 29.99 },
-    { size: '2XL', variantId: 'gid://shopify/ProductVariant/51671341269360', price: 29.99 }
+    { size: 'S', variantId: 'gid://shopify/ProductVariant/51671341039984', price: 29.99 },
+    { size: 'M', variantId: 'gid://shopify/ProductVariant/51671341072752', price: 29.99 },
+    { size: 'L', variantId: 'gid://shopify/ProductVariant/51671341105520', price: 29.99 },
+    { size: 'XL', variantId: 'gid://shopify/ProductVariant/51671341138288', price: 29.99 },
+    { size: '2XL', variantId: 'gid://shopify/ProductVariant/51671341171056', price: 29.99 },
+    { size: '3XL', variantId: 'gid://shopify/ProductVariant/51671341203824', price: 29.99 },
+    { size: '4XL', variantId: 'gid://shopify/ProductVariant/51671341236592', price: 29.99 }
   ],
   'Dude Recovery Slides': [
     { size: '6', variantId: 'gid://shopify/ProductVariant/51671352312176', price: 38.99 },
