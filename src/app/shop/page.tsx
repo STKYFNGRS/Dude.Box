@@ -193,6 +193,36 @@ export default function Shop() {
     },
     {
       id: "gid://shopify/Product/7",
+      title: "Dude Recovery Slides",
+      description: "Because Your Feet Earned This.",
+      handle: "dude-box-slides",
+      priceRange: {
+        minVariantPrice: {
+          amount: "38.99",
+          currencyCode: "USD"
+        }
+      },
+      images: {
+        edges: [
+          {
+            node: {
+              url: "/product-images/Slides.jpg"
+            }
+          }
+        ]
+      },
+      variants: {
+        edges: [
+          {
+            node: {
+              id: "gid://shopify/ProductVariant/51671352508784"
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "gid://shopify/Product/8",
       title: "It's A Pickleball Kit, Dude",
       description: "Premium quality pickleball with the iconic Dude Box logo.",
       handle: "dude-box-pickleball",
@@ -221,36 +251,7 @@ export default function Shop() {
         ]
       }
     },
-    {
-      id: "gid://shopify/Product/8",
-      title: "Dude Recovery Slides",
-      description: "Because Your Feet Earned This.",
-      handle: "dude-box-slides",
-      priceRange: {
-        minVariantPrice: {
-          amount: "38.99",
-          currencyCode: "USD"
-        }
-      },
-      images: {
-        edges: [
-          {
-            node: {
-              url: "/product-images/Slides.jpg"
-            }
-          }
-        ]
-      },
-      variants: {
-        edges: [
-          {
-            node: {
-              id: "gid://shopify/ProductVariant/51671352508784"
-            }
-          }
-        ]
-      }
-    }
+    
   ];
 
   return (
