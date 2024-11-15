@@ -198,7 +198,7 @@ export default function Shop() {
       handle: "dude-box-pickleball",
       priceRange: {
         minVariantPrice: {
-          amount: "51.99",
+          amount: "49.99",
           currencyCode: "USD"
         }
       },
