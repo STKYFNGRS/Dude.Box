@@ -138,12 +138,12 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
                       </div>
 
                       <div className="space-y-4">
-                        {/* Connect Wallet with More Pronounced Pulsing Effect */}
+                        {/* Connect Wallet with Subtle Pulsing Effect */}
                         {item.items[0].label === "Connect Wallet" && (
                           <Link
                             href={item.items[0].href || "#"}
                             onClick={item.items[0].onClick}
-                            className="block py-3 px-4 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-semibold animate-pulse-intense"
+                            className="block py-3 px-4 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-semibold animate-pulse-subtle"
                             role="menuitem"
                           >
                             {item.items[0].label}
