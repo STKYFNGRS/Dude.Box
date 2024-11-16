@@ -76,8 +76,12 @@ interface ShopifyResponse<T> {
         }>;
       };
     };
+    selectedOptions?: Array<{  // Added to track variant options like size
+      name: string;
+      value: string;
+    }>;
   };
- }
+}
  
  export interface CartItem {
   id: string;
@@ -86,7 +90,8 @@ interface ShopifyResponse<T> {
   quantity: number;
   image: string;
   variantId: string;
- }
+  size?: string;  // Added size as optional property
+}
  
  // Shopify API Response types
  export interface ShopifyCartCreateData {

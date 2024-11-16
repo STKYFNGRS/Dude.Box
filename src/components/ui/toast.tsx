@@ -23,18 +23,23 @@ const toastVariants = cva(
 );
 
 interface ToastPropsType extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>,
-  VariantProps<typeof toastVariants> {}
+  VariantProps<typeof toastVariants> {
+  size?: string; // Custom size property
+}
 
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   ToastPropsType
->(({ className, variant, ...props }, ref) => {
+>(({ className, variant, size, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {props.children}
+      {size && <p className="text-sm text-gray-500">Size: {size}</p>} {/* Display the size if provided */}
+    </ToastPrimitives.Root>
   );
 });
 Toast.displayName = 'Toast';

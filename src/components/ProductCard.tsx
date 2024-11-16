@@ -67,6 +67,7 @@ interface Product {
       node: {
         id: string;
         title?: string;
+        size?: string;
         price?: {
           amount: string;
           currencyCode: string;
@@ -109,8 +110,8 @@ export function ProductCard({ product }: ProductCardProps) {
     if (needsSize && !selectedSize) {
       toast({
         title: "Size Required",
-        description: "Please select a size before adding to cart.",
-        variant: "destructive",
+        description: "Please select a size before adding to the cart.",
+        variant: "destructive", // Error toast
       });
       return;
     }
@@ -137,18 +138,20 @@ export function ProductCard({ product }: ProductCardProps) {
         price,
         quantity: 1,
         image: imageUrl,
-        variantId
+        variantId,
+        size: selectedSize, // Include the size
       });
       
       toast({
-        title: "Added to cart",
+        title: "Added to Cart",
         description: `${product.title}${variantTitle} has been added to your cart.`,
         duration: 2000,
       });
-    } catch {
+    } catch (error) {
+      console.error("Error adding to cart:", error);
       toast({
         title: "Error",
-        description: "Failed to add item to cart. Please try again.",
+        description: "Failed to add the item to the cart. Please try again.",
         variant: "destructive",
         duration: 2000,
       });

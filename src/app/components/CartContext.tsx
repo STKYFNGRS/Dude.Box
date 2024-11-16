@@ -145,6 +145,10 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
                     ... on ProductVariant {
                       id
                       title
+                      selectedOptions {
+                        name
+                        value
+                      }
                       priceV2 {
                         amount
                         currencyCode
@@ -181,13 +185,20 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       const validItems = cartData.lines.edges
         .map(({ node }: { node: CartNode }) => {
           if (!node?.merchandise?.product) return null;
+          
+          // Find size from selectedOptions
+          const sizeOption = node.merchandise.selectedOptions?.find(
+            option => option.name.toLowerCase() === 'size'
+          );
+  
           return {
             id: node.id,
             title: node.merchandise.product.title,
             price: parseFloat(node.merchandise.priceV2.amount),
             quantity: node.quantity,
             image: node.merchandise.product.images.edges[0]?.node?.url ?? '',
-            variantId: node.merchandise.id
+            variantId: node.merchandise.id,
+            size: sizeOption?.value  // Add size if it exists
           };
         })
         .filter((item: CartItem | null): item is CartItem => item !== null);

@@ -12,8 +12,8 @@ export function CartDrawer() {
     removeFromCart, 
     updateQuantity,
     isLoading,
-    checkoutUrl, // Add checkoutUrl from context
-    total // Use total from context instead of calculating it again
+    checkoutUrl,
+    total
   } = useCart();
 
   const handleCheckout = () => {
@@ -71,51 +71,59 @@ export function CartDrawer() {
                 ) : (
                   <div className="space-y-4">
                     {items.map((item) => (
-                      <div key={item.id + item.variantId} className="flex gap-4 bg-gray-800 p-4 rounded-lg">
-                        <div className="relative w-20 h-20">
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            fill
-                            className="object-cover rounded"
-                            sizes="(max-width: 80px) 100vw, 80px"
-                          />
-                        </div>
-                        
-                        <div className="flex-1">
-                          <h3 className="font-medium">{item.title}</h3>
-                          <p className="text-sm text-gray-400">${item.price.toFixed(2)}</p>
-                          
-                          <div className="flex items-center gap-2 mt-2">
-                            <button
-                              onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
-                              className="p-1 hover:bg-gray-700 rounded"
-                              aria-label="Decrease quantity"
-                              disabled={isLoading}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </button>
-                            <span className="w-8 text-center">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="p-1 hover:bg-gray-700 rounded"
-                              aria-label="Increase quantity"
-                              disabled={isLoading}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => removeFromCart(item.id)}
-                              className="ml-auto text-red-500 hover:text-red-400"
-                              aria-label={`Remove ${item.title} from cart`}
-                              disabled={isLoading}
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+  <div key={item.id + item.variantId} className="flex gap-4 bg-gray-800 p-4 rounded-lg">
+    <div className="relative w-20 h-20">
+      <Image
+        src={item.image}
+        alt={item.title}
+        fill
+        className="object-cover rounded"
+        sizes="(max-width: 80px) 100vw, 80px"
+      />
+    </div>
+    
+    <div className="flex-1">
+      <div className="space-y-1">
+        <h3 className="font-medium text-white">{item.title}</h3>
+        {item.size && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-400">Size:</span>
+            <span className="text-sm font-medium text-gray-200">{item.size}</span>
+          </div>
+        )}
+        <p className="text-sm font-medium text-blue-400">${item.price.toFixed(2)}</p>
+      </div>
+      
+      <div className="flex items-center gap-2 mt-3">
+        <button
+          onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+          className="p-1 hover:bg-gray-700 rounded transition-colors"
+          aria-label="Decrease quantity"
+          disabled={isLoading}
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+        <span className="w-8 text-center">{item.quantity}</span>
+        <button
+          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+          className="p-1 hover:bg-gray-700 rounded transition-colors"
+          aria-label="Increase quantity"
+          disabled={isLoading}
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => removeFromCart(item.id)}
+          className="ml-auto text-red-500 hover:text-red-400 text-sm transition-colors"
+          aria-label={`Remove ${item.title} from cart`}
+          disabled={isLoading}
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+))}
                   </div>
                 )}
               </div>
