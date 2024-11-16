@@ -83,7 +83,8 @@ const Header = () => {
                 { href: "/about", label: "About" },
                 { href: "/roadmap", label: "Roadmap" },
                 { href: "/shop", label: "Shop" },
-                { href: "/mint", label: "Mint" }
+                { href: "/mint", label: "Mint" },
+                { href: "/token", label: "Token" }
               ].map(({ href, label }) => (
                 <Link 
                   key={href}
