@@ -32,7 +32,7 @@ export default function Mint() {
                 <p className="text-sm text-gray-400">Total Supply</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold">0.09 ETH</p>
+                <p className="text-3xl font-bold">.09 ETH</p>
                 <p className="text-sm text-gray-400">Mint Price</p>
               </div>
               <div className="text-center">
