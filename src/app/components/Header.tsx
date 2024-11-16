@@ -15,20 +15,6 @@ const Header = () => {
     setCartOpen(false); // Close cart drawer when menu opens
   };
 
-  const navigationItems = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/roadmap", label: "Roadmap" },
-    { href: "/shop", label: "Shop" },
-    {
-      group: "Onchain",
-      items: [
-        { href: "/mint", label: "Mint" },
-        { href: "/token", label: "Token" }
-      ]
-    }
-  ];
-
   return (
     <header className="fixed top-0 left-0 right-0 w-full bg-black text-white flex items-center justify-between p-4 z-30">
       <Link href="/shop" passHref className="relative z-40">
@@ -92,50 +78,26 @@ const Header = () => {
                 </svg>
               </button>
 
-              {navigationItems.map((item) => {
-  if ('group' in item && item.items) { // Check if item.items exists
-    return (
-      <div key={item.group} className="relative mt-8 p-6 border border-gray-700 rounded-lg">
-        {/* Group Label */}
-        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-black px-4">
-          <span className="text-sm text-gray-400">{item.group}</span>
-        </div>
-
-        {/* Group Items */}
-        <div className="grid grid-cols-2 gap-4">
-          {item.items.map((subItem) => (
-            <Link
-              key={subItem.href}
-              href={subItem.href}
-              onClick={toggleMenu}
-              className="py-3 px-4 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 
-                       transition-colors duration-200 border border-gray-700 rounded-lg
-                       focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
-              role="menuitem"
-            >
-              {subItem.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <Link 
-      key={item.href}
-      href={item.href}
-      onClick={toggleMenu}
-      className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 
-               transition-colors duration-200 border border-gray-700 rounded-lg
-               focus:outline-none focus:ring-2 focus:ring-gray-500"
-      role="menuitem"
-    >
-      {item.label}
-    </Link>
-  );
-})}
-
+              {[
+                { href: "/", label: "Home" },
+                { href: "/about", label: "About" },
+                { href: "/roadmap", label: "Roadmap" },
+                { href: "/shop", label: "Shop" },
+                { href: "/mint", label: "Mint" },
+                { href: "/token", label: "Token" }
+              ].map(({ href, label }) => (
+                <Link 
+                  key={href}
+                  href={href} 
+                  onClick={toggleMenu} 
+                  className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 
+                           transition-colors duration-200 border border-gray-700 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-gray-500" 
+                  role="menuitem"
+                >
+                  {label}
+                </Link>
+              ))}
             </nav>
           </div>
         )}
