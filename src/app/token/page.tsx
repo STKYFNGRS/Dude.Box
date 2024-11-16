@@ -6,7 +6,7 @@ import Image from 'next/image';
 const TokenPage = () => {
   return (
     <ClientLayout>
-      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+      <div className="relative z-0 pt-24 min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
         {/* Hero Section with background image */}
         <div className="relative h-[60vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-black/60 z-10" />
@@ -27,8 +27,8 @@ const TokenPage = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-7xl mx-auto px-4 py-16 -mt-20 relative z-30">
-          {/* Token Info Cards with hover effects */}
+        <div className="relative z-0 w-full max-w-7xl mx-auto px-4 py-16 -mt-20">
+          {/* Token Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
             {[
               {
@@ -47,8 +47,8 @@ const TokenPage = () => {
                 description: "Transparent tokenomics with clear allocation for community rewards, development, and ecosystem growth."
               }
             ].map((card, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-gray-800/80 p-8 rounded-xl border border-gray-700 hover:border-blue-500 
                          transform hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm"
               >
@@ -63,7 +63,7 @@ const TokenPage = () => {
             ))}
           </div>
 
-          {/* Token Utility Section with improved visuals */}
+          {/* Token Utility Section */}
           <div className="mb-24">
             <h2 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
               Token Utility
@@ -105,7 +105,6 @@ const TokenPage = () => {
             </div>
           </div>
 
-          {/* Rest of the sections with consistent styling */}
           {/* Token Distribution */}
           <div className="mb-24">
             <h2 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
@@ -149,59 +148,7 @@ const TokenPage = () => {
             </div>
           </div>
 
-          {/* Roadmap with improved timeline */}
-          <div className="mb-24">
-            <h2 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              Token Roadmap
-            </h2>
-            <div className="relative">
-              <div className="absolute left-4 top-0 h-full w-1 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-              {[
-                {
-                  phase: "Phase 1: Foundation",
-                  items: [
-                    "Smart contract development and security audit",
-                    "Community governance framework",
-                    "Initial token distribution"
-                  ]
-                },
-                {
-                  phase: "Phase 2: Integration",
-                  items: [
-                    "Launch of governance platform",
-                    "Implementation of community rewards",
-                    "Ecosystem partnerships"
-                  ]
-                },
-                {
-                  phase: "Phase 3: Expansion",
-                  items: [
-                    "Enhanced utility features",
-                    "Cross-platform integration",
-                    "Community-led initiatives"
-                  ]
-                }
-              ].map((phase, index) => (
-                <div key={index} className="relative pl-12 pb-12">
-                  <div className="absolute left-0 top-2 w-8 h-8 bg-blue-600 rounded-full border-4 border-gray-900 
-                                shadow-lg shadow-blue-500/50 z-10"></div>
-                  <div className="bg-gray-800/50 p-8 rounded-xl border border-gray-700 hover:border-blue-500 transition-all duration-300">
-                    <h3 className="text-2xl font-semibold mb-6 text-blue-400">{phase.phase}</h3>
-                    <ul className="space-y-4 text-gray-300">
-                      {phase.items.map((item, itemIndex) => (
-                        <li key={itemIndex} className="flex items-center">
-                          <ChevronRight className="w-4 h-4 mr-2 text-blue-400 flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Enhanced Disclaimer */}
+          {/* Disclaimer */}
           <div className="bg-gray-800/50 p-8 rounded-xl border border-gray-700 text-center max-w-3xl mx-auto">
             <p className="text-gray-300 mb-4">
               This information is provided for informational purposes only and does not constitute financial advice. 
