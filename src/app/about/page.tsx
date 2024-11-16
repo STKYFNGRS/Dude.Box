@@ -12,11 +12,11 @@ export default function About() {
           <div className="max-w-3xl mx-auto text-center">
             {/* Hero Section */}
             <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
-              Welcome to dude.box
+              Welcome, Dude
             </h1>
             <p className="text-xl mb-8 text-gray-200">
               We&apos;re not just another brand. We&apos;re building something different here - 
-              a community where dudes can be real, feel supported, and look good doing it.
+              a community where men can be real, feel supported, and look good doing it.
             </p>
             
             {/* Rest of your existing sections */}
@@ -24,7 +24,7 @@ export default function About() {
             <div className="bg-gray-900 p-8 rounded-lg mb-12 transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
               <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
               <p className="text-lg text-gray-200">
-                To create products that dudes actually want while building spaces where they can
+                To create products that guys actually want while building spaces where they can
                 be themselves. Every purchase helps us get closer to opening physical locations offering
                 free counseling, group support, and a place to just breathe.
               </p>
