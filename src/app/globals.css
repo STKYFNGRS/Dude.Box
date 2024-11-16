@@ -97,3 +97,18 @@ main {
 html {
   color-scheme: dark;
 }
+
+@keyframes pulse-intense {
+  0%, 100% {
+    transform: scale(1);
+    border-color: #2563eb; /* Tailwind's blue-500 */
+  }
+  50% {
+    transform: scale(1.1);
+    border-color: #3b82f6; /* Tailwind's blue-400 */
+  }
+}
+
+.animate-pulse-intense {
+  animation: pulse-intense 2s infinite;
+}
