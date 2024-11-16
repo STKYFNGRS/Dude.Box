@@ -2,14 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      'cdn.shopify.com', // Allow Shopify CDN
-      'cdn.accentuate.io' // Optional: Add other domains if needed
-    ],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.accentuate.io',
         pathname: '**',
       }
     ]
