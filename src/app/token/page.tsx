@@ -19,7 +19,7 @@ const TokenPage = () => {
           />
           <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600">
-              The Dude Dot Box Token
+              Token Coming Soon, Dude
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Empowering our community through decentralized participation and rewards
@@ -35,7 +35,7 @@ const TokenPage = () => {
                 icon: <Shield className="w-8 h-8" />,
                 title: "Utility First",
                 description:
-                  "Dude token serves as the foundation for community engagement, governance, and exclusive access within the Dude Dot Box ecosystem.",
+                  "Our token will serve as the foundation for community engagement, governance, and exclusive access within the Dude Dot Box ecosystem.",
               },
               {
                 icon: <Users className="w-8 h-8" />,
@@ -166,7 +166,7 @@ const TokenPage = () => {
           <div className="bg-gray-800/50 p-8 rounded-xl border border-gray-700 text-center max-w-3xl mx-auto">
             <p className="text-gray-300 mb-4">
               This information is provided for informational purposes only and
-              does not constitute financial advice. DUDE tokens are utility
+              does not constitute financial advice. Tokens are utility
               tokens intended for platform participation and governance.
             </p>
             <p className="text-gray-400">
