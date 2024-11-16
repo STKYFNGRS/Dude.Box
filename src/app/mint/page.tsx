@@ -24,7 +24,7 @@ export default function Mint() {
               The Founding Dudes Collection
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Be one of the 20,000 founding members shaping the future of men&apos;s mental health and wellness.
+              Become one of our founding members and help shape the future of men&apos;s mental health and wellness.
             </p>
             <div className="flex justify-center gap-4 mt-6">
               <div className="text-center">
