@@ -37,8 +37,8 @@ export default function Home() {
               <Image
                 src="/hunt pick 2.png"
                 alt="Image of boy picking his nose"
-                width={400}
-                height={400}
+                width={200}
+                height={200}
                 priority
                 className="rounded-full transform transition-all duration-500 group-hover:scale-105 relative"
                 style={{ objectFit: 'cover' }}
