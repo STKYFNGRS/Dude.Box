@@ -15,10 +15,8 @@ export default function Home() {
 
   return (
     <ClientLayout>
-      <div className="relative flex items-center justify-center h-[calc(100vh-64px)] bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden">
-        {/* Enhanced radial gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,45,45,0.9)_0%,rgba(0,0,0,0)_70%)]" />
-        
+      {/* Restored original gradient */}
+      <div className="relative flex items-center justify-center h-[calc(100vh-64px)] bg-gradient-to-b from-black to-gray-900 overflow-hidden">
         {/* Main content */}
         <div className={`relative z-10 transition-all duration-1000 transform ${
           isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
