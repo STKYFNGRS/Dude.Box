@@ -16,9 +16,9 @@ export default function Home() {
 
   return (
     <ClientLayout>
-      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col items-center">
         {/* Hero Section */}
-        <div className="pt-80 pb-48 max-w-3xl mx-auto flex-1 h-full flex items-center justify-center px-4">
+        <div className="pt-48 pb-48 max-w-3xl mx-auto flex items-center justify-center px-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -44,7 +44,7 @@ export default function Home() {
         </div>
 
         {/* Content Sections */}
-        <div className="pt- pb-16 max-w-4xl mx-auto text-center px-6">
+        <div className="pt-20 pb-16 max-w-4xl mx-auto text-center px-6">
           <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
             Welcome, Dude
           </h1>
@@ -75,7 +75,7 @@ export default function Home() {
               {/* Core Services */}
               <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Core Services</h3>
-                <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
+                <ul className="space-y-3 mb-4">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
                     Free one-on-one counseling with licensed therapists
@@ -98,7 +98,7 @@ export default function Home() {
               {/* Community Focus */}
               <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Community-Driven Growth</h3>
-                <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
+                <ul className="space-y-3 mb-4">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
                     Founding member NFTs with real voting power on brand decisions
@@ -121,7 +121,7 @@ export default function Home() {
               {/* Physical Space */}
               <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Our Future Home</h3>
-                <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
+                <ul className="space-y-3 mb-4">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
                     10,000 sq ft mixed-use community hub in San Diego, California
@@ -161,11 +161,13 @@ export default function Home() {
             <p className="text-lg mb-4 text-gray-200">
               Welcome to Dude. I&apos;m just a guy—a husband, a dad, a vet who&apos;s been around long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you some polished fairy tale. I built this brand from the ground up, alone, not because I needed another hobby, but because I saw a gap, a need—hell, a crisis—and couldn&apos;t sit on the sidelines anymore.
             </p>
-            <p className="text-lg mb-4 text-gray-200">
-              I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its noise and chaos, and maybe that&apos;s why Dude isn&apos;t just another brand to me. It&apos;s a vehicle, a lifeline, a way to carve out a space for the real conversations men aren&apos;t supposed to have. Every sale, every piece we make, is a step toward something bigger: a place here in San Diego where men can walk in, breathe out, and shed the armor. An office for free counseling, one-on-one talks, group sessions, AA meetings, jobs—whatever it takes to help another guy keep going.
-            </p>
-            <p className="text-lg text-gray-200">
-              So here&apos;s the deal. Buy our stuff if you like it. Wear it if it feels right. But know that every dollar you spend here pushes us closer to a place where men—guys just like me, just like you—can find a little bit of solid ground in a world that loves to keep us off-balance.
+          </div>
+
+          {/* Call to Action */}
+          <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/40 rounded-lg text-center">
+            <p className="text-lg font-semibold text-blue-400 mb-2">
+              Every purchase, every NFT, every member brings us closer to opening our first location 
+              and providing free mental health support to those who need it.
             </p>
           </div>
         </div>
