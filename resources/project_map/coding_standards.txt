@@ -1,0 +1,131 @@
+DUDE.BOX CODING STANDARDS AND BEST PRACTICES
+Last Updated: November 28, 2024
+
+1. TYPE MANAGEMENT
+-----------------
+Best Practices:
+- Define types in dedicated files under src/types/
+- Avoid duplicate type definitions
+- Export types that will be used across multiple files
+- Use descriptive names for interfaces and types
+- Document required fields with comments
+- Use TypeScript strict mode
+
+Example Structure:
+```typescript
+export interface ExampleType {
+  id: string;
+  title: string; // Required
+  description?: string; // Optional
+}
+```
+
+2. COMPONENT LAYOUT STANDARDS
+----------------------------
+Responsive Layout Structure:
+```tsx
+<main className="flex flex-col min-h-screen [background-styles]">
+  <div className="flex-grow container mx-auto px-4 [padding-styles]">
+    <div className="max-w-[2100px] mx-auto">
+      <div className="w-full flex justify-center">
+        <div className="w-full max-w-7xl">
+          {/* Content */}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+```
+
+Grid System Standards:
+- Mobile: grid-cols-1
+- Small screens (sm): grid-cols-2
+- Large screens (lg): grid-cols-3
+- Extra large (xl): grid-cols-4
+- Use gap-6 for consistent spacing
+- Apply justify-items-center for centered grid items
+
+Responsive Classes:
+- Container: container mx-auto
+- Padding: px-4 (horizontal), pt-32 (top), pb-16 (bottom)
+- Width constraints: max-w-7xl, max-w-[2100px]
+- Flexbox: flex flex-col, flex-grow
+- Centering: mx-auto, justify-center
+
+3. LOADING STATE MANAGEMENT
+--------------------------
+- Use Suspense for component loading
+- Implement consistent loading states
+- Match loading skeleton dimensions to final content
+- Wrap loading states in same width constraints as content
+
+Example:
+```tsx
+<Suspense fallback={<LoadingSkeleton />}>
+  <div className="w-full flex justify-center">
+    {loading ? (
+      <div className="w-full max-w-7xl">
+        <LoadingSkeleton />
+      </div>
+    ) : (
+      <div className="w-full max-w-7xl">
+        {/* Content */}
+      </div>
+    )}
+  </div>
+</Suspense>
+```
+
+4. DATA TRANSFORMATION PATTERNS
+-----------------------------
+- Implement transform functions for API responses
+- Validate required fields
+- Use TypeScript for type safety
+- Handle edge cases and errors
+
+Example:
+```typescript
+function transformData(rawData: RawType): TransformedType {
+  return {
+    id: rawData.id,
+    title: rawData.title,
+    // Add validation/transformation as needed
+  };
+}
+```
+
+5. ERROR HANDLING
+----------------
+- Implement try-catch blocks for async operations
+- Provide meaningful error messages
+- Set appropriate fallback states
+- Log errors for debugging
+
+Example:
+```typescript
+try {
+  const response = await fetchData();
+  // Process response
+} catch (error) {
+  console.error('Specific error message:', error);
+  // Set appropriate fallback state
+}
+```
+
+6. COMPONENT ORGANIZATION
+------------------------
+- Group related components
+- Use consistent file naming
+- Implement lazy loading for large components
+- Follow Single Responsibility Principle
+
+Directory Structure:
+```
+src/
+  components/
+    ui/         - Reusable UI components
+    layout/     - Layout components
+    features/   - Feature-specific components
+```
+
+These standards should be followed for all new development and applied to existing code during refactoring. Update this document as new patterns and standards are established.

@@ -1,29 +1,29 @@
 // Basic Shopify types
 interface ShopifyResponse<T> {
   data: T;
- }
- 
- export interface ShopifyUserError {
+}
+
+export interface ShopifyUserError {
   field: string;
   message: string;
- }
- 
- export interface ShopifyImage {
+}
+
+export interface ShopifyImage {
   url: string;
   altText?: string;
- }
- 
- export interface ShopifyVariant {
+}
+
+export interface ShopifyVariant {
   id: string;
   title: string;
   price: {
     amount: string;
     currencyCode: string;
   };
- }
- 
- // Product types
- export interface ShopifyProduct {
+}
+
+// Product types
+export interface ShopifyProduct {
   id: string;
   title: string;
   description: string;
@@ -38,6 +38,7 @@ interface ShopifyResponse<T> {
     edges: Array<{
       node: {
         url: string;
+        altText: string; // Made required
       };
     }>;
   };
@@ -45,18 +46,23 @@ interface ShopifyResponse<T> {
     edges: Array<{
       node: {
         id: string;
-        title?: string;
-        price?: {
+        title: string; // Made required
+        availableForSale: boolean; // Added
+        selectedOptions: Array<{
+          name: string;
+          value: string;
+        }>;
+        price: {
           amount: string;
           currencyCode: string;
         };
       };
     }>;
   };
- }
- 
- // Cart types
- export interface CartNode {
+}
+
+// Cart types
+export interface CartNode {
   id: string;
   quantity: number;
   merchandise: {
@@ -76,25 +82,25 @@ interface ShopifyResponse<T> {
         }>;
       };
     };
-    selectedOptions?: Array<{  // Added to track variant options like size
+    selectedOptions?: Array<{
       name: string;
       value: string;
     }>;
   };
 }
- 
- export interface CartItem {
+
+export interface CartItem {
   id: string;
   title: string;
   price: number;
   quantity: number;
   image: string;
   variantId: string;
-  size?: string;  // Added size as optional property
+  size?: string;
 }
- 
- // Shopify API Response types
- export interface ShopifyCartCreateData {
+
+// Shopify API Response types
+export interface ShopifyCartCreateData {
   cartCreate: {
     cart: {
       id: string;
@@ -102,9 +108,9 @@ interface ShopifyResponse<T> {
     } | null;
     userErrors: ShopifyUserError[];
   };
- }
- 
- export type ShopifyCartCreateResponse = ShopifyResponse<{
+}
+
+export type ShopifyCartCreateResponse = ShopifyResponse<{
   cartCreate: {
     cart: {
       id: string;
@@ -113,8 +119,8 @@ interface ShopifyResponse<T> {
     userErrors: ShopifyUserError[];
   };
 }>;
- 
- export interface ShopifyCartQueryData {
+
+export interface ShopifyCartQueryData {
   cart: {
     id: string;
     lines: {
@@ -123,9 +129,9 @@ interface ShopifyResponse<T> {
       }>;
     };
   } | null;
- }
- 
- export type ShopifyCartQueryResponse = ShopifyResponse<{
+}
+
+export type ShopifyCartQueryResponse = ShopifyResponse<{
   cart: {
     id: string;
     lines: {
@@ -135,9 +141,9 @@ interface ShopifyResponse<T> {
     };
   };
 }>;
- 
- // Type guards
- export function isCartCreateResponse(data: unknown): data is ShopifyCartCreateResponse {
+
+// Type guards
+export function isCartCreateResponse(data: unknown): data is ShopifyCartCreateResponse {
   return (
     typeof data === 'object' &&
     data !== null &&
@@ -146,4 +152,4 @@ interface ShopifyResponse<T> {
     (data as Record<string, unknown>).data !== null &&
     'cartCreate' in (data as Record<string, { cartCreate: unknown }>).data
   );
- }
+}

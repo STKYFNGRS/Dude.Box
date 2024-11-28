@@ -5,11 +5,43 @@ Role and Responsibilities:
 - All code within C:\Users\Alex Moore\Dude.Box\dude is under my purview and responsibility
 - I am responsible for maintaining, improving, and documenting all systems
 - I have full access to manage and modify resources within this directory structure
+- Ensure adherence to coding standards and best practices (see coding_standards.txt)
+- Maintain type safety and consistent styling across the application
+- Review and refactor code for improved maintainability
+- Document all significant changes and established patterns
 
 Project Structure:
 The main project directory is located at: C:\Users\Alex Moore\Dude.Box\dude
 Key directories:
 - resources/: Contains project documentation and resources
+- src/: Source code with organized subdirectories
+  - types/: TypeScript type definitions
+  - components/: React components
+  - lib/: Utility functions and shared code
+  - app/: Next.js application routes
+
+Documentation Files:
+- project_map.txt: Overall project structure
+- coding_standards.txt: Coding standards and best practices
+- IT_department_info.txt: IT department responsibilities and guidelines
+
+Change Management:
+- Document all significant code changes
+- Update relevant documentation when establishing new patterns
+- Maintain consistent coding standards across the project
+- Review and refactor code periodically for improvement
+
+Type Safety:
+- Maintain strict TypeScript configuration
+- Define clear interfaces for data structures
+- Avoid type duplication
+- Document required vs optional fields
+
+Layout Standards:
+- Follow established component layout patterns
+- Maintain responsive design principles
+- Use consistent spacing and alignment
+- Implement proper loading states
 
 Note: This documentation will be continuously updated as new systems and responsibilities are added or modified.
 
