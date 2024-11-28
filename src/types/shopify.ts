@@ -39,28 +39,24 @@ export interface ShopifyProduct {
 
 export interface CartItem {
   id: string;
-  title: string;
-  variant: {
-    id: string;
-    title: string;
-    price: {
-      amount: string;
-      currencyCode: string;
-    };
-  };
   quantity: number;
   merchandise: {
     id: string;
     title: string;
+    selectedOptions: Array<{
+      name: string;
+      value: string;
+    }>;
+    priceV2: {
+      amount: string;
+      currencyCode: string;
+    };
     product: {
-      id: string;
       title: string;
-      handle: string;
       images: {
         edges: Array<{
           node: {
             url: string;
-            altText?: string;
           };
         }>;
       };
@@ -71,15 +67,15 @@ export interface CartItem {
 export interface CartNode {
   id: string;
   checkoutUrl: string;
-  estimatedCost: {
-    totalAmount: {
-      amount: string;
-      currencyCode: string;
-    };
-  };
   lines: {
     edges: Array<{
       node: CartItem;
     }>;
+  };
+  estimatedCost?: {
+    totalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
   };
 }
