@@ -18,7 +18,7 @@ export default function Home() {
     <ClientLayout>
       <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col items-center">
         {/* Hero Section */}
-        <div className="pt-48 pb-48 max-w-3xl mx-auto flex items-center justify-center px-4">
+        <div className="pt-80 pb-48 max-w-3xl mx-auto flex items-center justify-center px-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -44,7 +44,7 @@ export default function Home() {
         </div>
 
         {/* Content Sections */}
-        <div className="pt-20 pb-16 max-w-4xl mx-auto text-center px-6">
+        <div className="pt-80 pb-16 max-w-4xl mx-auto text-center px-6">
           <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
             Welcome, Dude
           </h1>
