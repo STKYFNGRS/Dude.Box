@@ -1,0 +1,86 @@
+DUDE.BOX PROJECT STRUCTURE
+Last Updated: November 28, 2024
+
+📁 dude/
+├── 📄 .env.local                 # Local environment variables
+├── 📄 .eslintrc.json            # ESLint configuration
+├── 📁 .git/                     # Git repository data
+├── 📄 .gitignore               # Git ignore rules
+├── 📁 .next/                    # Next.js build output
+├── 📁 .vercel/                  # Vercel deployment configuration
+├── 📄 components.json          # Component configuration file
+├── 📄 env.d.ts                 # Environment TypeScript declarations
+├── 📄 next-env.d.ts           # Next.js TypeScript declarations
+├── 📄 next.config.ts          # Next.js configuration
+├── 📁 node_modules/            # Project dependencies
+├── 📄 package-lock.json       # NPM dependency lock file
+├── 📄 package.json            # Project configuration and dependencies
+├── 📄 postcss.config.mjs      # PostCSS configuration
+├── 📁 public/                  # Static files served by Next.js
+├── 📄 README.md               # Project documentation
+├── 📁 resources/              # Project resources and documentation
+│   └── 📁 project_map/        # Project mapping and documentation
+│       ├── 📄 IT_department_info.txt
+│       └── 📄 project_map.txt
+├── 📁 src/                    # Source code directory
+│   ├── 📁 app/               # Next.js app router pages and layouts
+│   ├── 📁 components/        # Reusable React components
+│   ├── 📁 context/          # React context providers
+│   ├── 📁 data/            # Data models and configurations
+│   ├── 📁 hooks/           # Custom React hooks
+│   ├── 📁 lib/            # Utility functions and libraries
+│   └── 📁 types/          # TypeScript type definitions
+├── 📄 tailwind.config.ts     # Tailwind CSS configuration
+├── 📄 test.db                # SQLite database file
+├── 📄 tsconfig.json          # TypeScript configuration
+└── 📄 tsconfig.tsbuildinfo   # TypeScript build information
+
+KEY COMPONENTS:
+
+1. Frontend Framework:
+   - Next.js with TypeScript
+   - Tailwind CSS for styling
+   - Vercel deployment configuration
+
+2. Development Tools:
+   - ESLint for code linting
+   - PostCSS for CSS processing
+   - TypeScript for type safety
+
+3. Database:
+   - SQLite database (test.db)
+
+4. Documentation:
+   - Resources directory for project documentation
+   - README.md for project overview
+
+5. Version Control:
+   - Git repository
+   - .gitignore for specifying ignored files
+
+6. Configuration Files:
+   - Environment configurations (.env.local)
+   - TypeScript configurations (tsconfig.json)
+   - Next.js configuration (next.config.ts)
+   - Tailwind configuration (tailwind.config.ts)
+
+7. Source Code Organization (src/):
+   - app/: Next.js app router pages and layouts
+   - components/: Reusable React components
+   - context/: React context providers for state management
+   - data/: Data models and configurations
+   - hooks/: Custom React hooks for shared functionality
+   - lib/: Utility functions and shared libraries
+   - types/: TypeScript type definitions
+
+NOTES:
+- This is a Next.js application with TypeScript support
+- Uses Tailwind CSS for styling
+- Includes SQLite database functionality
+- Deployed via Vercel platform
+- Follows modern JavaScript/TypeScript development practices
+- Uses the new Next.js App Router architecture
+- Implements a modular component-based architecture
+- Follows TypeScript best practices with separate type definitions
+
+For any modifications or updates to this structure, please consult with the IT department (that's me!).

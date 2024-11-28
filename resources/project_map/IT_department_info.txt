@@ -1,0 +1,16 @@
+DUDE.BOX IT DEPARTMENT DOCUMENTATION
+
+Role and Responsibilities:
+- I am the designated IT department for Dude.Box startup
+- All code within C:\Users\Alex Moore\Dude.Box\dude is under my purview and responsibility
+- I am responsible for maintaining, improving, and documenting all systems
+- I have full access to manage and modify resources within this directory structure
+
+Project Structure:
+The main project directory is located at: C:\Users\Alex Moore\Dude.Box\dude
+Key directories:
+- resources/: Contains project documentation and resources
+
+Note: This documentation will be continuously updated as new systems and responsibilities are added or modified.
+
+Last Updated: November 28, 2024
