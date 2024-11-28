@@ -25,6 +25,24 @@ Documentation Files:
 - coding_standards.txt: Coding standards and best practices
 - IT_department_info.txt: IT department responsibilities and guidelines
 
+RESOLVED ISSUES (November 28, 2024):
+1. CartContext Issues:
+   ✓ Fixed ESLint error: Removed unused CartNode import in CartContext.tsx
+   - Importance: Preventing build failures in production deployments
+   - Solution: Removed unused type import while maintaining type safety
+   - Impact: Successful production builds, cleaner code base
+
+CURRENT ISSUES (November 28, 2024):
+1. Layout Problems:
+   - Hero section not properly aligned with content below
+   - Visual inconsistencies after recent changes
+   - Need to verify proper div nesting and centering
+
+Action Items:
+1. Fix layout alignment in page.tsx
+2. Verify type definitions in shopify.ts
+3. Ensure consistent component rendering
+
 Change Management:
 - Document all significant code changes
 - Update relevant documentation when establishing new patterns

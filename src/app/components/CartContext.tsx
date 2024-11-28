@@ -1,11 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 import { useToast } from '@/components/ui/use-toast';
 import { 
   CartItem,
-  CartNode,
   CartLineNode
 } from '@/types/shopify';
 
@@ -27,6 +26,13 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Move client initialization outside component
+const client = createStorefrontApiClient({
+  storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || '',
+  publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
+  apiVersion: '2024-01'
+});
+
 export function CartProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const { toast } = useToast();
   const [cartId, setCartId] = useState<string | null>(null);
@@ -41,12 +47,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
     setItemCount(count);
   }, [items]);
-
-  const client = createStorefrontApiClient({
-    storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || '',
-    publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
-    apiVersion: '2024-01'
-  });
 
   const createCart = useCallback(async () => {
     try {
@@ -92,9 +92,9 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
       }
       throw error;
     }
-  }, [client, toast, isInitialized]);
-  
-  const fetchCart = useCallback(async (id: string): Promise<void> => {
+  }, [isInitialized, toast]);
+
+  const fetchCart = useCallback(async (id: string) => {
     if (!id) return;
     
     setIsLoading(true);
@@ -172,7 +172,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
   
       setItems(validItems);
     } catch (error) {
-      console.error('Error fetching cart:', error);
       if (String(error).includes('Cart not found')) {
         setCartId(null);
         setCheckoutUrl(null);
@@ -189,10 +188,14 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     } finally {
       setIsLoading(false);
     }
-  }, [client, toast, isInitialized]);
+  }, [isInitialized, toast]);
 
   useEffect(() => {
+    let mounted = true;
+
     const initCart = async () => {
+      if (!mounted) return;
+
       try {
         const storedCartId = localStorage.getItem('shopifyCartId');
         const storedCheckoutUrl = localStorage.getItem('shopifyCheckoutUrl');
@@ -203,27 +206,38 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
           await fetchCart(storedCartId);
         } else {
           const { id, checkoutUrl: newCheckoutUrl } = await createCart();
-          localStorage.setItem('shopifyCartId', id);
-          localStorage.setItem('shopifyCheckoutUrl', newCheckoutUrl);
-          setCartId(id);
-          setCheckoutUrl(newCheckoutUrl);
+          if (mounted) {
+            localStorage.setItem('shopifyCartId', id);
+            localStorage.setItem('shopifyCheckoutUrl', newCheckoutUrl);
+            setCartId(id);
+            setCheckoutUrl(newCheckoutUrl);
+          }
         }
       } catch (error) {
         console.error('Error initializing cart:', error);
         localStorage.removeItem('shopifyCartId');
         localStorage.removeItem('shopifyCheckoutUrl');
-        setCartId(null);
-        setCheckoutUrl(null);
+        if (mounted) {
+          setCartId(null);
+          setCheckoutUrl(null);
+        }
       } finally {
-        setIsInitialized(true);
+        if (mounted) {
+          setIsInitialized(true);
+        }
       }
     };
 
     if (typeof window !== 'undefined') {
       initCart();
     }
-  }, [createCart, fetchCart]);
 
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array since createCart and fetchCart are stable
+
+  // Rest of the cart methods...
   const addToCart = useCallback(async (product: CartItem) => {
     if (!cartId) return;
     setIsLoading(true);
@@ -270,7 +284,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, client, fetchCart, toast]);
+  }, [cartId, fetchCart, toast]);
 
   const removeFromCart = useCallback(async (variantId: string) => {
     if (!cartId) return;
@@ -318,8 +332,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, client, fetchCart, toast]);
-  
+  }, [cartId, fetchCart, toast]);
+
   const updateQuantity = useCallback(async (variantId: string, quantity: number) => {
     if (!cartId) return;
     setIsLoading(true);
@@ -366,8 +380,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, client, fetchCart, toast]);
-  
+  }, [cartId, fetchCart, toast]);
+
   const clearCart = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -393,7 +407,9 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     }
   }, [createCart, toast]);
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = useMemo(() => {
+    return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [items]);
 
   const initiateCheckout = useCallback(() => {
     if (!checkoutUrl) {
@@ -407,22 +423,37 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     window.location.href = checkoutUrl;
   }, [checkoutUrl, toast]);
 
+  const value = useMemo(() => ({
+    items,
+    cartId,
+    checkoutUrl,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    initiateCheckout,
+    isLoading,
+    total,
+    itemCount,
+    isOpen,
+    setIsOpen
+  }), [
+    items,
+    cartId,
+    checkoutUrl,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    initiateCheckout,
+    isLoading,
+    total,
+    itemCount,
+    isOpen
+  ]);
+
   return (
-    <CartContext.Provider value={{
-      items,
-      cartId,
-      checkoutUrl,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      initiateCheckout,
-      isLoading,
-      total,
-      itemCount,
-      isOpen,
-      setIsOpen
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

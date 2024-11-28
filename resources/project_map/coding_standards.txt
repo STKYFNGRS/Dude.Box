@@ -10,6 +10,19 @@ Best Practices:
 - Use descriptive names for interfaces and types
 - Document required fields with comments
 - Use TypeScript strict mode
+- Remove unused type imports to prevent ESLint errors
+
+Recent Fixes:
+✓ CartContext.tsx - Removed unused CartNode type import
+  - Keep only types that are actively used in the component
+  - Prevents ESLint errors and production build failures
+  - Example of proper type import cleanup:
+    ```typescript
+    import { 
+      CartItem,    // Used in state and functions
+      CartLineNode // Used in data transformation
+    } from '@/types/shopify';
+    ```
 
 Example Structure:
 ```typescript
