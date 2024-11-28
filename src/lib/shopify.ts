@@ -66,19 +66,31 @@ export async function getAllProducts(): Promise<ShopifyProduct[]> {
             priceRange {
               minVariantPrice {
                 amount
+                currencyCode
               }
             }
             images(first: 1) {
               edges {
                 node {
                   url
+                  altText
                 }
               }
             }
-            variants(first: 1) {
+            variants(first: 20) {
               edges {
                 node {
                   id
+                  title
+                  availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
@@ -103,19 +115,31 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
         priceRange {
           minVariantPrice {
             amount
+            currencyCode
           }
         }
         images(first: 1) {
           edges {
             node {
               url
+              altText
             }
           }
         }
-        variants(first: 1) {
+        variants(first: 20) {
           edges {
             node {
               id
+              title
+              availableForSale
+              selectedOptions {
+                name
+                value
+              }
+              price {
+                amount
+                currencyCode
+              }
             }
           }
         }
