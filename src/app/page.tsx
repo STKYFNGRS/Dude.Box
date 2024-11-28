@@ -16,9 +16,9 @@ export default function Home() {
 
   return (
     <ClientLayout>
-      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">
+      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col">
         {/* Hero Section */}
-        <div className="max-w-3xl mx-auto h-[calc(100vh-64px)] flex items-center justify-center">
+        <div className="pt-80 pb-48 max-w-3xl mx-auto flex-1 h-full flex items-center justify-center px-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -26,35 +26,35 @@ export default function Home() {
             className="relative z-10"
           >
             <Link href="/shop" className="group relative block">
-              <div className="absolute -inset-4 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-800 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-300" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-800 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition duration-500" />
               <div className="absolute -inset-1 bg-gradient-to-r from-gray-700 via-white to-gray-700 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               <div className="relative">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-800 rounded-full opacity-50 group-hover:opacity-70 transition duration-300" />
                 <Image
                   src="/hunt pick 2.png"
                   alt="Brand logo"
                   width={200}
                   height={200}
                   priority
-                  className="rounded-full transform transition-all duration-500 group-hover:scale-105 relative"
+                  className="rounded-full transform transition-all duration-500 group-hover:scale-105"
                 />
+                <span className="sr-only">Brand logo</span> {/* Visually hidden for accessibility */}
               </div>
             </Link>
           </motion.div>
         </div>
 
         {/* Content Sections */}
-        <div className="max-w-3xl mx-auto text-center px-4">
-          <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+        <div className="pt- pb-16 max-w-4xl mx-auto text-center px-6">
+          <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
             Welcome, Dude
           </h1>
-          <p className="text-xl mb-8 text-gray-200">
+          <p className="text-xl mb-10 text-gray-200">
             We&apos;re not just another brand. We&apos;re building something different here - 
             a community where men can be real, feel supported, and look good doing it.
           </p>
           
           {/* Mission Statement */}
-          <div className="bg-gray-900 p-8 rounded-lg mb-12 transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
+          <div className="bg-gray-900 p-8 rounded-lg mb-12 transition hover:bg-gray-800 border border-gray-700 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-lg text-gray-200">
               To create products that guys actually want while building spaces where they can
@@ -73,7 +73,7 @@ export default function Home() {
               </p>
               
               {/* Core Services */}
-              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
+              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Core Services</h3>
                 <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
                   <li className="flex items-center">
@@ -96,7 +96,7 @@ export default function Home() {
               </div>
 
               {/* Community Focus */}
-              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
+              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Community-Driven Growth</h3>
                 <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
                   <li className="flex items-center">
@@ -119,7 +119,7 @@ export default function Home() {
               </div>
 
               {/* Physical Space */}
-              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-800 shadow-lg transition duration-300 hover:bg-gray-800">
+              <div className="bg-gray-900 p-6 rounded-lg mb-6 border border-gray-700 shadow-lg transition hover:bg-gray-800">
                 <h3 className="text-xl font-semibold mb-3">Our Future Home</h3>
                 <ul className="text-left mx-auto max-w-xl space-y-3 mb-4">
                   <li className="flex items-center">
@@ -143,111 +143,30 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Founder's Message */}
-          <div className="bg-gray-900 p-8 rounded-lg transition duration-300 hover:bg-gray-800 border border-gray-800 shadow-lg">
-            {/* Header and Image Section */}
-            <div className="text-center mb-12">
-              <h3 className="text-2xl font-semibold mb-8">From the Founder</h3>
-              <div className="flex justify-center mb-12">
-                <div className="relative w-96 h-96 rounded-lg overflow-hidden shadow-xl border-2 border-gray-800">
-                  <Image
-                    src="/family2.jpg"
-                    alt="Alex Moore with family"
-                    fill
-                    className="object-cover hover:scale-105 transition duration-300"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    priority
-                  />
-                </div>
+          {/* From the Founder Section */}
+          <div className="bg-gray-900 p-8 rounded-lg border border-gray-700 shadow-lg transition hover:bg-gray-800">
+            <h3 className="text-2xl font-semibold mt-6 mb-2">From the Founder</h3>
+            <div className="flex justify-center mb-8">
+              <div className="relative w-80 h-80 rounded-lg overflow-hidden shadow-lg border border-gray-800">
+                <Image
+                  src="/family2.jpg"
+                  alt="Alex Moore with family"
+                  fill
+                  className="object-cover hover:scale-105 transition duration-300"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  priority
+                />
               </div>
             </div>
-
-            {/* Content Section */}
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-4">
-                <p className="text-lg mb-4 text-gray-200">
-                  I&apos;m Alex Moore - just a regular dude, husband, dad, and veteran who&apos;s been around
-                  long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you
-                  some polished fairy tale. I&apos;m building this brand because I see a crisis that demands action.
-                </p>
-
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-3 text-white">The Reality We Face:</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-400">1 in 3</p>
-                      <p className="text-sm text-gray-300">men will seek help when struggling with mental health</p>
-                    </div>
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-400">3.7x</p>
-                      <p className="text-sm text-gray-300">higher suicide rate among men than women</p>
-                    </div>
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-400">75%</p>
-                      <p className="text-sm text-gray-300">of men feel unable to discuss personal challenges</p>
-                    </div>
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-400">5 months</p>
-                      <p className="text-sm text-gray-300">average wait time for mental health services</p>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-lg text-gray-200">
-                  I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its
-                  noise and chaos. When you&apos;re taught that asking for help means you&apos;re weak. When the 
-                  support you need exists, but the barriers to get it feel insurmountable. That&apos;s why 
-                  dude.box isn&apos;t just another brand. It&apos;s a vehicle for change, a way to create the 
-                  support system I wish I&apos;d had.
-                </p>
-
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2 text-white">Our Solution:</h4>
-                  <p className="text-gray-200">
-                    We&apos;re building spaces where getting help is normalized. Where mental health support 
-                    is free, immediate, and delivered by professionals who understand men&apos;s unique challenges. 
-                    Where finding community doesn&apos;t require a crisis first.
-                  </p>
-                </div>
-
-                <p className="text-lg text-gray-200">
-                  So here&apos;s the deal: buy our stuff if you like it. Wear it if it feels right. 
-                  But know that every dollar you spend here pushes us closer to creating places 
-                  where dudes can find solid ground in a world that loves to keep us off-balance. 
-                  We&apos;re not just selling products - we&apos;re funding a mission to change how men 
-                  access mental health support.
-                </p>
-              </div>
-
-              {/* Impact Statement */}
-              <div className="mt-8 border-t border-gray-800 pt-6">
-                <div className="grid md:grid-cols-3 gap-4 text-center">
-                  <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-blue-400">Phase 1</h5>
-                    <p className="text-sm text-gray-300">Build our community and establish brand presence</p>
-                  </div>
-                  <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-blue-400">Phase 2</h5>
-                    <p className="text-sm text-gray-300">Launch first physical location in San Diego, California</p>
-                  </div>
-                  <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-blue-400">Phase 3</h5>
-                    <p className="text-sm text-gray-300">Expand to additional cities nationwide</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Call to Action */}
-              <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/40 rounded-lg text-center">
-                <p className="text-lg font-semibold text-blue-400 mb-2">
-                  Join Us in Making a Difference
-                </p>
-                <p className="text-gray-200">
-                  Every purchase, every NFT, every member brings us closer to opening our first location 
-                  and providing free mental health support to those who need it.
-                </p>
-              </div>
-            </div>
+            <p className="text-lg mb-4 text-gray-200">
+              Welcome to Dude. I&apos;m just a guy—a husband, a dad, a vet who&apos;s been around long enough to know that life doesn&apos;t pull its punches. I&apos;m not here to sell you some polished fairy tale. I built this brand from the ground up, alone, not because I needed another hobby, but because I saw a gap, a need—hell, a crisis—and couldn&apos;t sit on the sidelines anymore.
+            </p>
+            <p className="text-lg mb-4 text-gray-200">
+              I know what it&apos;s like to feel like you&apos;re facing the world alone, with all its noise and chaos, and maybe that&apos;s why Dude isn&apos;t just another brand to me. It&apos;s a vehicle, a lifeline, a way to carve out a space for the real conversations men aren&apos;t supposed to have. Every sale, every piece we make, is a step toward something bigger: a place here in San Diego where men can walk in, breathe out, and shed the armor. An office for free counseling, one-on-one talks, group sessions, AA meetings, jobs—whatever it takes to help another guy keep going.
+            </p>
+            <p className="text-lg text-gray-200">
+              So here&apos;s the deal. Buy our stuff if you like it. Wear it if it feels right. But know that every dollar you spend here pushes us closer to a place where men—guys just like me, just like you—can find a little bit of solid ground in a world that loves to keep us off-balance.
+            </p>
           </div>
         </div>
 
