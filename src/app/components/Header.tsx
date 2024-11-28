@@ -18,12 +18,11 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    setCartOpen(false); // Close cart drawer when menu opens
+    setCartOpen(false);
   };
 
   const navigationItems = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" },
     {
@@ -66,7 +65,6 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
       <div className="flex items-center gap-4">
         <CartDrawer />
 
-        {/* Hamburger Icon */}
         {!isOpen && (
           <button
             onClick={toggleMenu}
@@ -92,7 +90,6 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
           </button>
         )}
 
-        {/* Mobile Menu */}
         {isOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-95 text-center z-50">
             <nav
@@ -102,7 +99,6 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
               role="menu"
               tabIndex={-1}
             >
-              {/* Close button */}
               <button
                 onClick={toggleMenu}
                 aria-label="Close menu"
@@ -138,7 +134,6 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
                       </div>
 
                       <div className="space-y-4">
-                        {/* Connect Wallet with Subtle Pulsing Effect */}
                         {item.items[0].label === "Connect Wallet" && (
                           <Link
                             href={item.items[0].href || "#"}
@@ -150,7 +145,6 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
                           </Link>
                         )}
 
-                        {/* Mint and Token on Same Row */}
                         <div className="grid grid-cols-2 gap-4">
                           {item.items.slice(1).map((subItem, index) => (
                             <Link
