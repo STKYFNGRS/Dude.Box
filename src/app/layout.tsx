@@ -2,17 +2,24 @@ import '@/app/globals.css';
 import { Providers } from '@/app/providers';
 import { CartProvider } from '@/app/components/CartContext';
 
+export const metadata = {
+  title: 'Dude.Box',
+  description: 'Dude.Box Application',
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body suppressHydrationWarning={true}>
+    <html lang="en" className="dark h-full">
+      <body suppressHydrationWarning={true} className="min-h-screen flex flex-col bg-background">
         <Providers>
           <CartProvider>
-            {children}
+            <main className="flex-grow flex flex-col">
+              {children}
+            </main>
           </CartProvider>
         </Providers>
       </body>
