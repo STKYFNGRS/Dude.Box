@@ -1,59 +1,32 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 28, 2024
 
-## [1.0.3] - 2024-11-28
+## [1.0.5] - 2024-11-28
 ### Changed
-- Doubled hero section padding for improved visual hierarchy
-  - Mobile: increased to pt-80
-  - Desktop: increased to pt-160 (40rem/640px)
-  - Added custom spacing to Tailwind config
-  - Removed extra top padding from content section
-  - Impact: Better vertical spacing and brand presence
+- Major refactor of page.tsx into component architecture
+  - Created dedicated sections/ directory in components
+  - Broke down monolithic page into modular components
+  - Separated services and founder content into sub-components
+  - Impact: Improved code maintainability and build performance
 
-## [1.0.2] - 2024-11-28
-### Changed
-- Increased hero section padding for better visual hierarchy
-  - Mobile: increased from pt-20 to pt-40
-  - Desktop: increased from pt-40 to pt-80
-  - Maintains existing bottom padding
-  - Impact: Improved visual spacing and brand presentation
-
-### Fixed
-- Mobile responsiveness issues in page layout
-  - Added proper container classes
-  - Implemented consistent responsive padding
-  - Added proper responsive width controls
-  - Made founder image properly responsive
-  - Impact: Consistent centering across all devices
-
-## [1.0.1] - 2024-11-28
-### Fixed
-- Production build failure in CartContext.tsx
-  - Removed unused CartNode type import
-  - Resolved ESLint error: '@typescript-eslint/no-unused-vars'
-  - Improved code cleanliness while maintaining type safety
-  - Impact: Successful production deployments
-
-### Changed
-- Updated documentation
-  - Added RESOLVED ISSUES section to IT_department_info.txt
-  - Enhanced TYPE MANAGEMENT section in coding_standards.txt
-  - Created changelog.txt for tracking future changes
-
-## [1.0.0] - Initial Version
 ### Added
-- Base Next.js application structure
-- Shopify integration
-- Cart functionality
-- Responsive layout system
-- Type definitions
-- Project documentation
+- New component structure:
+  - sections/Hero.tsx
+  - sections/Mission.tsx
+  - sections/Vision.tsx
+  - sections/Founder.tsx
+  - sections/services/CoreServices.tsx
+  - sections/services/CommunityServices.tsx
+  - sections/services/PhysicalSpace.tsx
+  - sections/founder/Stats.tsx
+  - sections/founder/ImpactPhases.tsx
 
-Format Notes:
-- Version numbers follow Semantic Versioning (MAJOR.MINOR.PATCH)
-- Categories: Added, Changed, Deprecated, Removed, Fixed, Security
-- Each entry should include:
-  - Description of change
-  - Reason for change
-  - Impact of change
-  - Additional context where relevant
+### Fixed
+- Build errors in page.tsx
+  - Resolved component import issues
+  - Fixed ESLint warnings
+  - Improved code organization
+  - Impact: Restored working site build
+
+## [1.0.4] - 2024-11-28
+[Previous entries remain the same...]

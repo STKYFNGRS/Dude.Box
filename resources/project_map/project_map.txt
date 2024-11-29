@@ -20,11 +20,29 @@ Last Updated: November 28, 2024
 ├── 📄 README.md               # Project documentation
 ├── 📁 resources/              # Project resources and documentation
 │   └── 📁 project_map/        # Project mapping and documentation
+│       ├── 📄 changelog.txt
+│       ├── 📄 coding_standards.txt
 │       ├── 📄 IT_department_info.txt
 │       └── 📄 project_map.txt
 ├── 📁 src/                    # Source code directory
 │   ├── 📁 app/               # Next.js app router pages and layouts
-│   ├── 📁 components/        # Reusable React components
+│   │   ├── 📄 page.tsx      # Main landing page
+│   │   └── 📁 components/   # React components
+│   │       ├── 📄 Header.tsx
+│   │       ├── 📄 Footer.tsx
+│   │       ├── 📄 Client-Layout.tsx
+│   │       └── 📁 sections/  # Page section components
+│   │           ├── 📄 Hero.tsx
+│   │           ├── 📄 Mission.tsx
+│   │           ├── 📄 Vision.tsx
+│   │           ├── 📄 Founder.tsx
+│   │           ├── 📁 services/
+│   │           │   ├── 📄 CoreServices.tsx
+│   │           │   ├── 📄 CommunityServices.tsx
+│   │           │   └── 📄 PhysicalSpace.tsx
+│   │           └── 📁 founder/
+│   │               ├── 📄 Stats.tsx
+│   │               └── 📄 ImpactPhases.tsx
 │   ├── 📁 context/          # React context providers
 │   ├── 📁 data/            # Data models and configurations
 │   ├── 📁 hooks/           # Custom React hooks
@@ -47,40 +65,25 @@ KEY COMPONENTS:
    - PostCSS for CSS processing
    - TypeScript for type safety
 
-3. Database:
-   - SQLite database (test.db)
+3. Component Architecture:
+   - Modular section components
+   - Nested service components
+   - Founder-specific components
+   - Reusable layout components
 
 4. Documentation:
    - Resources directory for project documentation
    - README.md for project overview
+   - Detailed changelog tracking
 
 5. Version Control:
    - Git repository
-   - .gitignore for specifying ignored files
+   - .gitignore for specified ignored files
 
-6. Configuration Files:
-   - Environment configurations (.env.local)
-   - TypeScript configurations (tsconfig.json)
-   - Next.js configuration (next.config.ts)
-   - Tailwind configuration (tailwind.config.ts)
+Notes:
+- Component architecture now follows a more modular approach
+- Section components are organized by feature/purpose
+- Improved maintainability through component separation
+- Clear documentation of changes in changelog
 
-7. Source Code Organization (src/):
-   - app/: Next.js app router pages and layouts
-   - components/: Reusable React components
-   - context/: React context providers for state management
-   - data/: Data models and configurations
-   - hooks/: Custom React hooks for shared functionality
-   - lib/: Utility functions and shared libraries
-   - types/: TypeScript type definitions
-
-NOTES:
-- This is a Next.js application with TypeScript support
-- Uses Tailwind CSS for styling
-- Includes SQLite database functionality
-- Deployed via Vercel platform
-- Follows modern JavaScript/TypeScript development practices
-- Uses the new Next.js App Router architecture
-- Implements a modular component-based architecture
-- Follows TypeScript best practices with separate type definitions
-
-For any modifications or updates to this structure, please consult with the IT department (that's me!).
+For any modifications or updates to this structure, please consult with the IT department.
