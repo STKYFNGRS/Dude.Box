@@ -6,13 +6,7 @@ import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 
-interface HeaderProps {
-  address?: string;
-  initializeWallet: () => void;
-  disconnectWallet: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWallet }) => {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
 
@@ -25,28 +19,7 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" },
-    {
-      group: "Onchain",
-      items: [
-        ...(address
-          ? [
-              {
-                href: "#",
-                label: `Connected: ${address.slice(0, 6)}...${address.slice(-4)}`,
-                onClick: disconnectWallet,
-              },
-            ]
-          : [
-              {
-                href: "#",
-                label: "Connect Wallet",
-                onClick: initializeWallet,
-              },
-            ]),
-        { href: "/mint", label: "Mint" },
-        { href: "/token", label: "Token" },
-      ],
-    },
+    { href: "/onchain", label: "Onchain" }
   ];
 
   return (
@@ -120,60 +93,17 @@ const Header: React.FC<HeaderProps> = ({ address, initializeWallet, disconnectWa
                 </svg>
               </button>
 
-              {navigationItems.map((item) => {
-                if (item.group) {
-                  return (
-                    <div
-                      key={item.group}
-                      className="relative mt-8 p-6 border border-gray-700 rounded-lg bg-gray-800"
-                    >
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-black px-4">
-                        <span className="text-sm text-gray-400">
-                          {item.group}
-                        </span>
-                      </div>
-
-                      <div className="space-y-4">
-                        {item.items[0].label === "Connect Wallet" && (
-                          <Link
-                            href={item.items[0].href || "#"}
-                            onClick={item.items[0].onClick}
-                            className="block py-3 px-4 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-semibold animate-pulse-subtle"
-                            role="menuitem"
-                          >
-                            {item.items[0].label}
-                          </Link>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                          {item.items.slice(1).map((subItem, index) => (
-                            <Link
-                              key={index}
-                              href={subItem.href || "#"}
-                              className="py-3 px-4 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm text-white text-center"
-                              role="menuitem"
-                            >
-                              {subItem.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href || "#"}
-                    onClick={toggleMenu}
-                    className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    role="menuitem"
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={toggleMenu}
+                  className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  role="menuitem"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
         )}

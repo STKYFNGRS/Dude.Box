@@ -1,71 +1,64 @@
 DUDE.BOX CODING STANDARDS AND BEST PRACTICES
 Last Updated: November 28, 2024
 
-1. RESPONSIVE LAYOUT STANDARDS
+1. WEB3 STANDARDS
 ----------------------------
-Hero Section Standards:
-- Mobile padding top: pt-40
-- Desktop padding top: sm:pt-80
-- Mobile padding bottom: pb-24
-- Desktop padding bottom: sm:pb-48
-- Maintain proper container structure:
+Smart Wallet Integration:
+- Always use latest Coinbase SDK version
+- Follow provider initialization pattern:
+```typescript
+const sdk = createCoinbaseWalletSDK({
+  appName: "Dude Box",
+  appLogoUrl: "/Dude logo 3.jpg",
+  appChainIds: [84532],
+  preference: {
+    options: "smartWalletOnly",
+    attribution: {
+      auto: true,
+    }
+  }
+});
+```
+
+Error Handling Pattern:
+```typescript
+try {
+  // Web3 operation
+} catch (error) {
+  if (error.code === 4001) {
+    // User rejected
+  } else if (error.code === 4902) {
+    // Chain not available
+  } else {
+    // Generic error
+  }
+}
+```
+
+2. COMPONENT PATTERNS
+----------------------------
+Wallet Components:
+- Use shadcn/ui for consistency
+- Implement loading states
+- Handle error states
+- Show connection status
+
+Example Structure:
 ```tsx
-<div className="w-full flex justify-center">
-  <div className="container px-4 sm:px-6 mx-auto">
-    <div className="pt-40 sm:pt-80 pb-24 sm:pb-48 flex items-center justify-center">
-      {/* Content */}
-    </div>
-  </div>
+<div className="wallet-component">
+  <WalletStatus />
+  <NetworkSelector />
+  <TransactionList />
+  <ActionButtons />
 </div>
 ```
 
-Content Section Standards:
-- Use container class for consistent margins
-- Implement responsive padding (px-4 sm:px-6)
-- Maintain max-width constraints for readability
-- Use responsive padding for different screen sizes
-
-2. TYPE MANAGEMENT
------------------
-Best Practices:
-- Define types in dedicated files under src/types/
-- Avoid duplicate type definitions
-- Export types that will be used across multiple files
-- Use descriptive names for interfaces and types
-- Document required fields with comments
-- Use TypeScript strict mode
-- Remove unused type imports to prevent ESLint errors
-
-Recent Fixes:
-✓ CartContext.tsx - Removed unused CartNode type import
-  - Keep only types that are actively used in the component
-  - Prevents ESLint errors and production build failures
-
-3. COMPONENT LAYOUT STANDARDS
+3. STATE MANAGEMENT
 ----------------------------
-Responsive Layout Structure:
-```tsx
-<main className="flex flex-col min-h-screen [background-styles]">
-  <div className="flex-grow container mx-auto px-4 [padding-styles]">
-    <div className="max-w-[2100px] mx-auto">
-      <div className="w-full flex justify-center">
-        <div className="w-full max-w-7xl">
-          {/* Content */}
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-```
+Web3 Context Pattern:
+- Use reducer for complex state
+- Implement proper typing
+- Handle cleanup
+- Manage subscriptions
 
-4. DATA TRANSFORMATION PATTERNS
------------------------------
-(Previous content remains unchanged...)
-
-5. ERROR HANDLING
-----------------
-(Previous content remains unchanged...)
-
-6. COMPONENT ORGANIZATION
-------------------------
-(Previous content remains unchanged...)
+[Previous sections remain unchanged...]

@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "sqlite": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-sqlite",
+        "--db-path",
+        "C:\\Users\\Alex Moore\\Dude.Box\\dude\\test.db"
+      ]
+    },
+    "filesystem": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\Users\\Alex Moore\\Dude.Box\\dude"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "BSAUze8xPkjm8_VHWL8IK8LdMlzYdke"
+      }
+    }
+  }
+}

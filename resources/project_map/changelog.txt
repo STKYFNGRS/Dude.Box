@@ -1,32 +1,39 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 28, 2024
 
-## [1.0.5] - 2024-11-28
-### Changed
-- Major refactor of page.tsx into component architecture
-  - Created dedicated sections/ directory in components
-  - Broke down monolithic page into modular components
-  - Separated services and founder content into sub-components
-  - Impact: Improved code maintainability and build performance
+## [1.0.8] - 2024-11-28
+### Major Web3 Integration
+- Implemented comprehensive Web3 functionality
+  - Added Coinbase Smart Wallet SDK integration
+  - Added traditional wallet support (MetaMask, etc.)
+  - Base Sepolia testnet integration
+  - Unified web3 state management
 
 ### Added
-- New component structure:
-  - sections/Hero.tsx
-  - sections/Mission.tsx
-  - sections/Vision.tsx
-  - sections/Founder.tsx
-  - sections/services/CoreServices.tsx
-  - sections/services/CommunityServices.tsx
-  - sections/services/PhysicalSpace.tsx
-  - sections/founder/Stats.tsx
-  - sections/founder/ImpactPhases.tsx
+- Web3 Infrastructure:
+  - /src/app/services/smartWallet.ts - Smart wallet service
+  - /src/app/services/traditionalWallet.ts - Traditional wallet service
+  - /src/app/context/Web3Context.tsx - Unified Web3 state management
+  - /src/app/types/web3.ts - TypeScript definitions
+  - /src/app/config/web3.ts - Web3 configuration
 
-### Fixed
-- Build errors in page.tsx
-  - Resolved component import issues
-  - Fixed ESLint warnings
-  - Improved code organization
-  - Impact: Restored working site build
+- New Components:
+  - /src/app/components/wallet/WalletOptions.tsx - Wallet connection UI
+  - /src/app/components/wallet/ChainSelector.tsx - Network switching
+  - /src/app/components/wallet/WalletInfo.tsx - Connected wallet display
+  - /src/app/components/wallet/TransactionHistory.tsx - Transaction viewing
 
-## [1.0.4] - 2024-11-28
+### Changed
+- Refactored wallet connection flow
+  - Removed email-based signup
+  - Implemented direct Smart Wallet integration
+  - Added unified connection handling
+  - Enhanced error handling and state management
+
+### Security
+- Implemented secure wallet connection handling
+- Added proper chain switching mechanisms
+- Error boundary implementation for Web3 functions
+
+## [1.0.7] - 2024-11-28
 [Previous entries remain the same...]

@@ -2,88 +2,94 @@ DUDE.BOX PROJECT STRUCTURE
 Last Updated: November 28, 2024
 
 📁 dude/
-├── 📄 .env.local                 # Local environment variables
+├── 📄 .env.local                 # Environment variables (Web3 RPC URLs & API keys)
 ├── 📄 .eslintrc.json            # ESLint configuration
 ├── 📁 .git/                     # Git repository data
 ├── 📄 .gitignore               # Git ignore rules
 ├── 📁 .next/                    # Next.js build output
 ├── 📁 .vercel/                  # Vercel deployment configuration
-├── 📄 components.json          # Component configuration file
-├── 📄 env.d.ts                 # Environment TypeScript declarations
+├── 📄 components.json          # Component configuration
+├── 📄 env.d.ts                # Environment TypeScript declarations
 ├── 📄 next-env.d.ts           # Next.js TypeScript declarations
 ├── 📄 next.config.ts          # Next.js configuration
 ├── 📁 node_modules/            # Project dependencies
-├── 📄 package-lock.json       # NPM dependency lock file
 ├── 📄 package.json            # Project configuration and dependencies
 ├── 📄 postcss.config.mjs      # PostCSS configuration
-├── 📁 public/                  # Static files served by Next.js
+├── 📁 public/                  # Static files
 ├── 📄 README.md               # Project documentation
-├── 📁 resources/              # Project resources and documentation
-│   └── 📁 project_map/        # Project mapping and documentation
-│       ├── 📄 changelog.txt
-│       ├── 📄 coding_standards.txt
-│       ├── 📄 IT_department_info.txt
-│       └── 📄 project_map.txt
 ├── 📁 src/                    # Source code directory
-│   ├── 📁 app/               # Next.js app router pages and layouts
-│   │   ├── 📄 page.tsx      # Main landing page
-│   │   └── 📁 components/   # React components
-│   │       ├── 📄 Header.tsx
-│   │       ├── 📄 Footer.tsx
-│   │       ├── 📄 Client-Layout.tsx
-│   │       └── 📁 sections/  # Page section components
-│   │           ├── 📄 Hero.tsx
-│   │           ├── 📄 Mission.tsx
-│   │           ├── 📄 Vision.tsx
-│   │           ├── 📄 Founder.tsx
-│   │           ├── 📁 services/
-│   │           │   ├── 📄 CoreServices.tsx
-│   │           │   ├── 📄 CommunityServices.tsx
-│   │           │   └── 📄 PhysicalSpace.tsx
-│   │           └── 📁 founder/
-│   │               ├── 📄 Stats.tsx
-│   │               └── 📄 ImpactPhases.tsx
-│   ├── 📁 context/          # React context providers
-│   ├── 📁 data/            # Data models and configurations
-│   ├── 📁 hooks/           # Custom React hooks
-│   ├── 📁 lib/            # Utility functions and libraries
-│   └── 📁 types/          # TypeScript type definitions
-├── 📄 tailwind.config.ts     # Tailwind CSS configuration
-├── 📄 test.db                # SQLite database file
-├── 📄 tsconfig.json          # TypeScript configuration
-└── 📄 tsconfig.tsbuildinfo   # TypeScript build information
+│   ├── 📁 app/               # Next.js app router
+│   │   ├── 📁 components/    # Shared components
+│   │   │   ├── 📁 wallet/   # Web3 Components
+│   │   │   │   ├── 📄 WalletOptions.tsx   # Wallet connection UI
+│   │   │   │   ├── 📄 ChainSelector.tsx   # Network selection
+│   │   │   │   ├── 📄 WalletInfo.tsx      # Wallet status display
+│   │   │   │   └── 📄 TransactionHistory.tsx # Transaction viewer
+│   │   ├── 📁 config/       # Configuration files
+│   │   │   └── 📄 web3.ts   # Web3 configuration
+│   │   ├── 📁 context/      # React contexts
+│   │   │   └── 📄 Web3Context.tsx # Web3 state management
+│   │   ├── 📁 services/     # Service layer
+│   │   │   ├── 📄 smartWallet.ts     # Smart wallet service
+│   │   │   └── 📄 traditionalWallet.ts # Traditional wallet service
+│   │   ├── 📁 types/        # TypeScript types
+│   │   │   └── 📄 web3.ts   # Web3 type definitions
+│   │   └── 📁 onchain/      # Web3 pages (CURRENT FOCUS)
+│   │       ├── 📄 page.tsx  # Main Web3 dashboard
+│   │       └── 📁 components/
+│   │           ├── 📄 TabContent.tsx
+│   │           └── 📄 ...other components
+├── 📄 tailwind.config.ts     # Tailwind configuration
+└── 📄 tsconfig.json          # TypeScript configuration
 
-KEY COMPONENTS:
+KEY FOCUS - WEB3 INTEGRATION:
 
-1. Frontend Framework:
-   - Next.js with TypeScript
-   - Tailwind CSS for styling
-   - Vercel deployment configuration
+1. Wallet Connection:
+   - Smart Wallet implementation via Coinbase SDK
+   - Traditional wallet support (MetaMask, etc.)
+   - Unified connection handling
+   - Error management
 
-2. Development Tools:
-   - ESLint for code linting
-   - PostCSS for CSS processing
-   - TypeScript for type safety
+2. Component Architecture:
+   - Modular Web3 components
+   - Shared wallet context
+   - Type-safe implementations
+   - Reusable services
 
-3. Component Architecture:
-   - Modular section components
-   - Nested service components
-   - Founder-specific components
-   - Reusable layout components
+3. State Management:
+   - Centralized Web3Context
+   - Wallet connection state
+   - Chain management
+   - Transaction tracking
 
-4. Documentation:
-   - Resources directory for project documentation
-   - README.md for project overview
-   - Detailed changelog tracking
+4. Services Layer:
+   - Smart wallet service
+   - Traditional wallet service
+   - Chain switching
+   - Transaction handling
 
-5. Version Control:
-   - Git repository
-   - .gitignore for specified ignored files
+NEXT STEPS:
 
-Notes:
-- Component architecture now follows a more modular approach
-- Section components are organized by feature/purpose
-- Improved maintainability through component separation
-- Clear documentation of changes in changelog
+1. Transaction Management:
+   - Implement transaction signing
+   - Add transaction history
+   - Gas estimation
+   - Transaction status tracking
 
-For any modifications or updates to this structure, please consult with the IT department.
+2. Chain Management:
+   - Multi-chain support
+   - Chain switching UI
+   - Network status monitoring
+   - RPC fallbacks
+
+3. Smart Contract Integration:
+   - Contract interaction layer
+   - ABI management
+   - Event listening
+   - State synchronization
+
+4. UI/UX Improvements:
+   - Loading states
+   - Error handling
+   - Success notifications
+   - Transaction confirmations

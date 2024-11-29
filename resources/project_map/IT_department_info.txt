@@ -1,53 +1,113 @@
 DUDE.BOX IT DEPARTMENT DOCUMENTATION
+Last Updated: November 28, 2024
 
-[Previous content remains...]
+WEB3 INTEGRATION DOCUMENTATION
 
-OPTIMIZATION INITIATIVE (November 28, 2024):
-Priority: HIGH
-Objective: Complete site-wide optimization for performance and mobile experience
+1. WALLET INTEGRATION ARCHITECTURE
 
-1. Image Optimization Strategy:
-- Implement next/image with proper sizing
-- Add responsive image sizes
-- Enable blur placeholders
-- Optimize loading priorities
-- Use WebP format where supported
-- Implement proper aspect ratios
+A. Smart Wallet Implementation:
+- Using latest Coinbase Smart Wallet SDK
+- Direct integration without email requirement
+- Supports creation and connection
+- Automatic chain configuration
 
-2. Mobile Optimization Tasks:
-- Review and adjust all viewport breakpoints
-- Optimize touch targets (min 44px)
-- Improve text readability on small screens
-- Enhance spacing for mobile
-- Optimize scrolling performance
-- Implement mobile-first media queries
+B. Traditional Wallet Support:
+- MetaMask compatibility
+- Coinbase Wallet support
+- WalletConnect ready
+- Chain switching support
 
-3. Performance Optimization:
-- Component code splitting
-- Lazy loading implementation
-- Font optimization
-- Style optimization
-- Animation performance
-- React component optimization
+2. TECHNICAL SPECIFICATIONS
 
-4. Testing Requirements:
-- Mobile device testing
-- Performance benchmarking
-- Lighthouse scoring
-- Load time analysis
-- FCP/LCP optimization
-- CLS prevention
+A. Network Configuration:
+- Primary Network: Base Sepolia (Chain ID: 84532)
+- RPC URL: Configured via environment variables
+- Block Explorer: https://sepolia.basescan.org
 
-OPTIMIZATION CHECKLIST:
-□ Implement responsive image strategy
-□ Optimize layout components
-□ Enhance mobile navigation
-□ Improve touch targets
-□ Optimize text readability
-□ Implement performance monitoring
+B. Dependencies:
+Required packages:
+- @coinbase/wallet-sdk: ^4.2.3
+- viem: ^2.21.52
+- wagmi: ^2.13.2
+- @web3modal/wagmi: ^5.1.11
+
+3. IMPLEMENTATION DETAILS
+
+A. Smart Wallet Flow:
+1. User clicks "Smart Wallet"
+2. Coinbase SDK initializes
+3. User chooses create/connect
+4. Automatic chain configuration
+5. Connection state management
+
+B. Traditional Wallet Flow:
+1. User clicks "Connect Wallet"
+2. Provider detection
+3. Wallet connection request
+4. Chain switching if needed
+5. State management
+
+4. STATE MANAGEMENT
+
+A. Web3Context:
+- Centralized state management
+- Connection status tracking
+- Chain management
+- Error handling
+- Event listeners
+
+B. Services Layer:
+- Separated smart/traditional wallet logic
+- Chain switching functionality
+- Transaction handling
+- Event management
+
+5. SECURITY CONSIDERATIONS
+
+A. Wallet Connection:
+- Secure provider handling
+- Chain validation
+- Error boundaries
+- State validation
+
+B. Transaction Security:
+- Gas estimation
+- Chain verification
+- Transaction validation
+- Error recovery
+
+6. MONITORING & MAINTENANCE
+
+A. Connection Monitoring:
+- Provider status
+- Chain status
+- Network health
+- RPC availability
+
+B. Error Tracking:
+- Connection failures
+- Transaction errors
+- Chain switching issues
+- State inconsistencies
+
+7. FUTURE IMPROVEMENTS
+
+A. Short Term:
+□ Implement transaction history
+□ Add multi-chain support
+□ Improve error handling
 □ Add loading states
-□ Optimize animation performance
-□ Implement code splitting
-□ Add mobile testing suite
 
-[Previous content continues...]
+B. Medium Term:
+□ Contract interaction layer
+□ Transaction batching
+□ Gas optimization
+□ Enhanced security features
+
+C. Long Term:
+□ Custom smart contract integration
+□ Advanced transaction management
+□ Enhanced analytics
+□ Performance optimization
+
+[Previous sections remain...]
