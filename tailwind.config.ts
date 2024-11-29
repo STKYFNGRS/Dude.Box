@@ -49,10 +49,11 @@ const config = {
         '9xl': '8rem',
       },
       minHeight: {
-        'screen-dynamic': ['100vh /* fallback */', '100dvh'],
-      },
+        'screen-dynamic': '100dvh',
+    },
+    
       maxWidth: {
-        'screen-dynamic': ['100vh /* fallback */', '100dvh'],
+        'screen-dynamic': '100vh',
       },
       screens: {
         'xs': '475px',
