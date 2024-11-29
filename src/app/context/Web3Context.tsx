@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useReducer, useCallback, ReactNode, useEffect } from 'react';
 import { traditionalWalletService } from '../services/traditionalWallet';
+import { type WalletClient, type PublicClient } from 'viem';
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import type { Web3ContextState, Web3ContextType } from '../types/web3';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare global {
   interface Window {
-    ethereum: any;
+    ethereum?: WalletClient & PublicClient & CoinbaseWalletProvider;
   }
 }
 
@@ -92,8 +93,8 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             address: accounts[0],
             chain: { id: 84532, name: 'Base Sepolia' }
           },
-          walletClient: provider,
-          publicClient: provider,
+          walletClient: provider as unknown as WalletClient,
+          publicClient: provider as unknown as PublicClient,
         },
       });
     } catch (error) {

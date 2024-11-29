@@ -27,11 +27,10 @@ export function useWalletData(): WalletData {
     setError(null);
 
     try {
-      const balanceWei = await state.publicClient.getBalance({
-        address: state.wallet.address as `0x${string}`,
+      const balanceValue = await state.publicClient.getBalance({
+        address: `0x${state.wallet.address.slice(2)}` as `0x${string}`,
       });
-
-      setBalance(formatEther(balanceWei));
+      setBalance(formatEther(balanceValue));
     } catch (err) {
       console.error('Failed to fetch balance:', err);
       setError('Failed to fetch wallet balance');
