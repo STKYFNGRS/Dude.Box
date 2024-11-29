@@ -1,14 +1,17 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
+import { useWeb3 } from '@/app/context/Web3Context';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
+
+  const { state } = useWeb3();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);

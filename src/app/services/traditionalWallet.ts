@@ -18,18 +18,15 @@ class TraditionalWalletService {
     }
 
     try {
-      // Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
 
-      // Create wallet client
       const walletClient = createWalletClient({
         chain: DEFAULT_CHAIN,
         transport: custom(window.ethereum),
       });
 
-      // Switch to the correct chain
       await this.switchChain(DEFAULT_CHAIN.id);
 
       this.provider = window.ethereum;
@@ -54,7 +51,6 @@ class TraditionalWalletService {
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
     } catch (error: unknown) {
-      // Chain doesn't exist, add it
       if ((error as { code: number }).code === 4902) {
         await this.provider.request({
           method: 'wallet_addEthereumChain',
@@ -73,7 +69,22 @@ class TraditionalWalletService {
   }
 
   async disconnect() {
-    this.provider = null;
+    if (this.provider) {
+      // Clear WalletConnect session if available
+      if ((this.provider as any).disconnect) {
+        await (this.provider as any).disconnect();
+      }
+      
+      // Clear local storage data
+      localStorage.removeItem('walletconnect');
+      localStorage.removeItem('WALLET_CONNECT_V2_INITIALIZED');
+      
+      // Clear provider reference
+      this.provider = null;
+      
+      // Reload page to clear any remaining state
+      window.location.reload();
+    }
   }
 
   setupEventListeners(handlers: {
