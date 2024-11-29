@@ -1,23 +1,25 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 29, 2024
 
-## [1.0.10] - 2024-11-29
+## [1.0.11] - 2024-11-29
+### Major Changes
+- Wallet Connection System
+  - Implemented mutual exclusivity for wallet connections
+  - Added visual feedback for active wallet
+  - Improved error handling and state management
+  - Updated UI for Coinbase/MetaMask only
+
 ### Fixed
-- Transaction History component
-  - Added proper Block and Transaction typing
-  - Fixed block fetching with transactions
-  - Added includeTransactions flag
+- MCP Configuration
+  - Added proper Brave Search server config
+  - Added required environment variables
+  - Fixed server persistence settings
+  - Improved error handling
 
-### Updates Required
-- Brave Search MCP integration not working
-  - Investigate config issues
-  - Verify API key formatting
-  - Check connection management
-
-### In Progress
-- Wallet Connection Improvements
-  - Need to restrict to one wallet type at a time
-  - Update UI to reflect Coinbase/MetaMask only
-  - Make connection options mutually exclusive
+### Technical Updates
+- Added proper types for Block interface
+- Enhanced wallet state management
+- Updated connection flow
+- Fixed build errors
 
 [Previous entries remain the same...]

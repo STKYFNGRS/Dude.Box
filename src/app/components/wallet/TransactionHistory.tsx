@@ -5,7 +5,7 @@ import { useWeb3 } from '@/app/context/Web3Context';
 import { formatEther, type Block } from 'viem';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
-interface Transaction {
+interface SimplifiedTransaction {
   hash: string;
   from: string;
   to: string;
@@ -13,18 +13,20 @@ interface Transaction {
   timestamp: number;
 }
 
-interface BlockWithTransactions extends Block {
-  transactions: {
-    hash: string;
-    from: string;
-    to: string | null;
-    value: bigint;
-  }[];
+interface TransactionType {
+  hash: string;
+  from: string;
+  to: string | null;
+  value: bigint;
+}
+
+interface BlockType extends Omit<Block, 'transactions'> {
+  transactions: TransactionType[];
 }
 
 export const TransactionHistory = () => {
   const { state } = useWeb3();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<SimplifiedTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchTransactions = useCallback(async () => {
@@ -36,29 +38,31 @@ export const TransactionHistory = () => {
       const currentBlock = await state.publicClient.getBlockNumber();
       const fromBlock = currentBlock - BigInt(100);
       
-      const blocks: BlockWithTransactions[] = [];
+      const promises = [];
       for (let i = fromBlock; i <= currentBlock; i++) {
-        const block = await state.publicClient.getBlock({
+        promises.push(state.publicClient.getBlock({
           blockNumber: i,
           includeTransactions: true
-        }) as BlockWithTransactions;
-        blocks.push(block);
+        }));
       }
 
-      const txs = blocks.flatMap(block => 
-        block.transactions
+      const blocks = await Promise.all(promises) as BlockType[];
+      
+      const txs = blocks.flatMap(block => {
+        const blockTimestamp = Number(block.timestamp);
+        return block.transactions
           .filter(tx => 
             tx.from.toLowerCase() === userAddress ||
-            tx.to?.toLowerCase() === userAddress
+            (tx.to?.toLowerCase() || '') === userAddress
           )
           .map(tx => ({
             hash: tx.hash,
             from: tx.from,
             to: tx.to || '',
             value: tx.value,
-            timestamp: Number(block.timestamp)
-          }))
-      );
+            timestamp: blockTimestamp
+          }));
+      });
 
       setTransactions(txs);
     } catch (error) {
