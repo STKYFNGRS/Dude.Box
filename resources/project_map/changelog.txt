@@ -1,25 +1,18 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 29, 2024
 
-## [1.0.11] - 2024-11-29
-### Major Changes
-- Wallet Connection System
-  - Implemented mutual exclusivity for wallet connections
-  - Added visual feedback for active wallet
-  - Improved error handling and state management
-  - Updated UI for Coinbase/MetaMask only
-
+## [1.0.12] - 2024-11-29
 ### Fixed
-- MCP Configuration
-  - Added proper Brave Search server config
-  - Added required environment variables
-  - Fixed server persistence settings
-  - Improved error handling
+- Provider Type System
+  - Added proper CoinbaseWalletProvider typing
+  - Created SmartWalletSDK interface
+  - Fixed provider type assertions
+  - Updated Web3Context types
 
-### Technical Updates
-- Added proper types for Block interface
-- Enhanced wallet state management
-- Updated connection flow
-- Fixed build errors
+### Technical Notes
+- Root cause of provider errors was incorrect typing of Coinbase SDK
+- Added proper type declarations for all provider interfaces
+- Ensured type safety across wallet connections
+- Fixed build errors in Vercel deployment
 
 [Previous entries remain the same...]

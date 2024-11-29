@@ -1,6 +1,6 @@
 'use client';
 
-import { ShieldCheck, Wallet } from 'lucide-react';
+import { Mail, Wallet } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -10,31 +10,30 @@ import {
 } from "@/components/ui/card";
 import { useWeb3 } from '@/app/context/Web3Context';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import { useState } from 'react';
 
-type WalletType = 'none' | 'coinbase' | 'metamask';
+type WalletType = 'none' | 'smart' | 'traditional';
 
 export const WalletOptions = () => {
   const { connectSmartWallet, connectTraditionalWallet, state } = useWeb3();
   const [activeWallet, setActiveWallet] = useState<WalletType>('none');
 
-  const handleCoinbaseWallet = async () => {
+  const handleSmartWallet = async () => {
     if (activeWallet !== 'none') return;
     try {
-      setActiveWallet('coinbase');
+      setActiveWallet('smart');
       const sdk = createCoinbaseWalletSDK({
         appName: "Dude Box",
         appLogoUrl: "/Dude logo 3.jpg",
         appChainIds: [84532],
         preference: {
           options: "smartWalletOnly",
-          attribution: {
-            auto: true,
-          }
+          attribution: { auto: true }
         }
       });
 
-      const provider = sdk.getProvider();
+      const provider = sdk.getProvider() as CoinbaseWalletProvider;
       await connectSmartWallet(provider);
     } catch (error) {
       console.error('Smart wallet connection error:', error);
@@ -42,67 +41,67 @@ export const WalletOptions = () => {
     }
   };
 
-  const handleMetaMask = async () => {
+  const handleTraditionalWallet = async () => {
     if (activeWallet !== 'none') return;
     try {
-      setActiveWallet('metamask');
+      setActiveWallet('traditional');
       await connectTraditionalWallet();
     } catch (error) {
-      console.error('MetaMask connection error:', error);
+      console.error('Traditional wallet connection error:', error);
       setActiveWallet('none');
     }
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      {/* Coinbase Option */}
+      {/* Smart Wallet Option */}
       <Card 
         className={`relative group transition-all cursor-pointer
           ${activeWallet === 'none' ? 'bg-gray-800/50 border-gray-700 hover:border-blue-500' : 
-            activeWallet === 'coinbase' ? 'bg-blue-900/20 border-blue-500' : 'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
+            activeWallet === 'smart' ? 'bg-blue-900/20 border-blue-500' : 'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
         `}
-        onClick={handleCoinbaseWallet}
+        onClick={handleSmartWallet}
       >
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ShieldCheck className="w-8 h-8 text-blue-400" />
+            <Mail className="w-8 h-8 text-blue-400" />
             <div>
-              <CardTitle className="text-xl text-white">Coinbase Wallet</CardTitle>
-              <CardDescription className="text-gray-400">Smart Wallet Experience</CardDescription>
+              <CardTitle className="text-xl text-white">Smart Wallet</CardTitle>
+              <CardDescription className="text-gray-400">Easy Web3 Onboarding</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-sm text-gray-300">
-            <li>• Simple Web3 Experience</li>
-            <li>• Built for New Users</li>
-            <li>• Secure & Non-Custodial</li>
+            <li>• No Extension Required</li>
+            <li>• Perfect for New Users</li>
+            <li>• One-Click Setup</li>
           </ul>
         </CardContent>
       </Card>
 
-      {/* MetaMask Option */}
+      {/* Traditional Wallet Option */}
       <Card 
         className={`relative group transition-all cursor-pointer
           ${activeWallet === 'none' ? 'bg-gray-800/50 border-gray-700 hover:border-orange-500' : 
-            activeWallet === 'metamask' ? 'bg-orange-900/20 border-orange-500' : 'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
+            activeWallet === 'traditional' ? 'bg-orange-900/20 border-orange-500' : 'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
         `}
-        onClick={handleMetaMask}
+        onClick={handleTraditionalWallet}
       >
         <CardHeader>
           <div className="flex items-center gap-3">
             <Wallet className="w-8 h-8 text-orange-400" />
             <div>
-              <CardTitle className="text-xl text-white">MetaMask</CardTitle>
-              <CardDescription className="text-gray-400">Advanced Web3 Wallet</CardDescription>
+              <CardTitle className="text-xl text-white">Connect Wallet</CardTitle>
+              <CardDescription className="text-gray-400">Coinbase Wallet or MetaMask</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-sm text-gray-300">
+            <li>• Use Existing Wallet</li>
+            <li>• Connect with Extension</li>
             <li>• Full Web3 Features</li>
-            <li>• Multi-Chain Support</li>
-            <li>• Self-Custodial</li>
           </ul>
         </CardContent>
       </Card>

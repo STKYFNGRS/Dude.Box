@@ -1,5 +1,5 @@
 import { type PublicClient, type WalletClient } from 'viem';
-import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
+import { CoinbaseWalletProvider, CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
 export type ConnectedWallet = {
   address: string;
@@ -16,6 +16,10 @@ export type Web3ContextState = {
   publicClient: PublicClient | null;
   walletClient: WalletClient | null;
 };
+
+export interface SmartWalletSDK extends CoinbaseWalletSDK {
+  getProvider(): CoinbaseWalletProvider;
+}
 
 export type Web3ContextType = {
   state: Web3ContextState;
