@@ -13,7 +13,7 @@ export const Hero: React.FC<HeroProps> = ({ isLoaded }) => {
   return (
     <div className="w-full flex justify-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-20 lg:pb-24 flex items-center justify-center">
+        <div className="pt-20 sm:pt-32 lg:pt-40 pb-12 sm:pb-16 lg:pb-20 flex items-center justify-center">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -27,10 +27,11 @@ export const Hero: React.FC<HeroProps> = ({ isLoaded }) => {
                 <Image
                   src="/hunt pick 2.png"
                   alt="Brand logo"
-                  width={200}
-                  height={200}
+                  width={160}
+                  height={160}
+                  sizes="(max-width: 768px) 160px, 200px"
                   priority
-                  className="rounded-full transform transition-all duration-500 group-hover:scale-105"
+                  className="rounded-full transform transition-all duration-500 group-hover:scale-105 w-40 h-40 sm:w-48 sm:h-48 lg:w-52 lg:h-52"
                 />
                 <span className="sr-only">Brand logo</span>
               </div>

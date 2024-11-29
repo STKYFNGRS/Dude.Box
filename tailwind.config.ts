@@ -13,14 +13,51 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+        lg: '4rem',
+        xl: '5rem',
+        '2xl': '6rem',
+      },
       screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
         '2xl': '1400px'
       }
     },
     extend: {
       spacing: {
-        '160': '40rem',  // This adds pt-160 class (640px)
+        '160': '40rem',
+      },
+      fontSize: {
+        'xxs': '0.625rem',
+        'xs': '0.75rem',
+        'sm': '0.875rem',
+        'base': '1rem',
+        'lg': '1.125rem',
+        'xl': '1.25rem',
+        '2xl': '1.5rem',
+        '3xl': '1.875rem',
+        '4xl': '2.25rem',
+        '5xl': '3rem',
+        '6xl': '3.75rem',
+        '7xl': '4.5rem',
+        '8xl': '6rem',
+        '9xl': '8rem',
+      },
+      minHeight: {
+        'screen-dynamic': ['100vh /* fallback */', '100dvh'],
+      },
+      maxWidth: {
+        'screen-dynamic': ['100vh /* fallback */', '100dvh'],
+      },
+      screens: {
+        'xs': '475px',
+        'touch': { raw: '(pointer: coarse)' },
+        'no-touch': { raw: '(pointer: fine)' },
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -55,13 +92,6 @@ const config = {
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
-        },
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))'
         }
       },
       borderRadius: {

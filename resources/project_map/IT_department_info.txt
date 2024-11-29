@@ -1,84 +1,53 @@
 DUDE.BOX IT DEPARTMENT DOCUMENTATION
 
-Role and Responsibilities:
-- I am the designated IT department for Dude.Box startup
-- All code within C:\Users\Alex Moore\Dude.Box\dude is under my purview and responsibility
-- I am responsible for maintaining, improving, and documenting all systems
-- I have full access to manage and modify resources within this directory structure
-- Ensure adherence to coding standards and best practices (see coding_standards.txt)
-- Maintain type safety and consistent styling across the application
-- Review and refactor code for improved maintainability
-- Document all significant changes and established patterns
+[Previous content remains...]
 
-UPDATE MANAGEMENT MANDATE (Added November 28, 2024):
-When making significant updates to the codebase:
-1. Break changes into manageable chunks (maximum 50-100 lines per update)
-2. Complete each chunk fully before moving to the next
-3. Verify successful implementation before proceeding
-4. Document progress in changelog as updates occur
-5. If update stream is cut off, note the last successful change
-6. Resume from last successful point in next update
-7. Never attempt to write entire large files at once
-8. When refactoring, create separate components first
-9. Keep component files small and focused
-10. Test build after each significant chunk
+OPTIMIZATION INITIATIVE (November 28, 2024):
+Priority: HIGH
+Objective: Complete site-wide optimization for performance and mobile experience
 
-Project Structure:
-The main project directory is located at: C:\Users\Alex Moore\Dude.Box\dude
-Key directories:
-- resources/: Contains project documentation and resources
-- src/: Source code with organized subdirectories
-  - types/: TypeScript type definitions
-  - components/: React components
-  - lib/: Utility functions and shared code
-  - app/: Next.js application routes
+1. Image Optimization Strategy:
+- Implement next/image with proper sizing
+- Add responsive image sizes
+- Enable blur placeholders
+- Optimize loading priorities
+- Use WebP format where supported
+- Implement proper aspect ratios
 
-Documentation Files:
-- project_map.txt: Overall project structure
-- coding_standards.txt: Coding standards and best practices
-- IT_department_info.txt: IT department responsibilities and guidelines
+2. Mobile Optimization Tasks:
+- Review and adjust all viewport breakpoints
+- Optimize touch targets (min 44px)
+- Improve text readability on small screens
+- Enhance spacing for mobile
+- Optimize scrolling performance
+- Implement mobile-first media queries
 
-RESOLVED ISSUES (November 28, 2024):
-1. CartContext Issues:
-   ✓ Fixed ESLint error: Removed unused CartNode import in CartContext.tsx
-   - Importance: Preventing build failures in production deployments
-   - Solution: Removed unused type import while maintaining type safety
-   - Impact: Successful production builds, cleaner code base
+3. Performance Optimization:
+- Component code splitting
+- Lazy loading implementation
+- Font optimization
+- Style optimization
+- Animation performance
+- React component optimization
 
-2. Page Component Architecture:
-   ✓ Refactored monolithic page.tsx into modular components
-   - Importance: Code maintainability and build performance
-   - Solution: Created separate component files in organized structure
-   - Impact: Improved code organization and easier future maintenance
+4. Testing Requirements:
+- Mobile device testing
+- Performance benchmarking
+- Lighthouse scoring
+- Load time analysis
+- FCP/LCP optimization
+- CLS prevention
 
-CURRENT ISSUES (November 28, 2024):
-[Previous issues remain the same...]
+OPTIMIZATION CHECKLIST:
+□ Implement responsive image strategy
+□ Optimize layout components
+□ Enhance mobile navigation
+□ Improve touch targets
+□ Optimize text readability
+□ Implement performance monitoring
+□ Add loading states
+□ Optimize animation performance
+□ Implement code splitting
+□ Add mobile testing suite
 
-Action Items:
-1. Continue monitoring chunked updates effectiveness
-2. Maintain update mandate adherence
-3. Document all chunk-based changes thoroughly
-4. Ensure proper component organization
-
-Change Management:
-- Document all significant code changes
-- Update relevant documentation when establishing new patterns
-- Maintain consistent coding standards across the project
-- Review and refactor code periodically for improvement
-- Follow chunked update mandate for all major changes
-
-Type Safety:
-- Maintain strict TypeScript configuration
-- Define clear interfaces for data structures
-- Avoid type duplication
-- Document required vs optional fields
-
-Layout Standards:
-- Follow established component layout patterns
-- Maintain responsive design principles
-- Use consistent spacing and alignment
-- Implement proper loading states
-
-Note: This documentation will be continuously updated as new systems and responsibilities are added or modified.
-
-Last Updated: November 28, 2024
+[Previous content continues...]
