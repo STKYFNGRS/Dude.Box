@@ -1,6 +1,14 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 29, 2024
 
+## [1.0.13] - 2024-11-29
+### Fixed
+- ESLint Errors in Web3Context
+  - Fixed unused 'error' variable warnings in catch blocks
+  - Renamed error parameters to _error to indicate intentional non-usage
+  - Affects connectSmartWallet and connectRegularWallet functions
+  - Build now completes without ESLint errors
+
 ## [1.0.12] - 2024-11-29
 ### Fixed
 - Provider Type System

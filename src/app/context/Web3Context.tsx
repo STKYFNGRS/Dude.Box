@@ -91,10 +91,11 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         address: accounts[0],
         walletType: 'smart'
       });
-    } catch (_error) {  // Changed to _error to indicate intentionally unused
+    } catch (err) {
+      console.error('Smart wallet connection failed:', err);
       dispatch({ 
         type: 'CONNECTION_FAILED', 
-        error: 'Failed to connect smart wallet'
+        error: err instanceof Error ? err.message : 'Failed to connect smart wallet'
       });
     }
   }, []);
@@ -124,10 +125,11 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         address: accounts[0],
         walletType: 'regular'
       });
-    } catch (_error) {  // Changed to _error to indicate intentionally unused
+    } catch (err) {
+      console.error('Regular wallet connection failed:', err);
       dispatch({ 
         type: 'CONNECTION_FAILED', 
-        error: 'Failed to connect wallet'
+        error: err instanceof Error ? err.message : 'Failed to connect wallet'
       });
     }
   }, []);
