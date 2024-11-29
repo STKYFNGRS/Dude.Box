@@ -13,7 +13,7 @@ export const Hero: React.FC<HeroProps> = ({ isLoaded }) => {
   return (
     <div className="w-full flex justify-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="pt-20 sm:pt-32 lg:pt-40 pb-12 sm:pb-16 lg:pb-20 flex items-center justify-center">
+        <div className="py-32 sm:py-64 lg:pt-40 pb-12 sm:pb-16 lg:pb-20 flex items-center justify-center">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
