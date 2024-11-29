@@ -7,6 +7,7 @@ import { Hero } from '@/app/components/sections/Hero';
 import { Mission } from '@/app/components/sections/Mission';
 import { Vision } from '@/app/components/sections/Vision';
 import { Founder } from '@/app/components/sections/Founder';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = React.useState(false);
@@ -38,6 +39,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <SpeedInsights />
           
           <Analytics />
         </div>
