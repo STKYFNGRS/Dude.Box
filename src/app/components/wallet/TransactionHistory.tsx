@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useWeb3 } from '@/app/context/Web3Context';
-import { formatEther } from 'viem';
+import { formatEther, type Transaction } from 'viem';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 interface SimplifiedTransaction {
@@ -41,12 +41,12 @@ export const TransactionHistory = () => {
       
       const txs = blocks.flatMap(block => {
         const blockTimestamp = Number(block.timestamp);
-        return (block.transactions as any[])
-          .filter(tx => 
-            (typeof tx === 'object') &&
-            tx.from?.toLowerCase() === userAddress ||
-            tx.to?.toLowerCase() === userAddress
-          )
+        return (block.transactions as Array<Transaction>)
+          .filter(tx => (
+            'from' in tx && 'to' in tx && 
+            (tx.from.toLowerCase() === userAddress ||
+             tx.to?.toLowerCase() === userAddress)
+          ))
           .map(tx => ({
             hash: tx.hash,
             from: tx.from,
