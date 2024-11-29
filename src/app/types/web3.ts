@@ -1,4 +1,5 @@
-import { type PublicClient, type WalletClient } from 'viem';
+import { type PublicClient, type WalletClient, type Chain } from 'viem';
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 
 export type ConnectedWallet = {
   address: string;
@@ -19,7 +20,7 @@ export type Web3ContextState = {
 export type Web3ContextType = {
   state: Web3ContextState;
   connectTraditionalWallet: () => Promise<void>;
-  connectSmartWallet: (provider: any) => Promise<void>;
+  connectSmartWallet: (provider: CoinbaseWalletProvider) => Promise<void>;
   disconnect: () => Promise<void>;
   switchChain: (chainId: number) => Promise<void>;
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useWeb3 } from '@/app/context/Web3Context';
 import { formatEther } from 'viem';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
@@ -18,44 +18,44 @@ export const TransactionHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      if (!state.wallet?.address || !state.publicClient) return;
+  const fetchTransactions = useCallback(async () => {
+    if (!state.wallet?.address || !state.publicClient) return;
 
-      setIsLoading(true);
-      try {
-        const blocks = await state.publicClient.getBlockNumbers({
-          fromBlock: BigInt(-100), // Last 100 blocks
-          toBlock: 'latest'
-        });
+    setIsLoading(true);
+    try {
+      const blocks = await state.publicClient.getBlockNumbers({
+        fromBlock: BigInt(-100), // Last 100 blocks
+        toBlock: 'latest'
+      });
 
-        const txs: Transaction[] = [];
-        for (const blockNumber of blocks) {
-          const block = await state.publicClient.getBlock({ blockNumber });
-          const blockTxs = block.transactions.filter(tx => 
-            tx.from.toLowerCase() === state.wallet!.address.toLowerCase() ||
-            tx.to?.toLowerCase() === state.wallet!.address.toLowerCase()
-          );
-          
-          txs.push(...blockTxs.map(tx => ({
-            hash: tx.hash,
-            from: tx.from,
-            to: tx.to || '',
-            value: tx.value,
-            timestamp: Number(block.timestamp)
-          })));
-        }
-
-        setTransactions(txs);
-      } catch (error) {
-        console.error('Failed to fetch transactions:', error);
-      } finally {
-        setIsLoading(false);
+      const txs: Transaction[] = [];
+      for (const blockNumber of blocks) {
+        const block = await state.publicClient.getBlock({ blockNumber });
+        const blockTxs = block.transactions.filter(tx => 
+          tx.from.toLowerCase() === state.wallet!.address.toLowerCase() ||
+          tx.to?.toLowerCase() === state.wallet!.address.toLowerCase()
+        );
+        
+        txs.push(...blockTxs.map(tx => ({
+          hash: tx.hash,
+          from: tx.from,
+          to: tx.to || '',
+          value: tx.value,
+          timestamp: Number(block.timestamp)
+        })));
       }
-    };
 
-    fetchTransactions();
+      setTransactions(txs);
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [state.wallet?.address, state.publicClient]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   if (!state.wallet) return null;
 

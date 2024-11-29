@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { formatEther } from 'viem';
 
@@ -17,7 +17,7 @@ export function useWalletData(): WalletData {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
     if (!state.wallet?.address || !state.publicClient) {
       setBalance('0');
       return;
@@ -38,11 +38,11 @@ export function useWalletData(): WalletData {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [state.wallet?.address, state.publicClient]);
 
   useEffect(() => {
     fetchBalance();
-  }, [state.wallet?.address, state.publicClient]);
+  }, [fetchBalance]);
 
   return {
     balance,

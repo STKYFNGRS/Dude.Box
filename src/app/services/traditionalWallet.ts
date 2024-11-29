@@ -1,8 +1,8 @@
-import { createPublicClient, createWalletClient, custom, http } from 'viem';
+import { createPublicClient, createWalletClient, custom, http, type EIP1193Provider } from 'viem';
 import { DEFAULT_CHAIN } from '../config/web3';
 
 class TraditionalWalletService {
-  private provider: any = null;
+  private provider: EIP1193Provider | null = null;
   private publicClient;
 
   constructor() {
@@ -39,7 +39,7 @@ class TraditionalWalletService {
         walletClient,
         publicClient: this.publicClient,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Wallet connection error:', error);
       throw error;
     }
@@ -53,16 +53,16 @@ class TraditionalWalletService {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Chain doesn't exist, add it
-      if (error.code === 4902) {
+      if ((error as { code: number }).code === 4902) {
         await this.provider.request({
           method: 'wallet_addEthereumChain',
           params: [{
             chainId: `0x${chainId.toString(16)}`,
             chainName: DEFAULT_CHAIN.name,
             nativeCurrency: DEFAULT_CHAIN.nativeCurrency,
-            rpcUrls: DEFAULT_CHAIN.rpcUrls.default.http,
+            rpcUrls: [DEFAULT_CHAIN.rpcUrls.default.http[0]],
             blockExplorerUrls: [DEFAULT_CHAIN.blockExplorers?.default.url],
           }],
         });
