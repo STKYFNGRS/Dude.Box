@@ -3,12 +3,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { formatEther } from 'viem';
+import type { PublicClient } from 'viem';
 
 interface WalletData {
   balance: string;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+}
+
+interface EthereumProvider extends PublicClient {
+  request: (args: { method: string; params: unknown[] }) => Promise<unknown>;
 }
 
 export function useWalletData(): WalletData {
@@ -27,14 +32,13 @@ export function useWalletData(): WalletData {
     setError(null);
 
     try {
-      // Use raw ethereum request method
-      const result = await (state.publicClient as any).request({
+      const provider = state.publicClient as EthereumProvider;
+      const result = await provider.request({
         method: 'eth_getBalance',
         params: [state.wallet.address, 'latest']
       });
       
-      // Convert hex balance to ETH
-      const balanceInWei = BigInt(result);
+      const balanceInWei = BigInt(result as string);
       setBalance(formatEther(balanceInWei));
     } catch (err) {
       console.error('Failed to fetch balance:', err);
