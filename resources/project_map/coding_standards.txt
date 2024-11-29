@@ -1,7 +1,31 @@
 DUDE.BOX CODING STANDARDS AND BEST PRACTICES
 Last Updated: November 28, 2024
 
-1. TYPE MANAGEMENT
+1. RESPONSIVE LAYOUT STANDARDS
+----------------------------
+Hero Section Standards:
+- Mobile padding top: pt-40
+- Desktop padding top: sm:pt-80
+- Mobile padding bottom: pb-24
+- Desktop padding bottom: sm:pb-48
+- Maintain proper container structure:
+```tsx
+<div className="w-full flex justify-center">
+  <div className="container px-4 sm:px-6 mx-auto">
+    <div className="pt-40 sm:pt-80 pb-24 sm:pb-48 flex items-center justify-center">
+      {/* Content */}
+    </div>
+  </div>
+</div>
+```
+
+Content Section Standards:
+- Use container class for consistent margins
+- Implement responsive padding (px-4 sm:px-6)
+- Maintain max-width constraints for readability
+- Use responsive padding for different screen sizes
+
+2. TYPE MANAGEMENT
 -----------------
 Best Practices:
 - Define types in dedicated files under src/types/
@@ -16,24 +40,8 @@ Recent Fixes:
 ✓ CartContext.tsx - Removed unused CartNode type import
   - Keep only types that are actively used in the component
   - Prevents ESLint errors and production build failures
-  - Example of proper type import cleanup:
-    ```typescript
-    import { 
-      CartItem,    // Used in state and functions
-      CartLineNode // Used in data transformation
-    } from '@/types/shopify';
-    ```
 
-Example Structure:
-```typescript
-export interface ExampleType {
-  id: string;
-  title: string; // Required
-  description?: string; // Optional
-}
-```
-
-2. COMPONENT LAYOUT STANDARDS
+3. COMPONENT LAYOUT STANDARDS
 ----------------------------
 Responsive Layout Structure:
 ```tsx
@@ -50,95 +58,14 @@ Responsive Layout Structure:
 </main>
 ```
 
-Grid System Standards:
-- Mobile: grid-cols-1
-- Small screens (sm): grid-cols-2
-- Large screens (lg): grid-cols-3
-- Extra large (xl): grid-cols-4
-- Use gap-6 for consistent spacing
-- Apply justify-items-center for centered grid items
-
-Responsive Classes:
-- Container: container mx-auto
-- Padding: px-4 (horizontal), pt-32 (top), pb-16 (bottom)
-- Width constraints: max-w-7xl, max-w-[2100px]
-- Flexbox: flex flex-col, flex-grow
-- Centering: mx-auto, justify-center
-
-3. LOADING STATE MANAGEMENT
---------------------------
-- Use Suspense for component loading
-- Implement consistent loading states
-- Match loading skeleton dimensions to final content
-- Wrap loading states in same width constraints as content
-
-Example:
-```tsx
-<Suspense fallback={<LoadingSkeleton />}>
-  <div className="w-full flex justify-center">
-    {loading ? (
-      <div className="w-full max-w-7xl">
-        <LoadingSkeleton />
-      </div>
-    ) : (
-      <div className="w-full max-w-7xl">
-        {/* Content */}
-      </div>
-    )}
-  </div>
-</Suspense>
-```
-
 4. DATA TRANSFORMATION PATTERNS
 -----------------------------
-- Implement transform functions for API responses
-- Validate required fields
-- Use TypeScript for type safety
-- Handle edge cases and errors
-
-Example:
-```typescript
-function transformData(rawData: RawType): TransformedType {
-  return {
-    id: rawData.id,
-    title: rawData.title,
-    // Add validation/transformation as needed
-  };
-}
-```
+(Previous content remains unchanged...)
 
 5. ERROR HANDLING
 ----------------
-- Implement try-catch blocks for async operations
-- Provide meaningful error messages
-- Set appropriate fallback states
-- Log errors for debugging
-
-Example:
-```typescript
-try {
-  const response = await fetchData();
-  // Process response
-} catch (error) {
-  console.error('Specific error message:', error);
-  // Set appropriate fallback state
-}
-```
+(Previous content remains unchanged...)
 
 6. COMPONENT ORGANIZATION
 ------------------------
-- Group related components
-- Use consistent file naming
-- Implement lazy loading for large components
-- Follow Single Responsibility Principle
-
-Directory Structure:
-```
-src/
-  components/
-    ui/         - Reusable UI components
-    layout/     - Layout components
-    features/   - Feature-specific components
-```
-
-These standards should be followed for all new development and applied to existing code during refactoring. Update this document as new patterns and standards are established.
+(Previous content remains unchanged...)

@@ -17,10 +17,10 @@ export default function Home() {
   return (
     <ClientLayout>
       <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">
-        {/* Hero Section with responsive padding */}
+        {/* Hero Section with doubled top padding */}
         <div className="w-full flex justify-center">
           <div className="container px-4 sm:px-6 mx-auto">
-            <div className="pt-20 sm:pt-40 pb-24 sm:pb-48 flex items-center justify-center">
+            <div className="pt-80 sm:pt-96 pb-24 sm:pb-48 flex items-center justify-center">
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -47,7 +47,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Content Sections with consistent padding and centering */}
+        {/* Content Sections with consistent padding */}
         <div className="w-full">
           <div className="container px-4 sm:px-6 mx-auto">
             <div className="max-w-4xl mx-auto pt-20 sm:pt-40 pb-16 text-center">

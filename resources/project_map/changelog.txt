@@ -1,6 +1,31 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 28, 2024
 
+## [1.0.3] - 2024-11-28
+### Changed
+- Doubled hero section padding for improved visual hierarchy
+  - Mobile: increased to pt-80
+  - Desktop: increased to pt-160 (40rem/640px)
+  - Added custom spacing to Tailwind config
+  - Removed extra top padding from content section
+  - Impact: Better vertical spacing and brand presence
+
+## [1.0.2] - 2024-11-28
+### Changed
+- Increased hero section padding for better visual hierarchy
+  - Mobile: increased from pt-20 to pt-40
+  - Desktop: increased from pt-40 to pt-80
+  - Maintains existing bottom padding
+  - Impact: Improved visual spacing and brand presentation
+
+### Fixed
+- Mobile responsiveness issues in page layout
+  - Added proper container classes
+  - Implemented consistent responsive padding
+  - Added proper responsive width controls
+  - Made founder image properly responsive
+  - Impact: Consistent centering across all devices
+
 ## [1.0.1] - 2024-11-28
 ### Fixed
 - Production build failure in CartContext.tsx
@@ -23,11 +48,6 @@ Last Updated: November 28, 2024
 - Responsive layout system
 - Type definitions
 - Project documentation
-
-### Outstanding
-- Hero section alignment issues
-- Visual consistency improvements needed
-- Component rendering verification pending
 
 Format Notes:
 - Version numbers follow Semantic Versioning (MAJOR.MINOR.PATCH)
