@@ -12,6 +12,7 @@ interface Chain {
 
 interface Wallet {
   chain: Chain;
+  address: string;
 }
 
 interface Web3State {
@@ -21,6 +22,7 @@ interface Web3State {
   error: string | null;
   walletType: WalletType;
   wallet: Wallet | null;
+  publicClient?: any; // Added to match what TransactionHistory expects
 }
 
 type Web3Action =
@@ -60,7 +62,8 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         isConnecting: false,
         error: null,
         wallet: {
-          chain: action.chain
+          chain: action.chain,
+          address: action.address
         }
       };
     case 'CONNECTION_FAILED':
@@ -119,7 +122,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         walletType: 'smart',
         chain: {
           id: chainIdNum,
-          name: `Chain ${chainIdNum}` // You might want to map this to actual chain names
+          name: `Chain ${chainIdNum}`
         }
       });
     } catch (err) {
@@ -159,7 +162,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         walletType: 'regular',
         chain: {
           id: chainIdNum,
-          name: `Chain ${chainIdNum}` // You might want to map this to actual chain names
+          name: `Chain ${chainIdNum}`
         }
       });
     } catch (err) {
@@ -189,12 +192,12 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         type: 'CHAIN_CHANGED',
         chain: {
           id: chainId,
-          name: `Chain ${chainId}` // You might want to map this to actual chain names
+          name: `Chain ${chainId}`
         }
       });
     } catch (err) {
       console.error('Failed to switch chain:', err);
-      throw err; // Re-throw to let ChainSelector handle the error
+      throw err;
     }
   }, []);
 
