@@ -1,179 +1,148 @@
 'use client';
 
-import { createContext, useContext, useReducer, useCallback, ReactNode, useEffect } from 'react';
-import { traditionalWalletService } from '../services/traditionalWallet';
-import { createPublicClient, http, createWalletClient, custom } from 'viem';
-import { baseSepolia } from 'viem/chains';
-import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
-import type { Web3ContextState, Web3ContextType } from '../types/web3';
+import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
-const initialState: Web3ContextState = {
-  wallet: null,
+type WalletType = 'none' | 'smart' | 'regular';
+
+interface Web3State {
+  isConnected: boolean;
+  address: string | null;
+  isConnecting: boolean;
+  error: string | null;
+  walletType: WalletType;
+}
+
+type Web3Action =
+  | { type: 'START_CONNECTING' }
+  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType }
+  | { type: 'CONNECTION_FAILED'; error: string }
+  | { type: 'DISCONNECT' };
+
+const initialState: Web3State = {
+  isConnected: false,
+  address: null,
   isConnecting: false,
-  connectionError: null,
-  publicClient: null,
-  walletClient: null,
+  error: null,
+  walletType: 'none'
 };
 
-type Action =
-  | { type: 'SET_CONNECTING'; payload: boolean }
-  | { type: 'SET_WALLET'; payload: Partial<Web3ContextState> }
-  | { type: 'SET_ERROR'; payload: string }
-  | { type: 'RESET' };
+const Web3Context = createContext<{
+  state: Web3State;
+  connectSmartWallet: () => Promise<void>;
+  connectRegularWallet: () => Promise<void>;
+  disconnect: () => void;
+} | null>(null);
 
-function reducer(state: Web3ContextState, action: Action): Web3ContextState {
+function reducer(state: Web3State, action: Web3Action): Web3State {
   switch (action.type) {
-    case 'SET_CONNECTING':
-      return { ...state, isConnecting: action.payload, connectionError: null };
-    case 'SET_WALLET':
-      return { ...state, ...action.payload, connectionError: null, isConnecting: false };
-    case 'SET_ERROR':
+    case 'START_CONNECTING':
+      return { ...state, isConnecting: true, error: null };
+    case 'CONNECTION_SUCCESSFUL':
       return {
         ...state,
-        connectionError: action.payload,
+        isConnected: true,
+        address: action.address,
+        walletType: action.walletType,
         isConnecting: false,
+        error: null
       };
-    case 'RESET':
+    case 'CONNECTION_FAILED':
+      return {
+        ...state,
+        isConnected: false,
+        address: null,
+        isConnecting: false,
+        error: action.error,
+        walletType: 'none'
+      };
+    case 'DISCONNECT':
       return initialState;
     default:
       return state;
   }
 }
 
-const Web3Context = createContext<Web3ContextType | null>(null);
-
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Create reusable public client
-  const publicClient = createPublicClient({
-    chain: baseSepolia,
-    transport: http()
-  });
-
-  const connectTraditionalWallet = useCallback(async () => {
-    if (state.isConnecting) return;
+  const connectSmartWallet = useCallback(async () => {
+    dispatch({ type: 'START_CONNECTING' });
 
     try {
-      dispatch({ type: 'SET_CONNECTING', payload: true });
-      const { address, walletClient } = await traditionalWalletService.connect();
-      
-      dispatch({
-        type: 'SET_WALLET',
-        payload: {
-          wallet: { address, chain: { id: baseSepolia.id, name: baseSepolia.name } },
-          walletClient,
-          publicClient,
-        },
+      const sdk = createCoinbaseWalletSDK({
+        appName: 'Dude Box',
+        appLogoUrl: '/Dude logo 3.jpg',
+        darkMode: true,
+        preference: {
+          options: 'smartWalletOnly'
+        }
+      });
+
+      const provider = sdk.getProvider();
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+
+      if (!accounts[0]) {
+        throw new Error('No accounts returned');
+      }
+
+      dispatch({ 
+        type: 'CONNECTION_SUCCESSFUL', 
+        address: accounts[0],
+        walletType: 'smart'
       });
     } catch (error) {
-      console.error('Failed to connect traditional wallet:', error);
-      dispatch({
-        type: 'SET_ERROR',
-        payload: 'Failed to connect wallet. Please try again.',
+      dispatch({ 
+        type: 'CONNECTION_FAILED', 
+        error: 'Failed to connect smart wallet'
       });
-    }
-  }, [state.isConnecting]);
-
-  const connectSmartWallet = useCallback(async (provider: CoinbaseWalletProvider) => {
-    if (state.isConnecting) return;
-
-    try {
-      dispatch({ type: 'SET_CONNECTING', payload: true });
-      
-      const accounts = await provider.request({
-        method: 'eth_requestAccounts'
-      });
-
-      if (!accounts[0]) throw new Error('No accounts returned');
-
-      const walletClient = createWalletClient({
-        chain: baseSepolia,
-        transport: custom(provider)
-      });
-
-      dispatch({
-        type: 'SET_WALLET',
-        payload: {
-          wallet: {
-            address: accounts[0],
-            chain: { id: baseSepolia.id, name: baseSepolia.name }
-          },
-          walletClient,
-          publicClient,
-        },
-      });
-    } catch (error) {
-      console.error('Failed to connect smart wallet:', error);
-      dispatch({
-        type: 'SET_ERROR',
-        payload: 'Failed to connect smart wallet. Please try again.',
-      });
-    }
-  }, [state.isConnecting]);
-
-  const disconnect = useCallback(async () => {
-    try {
-      await traditionalWalletService.disconnect();
-      dispatch({ type: 'RESET' });
-    } catch (error) {
-      console.error('Failed to disconnect wallet:', error);
     }
   }, []);
 
-  const switchChain = useCallback(async (chainId: number) => {
-    if (!state.wallet) throw new Error('Wallet not connected');
+  const connectRegularWallet = useCallback(async () => {
+    dispatch({ type: 'START_CONNECTING' });
 
     try {
-      await traditionalWalletService.switchChain(chainId);
-    } catch (error) {
-      console.error('Failed to switch chain:', error);
-      throw error;
-    }
-  }, [state.wallet]);
-
-  useEffect(() => {
-    if (!state.wallet) return;
-
-    const cleanup = traditionalWalletService.setupEventListeners({
-      onAccountsChanged: (accounts: string[]) => {
-        if (accounts.length === 0) {
-          disconnect();
-        } else if (state.wallet?.address !== accounts[0]) {
-          dispatch({
-            type: 'SET_WALLET',
-            payload: {
-              wallet: {
-                ...state.wallet,
-                address: accounts[0],
-              },
-            },
-          });
+      const sdk = createCoinbaseWalletSDK({
+        appName: 'Dude Box',
+        appLogoUrl: '/Dude logo 3.jpg',
+        darkMode: true,
+        preference: {
+          options: 'eoaOnly'
         }
-      },
-      onChainChanged: async () => {
-        window.location.reload();
-      },
-      onDisconnect: () => {
-        disconnect();
-      },
-    });
+      });
 
-    return () => {
-      cleanup?.();
-    };
-  }, [state.wallet, disconnect]);
+      const provider = sdk.getProvider();
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+
+      if (!accounts[0]) {
+        throw new Error('No accounts returned');
+      }
+
+      dispatch({ 
+        type: 'CONNECTION_SUCCESSFUL', 
+        address: accounts[0],
+        walletType: 'regular'
+      });
+    } catch (error) {
+      dispatch({ 
+        type: 'CONNECTION_FAILED', 
+        error: 'Failed to connect wallet'
+      });
+    }
+  }, []);
+
+  const disconnect = useCallback(() => {
+    dispatch({ type: 'DISCONNECT' });
+  }, []);
 
   return (
-    <Web3Context.Provider
-      value={{
-        state,
-        connectTraditionalWallet,
-        connectSmartWallet,
-        disconnect,
-        switchChain,
-      }}
-    >
+    <Web3Context.Provider value={{ 
+      state, 
+      connectSmartWallet, 
+      connectRegularWallet, 
+      disconnect 
+    }}>
       {children}
     </Web3Context.Provider>
   );

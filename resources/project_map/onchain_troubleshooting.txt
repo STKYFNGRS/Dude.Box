@@ -1,0 +1,70 @@
+DUDE.BOX ONCHAIN TROUBLESHOOTING
+Last Updated: November 29, 2024
+
+COMMON ISSUES & RESOLUTIONS
+
+1. SDK Integration
+----------------
+Issue: Over-complication of wallet connection
+Resolution: 
+- Simplified to direct SDK usage
+- Removed custom RPC handling
+- Let SDK handle connection details
+
+2. Type System
+----------------
+Issue: Complex type hierarchy causing build errors
+Resolution:
+- Simplified types to match SDK
+- Removed custom type extensions
+- Clear interface definitions
+
+3. State Management
+----------------
+Issue: Multiple simultaneous connections possible
+Resolution:
+- Added walletType state
+- Implemented mutual exclusivity
+- Clear connection states
+
+4. Build Process
+----------------
+Issue: Vercel build failures
+Resolution:
+- Proper typing
+- Removed unnecessary abstractions
+- Clean separation of concerns
+
+LESSONS LEARNED
+
+1. SDK Usage
+- Trust the SDK's built-in functionality
+- Avoid unnecessary abstraction layers
+- Use SDK preferences for wallet types
+
+2. Type System
+- Keep types simple and focused
+- Match SDK type definitions
+- Avoid complex type hierarchies
+
+3. Architecture
+- Clear separation of concerns
+- Simple state management
+- Direct SDK integration
+
+FUTURE CONSIDERATIONS
+
+1. Monitoring
+- Track connection success rates
+- Monitor wallet type usage
+- Track error occurrences
+
+2. Performance
+- Connection speed optimization
+- State updates efficiency
+- Error handling improvements
+
+3. Security
+- Regular SDK updates
+- Connection validation
+- State consistency checks
