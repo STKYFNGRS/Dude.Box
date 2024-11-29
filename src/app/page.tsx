@@ -19,7 +19,7 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">
         {/* Hero Section - Mobile First */}
         <div className="container mx-auto px-4">
-          <div className="pt-80 pb-24 flex items-center justify-center">
+          <div className="pt-80 pb-48 flex items-center justify-center">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
