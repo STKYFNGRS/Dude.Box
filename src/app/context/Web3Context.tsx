@@ -2,15 +2,10 @@
 
 import { createContext, useContext, useReducer, useCallback, ReactNode, useEffect } from 'react';
 import { traditionalWalletService } from '../services/traditionalWallet';
-import { type WalletClient, type PublicClient } from 'viem';
+import { createPublicClient, http, createWalletClient, custom } from 'viem';
+import { baseSepolia } from 'viem/chains';
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import type { Web3ContextState, Web3ContextType } from '../types/web3';
-
-declare global {
-  interface Window {
-    ethereum?: WalletClient & PublicClient & CoinbaseWalletProvider;
-  }
-}
 
 const initialState: Web3ContextState = {
   wallet: null,
@@ -50,17 +45,23 @@ const Web3Context = createContext<Web3ContextType | null>(null);
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Create reusable public client
+  const publicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http()
+  });
+
   const connectTraditionalWallet = useCallback(async () => {
     if (state.isConnecting) return;
 
     try {
       dispatch({ type: 'SET_CONNECTING', payload: true });
-      const { address, walletClient, publicClient } = await traditionalWalletService.connect();
+      const { address, walletClient } = await traditionalWalletService.connect();
       
       dispatch({
         type: 'SET_WALLET',
         payload: {
-          wallet: { address, chain: { id: 84532, name: 'Base Sepolia' } },
+          wallet: { address, chain: { id: baseSepolia.id, name: baseSepolia.name } },
           walletClient,
           publicClient,
         },
@@ -86,15 +87,20 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
       if (!accounts[0]) throw new Error('No accounts returned');
 
+      const walletClient = createWalletClient({
+        chain: baseSepolia,
+        transport: custom(provider)
+      });
+
       dispatch({
         type: 'SET_WALLET',
         payload: {
           wallet: {
             address: accounts[0],
-            chain: { id: 84532, name: 'Base Sepolia' }
+            chain: { id: baseSepolia.id, name: baseSepolia.name }
           },
-          walletClient: provider as unknown as WalletClient,
-          publicClient: provider as unknown as PublicClient,
+          walletClient,
+          publicClient,
         },
       });
     } catch (error) {
