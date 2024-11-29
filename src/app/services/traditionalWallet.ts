@@ -1,8 +1,12 @@
 import { createPublicClient, createWalletClient, custom, http, type EIP1193Provider } from 'viem';
 import { DEFAULT_CHAIN } from '../config/web3';
 
+interface WalletProvider extends EIP1193Provider {
+  disconnect?: () => Promise<void>;
+}
+
 class TraditionalWalletService {
-  private provider: EIP1193Provider | null = null;
+  private provider: WalletProvider | null = null;
   private publicClient;
 
   constructor() {
@@ -69,21 +73,19 @@ class TraditionalWalletService {
   }
 
   async disconnect() {
-    if (this.provider) {
-      // Clear WalletConnect session if available
-      if ((this.provider as any).disconnect) {
-        await (this.provider as any).disconnect();
+    try {
+      if (this.provider?.disconnect) {
+        await this.provider.disconnect();
       }
       
-      // Clear local storage data
-      localStorage.removeItem('walletconnect');
-      localStorage.removeItem('WALLET_CONNECT_V2_INITIALIZED');
-      
-      // Clear provider reference
+      localStorage.clear();
       this.provider = null;
       
-      // Reload page to clear any remaining state
+      // Force page reload
       window.location.reload();
+    } catch (error) {
+      console.error('Disconnect error:', error);
+      throw error;
     }
   }
 
