@@ -14,12 +14,13 @@ export const HeroSection = () => {
         priority
       />
       <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600">
-          Dude Box Web3
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Your gateway to our decentralized ecosystem
-        </p>
+      <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600">
+  Welcome to the Future, Dude
+</h1>
+<p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+  Step into the decentralized revolution. Explore a world where innovation meets freedom—your journey into the web3 ecosystem starts here.
+</p>
+
       </div>
     </div>
   );
