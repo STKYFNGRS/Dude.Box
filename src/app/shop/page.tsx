@@ -77,7 +77,7 @@ export default function Shop() {
               Origin Collection
             </h1>
             <p className="text-xl text-gray-300">
-              Quality basics for grind to unwind
+              Quality basics
             </p>
           </div>
 
