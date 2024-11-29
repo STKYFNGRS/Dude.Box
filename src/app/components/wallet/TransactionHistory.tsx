@@ -13,6 +13,12 @@ interface Transaction {
   timestamp: number;
 }
 
+interface Block {
+  number: bigint;
+  timestamp: bigint;
+  transactions: Transaction[];
+}
+
 export const TransactionHistory = () => {
   const { state } = useWeb3();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -24,27 +30,29 @@ export const TransactionHistory = () => {
 
     setIsLoading(true);
     try {
-      const blocks = await state.publicClient.getBlockNumbers({
-        fromBlock: BigInt(-100),
-        toBlock: 'latest'
-      });
+      const currentBlock = await state.publicClient.getBlockNumber();
+      const fromBlock = currentBlock - BigInt(100);
+      
+      const blocks: Block[] = [];
+      for (let i = fromBlock; i <= currentBlock; i++) {
+        const block = await state.publicClient.getBlock({
+          blockNumber: i
+        });
+        blocks.push(block);
+      }
 
-      const txs: Transaction[] = [];
-      for (const blockNumber of blocks) {
-        const block = await state.publicClient.getBlock({ blockNumber });
-        const blockTxs = block.transactions.filter(tx => 
+      const txs = blocks.flatMap(block => 
+        block.transactions.filter(tx => 
           tx.from.toLowerCase() === userAddress ||
           tx.to?.toLowerCase() === userAddress
-        );
-        
-        txs.push(...blockTxs.map(tx => ({
+        ).map(tx => ({
           hash: tx.hash,
           from: tx.from,
           to: tx.to || '',
           value: tx.value,
           timestamp: Number(block.timestamp)
-        })));
-      }
+        }))
+      );
 
       setTransactions(txs);
     } catch (error) {
