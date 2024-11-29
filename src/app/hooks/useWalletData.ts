@@ -27,10 +27,15 @@ export function useWalletData(): WalletData {
     setError(null);
 
     try {
-      const balanceValue = await state.publicClient.getBalance({
-        address: `0x${state.wallet.address.slice(2)}` as `0x${string}`,
+      // Use raw ethereum request method
+      const result = await (state.publicClient as any).request({
+        method: 'eth_getBalance',
+        params: [state.wallet.address, 'latest']
       });
-      setBalance(formatEther(balanceValue));
+      
+      // Convert hex balance to ETH
+      const balanceInWei = BigInt(result);
+      setBalance(formatEther(balanceInWei));
     } catch (err) {
       console.error('Failed to fetch balance:', err);
       setError('Failed to fetch wallet balance');
