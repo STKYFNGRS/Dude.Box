@@ -1,6 +1,29 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 29, 2024
 
+## [1.0.14] - 2024-11-29
+### Major Refactor - SDK Integration
+- Removed custom chain management
+- Simplified Web3Context to trust SDK
+- Removed unnecessary state tracking
+- Updated ChainSelector to simple UI component
+- Documentation updated with SDK-first approach
+- ESLint configuration updated
+
+### Key Changes
+- Removed custom chain switching logic
+- Removed manual chain state tracking
+- Simplified wallet connection flow
+- Updated error handling to use SDK errors
+- Cleaned up TypeScript interfaces
+
+### Technical Notes
+- SDK now handles all chain management
+- Simplified state management
+- Removed redundant chain tracking
+- Clear separation of concerns
+- Better SDK integration
+
 ## [1.0.13] - 2024-11-29
 ### Fixed
 - ESLint Errors in Web3Context
@@ -16,11 +39,3 @@ Last Updated: November 29, 2024
   - Created SmartWalletSDK interface
   - Fixed provider type assertions
   - Updated Web3Context types
-
-### Technical Notes
-- Root cause of provider errors was incorrect typing of Coinbase SDK
-- Added proper type declarations for all provider interfaces
-- Ensured type safety across wallet connections
-- Fixed build errors in Vercel deployment
-
-[Previous entries remain the same...]

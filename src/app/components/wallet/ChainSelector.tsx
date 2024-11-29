@@ -1,7 +1,6 @@
 'use client';
 
 import { useWeb3 } from '@/app/context/Web3Context';
-import { SUPPORTED_CHAINS } from '@/app/config/web3';
 import {
   Select,
   SelectContent,
@@ -9,43 +8,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from 'react';
 
 export const ChainSelector = () => {
-  const { state, switchChain } = useWeb3();
-  const [isChanging, setIsChanging] = useState(false);
+  const { state } = useWeb3();
 
-  const handleChainChange = async (chainId: string) => {
-    setIsChanging(true);
-    try {
-      await switchChain(parseInt(chainId));
-    } catch (error) {
-      console.error('Failed to switch chain:', error);
-    } finally {
-      setIsChanging(false);
-    }
-  };
-
-  if (!state.wallet) return null;
+  if (!state.isConnected) return null;
 
   return (
-    <Select
-      value={state.wallet.chain.id.toString()}
-      onValueChange={handleChainChange}
-      disabled={isChanging}
-    >
+    <Select defaultValue="base-sepolia" disabled>
       <SelectTrigger className="w-[180px] bg-gray-800 border-gray-700">
-        <SelectValue placeholder="Select chain" />
+        <SelectValue placeholder="Base Sepolia" />
       </SelectTrigger>
       <SelectContent>
-        {Object.values(SUPPORTED_CHAINS).map((chain) => (
-          <SelectItem 
-            key={chain.id} 
-            value={chain.id.toString()}
-          >
-            {chain.name}
-          </SelectItem>
-        ))}
+        <SelectItem value="base-sepolia">Base Sepolia</SelectItem>
       </SelectContent>
     </Select>
   );

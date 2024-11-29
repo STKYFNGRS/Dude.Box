@@ -1,64 +1,129 @@
-DUDE.BOX CODING STANDARDS AND BEST PRACTICES
-Last Updated: November 28, 2024
+# DUDE.BOX CODING STANDARDS
+Last Updated: November 29, 2024
 
-1. WEB3 STANDARDS
-----------------------------
-Smart Wallet Integration:
-- Always use latest Coinbase SDK version
-- Follow provider initialization pattern:
-```typescript
-const sdk = createCoinbaseWalletSDK({
-  appName: "Dude Box",
-  appLogoUrl: "/Dude logo 3.jpg",
-  appChainIds: [84532],
-  preference: {
-    options: "smartWalletOnly",
-    attribution: {
-      auto: true,
-    }
-  }
-});
-```
+## SDK INTEGRATION
 
-Error Handling Pattern:
-```typescript
-try {
-  // Web3 operation
-} catch (error) {
-  if (error.code === 4001) {
-    // User rejected
-  } else if (error.code === 4902) {
-    // Chain not available
-  } else {
-    // Generic error
-  }
-}
-```
+1. SDK Usage
+-----------
+- Use SDK functionality directly
+- Avoid custom implementations of SDK features
+- Trust SDK's built-in error handling
+- Use SDK's type definitions
 
-2. COMPONENT PATTERNS
-----------------------------
-Wallet Components:
-- Use shadcn/ui for consistency
-- Implement loading states
-- Handle error states
-- Show connection status
+2. Configuration
+--------------
+- Use APP_CONFIG for SDK initialization
+- Maintain consistent app naming/branding
+- Keep configuration centralized
 
-Example Structure:
-```tsx
-<div className="wallet-component">
-  <WalletStatus />
-  <NetworkSelector />
-  <TransactionList />
-  <ActionButtons />
-</div>
-```
+3. State Management
+-----------------
+- Keep state minimal and focused
+- Trust SDK's internal state
+- Clear state transitions
+- Simple error handling
 
-3. STATE MANAGEMENT
-----------------------------
-Web3 Context Pattern:
-- Use reducer for complex state
-- Implement proper typing
-- Handle cleanup
-- Manage subscriptions
+## TYPESCRIPT PRACTICES
 
-[Previous sections remain unchanged...]
+1. Types
+-------
+- Keep interfaces simple
+- Match SDK type definitions
+- Avoid unnecessary type complexity
+- Use type inference where appropriate
+
+2. Error Handling
+---------------
+- Use TypeScript for error prevention
+- Clear error state management
+- Proper error typing
+- Informative error messages
+
+## COMPONENTS
+
+1. Structure
+----------
+- Clear separation of concerns
+- Simple, focused components
+- Trust SDK for complex operations
+- Minimal state management
+
+2. Props
+-------
+- Clear prop interfaces
+- Required vs optional props
+- Prop validation where needed
+- Default prop values
+
+## TESTING
+
+1. Unit Tests
+-----------
+- Test component rendering
+- Test state transitions
+- Mock SDK responses
+- Error handling tests
+
+2. Integration Tests
+-----------------
+- Test SDK integration
+- Connection flows
+- Error scenarios
+- State management
+
+## CODE ORGANIZATION
+
+1. File Structure
+---------------
+/app
+  /components
+    /wallet        # Wallet-related components
+  /context         # React context providers
+  /config          # Configuration files
+  /types          # TypeScript types
+
+2. Naming Conventions
+-------------------
+- PascalCase for components
+- camelCase for functions
+- UPPER_CASE for constants
+- kebab-case for files
+
+## DOCUMENTATION
+
+1. Code Comments
+--------------
+- Document complex logic
+- Explain SDK usage
+- Note error handling
+- Document state management
+
+2. Type Documentation
+------------------
+- Document interfaces
+- Explain type constraints
+- Note SDK types usage
+- Document type extensions
+
+## BEST PRACTICES
+
+1. SDK Integration
+----------------
+✓ Use SDK directly
+✗ Don't create custom implementations
+✓ Trust SDK features
+✗ Don't track SDK-managed state
+
+2. State Management
+----------------
+✓ Minimal state
+✓ Clear transitions
+✓ Simple error handling
+✗ Don't duplicate SDK state
+
+3. Component Design
+----------------
+✓ Simple, focused components
+✓ Clear props interface
+✓ Proper error handling
+✗ Don't manage SDK features

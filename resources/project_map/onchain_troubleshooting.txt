@@ -1,70 +1,99 @@
-DUDE.BOX ONCHAIN TROUBLESHOOTING
+# DUDE.BOX ONCHAIN TROUBLESHOOTING
 Last Updated: November 29, 2024
 
-COMMON ISSUES & RESOLUTIONS
+## CORE PRINCIPLES
 
-1. SDK Integration
+1. Trust the SDK
+---------------
+- Use Coinbase Wallet SDK's built-in functionality
+- Avoid custom chain management
+- Let SDK handle connection details and chain switching
+- Use SDK preferences for wallet types (smartWalletOnly, eoaOnly)
+
+2. State Management
+------------------
+- Keep state minimal (isConnected, address, error states)
+- Let SDK manage chain state
+- Clear connection lifecycle
+- Simple error handling
+
+3. Type System
+-------------
+- Match SDK's type definitions
+- Keep interfaces simple and focused
+- Avoid unnecessary type complexity
+- Use SDK's provider types directly
+
+## COMMON ISSUES & RESOLUTIONS
+
+1. Chain Management
+------------------
+WRONG:
+- Custom chain state management
+- Manual chain switching logic
+- Custom RPC handling
+
+CORRECT:
+- Use SDK's chain management
+- Remove custom chain logic
+- Trust SDK's built-in chain handling
+
+2. State Complexity
+------------------
+WRONG:
+- Complex wallet/chain state objects
+- Manual chain tracking
+- Duplicate state management
+
+CORRECT:
+- Minimal required state
+- Let SDK handle chain state
+- Focus on connection status
+
+3. Error Handling
 ----------------
-Issue: Over-complication of wallet connection
-Resolution: 
-- Simplified to direct SDK usage
-- Removed custom RPC handling
-- Let SDK handle connection details
+WRONG:
+- Generic error messages
+- Complex error state
 
-2. Type System
-----------------
-Issue: Complex type hierarchy causing build errors
-Resolution:
-- Simplified types to match SDK
-- Removed custom type extensions
-- Clear interface definitions
+CORRECT:
+- Use SDK's error information
+- Clear error messaging
+- Simple error state
 
-3. State Management
-----------------
-Issue: Multiple simultaneous connections possible
-Resolution:
-- Added walletType state
-- Implemented mutual exclusivity
-- Clear connection states
+## FUTURE CONSIDERATIONS
 
-4. Build Process
-----------------
-Issue: Vercel build failures
-Resolution:
-- Proper typing
-- Removed unnecessary abstractions
-- Clean separation of concerns
+1. SDK Updates
+-------------
+- Regular SDK version checks
+- Update implementation based on SDK changes
+- Monitor SDK release notes
 
-LESSONS LEARNED
-
-1. SDK Usage
-- Trust the SDK's built-in functionality
-- Avoid unnecessary abstraction layers
-- Use SDK preferences for wallet types
-
-2. Type System
-- Keep types simple and focused
-- Match SDK type definitions
-- Avoid complex type hierarchies
-
-3. Architecture
-- Clear separation of concerns
-- Simple state management
-- Direct SDK integration
-
-FUTURE CONSIDERATIONS
-
-1. Monitoring
+2. Error Monitoring
+-----------------
 - Track connection success rates
 - Monitor wallet type usage
-- Track error occurrences
+- Log specific error types
 
-2. Performance
-- Connection speed optimization
-- State updates efficiency
-- Error handling improvements
+3. Performance
+-------------
+- Monitor connection speeds
+- Track state update efficiency
+- Optimize error handling
 
-3. Security
-- Regular SDK updates
-- Connection validation
-- State consistency checks
+## QUICK FIXES
+
+1. Chain Selection Issues
+- Remove custom chain selection
+- Use SDK's chain management
+- Default to Base Sepolia
+
+2. Connection Problems
+- Check SDK initialization
+- Verify wallet preferences
+- Confirm error handling
+
+3. State Issues
+- Simplify state object
+- Remove chain tracking
+- Trust SDK state
