@@ -6,12 +6,17 @@ import { APP_CONFIG } from '../config/web3';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
+interface Wallet {
+  address: string;
+}
+
 interface Web3State {
   isConnected: boolean;
   address: string | null;
   isConnecting: boolean;
   error: string | null;
   walletType: WalletType;
+  wallet: Wallet | null;
   publicClient?: any;
 }
 
@@ -26,7 +31,8 @@ const initialState: Web3State = {
   address: null,
   isConnecting: false,
   error: null,
-  walletType: 'none'
+  walletType: 'none',
+  wallet: null
 };
 
 const Web3Context = createContext<{
@@ -47,7 +53,10 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         address: action.address,
         walletType: action.walletType,
         isConnecting: false,
-        error: null
+        error: null,
+        wallet: {
+          address: action.address
+        }
       };
     case 'CONNECTION_FAILED':
       return {
@@ -56,7 +65,8 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         address: null,
         isConnecting: false,
         error: action.error,
-        walletType: 'none'
+        walletType: 'none',
+        wallet: null
       };
     case 'DISCONNECT':
       return initialState;
