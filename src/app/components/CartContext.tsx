@@ -235,7 +235,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): JSX.E
     return () => {
       mounted = false;
     };
-  }, []); // Empty dependency array since createCart and fetchCart are stable
+  }, [createCart, fetchCart]);
 
   // Rest of the cart methods...
   const addToCart = useCallback(async (product: CartItem) => {
