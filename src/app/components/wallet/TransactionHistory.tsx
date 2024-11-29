@@ -20,6 +20,7 @@ export const TransactionHistory = () => {
 
   const fetchTransactions = useCallback(async () => {
     if (!state.wallet?.address || !state.publicClient) return;
+    const userAddress = state.wallet.address.toLowerCase();
 
     setIsLoading(true);
     try {
@@ -32,8 +33,8 @@ export const TransactionHistory = () => {
       for (const blockNumber of blocks) {
         const block = await state.publicClient.getBlock({ blockNumber });
         const blockTxs = block.transactions.filter(tx => 
-          tx.from.toLowerCase() === state.wallet!.address.toLowerCase() ||
-          tx.to?.toLowerCase() === state.wallet!.address.toLowerCase()
+          tx.from.toLowerCase() === userAddress ||
+          tx.to?.toLowerCase() === userAddress
         );
         
         txs.push(...blockTxs.map(tx => ({
@@ -51,7 +52,7 @@ export const TransactionHistory = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [state.wallet?.address, state.publicClient, state.wallet]);
+  }, [state.publicClient, state.wallet?.address]);
 
   useEffect(() => {
     fetchTransactions();

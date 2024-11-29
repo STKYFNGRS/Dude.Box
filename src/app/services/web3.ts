@@ -1,62 +1,53 @@
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import { createPublicClient, createWalletClient, custom, http } from 'viem';
-import { APP_CONFIG, COINBASE_CONFIG, DEFAULT_CHAIN } from '../config/web3';
-import type { ConnectedWallet } from '../types/web3';
+import { createPublicClient, createWalletClient, custom, http, type PublicClient, type WalletClient } from 'viem';
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
+import { DEFAULT_CHAIN } from '../config/web3';
+
+type EthereumProvider = CoinbaseWalletProvider & {
+  close?: () => Promise<void>;
+  on: (event: string, handler: (...args: unknown[]) => void) => void;
+  removeListener: (event: string, handler: (...args: unknown[]) => void) => void;
+};
+
+type Web3ServiceResponse = {
+  address: string;
+  walletClient: WalletClient;
+  publicClient: PublicClient;
+};
 
 class Web3Service {
-  private sdk: CoinbaseWalletSDK | null = null;
-  private provider: any = null;
+  private provider: EthereumProvider | null = null;
+  private publicClient: PublicClient;
 
-  initialize() {
-    if (!this.sdk) {
-      this.sdk = new CoinbaseWalletSDK({
-        appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon,
-        darkMode: COINBASE_CONFIG.darkMode,
-      });
-    }
-    return this.sdk;
+  constructor() {
+    this.publicClient = createPublicClient({
+      chain: DEFAULT_CHAIN,
+      transport: http(),
+    });
   }
 
-  async connect(): Promise<{
-    wallet: ConnectedWallet;
-    publicClient: any;
-    walletClient: any;
-  }> {
-    try {
-      const sdk = this.initialize();
-      this.provider = sdk.makeWeb3Provider(
-        DEFAULT_CHAIN.rpcUrls[0],
-        DEFAULT_CHAIN.id
-      );
+  async connect(): Promise<Web3ServiceResponse> {
+    if (typeof window === 'undefined' || !window.ethereum) {
+      throw new Error('No Web3 provider found');
+    }
 
-      const accounts = await this.provider.request({
+    try {
+      const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
 
-      const chainId = await this.provider.request({
-        method: 'eth_chainId',
-      });
-
-      // Create viem clients
-      const publicClient = createPublicClient({
-        transport: http(DEFAULT_CHAIN.rpcUrls[0]),
-      });
-
       const walletClient = createWalletClient({
-        transport: custom(this.provider),
+        chain: DEFAULT_CHAIN,
+        transport: custom(window.ethereum),
       });
+
+      await this.switchChain(DEFAULT_CHAIN.id);
+
+      this.provider = window.ethereum as EthereumProvider;
 
       return {
-        wallet: {
-          address: accounts[0],
-          chain: {
-            id: parseInt(chainId, 16),
-            name: DEFAULT_CHAIN.name,
-          },
-        },
-        publicClient,
+        address: accounts[0] as string,
         walletClient,
+        publicClient: this.publicClient,
       };
     } catch (error) {
       console.error('Wallet connection error:', error);
@@ -64,40 +55,25 @@ class Web3Service {
     }
   }
 
-  async disconnect(): Promise<void> {
-    if (this.provider) {
-      await this.provider.close();
-      this.provider = null;
-    }
-  }
-
   async switchChain(chainId: number): Promise<void> {
-    if (!this.provider) throw new Error('Wallet not connected');
+    if (!this.provider) throw new Error('No provider available');
 
     try {
       await this.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
-    } catch (error: any) {
-      // Chain doesn't exist, add it
-      if (error.code === 4902) {
-        const chain = Object.values(SUPPORTED_CHAINS).find(
-          (chain) => chain.id === chainId
-        );
-        if (!chain) throw new Error('Unsupported chain');
-
+    } catch (error) {
+      if ((error as { code: number }).code === 4902) {
         await this.provider.request({
           method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: `0x${chainId.toString(16)}`,
-              chainName: chain.name,
-              nativeCurrency: chain.nativeCurrency,
-              rpcUrls: chain.rpcUrls,
-              blockExplorerUrls: [chain.blockExplorers.default.url],
-            },
-          ],
+          params: [{
+            chainId: `0x${chainId.toString(16)}`,
+            chainName: DEFAULT_CHAIN.name,
+            nativeCurrency: DEFAULT_CHAIN.nativeCurrency,
+            rpcUrls: [DEFAULT_CHAIN.rpcUrls.default.http[0]],
+            blockExplorerUrls: [DEFAULT_CHAIN.blockExplorers?.default.url],
+          }],
         });
       } else {
         throw error;
@@ -105,8 +81,29 @@ class Web3Service {
     }
   }
 
-  getProvider() {
-    return this.provider;
+  async disconnect(): Promise<void> {
+    if (this.provider?.close) {
+      await this.provider.close();
+    }
+    this.provider = null;
+  }
+
+  setupEventListeners(handlers: {
+    onAccountsChanged: (accounts: string[]) => void;
+    onChainChanged: (chainId: string) => void;
+    onDisconnect: () => void;
+  }): (() => void) | undefined {
+    if (!this.provider) return;
+
+    this.provider.on('accountsChanged', handlers.onAccountsChanged);
+    this.provider.on('chainChanged', handlers.onChainChanged);
+    this.provider.on('disconnect', handlers.onDisconnect);
+
+    return () => {
+      this.provider?.removeListener('accountsChanged', handlers.onAccountsChanged);
+      this.provider?.removeListener('chainChanged', handlers.onChainChanged);
+      this.provider?.removeListener('disconnect', handlers.onDisconnect);
+    };
   }
 }
 
