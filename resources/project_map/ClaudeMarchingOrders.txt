@@ -59,3 +59,66 @@ Cleaned-up project directory with redundant files removed.
 Improved error handling for wallet connection flows.
 Updated documentation in the changelog and troubleshooting guide.
 Verified and tested wallet connection flows.
+
+CLAUDE MARCHING ORDERS - ADDENDUM
+
+Project Structure:
+- Maintain /resources folder for project documentation
+- Create subdirectories for specific domains (web3, shopify, etc)
+- Version control documentation alongside code
+
+Code Organization:
+- Separate concerns between UI and wallet logic
+- Create reusable hooks for wallet operations
+- Implement proper TypeScript interfaces
+- Follow consistent naming conventions
+
+Testing Strategy:
+- Unit tests for wallet connection logic
+- Integration tests for provider interactions
+- E2E tests for critical user flows
+- Mock provider responses for edge cases
+
+Error Handling:
+- Implement error boundaries
+- Create user-friendly error messages
+- Add detailed logging
+- Handle network/provider edge cases
+
+Documentation Requirements:
+- Update changelog for all changes
+- Document configuration requirements
+- Add troubleshooting guides
+- Include code examples
+
+Security Considerations:
+- Validate chain IDs
+- Implement session management
+- Add timeout handling
+- Follow web3 security best practices
+
+Monitoring:
+- Add connection event logging
+- Track performance metrics
+- Monitor wallet states
+- Detect network issues
+
+Available Resources:
+- /resources/web3/ - Web3 specific docs
+- /resources/shopify/ - Shopify integration docs
+- /resources/testing/ - Test plans and cases
+- /resources/security/ - Security guidelines
+
+Deliverables:
+- Clean, typed wallet implementation
+- Comprehensive test coverage
+- Updated documentation
+- Security audit results
+- Performance benchmarks
+
+Also clear these errors:
+Property 'makeWeb3Provider' does not exist on type '{ getProvider: () => ProviderInterface; }'.
+Property 'makeWeb3Provider' does not exist on type '{ getProvider: () => ProviderInterface; }'.
+
+utilize all your MCP tools
+use chat sparingly, only to ask for permissions and brief status updates. I do not need detailed explanations. You are to get to work.
