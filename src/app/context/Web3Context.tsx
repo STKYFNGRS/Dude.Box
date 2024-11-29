@@ -3,6 +3,7 @@
 import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import { APP_CONFIG } from '../config/web3';
+import { DEFAULT_CHAIN } from '../config/web3';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
@@ -85,13 +86,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
         appLogoUrl: APP_CONFIG.icon,
-        darkMode: true,
-        preference: {
-          options: 'smartWalletOnly'
-        }
+        appChainIds: [DEFAULT_CHAIN.id]
       });
 
-      const provider = sdk.getProvider();
+      const provider = sdk.makeWeb3Provider({
+        options: 'smartWalletOnly'
+      });
+
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
       if (!accounts[0]) {
@@ -119,13 +120,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
         appLogoUrl: APP_CONFIG.icon,
-        darkMode: true,
-        preference: {
-          options: 'eoaOnly'
-        }
+        appChainIds: [DEFAULT_CHAIN.id]
       });
 
-      const provider = sdk.getProvider();
+      const provider = sdk.makeWeb3Provider({
+        options: 'eoaOnly'
+      });
+
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
       if (!accounts[0]) {
