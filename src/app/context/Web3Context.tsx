@@ -4,6 +4,13 @@ import { createContext, useContext, useReducer, useCallback, ReactNode, useEffec
 import { traditionalWalletService } from '../services/traditionalWallet';
 import type { Web3ContextState, Web3ContextType } from '../types/web3';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 const initialState: Web3ContextState = {
   wallet: null,
   isConnecting: false,
@@ -66,7 +73,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     }
   }, [state.isConnecting]);
 
-  const connectSmartWallet = useCallback(async (provider: any) => {
+  const connectSmartWallet = useCallback(async (provider: CoinbaseWalletProvider) => {
     if (state.isConnecting) return;
 
     try {
@@ -118,7 +125,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     }
   }, [state.wallet]);
 
-  // Set up event listeners for traditional wallet
   useEffect(() => {
     if (!state.wallet) return;
 

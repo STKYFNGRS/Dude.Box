@@ -24,7 +24,7 @@ export const TransactionHistory = () => {
     setIsLoading(true);
     try {
       const blocks = await state.publicClient.getBlockNumbers({
-        fromBlock: BigInt(-100), // Last 100 blocks
+        fromBlock: BigInt(-100),
         toBlock: 'latest'
       });
 
@@ -51,7 +51,7 @@ export const TransactionHistory = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [state.wallet?.address, state.publicClient]);
+  }, [state.wallet?.address, state.publicClient, state.wallet]);
 
   useEffect(() => {
     fetchTransactions();

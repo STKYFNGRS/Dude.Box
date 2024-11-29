@@ -1,4 +1,4 @@
-import { type PublicClient, type WalletClient, type Chain } from 'viem';
+import { type PublicClient, type WalletClient } from 'viem';
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 
 export type ConnectedWallet = {
