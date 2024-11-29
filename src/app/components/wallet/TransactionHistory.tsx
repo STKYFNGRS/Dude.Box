@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useWeb3 } from '@/app/context/Web3Context';
-import { formatEther } from 'viem';
+import { formatEther, type Block } from 'viem';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 interface Transaction {
@@ -13,10 +13,13 @@ interface Transaction {
   timestamp: number;
 }
 
-interface Block {
-  number: bigint;
-  timestamp: bigint;
-  transactions: Transaction[];
+interface BlockWithTransactions extends Block {
+  transactions: {
+    hash: string;
+    from: string;
+    to: string | null;
+    value: bigint;
+  }[];
 }
 
 export const TransactionHistory = () => {
@@ -33,25 +36,28 @@ export const TransactionHistory = () => {
       const currentBlock = await state.publicClient.getBlockNumber();
       const fromBlock = currentBlock - BigInt(100);
       
-      const blocks: Block[] = [];
+      const blocks: BlockWithTransactions[] = [];
       for (let i = fromBlock; i <= currentBlock; i++) {
         const block = await state.publicClient.getBlock({
-          blockNumber: i
-        });
+          blockNumber: i,
+          includeTransactions: true
+        }) as BlockWithTransactions;
         blocks.push(block);
       }
 
       const txs = blocks.flatMap(block => 
-        block.transactions.filter(tx => 
-          tx.from.toLowerCase() === userAddress ||
-          tx.to?.toLowerCase() === userAddress
-        ).map(tx => ({
-          hash: tx.hash,
-          from: tx.from,
-          to: tx.to || '',
-          value: tx.value,
-          timestamp: Number(block.timestamp)
-        }))
+        block.transactions
+          .filter(tx => 
+            tx.from.toLowerCase() === userAddress ||
+            tx.to?.toLowerCase() === userAddress
+          )
+          .map(tx => ({
+            hash: tx.hash,
+            from: tx.from,
+            to: tx.to || '',
+            value: tx.value,
+            timestamp: Number(block.timestamp)
+          }))
       );
 
       setTransactions(txs);

@@ -1,33 +1,37 @@
 DUDE.BOX IT DEPARTMENT DOCUMENTATION
-Last Updated: November 28, 2024
+Last Updated: November 29, 2024
 
-WEB3 INTEGRATION STATUS UPDATE
+IMMEDIATE ACTION ITEMS
 
-Current Focus: Balance & Transaction Display
-Priority: HIGH
+1. MCP Integration Issues:
+   - Brave Search not connecting
+   - Config structure may need revision
+   - Investigate connection persistence
+   - API key validation needed
 
-Implementation Notes:
-1. Balance Fetching Method:
-   - Using eth_getBalance RPC call
-   - Direct provider request method
-   - BigInt conversion for accuracy
+2. Wallet Connection Flow:
+   - Current: Multiple connections possible
+   - Required: Single active connection
+   - Options: Coinbase or MetaMask only
+   - Must prevent multiple simultaneous connections
 
-2. Technical Challenges:
-   - Provider type compatibility
-   - Balance conversion precision
-   - State management synchronization
+3. Type System Updates:
+   - Transaction history proper typing
+   - Block interface improvements
+   - Vercel build compatibility
+   - ESLint compliance
 
-3. Critical Components:
-   useWalletData hook:
-   - Balance fetching
-   - Loading states
-   - Error handling
-   - Refresh capability
+4. Resources Management:
+   - Kept in git for development context
+   - Documentation continues to evolve
+   - Track all major changes
+   - Maintain deployment notes
 
-4. Next Steps:
-□ Implement transaction history
-□ Add gas estimation
-□ Real-time updates
-□ Multi-chain support
+NEXT ACTIONS:
+1. Fix MCP Brave Search connection
+2. Implement mutual exclusion for wallets
+3. Update wallet selection UI
+4. Add connection state management
+5. Improve error handling
 
 [Previous content remains...]
