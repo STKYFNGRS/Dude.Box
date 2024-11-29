@@ -1,6 +1,15 @@
 # DUDE.BOX CHANGELOG
 Last Updated: November 29, 2024
 
+## [1.0.15] - 2024-11-29
+### Removed
+- Removed unused @web3modal/wagmi dependency
+- Cleaned up package.json
+### Notes
+- Removed in response to deprecation warning
+- No functionality impact as package wasn't in use
+- Continuing to use Coinbase Wallet SDK for wallet connection
+
 ## [1.0.14] - 2024-11-29
 ### Major Refactor - SDK Integration
 - Removed custom chain management
