@@ -16,8 +16,6 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   alt,
   width = 800,
   height = 800,
-  mobileWidth = 400,
-  mobileHeight = 400,
   className = '',
   sizes = '(max-width: 768px) 100vw, 50vw',
   priority = false,
