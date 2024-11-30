@@ -6,14 +6,11 @@ import { useState } from 'react';
 import { BarChart3, ImageIcon, Coins, Wallet } from 'lucide-react';
 import { HeroSection } from './components/HeroSection';
 import { WalletOptions } from '../components/wallet/WalletOptions';
-import { WalletInfo } from '../components/wallet/WalletInfo';
-import { ChainSelector } from '../components/wallet/ChainSelector';
-import { useWeb3 } from '../context/Web3Context';
 import { TabContent } from './components/TabContent';
 
 export default function Onchain() {
   const [activeTab, setActiveTab] = useState('overview');
-  const { state } = useWeb3();
+  const [connected, setConnected] = useState(false);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -28,20 +25,15 @@ export default function Onchain() {
         <HeroSection />
         
         <div className="w-full max-w-7xl mx-auto px-4 py-8">
-          {!state.wallet ? (
+          {!connected ? (
             <div className="mb-8 p-8 bg-gray-800/50 rounded-xl border border-gray-700">
-              <h2 className="text-2xl font-bold mb-4 text-center">Choose Your Wallet</h2>
-              <p className="text-gray-300 mb-8 text-center">Select how you&apos;d like to connect to the Dude Box Web3 experience</p>
-              <WalletOptions />
+              <h2 className="text-2xl font-bold mb-4 text-center">Create Your Smart Wallet</h2>
+              <p className="text-gray-300 mb-8 text-center">Get started with your Web3 experience in seconds</p>
+              <WalletOptions onConnect={() => setConnected(true)} />
             </div>
           ) : (
             <>
               <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                  <WalletInfo />
-                  <ChainSelector />
-                </div>
-
                 {/* Navigation Tabs */}
                 <div className="flex flex-wrap gap-4 mb-8">
                   {tabs.map(tab => (
