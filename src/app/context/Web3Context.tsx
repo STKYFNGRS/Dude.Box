@@ -7,8 +7,8 @@ import {
   useCallback,
   ReactNode 
 } from 'react';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { useConfig, useConnect } from 'wagmi';
+import { useConnect, useDisconnect } from 'wagmi';
+import { coinbaseWallet } from 'wagmi/connectors';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
@@ -72,21 +72,14 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const config = useConfig();
-  const { connectAsync } = useConnect();
+  const { connectAsync, connectors } = useConnect();
+  const { disconnectAsync } = useDisconnect();
 
   const connectSmartWallet = useCallback(async () => {
     dispatch({ type: 'START_CONNECTING' });
 
     try {
-      const connector = new CoinbaseWalletConnector({
-        chains: config.chains,
-        options: {
-          appName: 'Dude.Box',
-          headlessMode: true, // Enable smart wallet mode
-        },
-      });
-
+      const connector = connectors[0]; // Coinbase Wallet connector
       const result = await connectAsync({ connector });
       
       dispatch({ 
@@ -101,19 +94,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         error: err instanceof Error ? err.message : 'Failed to connect smart wallet'
       });
     }
-  }, [config.chains, connectAsync]);
+  }, [connectors, connectAsync]);
 
   const connectRegularWallet = useCallback(async () => {
     dispatch({ type: 'START_CONNECTING' });
 
     try {
-      const connector = new CoinbaseWalletConnector({
-        chains: config.chains,
-        options: {
-          appName: 'Dude.Box',
-        },
-      });
-
+      const connector = connectors[0]; // Coinbase Wallet connector
       const result = await connectAsync({ connector });
       
       dispatch({ 
@@ -128,11 +115,16 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         error: err instanceof Error ? err.message : 'Failed to connect wallet'
       });
     }
-  }, [config.chains, connectAsync]);
+  }, [connectors, connectAsync]);
 
-  const disconnect = useCallback(() => {
-    dispatch({ type: 'DISCONNECT' });
-  }, []);
+  const disconnect = useCallback(async () => {
+    try {
+      await disconnectAsync();
+      dispatch({ type: 'DISCONNECT' });
+    } catch (err) {
+      console.error('Error disconnecting:', err);
+    }
+  }, [disconnectAsync]);
 
   return (
     <Web3Context.Provider value={{ 

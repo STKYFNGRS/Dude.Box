@@ -1,17 +1,17 @@
-import { http, createConfig } from 'wagmi'
-import { base, baseSepolia } from 'wagmi/chains'
-import { SUPPORTED_CHAINS } from '@/config/chains'
-
-// Get RPC URLs from our chain config
-const rpcUrls = {
-  [base.id]: SUPPORTED_CHAINS.baseMainnet.rpcUrls.default.http[0],
-  [baseSepolia.id]: SUPPORTED_CHAINS.baseSepolia.rpcUrls.default.http[0]
-}
+import { http, createConfig } from 'wagmi';
+import { base, baseSepolia } from 'wagmi/chains';
+import { coinbaseWallet } from 'wagmi/connectors';
 
 export const config = createConfig({
   chains: [base, baseSepolia],
+  connectors: [
+    coinbaseWallet({
+      appName: 'Dude.Box',
+      headlessMode: true // Enable smart wallet mode
+    })
+  ],
   transports: {
-    [base.id]: http(rpcUrls[base.id]),
-    [baseSepolia.id]: http(rpcUrls[baseSepolia.id])
+    [base.id]: http(),
+    [baseSepolia.id]: http()
   }
 });
