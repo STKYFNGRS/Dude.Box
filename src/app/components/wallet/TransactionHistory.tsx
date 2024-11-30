@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useWeb3 } from '@/app/context/Web3Context';
+import { useEffect, useState } from 'react';
 import { formatEther, type Transaction } from 'viem';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { useAccount, usePublicClient, useBlockNumber } from 'wagmi';
 
 interface SimplifiedTransaction {
   hash: string;
@@ -14,61 +14,63 @@ interface SimplifiedTransaction {
 }
 
 export const TransactionHistory = () => {
-  const { state } = useWeb3();
+  const { address } = useAccount();
+  const publicClient = usePublicClient();
+  const { data: blockNumber } = useBlockNumber();
   const [transactions, setTransactions] = useState<SimplifiedTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchTransactions = useCallback(async () => {
-    if (!state.wallet?.address || !state.publicClient) return;
-    const userAddress = state.wallet.address.toLowerCase();
-
-    setIsLoading(true);
-    try {
-      const currentBlock = await state.publicClient.getBlockNumber();
-      const fromBlock = currentBlock - BigInt(100);
-      
-      const blockPromises = [];
-      for (let i = fromBlock; i <= currentBlock; i++) {
-        blockPromises.push(
-          state.publicClient.getBlock({
-            blockNumber: i,
-            includeTransactions: true
-          })
-        );
-      }
-
-      const blocks = await Promise.all(blockPromises);
-      
-      const txs = blocks.flatMap(block => {
-        const blockTimestamp = Number(block.timestamp);
-        return (block.transactions as Array<Transaction>)
-          .filter(tx => (
-            'from' in tx && 'to' in tx && 
-            (tx.from.toLowerCase() === userAddress ||
-             tx.to?.toLowerCase() === userAddress)
-          ))
-          .map(tx => ({
-            hash: tx.hash,
-            from: tx.from,
-            to: tx.to || '',
-            value: tx.value,
-            timestamp: blockTimestamp
-          }));
-      });
-
-      setTransactions(txs);
-    } catch (error) {
-      console.error('Failed to fetch transactions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [state.publicClient, state.wallet?.address]);
-
   useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+    const fetchTransactions = async () => {
+      if (!address || !blockNumber) return;
+      
+      const userAddress = address.toLowerCase();
+      setIsLoading(true);
+      
+      try {
+        const fromBlock = blockNumber - BigInt(100);
+        
+        const blockPromises = [];
+        for (let i = fromBlock; i <= blockNumber; i++) {
+          blockPromises.push(
+            publicClient.getBlock({
+              blockNumber: i,
+              includeTransactions: true
+            })
+          );
+        }
 
-  if (!state.wallet) return null;
+        const blocks = await Promise.all(blockPromises);
+        
+        const txs = blocks.flatMap(block => {
+          const blockTimestamp = Number(block.timestamp);
+          return (block.transactions as Array<Transaction>)
+            .filter(tx => (
+              'from' in tx && 'to' in tx && 
+              (tx.from.toLowerCase() === userAddress ||
+               tx.to?.toLowerCase() === userAddress)
+            ))
+            .map(tx => ({
+              hash: tx.hash,
+              from: tx.from,
+              to: tx.to || '',
+              value: tx.value,
+              timestamp: blockTimestamp
+            }));
+        });
+
+        setTransactions(txs);
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [address, blockNumber, publicClient]);
+
+  if (!address) return null;
 
   return (
     <div className="rounded-lg border border-gray-700 bg-gray-800/50 overflow-hidden">
@@ -83,7 +85,7 @@ export const TransactionHistory = () => {
           <div className="p-4 text-center text-gray-400">No transactions found</div>
         ) : (
           transactions.map((tx) => {
-            const isSent = tx.from.toLowerCase() === state.wallet!.address.toLowerCase();
+            const isSent = tx.from.toLowerCase() === address.toLowerCase();
             return (
               <div key={tx.hash} className="p-4 hover:bg-gray-700/50 transition-colors">
                 <div className="flex items-center justify-between">

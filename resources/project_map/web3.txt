@@ -2,21 +2,35 @@
 WEB3 INTEGRATION
 
 Wallet Integration:
-- Coinbase Wallet SDK
-- Smart/Regular wallet support
-- Chain configuration
-- Provider management
+- Coinbase Smart Wallet SDK
+  - Simplified provider configuration
+  - Using OnchainKit for RPC
+  - Direct Base chain integration
+  
+- Regular Wallet Support
+  - MetaMask compatibility
+  - Coinbase Wallet extension
+  - Chain configuration handled by providers
 
-Security Considerations:
-- Chain ID validation
-- Provider disposal
-- Session management
-- Error recovery
+Chain Configuration:
+- Base Mainnet (8453)
+- Base Sepolia (84532)
+- RPC endpoints managed by OnchainKit
+
+Key Learnings:
+1. Let SDKs handle chain management
+2. Use built-in provider features
+3. Avoid redundant RPC configurations
+4. Maintain separate flows for smart/regular wallets
+5. Use environment variables for chain IDs
 
 Testing Requirements:
-- Connection flows
-- Chain switching
+- Connection flows for both wallet types
+- Chain switching handled by providers
 - Error scenarios
 - Provider interactions
 
-I'd like for you to keep in mind. Our onchain/page.txt should offer two options. On the left, Smart wallet SDK. On the right is a wallet aggregator where they can connect with exsisting wallet extensions. 
+Security Considerations:
+- Provider disposal
+- Session management
+- Error recovery
