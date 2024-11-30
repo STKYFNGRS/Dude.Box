@@ -8,6 +8,13 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { useWeb3 } from '@/app/context/Web3Context';
 import { useRouter } from 'next/navigation';
 
+interface NavItem {
+  href: string;
+  label: string;
+  className?: string;
+  onClick?: () => void;
+}
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
@@ -25,7 +32,7 @@ const Header = () => {
     router.refresh();
   };
 
-  const navigationItems = [
+  const navigationItems: NavItem[] = [
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" }
@@ -35,8 +42,8 @@ const Header = () => {
     navigationItems.push({
       href: "#",
       label: "Disconnect",
-      onClick: handleDisconnect,
-      className: "text-red-400 hover:text-red-300"
+      className: "text-red-400 hover:text-red-300",
+      onClick: handleDisconnect
     });
   } else {
     navigationItems.push({ href: "/onchain", label: "Onchain" });
