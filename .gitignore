@@ -17,6 +17,12 @@
 # Production
 /build
 
+# Project documentation and resources
+/resources/
+/resources/project_map/
+/resources/**/*.txt
+/resources/**/*.md
+
 # Misc
 .DS_Store
 *.pem

@@ -3,36 +3,54 @@ DUDE.BOX PROJECT STATE
 
 Current Stack:
 - Next.js 15.0.3 app
-- Shopify Storefront API
-- TailwindCSS
-- Web3/Coinbase Integration
-  - Smart Wallet Support
-  - Regular Wallet Support (MetaMask/Coinbase Wallet)
 - Base Chain Integration
-- SQL Integration (pending)
+  - OnchainKit RPC Integration
+  - Smart/Regular Wallet Support
+  - Base Mainnet & Sepolia Support
+- Web3 Features
+  - Coinbase Wallet SDK Implementation
+  - Dual Wallet System (Smart/Regular)
+  - Chain-Aware Connections
+- Shopify Integration
+  - Storefront API
+  - Cart Management
+  - Product Display
+- UI/UX
+  - TailwindCSS
+  - Responsive Design
+  - Dark Theme
+  - Background Imagery Integration
 
 Active Components:
-- Shop page with product grid
-- Cart functionality
-- Dual Web3 wallet connections
-- Dark theme UI
+- Onchain Page
+  - Custom Hero Section
+  - Background Image Implementation
+  - Wallet Connection Options
+  - Connection State Management
+- Shop Integration
+  - Product Grid
+  - Cart Functionality
+  - Checkout Flow
+- Web3 Integration
+  - Transaction Management
+  - Wallet Status Display
+  - Network Handling
 
 Key Files:
-- src/app/shop/page.tsx
-- src/app/components/CartContext.tsx
-- src/app/context/Web3Context.tsx (Updated)
+- src/app/onchain/page.tsx (Updated with hero & background)
+- src/app/context/Web3Context.tsx (Improved wallet handling)
+- src/app/components/wallet/WalletOptions.tsx
 - src/lib/shopify.ts
 
 Environment Setup:
-- Base RPC URL configured via OnchainKit
-- Chain IDs for Base mainnet and testnet
-- Smart Wallet configuration
-- Shopify integration keys
-- Dude.Box API integration
+- OnchainKit Configuration
+- Base Chain RPC URLs
+- Shopify API Integration
+- Environment Variable Management
 
 Recent Updates:
-1. Simplified Web3Context implementation
-2. Removed redundant RPC configurations
-3. Added proper chain ID management
-4. Integrated Coinbase Smart Wallet support
-5. Added concurrent wallet type support
+1. Enhanced Onchain Page Design
+2. Improved Web3Context Implementation
+3. Added Background Image Integration
+4. Enhanced User Experience
+5. Optimized Layout Structure

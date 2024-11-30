@@ -1,78 +1,43 @@
-DUDE.BOX ONCHAIN MVP SETUP
-Last Updated: November 29, 2024
+# ONCHAIN PAGE SETUP
 
-MVP SCOPE
----------
-Core Functionality:
-1. Smart Wallet Integration
-   - One-click setup
-   - No extension required
-   - Quick Web3 onboarding
+UI Elements:
+- Hero Section with gradient text
+- hunt pick 2.png background
+- Single connect button
+- Status display
 
-2. Traditional Wallet Support
-   - Coinbase Wallet
-   - MetaMask
-   - Extension-based
+Background Implementation:
+- Opacity: 20%
+- Gradient overlay
+- Footer clearance
+- Content visibility
 
-3. Account Display
-   - Connected status
-   - Address display
-   - Connection type indicator
+Connection Flow:
+- Initial connect button
+- Coinbase modal
+- Type detection
+- Status update
 
-IMPLEMENTATION
--------------
-Key Components:
-/src/app/
-├── context/
-│   └── Web3Context.tsx    # Wallet state management
-├── components/
-│   └── wallet/
-│       └── WalletOptions.tsx  # Wallet selection UI
-└── onchain/
-    └── page.tsx           # Main Web3 interface
+State Display:
+- Connected status
+- Wallet address
+- Wallet type
+- Disconnect option
 
-State Management:
-- isConnected: boolean
-- address: string | null
-- walletType: 'none' | 'smart' | 'regular'
-- error handling
+Responsive Design:
+- Mobile-first
+- Tablet adaptation
+- Desktop optimization
+- Dynamic spacing
 
-DEPENDENCIES
------------
-Primary:
-- @coinbase/wallet-sdk
-Focus on direct SDK usage with minimal abstraction
+Visual Hierarchy:
+- Clear CTAs
+- Status prominence
+- Type indication
+- Clean layout
 
-DEPLOYMENT CONSIDERATIONS
------------------------
-1. Build Process
-   - Minimal dependencies
-   - Clean type system
-   - Simple component structure
-
-2. Error Handling
-   - Clear user feedback
-   - Graceful fallbacks
-   - Connection validation
-
-3. Performance
-   - Fast wallet connection
-   - Quick UI responses
-   - Efficient state updates
-
-FUTURE CONSIDERATIONS
--------------------
-Potential Extensions (Not MVP):
-- Transaction history
-- Chain switching
-- Token balances
-- NFT display
-- Advanced features
-
-MAINTENANCE NOTES
----------------
-- Keep functionality focused
-- Minimize abstractions
-- Use SDK as intended
-- Regular dependency updates
-- Monitor connection success
+Recent Updates:
+1. Single button interface
+2. Automatic type detection
+3. Enhanced status display
+4. Improved responsiveness

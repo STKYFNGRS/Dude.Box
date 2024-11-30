@@ -1,8 +1,8 @@
 export const SUPPORTED_CHAINS = {
-  mainnet: {
-    id: parseInt(process.env.NEXT_PUBLIC_ETHEREUM_CHAIN_ID || '1'),
-    name: 'Ethereum Mainnet',
-    rpcUrl: process.env.NEXT_PUBLIC_ETHEREUM_RPC,
+  baseMainnet: {
+    id: parseInt(process.env.NEXT_PUBLIC_BASE_CHAIN_ID || '8453'),
+    name: 'Base',
+    rpcUrl: process.env.NEXT_PUBLIC_BASE_RPC_URL,
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -12,27 +12,7 @@ export const SUPPORTED_CHAINS = {
   baseSepolia: {
     id: parseInt(process.env.NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID || '84532'),
     name: 'Base Sepolia',
-    rpcUrl: process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC,
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    }
-  },
-  sepolia: {
-    id: parseInt(process.env.NEXT_PUBLIC_SEPOLIA_CHAIN_ID || '11155111'),
-    name: 'Sepolia',
-    rpcUrl: process.env.NEXT_PUBLIC_SEPOLIA_RPC,
-    nativeCurrency: {
-      name: 'Sepolia Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    }
-  },
-  baseMainnet: {
-    id: parseInt(process.env.NEXT_PUBLIC_BASE_MAINNET_CHAIN_ID || '8453'),
-    name: 'Base Mainnet',
-    rpcUrl: process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
+    rpcUrl: process.env.NEXT_PUBLIC_BASE_RPC_URL?.replace('base', 'base-sepolia'),
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -41,19 +21,8 @@ export const SUPPORTED_CHAINS = {
   }
 } as const;
 
-// Default chain for smart wallet
+// Default chain for development
 export const DEFAULT_CHAIN = SUPPORTED_CHAINS.baseSepolia;
 
-// Chains supported by smart wallet
-export const SMART_WALLET_CHAINS = [
-  SUPPORTED_CHAINS.baseSepolia,
-  SUPPORTED_CHAINS.baseMainnet
-];
-
-// Chains supported by regular wallets (MetaMask/Coinbase Wallet)
-export const REGULAR_WALLET_CHAINS = [
-  SUPPORTED_CHAINS.mainnet,
-  SUPPORTED_CHAINS.sepolia,
-  SUPPORTED_CHAINS.baseSepolia,
-  SUPPORTED_CHAINS.baseMainnet
-];
+// All supported chains
+export const ALL_SUPPORTED_CHAINS = Object.values(SUPPORTED_CHAINS);
