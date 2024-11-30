@@ -77,12 +77,18 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         appLogoUrl: '/Dude logo 3.jpg',
         darkMode: true,
         defaultChainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID) || 84532,
+        reloadOnDisconnect: false,
+        appWebUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://dude-box.vercel.app',
+        enableMobileWalletLink: true,
       });
 
-      // If forceCreate is true, we'll force the smart wallet flow
-      const provider = sdk.makeWeb3Provider(undefined, undefined, {
-        ...(forceCreate ? { walletMode: 'smart' as const } : undefined)
-      });
+      const provider = sdk.makeWeb3Provider(
+        process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
+        Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID),
+        {
+          ...(forceCreate ? { walletMode: 'smart' as const } : undefined)
+        }
+      );
       
       const accounts = await provider.request({
         method: 'eth_requestAccounts'
@@ -92,7 +98,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         throw new Error('No account selected');
       }
 
-      // Detect wallet type based on the address
       const walletType = detectWalletType(accounts[0]);
 
       // Switch to Base chain
