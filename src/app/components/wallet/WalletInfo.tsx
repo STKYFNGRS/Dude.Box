@@ -1,3 +1,4 @@
+// Update WalletInfo.tsx
 'use client';
 
 import { useWeb3 } from '@/app/context/Web3Context';
@@ -8,7 +9,8 @@ export const WalletInfo = () => {
   const { state, disconnect } = useWeb3();
   const { balance, isLoading, refetch } = useWalletData();
 
-  if (!state.wallet) return null;
+  // Changed from state.wallet to state.address
+  if (!state.address) return null;
 
   return (
     <div className="mb-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
@@ -16,7 +18,7 @@ export const WalletInfo = () => {
         <div className="flex items-center gap-2">
           <Wallet className="w-5 h-5 text-blue-400" />
           <span className="text-gray-300">Connected:</span>
-          <span className="font-mono">{`${state.wallet.address.slice(0, 6)}...${state.wallet.address.slice(-4)}`}</span>
+          <span className="font-mono">{`${state.address.slice(0, 6)}...${state.address.slice(-4)}`}</span>
           <button 
             onClick={() => refetch()} 
             className="p-1 hover:bg-gray-700 rounded-full transition-colors"
