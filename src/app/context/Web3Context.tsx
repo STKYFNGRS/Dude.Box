@@ -1,9 +1,17 @@
 'use client';
 
 import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
-import { CoinbaseWalletProvider, CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 
 type WalletType = 'none' | 'smart' | 'regular';
+
+// Custom SDK options interface
+interface SDKOptions {
+  appName: string;
+  chainId?: number;
+  rpcUrl?: string;
+}
 
 interface Web3State {
   isConnected: boolean;
@@ -38,7 +46,11 @@ const Web3Context = createContext<{
 function reducer(state: Web3State, action: Web3Action): Web3State {
   switch (action.type) {
     case 'CONNECT_START':
-      return { ...state, isConnecting: true, error: null };
+      return {
+        ...state,
+        isConnecting: true,
+        error: null
+      };
     case 'CONNECT_SUCCESS':
       return {
         ...state,
@@ -51,7 +63,8 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
       };
     case 'CONNECT_ERROR':
       return {
-        ...initialState,
+        ...state,
+        isConnecting: false,
         error: action.error
       };
     case 'DISCONNECT':
@@ -72,48 +85,40 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     try {
       dispatch({ type: 'CONNECT_START' });
 
-      const sdk = new CoinbaseWalletSDK({
+      const sdkOptions: SDKOptions = {
         appName: 'Dude Box',
-        appLogoUrl: '/Dude logo 3.jpg',
-        darkMode: true,
-        defaultChainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID) || 84532,
-        reloadOnDisconnect: false,
-        appWebUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://dude-box.vercel.app',
-        enableMobileWalletLink: true,
-      });
+        chainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID) || 84532,
+        rpcUrl: process.env.NEXT_PUBLIC_BASE_MAINNET_RPC || ''
+      };
 
-      const provider = sdk.makeWeb3Provider(
-        process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
-        Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID),
-        {
-          ...(forceCreate ? { walletMode: 'smart' as const } : undefined)
-        }
-      );
-      
-      const accounts = await provider.request({
+      const sdk = new CoinbaseWalletSDK(sdkOptions);
+      const provider = sdk.makeWeb3Provider() as unknown as CoinbaseWalletProvider;
+
+      const accountsResponse = await provider.request({
         method: 'eth_requestAccounts'
-      });
+      }) as string[];
 
-      if (!accounts[0]) {
+      if (!accountsResponse || !accountsResponse[0]) {
         throw new Error('No account selected');
       }
 
-      const walletType = detectWalletType(accounts[0]);
+      const walletType = detectWalletType(accountsResponse[0]);
 
-      // Switch to Base chain
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID || 84532).toString(16)}` }],
+        params: [{ 
+          chainId: `0x${Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID || 84532).toString(16)}` 
+        }]
       });
 
       dispatch({ 
         type: 'CONNECT_SUCCESS', 
-        address: accounts[0],
+        address: accountsResponse[0],
         walletType,
         provider
       });
 
-      console.log('Connected with wallet type:', walletType, 'Address:', accounts[0]);
+      console.log('Connected with wallet type:', walletType, 'Address:', accountsResponse[0]);
 
     } catch (error) {
       console.error('Wallet connection failed:', error);
@@ -127,7 +132,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const disconnect = useCallback(() => {
     if (state.provider) {
       try {
-        state.provider.close();
+        state.provider.disconnect?.();
       } catch (error) {
         console.error('Error disconnecting:', error);
       }
