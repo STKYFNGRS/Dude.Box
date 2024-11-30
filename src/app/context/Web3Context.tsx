@@ -3,7 +3,6 @@
 import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import { APP_CONFIG } from '../config/web3';
-import { DEFAULT_CHAIN } from '../config/web3';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
@@ -18,7 +17,6 @@ interface Web3State {
   error: string | null;
   walletType: WalletType;
   wallet: Wallet | null;
-  publicClient?: any;
 }
 
 type Web3Action =
@@ -85,17 +83,12 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     try {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon,
-        appChainIds: [DEFAULT_CHAIN.id]
+        appLogoUrl: APP_CONFIG.icon
       });
 
-      const provider = sdk.makeWeb3Provider(
-        DEFAULT_CHAIN.rpcUrl,
-        DEFAULT_CHAIN.id,
-        {
-          walletMode: 'smart'
-        }
-      );
+      const provider = sdk.makeWeb3Provider({
+        walletMode: 'smart'
+      });
 
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
@@ -123,17 +116,12 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     try {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon,
-        appChainIds: [DEFAULT_CHAIN.id]
+        appLogoUrl: APP_CONFIG.icon
       });
 
-      const provider = sdk.makeWeb3Provider(
-        DEFAULT_CHAIN.rpcUrl,
-        DEFAULT_CHAIN.id,
-        {
-          walletMode: 'eoa'
-        }
-      );
+      const provider = sdk.makeWeb3Provider({
+        walletMode: 'eoa'
+      });
 
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
