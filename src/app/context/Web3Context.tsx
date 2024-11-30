@@ -7,10 +7,8 @@ import {
   useCallback,
   ReactNode 
 } from 'react';
-import { createSmartWallet } from '@coinbase/wallet-sdk/smart';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
-import { APP_CONFIG } from '../config/web3';
-import { DEFAULT_CHAIN, SUPPORTED_CHAINS } from '@/config/chains';
+import { DEFAULT_CHAIN } from '@/config/chains';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
@@ -88,37 +86,9 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const connectSmartWallet = useCallback(async () => {
-    dispatch({ type: 'START_CONNECTING' });
-
-    try {
-      const smartWallet = createSmartWallet({
-        appName: APP_CONFIG.name,
-        appIcon: APP_CONFIG.icon,
-        defaultNetwork: DEFAULT_CHAIN,
-        smartWalletConfig: {
-          appId: process.env.NEXT_PUBLIC_COINBASE_SMART_WALLET_APP_ID,
-          clientId: process.env.NEXT_PUBLIC_COINBASE_SMART_WALLET_CLIENT_ID,
-        }
-      });
-
-      await smartWallet.connect();
-      const accounts = await smartWallet.getAccounts();
-
-      if (!accounts[0]) throw new Error('No accounts returned');
-
-      dispatch({ 
-        type: 'CONNECTION_SUCCESSFUL', 
-        address: accounts[0],
-        walletType: 'smart',
-        provider: smartWallet
-      });
-    } catch (err) {
-      console.error('Smart wallet connection failed:', err);
-      dispatch({ 
-        type: 'CONNECTION_FAILED', 
-        error: err instanceof Error ? err.message : 'Failed to connect smart wallet'
-      });
-    }
+    // For now, just use regular wallet connection as smart wallet feature
+    // will be implemented in a future update
+    connectRegularWallet();
   }, []);
 
   const connectRegularWallet = useCallback(async () => {
@@ -126,8 +96,9 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
     try {
       const sdk = createCoinbaseWalletSDK({
-        appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon
+        appName: 'Dude.Box',
+        appLogoUrl: '/logo.png',
+        darkMode: true
       });
 
       const provider = sdk.makeWeb3Provider(DEFAULT_CHAIN.rpcUrl, DEFAULT_CHAIN.id);
@@ -142,7 +113,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         provider
       });
     } catch (err) {
-      console.error('Regular wallet connection failed:', err);
+      console.error('Wallet connection failed:', err);
       dispatch({ 
         type: 'CONNECTION_FAILED', 
         error: err instanceof Error ? err.message : 'Failed to connect wallet'
@@ -153,7 +124,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const disconnect = useCallback(() => {
     if (state.wallet?.provider) {
       try {
-        state.wallet.provider.disconnect();
+        state.wallet.provider.disconnect?.();
       } catch (err) {
         console.error('Error disconnecting wallet:', err);
       }
