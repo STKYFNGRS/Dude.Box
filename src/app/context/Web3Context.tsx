@@ -31,19 +31,23 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         setSdk(currentSdk);
       }
 
-      // Create Web3 Provider without additional options
       const provider = currentSdk.makeWeb3Provider();
 
-      // Request accounts
-      const accounts = await provider.request({
+      const response = await provider.request({
         method: 'eth_requestAccounts'
-      });
+      }) as string[];
 
-      if (!accounts?.[0]) {
+      // Type-safe check for array and first element
+      if (!Array.isArray(response) || response.length === 0) {
         throw new Error('No account selected');
       }
 
-      setAddress(accounts[0]);
+      const selectedAddress = response[0];
+      if (typeof selectedAddress !== 'string') {
+        throw new Error('Invalid account format');
+      }
+
+      setAddress(selectedAddress);
       setIsConnected(true);
       setError(null);
 
