@@ -1,6 +1,7 @@
 import '@/app/globals.css';
 import { Providers } from '@/app/providers';
 import { CartProvider } from '@/app/components/CartContext';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: 'Dude.Box',
@@ -20,6 +21,7 @@ export default function RootLayout({
             <main className="flex-grow flex flex-col">
               {children}
             </main>
+            <Analytics />
           </CartProvider>
         </Providers>
       </body>

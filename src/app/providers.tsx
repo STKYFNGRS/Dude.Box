@@ -1,9 +1,17 @@
 'use client';
 
+import { WagmiProvider, createConfig, http } from 'wagmi';
+import { baseSepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
 import { Toaster } from '@/components/ui/toaster';
-import { config } from '@/lib/wagmi';
+
+// Create wagmi config
+const config = createConfig({
+  chains: [baseSepolia],
+  transports: {
+    [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL),
+  }
+});
 
 const queryClient = new QueryClient();
 

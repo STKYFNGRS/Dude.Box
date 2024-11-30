@@ -10,25 +10,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// Initialize SDK once
-const sdk = new createCoinbaseWalletSDK({
-  appName: 'Dude.Box',
-  appLogoUrl: '/logo.png',
-  appChainIds: [84532], // Base Sepolia testnet
-});
-
-const provider = sdk.getProvider();
-
 export const WalletOptions = () => {
   const createWallet = async () => {
+    const sdk = new createCoinbaseWalletSDK({
+      appName: 'Dude.Box',
+      appLogoUrl: '/logo.png',
+      appChainIds: [84532], // Base Sepolia
+    });
+
+    const provider = sdk.getProvider();
+    
     try {
       const [address] = await provider.request({
         method: 'eth_requestAccounts',
       });
-      // Handle success here
-      console.log('Wallet created:', address);
+      console.log('Connected:', address);
     } catch (error) {
-      console.error('Failed to create wallet:', error);
+      console.error('Failed to connect:', error);
     }
   };
 
