@@ -1,0 +1,78 @@
+# DUDE.BOX PROJECT MAP
+
+## Root Structure
+/
+├── .env.local                  # Environment variables
+├── .eslintrc.json             # ESLint configuration
+├── .git                       # Git repository
+├── .gitignore                 # Git ignore patterns
+├── .next                      # Next.js build output
+├── .vercel                    # Vercel deployment config
+├── components.json            # shadcn/ui components config
+├── env.d.ts                   # Environment type definitions
+├── mcp.json                   # MCP configuration
+├── next-env.d.ts             # Next.js type definitions
+├── next.config.ts            # Next.js configuration
+├── package.json              # Project dependencies and scripts
+├── postcss.config.mjs        # PostCSS configuration
+├── public/                   # Static assets
+├── resources/                # Project resources and documentation
+├── src/                      # Source code
+├── tailwind.config.ts        # Tailwind CSS configuration
+├── test.db                   # SQLite database
+└── tsconfig.json            # TypeScript configuration
+
+## Source Code Structure (/src)
+src/
+├── app/                      # Next.js App Router
+├── components/               # React components
+├── data/                     # Data models and schemas
+├── hooks/                    # Custom React hooks
+├── lib/                      # Utility functions and libraries
+└── types/                   # TypeScript type definitions
+
+## Key Files and Directories
+/src/app/
+├── layout.tsx               # Root layout
+├── page.tsx                # Home page
+├── shop/                   # Shop section
+├── onchain/                # Web3 integration
+└── api/                    # API routes
+
+/resources/project_map/
+├── ClaudeMarchingOrders.txt  # Project issues and improvements
+├── project_state.txt         # Current project state
+├── shopify.txt              # Shopify integration details
+└── web3.txt                # Web3 integration details
+
+## Current Focus Areas
+1. Web3 Integration
+   - Smart wallet implementation
+   - Wallet connection flows
+   - Chain configuration
+
+2. Shopify Integration
+   - Product display
+   - Cart functionality
+   - Checkout flow
+
+3. Core Features
+   - Shop page
+   - Cart management
+   - Dark theme
+   - API endpoints
+
+## Technology Stack
+- Next.js 15.0.3
+- TypeScript
+- TailwindCSS
+- shadcn/ui
+- SQLite
+- Shopify Storefront API
+- Web3/Coinbase Wallet
+
+## Development Tools
+- ESLint
+- PostCSS
+- Model Context Protocol (MCP)
+- Vercel Deployment
