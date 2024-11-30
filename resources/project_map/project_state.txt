@@ -5,23 +5,34 @@ Current Stack:
 - Next.js 15.0.3 app
 - Shopify Storefront API
 - TailwindCSS
-- Web3/Coinbase Wallet Integration
+- Web3/Coinbase Integration
+  - Smart Wallet Support
+  - Regular Wallet Support (MetaMask/Coinbase Wallet)
+- Base Chain Integration
 - SQL Integration (pending)
 
 Active Components:
 - Shop page with product grid
 - Cart functionality
-- Web3 wallet connection
+- Dual Web3 wallet connections
 - Dark theme UI
-
-Immediate Tasks:
-1. Fix Web3Context implementation
-2. Complete Shopify product display
-3. Implement cart checkout flow
-4. Add proper error handling
 
 Key Files:
 - src/app/shop/page.tsx
 - src/app/components/CartContext.tsx
-- src/app/context/Web3Context.tsx
+- src/app/context/Web3Context.tsx (Updated)
 - src/lib/shopify.ts
+
+Environment Setup:
+- Base RPC URL configured via OnchainKit
+- Chain IDs for Base mainnet and testnet
+- Smart Wallet configuration
+- Shopify integration keys
+- Dude.Box API integration
+
+Recent Updates:
+1. Simplified Web3Context implementation
+2. Removed redundant RPC configurations
+3. Added proper chain ID management
+4. Integrated Coinbase Smart Wallet support
+5. Added concurrent wallet type support
