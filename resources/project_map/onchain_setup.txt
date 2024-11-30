@@ -1,0 +1,78 @@
+DUDE.BOX ONCHAIN MVP SETUP
+Last Updated: November 29, 2024
+
+MVP SCOPE
+---------
+Core Functionality:
+1. Smart Wallet Integration
+   - One-click setup
+   - No extension required
+   - Quick Web3 onboarding
+
+2. Traditional Wallet Support
+   - Coinbase Wallet
+   - MetaMask
+   - Extension-based
+
+3. Account Display
+   - Connected status
+   - Address display
+   - Connection type indicator
+
+IMPLEMENTATION
+-------------
+Key Components:
+/src/app/
+├── context/
+│   └── Web3Context.tsx    # Wallet state management
+├── components/
+│   └── wallet/
+│       └── WalletOptions.tsx  # Wallet selection UI
+└── onchain/
+    └── page.tsx           # Main Web3 interface
+
+State Management:
+- isConnected: boolean
+- address: string | null
+- walletType: 'none' | 'smart' | 'regular'
+- error handling
+
+DEPENDENCIES
+-----------
+Primary:
+- @coinbase/wallet-sdk
+Focus on direct SDK usage with minimal abstraction
+
+DEPLOYMENT CONSIDERATIONS
+-----------------------
+1. Build Process
+   - Minimal dependencies
+   - Clean type system
+   - Simple component structure
+
+2. Error Handling
+   - Clear user feedback
+   - Graceful fallbacks
+   - Connection validation
+
+3. Performance
+   - Fast wallet connection
+   - Quick UI responses
+   - Efficient state updates
+
+FUTURE CONSIDERATIONS
+-------------------
+Potential Extensions (Not MVP):
+- Transaction history
+- Chain switching
+- Token balances
+- NFT display
+- Advanced features
+
+MAINTENANCE NOTES
+---------------
+- Keep functionality focused
+- Minimize abstractions
+- Use SDK as intended
+- Regular dependency updates
+- Monitor connection success

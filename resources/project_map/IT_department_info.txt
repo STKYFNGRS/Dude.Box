@@ -1,0 +1,67 @@
+DUDE.BOX IT DEPARTMENT DOCUMENTATION
+Last Updated: November 29, 2024
+
+CURRENT PROJECT STATUS
+--------------------
+Focus: Onchain MVP Launch
+Priority: HIGH
+
+TECHNICAL DECISIONS
+-----------------
+1. MVP Scope Reduction
+   - Removed transaction history
+   - Simplified wallet connection
+   - Basic account display only
+   - Focus on core functionality
+
+2. Architecture Cleanup
+   - Removed unnecessary components
+   - Streamlined state management
+   - Direct SDK integration
+   - Clean build process
+
+3. Documentation Updates
+   - Clear MVP scope
+   - Implementation details
+   - Deployment considerations
+   - Future roadmap
+
+DEPLOYMENT STRATEGY
+-----------------
+1. Immediate Actions
+   - Clean build verification
+   - Type system validation
+   - Component simplification
+   - Error handling improvements
+
+2. Monitoring Plan
+   - Build success rate
+   - Connection success rate
+   - Error frequency
+   - Performance metrics
+
+MAINTENANCE SCHEDULE
+------------------
+Daily:
+- Build status check
+- Error monitoring
+- Connection testing
+
+Weekly:
+- Dependency updates
+- Performance review
+- Documentation updates
+
+Monthly:
+- Security audit
+- Feature assessment
+- Scalability review
+
+NEXT STEPS
+---------
+1. Verify deployment success
+2. Monitor user connections
+3. Gather feedback
+4. Plan future features
+
+[Previous sections archived...]
