@@ -1,7 +1,7 @@
 'use client';
 
 import { Mail, Wallet } from 'lucide-react';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import {
   Card,
   CardContent,
@@ -10,23 +10,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const WalletOptions = () => {
-  const { address } = useAccount();
-  const { connect, connectors, isLoading } = useConnect();
-  const { disconnect } = useDisconnect();
+// Initialize SDK once
+const sdk = new createCoinbaseWalletSDK({
+  appName: 'Dude.Box',
+  appLogoUrl: '/logo.png',
+  appChainIds: [84532], // Base Sepolia testnet
+});
 
-  const handleConnect = async (isSmartWallet = false) => {
-    const connector = connectors[0];
-    if (connector) {
-      try {
-        await connect({ 
-          connector,
-          chainId: 84532, // Base Sepolia testnet
-          ...(isSmartWallet ? { headlessMode: true } : {})
-        });
-      } catch (error) {
-        console.error('Connection error:', error);
-      }
+const provider = sdk.getProvider();
+
+export const WalletOptions = () => {
+  const createWallet = async () => {
+    try {
+      const [address] = await provider.request({
+        method: 'eth_requestAccounts',
+      });
+      // Handle success here
+      console.log('Wallet created:', address);
+    } catch (error) {
+      console.error('Failed to create wallet:', error);
     }
   };
 
@@ -34,11 +36,8 @@ export const WalletOptions = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
       {/* Smart Wallet Option */}
       <Card 
-        className={`relative group transition-all cursor-pointer
-          ${!address ? 'bg-gray-800/50 border-gray-700 hover:border-blue-500' : 
-            'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
-        `}
-        onClick={() => !address && !isLoading && handleConnect(true)}
+        className="relative group transition-all cursor-pointer bg-gray-800/50 border-gray-700 hover:border-blue-500"
+        onClick={createWallet}
       >
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -58,20 +57,14 @@ export const WalletOptions = () => {
         </CardContent>
       </Card>
 
-      {/* Regular Wallet Option */}
-      <Card 
-        className={`relative group transition-all cursor-pointer
-          ${!address ? 'bg-gray-800/50 border-gray-700 hover:border-orange-500' : 
-            'opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800'}
-        `}
-        onClick={() => !address && !isLoading && handleConnect(false)}
-      >
+      {/* Regular Wallet Option (disabled for now) */}
+      <Card className="opacity-50 cursor-not-allowed bg-gray-800/20 border-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
             <Wallet className="w-8 h-8 text-orange-400" />
             <div>
               <CardTitle className="text-xl text-white">Connect Wallet</CardTitle>
-              <CardDescription className="text-gray-400">Coinbase Wallet or MetaMask</CardDescription>
+              <CardDescription className="text-gray-400">Coming Soon</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -83,23 +76,6 @@ export const WalletOptions = () => {
           </ul>
         </CardContent>
       </Card>
-
-      {address && (
-        <div className="col-span-2 text-center">
-          <button
-            onClick={() => disconnect()}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
-          >
-            Disconnect
-          </button>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="col-span-2 text-center text-blue-400 bg-blue-900/20 p-4 rounded-lg">
-          Connecting...
-        </div>
-      )}
     </div>
   );
 };

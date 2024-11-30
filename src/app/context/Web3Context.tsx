@@ -1,37 +1,24 @@
 'use client';
 
-import { 
-  createContext, 
-  useContext, 
-  useReducer, 
-  useCallback,
-  ReactNode 
-} from 'react';
-import { useConnect, useDisconnect } from 'wagmi';
-import { coinbaseWallet } from 'wagmi/connectors';
-
-type WalletType = 'none' | 'smart' | 'regular';
+import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
 interface Web3State {
-  isConnected: boolean;
-  address: string | null;
-  isConnecting: boolean;
+  wallet: {
+    address: string;
+    provider: any;
+  } | null;
   error: string | null;
-  walletType: WalletType;
 }
 
 type Web3Action =
-  | { type: 'START_CONNECTING' }
-  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType }
-  | { type: 'CONNECTION_FAILED'; error: string }
-  | { type: 'DISCONNECT' };
+  | { type: 'SET_WALLET'; payload: { address: string; provider: any } }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'CLEAR_WALLET' };
 
 const initialState: Web3State = {
-  isConnected: false,
-  address: null,
-  isConnecting: false,
-  error: null,
-  walletType: 'none'
+  wallet: null,
+  error: null
 };
 
 const Web3Context = createContext<{
@@ -43,28 +30,23 @@ const Web3Context = createContext<{
 
 function reducer(state: Web3State, action: Web3Action): Web3State {
   switch (action.type) {
-    case 'START_CONNECTING':
-      return { ...state, isConnecting: true, error: null };
-    case 'CONNECTION_SUCCESSFUL':
+    case 'SET_WALLET':
       return {
         ...state,
-        isConnected: true,
-        address: action.address,
-        walletType: action.walletType,
-        isConnecting: false,
+        wallet: action.payload,
         error: null
       };
-    case 'CONNECTION_FAILED':
+    case 'SET_ERROR':
       return {
         ...state,
-        isConnected: false,
-        address: null,
-        isConnecting: false,
-        error: action.error,
-        walletType: 'none'
+        error: action.payload
       };
-    case 'DISCONNECT':
-      return initialState;
+    case 'CLEAR_WALLET':
+      return {
+        ...state,
+        wallet: null,
+        error: null
+      };
     default:
       return state;
   }
@@ -72,66 +54,89 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { connectAsync, connectors } = useConnect();
-  const { disconnectAsync } = useDisconnect();
 
   const connectSmartWallet = useCallback(async () => {
-    dispatch({ type: 'START_CONNECTING' });
-
     try {
-      const connector = connectors[0]; // Coinbase Wallet connector
-      const result = await connectAsync({ connector });
+      const sdk = new CoinbaseWalletSDK({
+        appName: 'Dude.Box',
+        appLogoUrl: '/logo.png',
+        headlessMode: true
+      });
+
+      const provider = sdk.makeWeb3Provider(
+        process.env.NEXT_PUBLIC_BASE_RPC_URL,
+        Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID)
+      );
+
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
       
-      dispatch({ 
-        type: 'CONNECTION_SUCCESSFUL', 
-        address: result.accounts[0],
-        walletType: 'smart'
+      if (!accounts[0]) throw new Error('No accounts returned');
+
+      dispatch({
+        type: 'SET_WALLET',
+        payload: {
+          address: accounts[0],
+          provider
+        }
       });
     } catch (err) {
       console.error('Smart wallet connection failed:', err);
-      dispatch({ 
-        type: 'CONNECTION_FAILED', 
-        error: err instanceof Error ? err.message : 'Failed to connect smart wallet'
+      dispatch({
+        type: 'SET_ERROR',
+        payload: err instanceof Error ? err.message : 'Failed to connect wallet'
       });
     }
-  }, [connectors, connectAsync]);
+  }, []);
 
   const connectRegularWallet = useCallback(async () => {
-    dispatch({ type: 'START_CONNECTING' });
-
     try {
-      const connector = connectors[0]; // Coinbase Wallet connector
-      const result = await connectAsync({ connector });
+      const sdk = new CoinbaseWalletSDK({
+        appName: 'Dude.Box',
+        appLogoUrl: '/logo.png'
+      });
+
+      const provider = sdk.makeWeb3Provider(
+        process.env.NEXT_PUBLIC_BASE_RPC_URL,
+        Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID)
+      );
+
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
       
-      dispatch({ 
-        type: 'CONNECTION_SUCCESSFUL', 
-        address: result.accounts[0],
-        walletType: 'regular'
+      if (!accounts[0]) throw new Error('No accounts returned');
+
+      dispatch({
+        type: 'SET_WALLET',
+        payload: {
+          address: accounts[0],
+          provider
+        }
       });
     } catch (err) {
       console.error('Regular wallet connection failed:', err);
-      dispatch({ 
-        type: 'CONNECTION_FAILED', 
-        error: err instanceof Error ? err.message : 'Failed to connect wallet'
+      dispatch({
+        type: 'SET_ERROR',
+        payload: err instanceof Error ? err.message : 'Failed to connect wallet'
       });
     }
-  }, [connectors, connectAsync]);
+  }, []);
 
-  const disconnect = useCallback(async () => {
-    try {
-      await disconnectAsync();
-      dispatch({ type: 'DISCONNECT' });
-    } catch (err) {
-      console.error('Error disconnecting:', err);
+  const disconnect = useCallback(() => {
+    if (state.wallet?.provider) {
+      try {
+        state.wallet.provider.disconnect?.();
+      } catch (err) {
+        console.error('Error disconnecting wallet:', err);
+      }
     }
-  }, [disconnectAsync]);
+    dispatch({ type: 'CLEAR_WALLET' });
+  }, [state.wallet]);
 
   return (
-    <Web3Context.Provider value={{ 
-      state, 
-      connectSmartWallet, 
-      connectRegularWallet, 
-      disconnect 
+    <Web3Context.Provider value={{
+      state,
+      connectSmartWallet,
+      connectRegularWallet,
+      disconnect
     }}>
       {children}
     </Web3Context.Provider>
