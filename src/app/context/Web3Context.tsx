@@ -1,151 +1,94 @@
 'use client';
 
-import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
+import { createContext, useContext, useCallback, useState, ReactNode } from 'react';
+import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
-type WalletType = 'none' | 'smart' | 'regular';
-
-// Custom SDK options interface
-interface SDKOptions {
-  appName: string;
-  chainId?: number;
-  rpcUrl?: string;
-}
-
-interface Web3State {
+interface Web3ContextType {
   isConnected: boolean;
-  isConnecting: boolean;
   address: string | null;
-  walletType: WalletType;
+  sdk: CoinbaseWalletSDK | null;
   error: string | null;
-  provider: CoinbaseWalletProvider | null;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
 }
 
-const initialState: Web3State = {
-  isConnected: false,
-  isConnecting: false,
-  address: null,
-  walletType: 'none',
-  error: null,
-  provider: null
-};
-
-type Web3Action =
-  | { type: 'CONNECT_START' }
-  | { type: 'CONNECT_SUCCESS'; address: string; walletType: WalletType; provider: CoinbaseWalletProvider }
-  | { type: 'CONNECT_ERROR'; error: string }
-  | { type: 'DISCONNECT' };
-
-const Web3Context = createContext<{
-  state: Web3State;
-  connectSmartWallet: (forceCreate?: boolean) => Promise<void>;
-  disconnect: () => void;
-} | null>(null);
-
-function reducer(state: Web3State, action: Web3Action): Web3State {
-  switch (action.type) {
-    case 'CONNECT_START':
-      return {
-        ...state,
-        isConnecting: true,
-        error: null
-      };
-    case 'CONNECT_SUCCESS':
-      return {
-        ...state,
-        isConnected: true,
-        isConnecting: false,
-        address: action.address,
-        walletType: action.walletType,
-        provider: action.provider,
-        error: null
-      };
-    case 'CONNECT_ERROR':
-      return {
-        ...state,
-        isConnecting: false,
-        error: action.error
-      };
-    case 'DISCONNECT':
-      return initialState;
-    default:
-      return state;
-  }
-}
+const Web3Context = createContext<Web3ContextType | null>(null);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState<string | null>(null);
+  const [sdk, setSdk] = useState<CoinbaseWalletSDK | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const detectWalletType = (address: string): WalletType => {
-    return address.toLowerCase().endsWith('37db') ? 'smart' : 'regular';
-  };
-
-  const connectSmartWallet = useCallback(async (forceCreate?: boolean) => {
+  const initializeSDK = useCallback(() => {
     try {
-      dispatch({ type: 'CONNECT_START' });
-
-      const sdkOptions: SDKOptions = {
+      const newSdk = new CoinbaseWalletSDK({
         appName: 'Dude Box',
-        chainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID) || 84532,
-        rpcUrl: process.env.NEXT_PUBLIC_BASE_MAINNET_RPC || ''
-      };
-
-      const sdk = new CoinbaseWalletSDK(sdkOptions);
-      const provider = sdk.makeWeb3Provider() as unknown as CoinbaseWalletProvider;
-
-      const accountsResponse = await provider.request({
-        method: 'eth_requestAccounts'
-      }) as string[];
-
-      if (!accountsResponse || !accountsResponse[0]) {
-        throw new Error('No account selected');
-      }
-
-      const walletType = detectWalletType(accountsResponse[0]);
-
-      await provider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ 
-          chainId: `0x${Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID || 84532).toString(16)}` 
-        }]
+        appLogoUrl: '/Dude logo 3.jpg',
+        darkMode: true,
+        chainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID),
       });
-
-      dispatch({ 
-        type: 'CONNECT_SUCCESS', 
-        address: accountsResponse[0],
-        walletType,
-        provider
-      });
-
-      console.log('Connected with wallet type:', walletType, 'Address:', accountsResponse[0]);
-
-    } catch (error) {
-      console.error('Wallet connection failed:', error);
-      dispatch({ 
-        type: 'CONNECT_ERROR', 
-        error: error instanceof Error ? error.message : 'Failed to connect wallet'
-      });
+      setSdk(newSdk);
+      return newSdk;
+    } catch (err) {
+      console.error('Failed to initialize SDK:', err);
+      setError('Failed to initialize wallet');
+      return null;
     }
   }, []);
 
-  const disconnect = useCallback(() => {
-    if (state.provider) {
-      try {
-        state.provider.disconnect?.();
-      } catch (error) {
-        console.error('Error disconnecting:', error);
-      }
+  const connect = useCallback(async () => {
+    try {
+      const currentSdk = sdk || initializeSDK();
+      if (!currentSdk) throw new Error('Failed to initialize wallet');
+
+      const provider = currentSdk.makeWeb3Provider();
+      const accounts = await provider.request({
+        method: 'eth_requestAccounts'
+      });
+
+      if (!accounts?.[0]) throw new Error('No account selected');
+
+      setAddress(accounts[0]);
+      setIsConnected(true);
+      setError(null);
+    } catch (err) {
+      console.error('Connection failed:', err);
+      setError(err instanceof Error ? err.message : 'Failed to connect wallet');
+      setIsConnected(false);
+      setAddress(null);
     }
-    dispatch({ type: 'DISCONNECT' });
-  }, [state.provider]);
+  }, [sdk, initializeSDK]);
+
+  const disconnect = useCallback(async () => {
+    try {
+      if (sdk) {
+        const provider = sdk.makeWeb3Provider();
+        await provider.close();
+        
+        // Reset state
+        setIsConnected(false);
+        setAddress(null);
+        setError(null);
+        setSdk(null);
+      }
+    } catch (err) {
+      console.error('Disconnect failed:', err);
+      setError('Failed to disconnect wallet');
+    }
+  }, [sdk]);
 
   return (
-    <Web3Context.Provider value={{ 
-      state, 
-      connectSmartWallet, 
-      disconnect 
-    }}>
+    <Web3Context.Provider 
+      value={{
+        isConnected,
+        address,
+        sdk,
+        error,
+        connect,
+        disconnect
+      }}
+    >
       {children}
     </Web3Context.Provider>
   );

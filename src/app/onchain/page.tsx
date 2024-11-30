@@ -7,16 +7,15 @@ import { useCallback } from 'react';
 import Image from 'next/image';
 
 export default function Onchain() {
-  const { state, connectSmartWallet, disconnect } = useWeb3();
+  const { isConnected, address, connect, disconnect } = useWeb3();
 
   const handleConnect = useCallback(() => {
-    connectSmartWallet();
-  }, [connectSmartWallet]);
+    connect();
+  }, [connect]);
 
   const handleCreateWallet = useCallback(() => {
-    // The SDK will handle the creation flow when we force smart wallet mode
-    connectSmartWallet(true);
-  }, [connectSmartWallet]);
+    connect();
+  }, [connect]);
 
   const handleDisconnect = useCallback(() => {
     disconnect();
@@ -55,7 +54,7 @@ export default function Onchain() {
 
           {/* Wallet Section */}
           <div className="w-full max-w-7xl mx-auto px-4 py-8">
-            {!state.isConnected ? (
+            {!isConnected ? (
               <div className="mb-8 p-8 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-sm">
                 <h2 className="text-2xl font-bold mb-4 text-center">Get Started with Web3</h2>
                 <div className="max-w-xl mx-auto space-y-8">
@@ -90,10 +89,7 @@ export default function Onchain() {
                   <div>
                     <h3 className="text-xl font-bold mb-2">Connected Wallet</h3>
                     <p className="text-gray-300">
-                      Address: <span className="font-mono">{`${state.address?.slice(0, 6)}...${state.address?.slice(-4)}`}</span>
-                    </p>
-                    <p className="text-gray-300">
-                      Type: <span className="capitalize">{state.walletType}</span>
+                      Address: <span className="font-mono">{`${address?.slice(0, 6)}...${address?.slice(-4)}`}</span>
                     </p>
                   </div>
                   <button
