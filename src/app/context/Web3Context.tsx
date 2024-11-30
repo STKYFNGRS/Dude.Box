@@ -3,11 +3,14 @@
 import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import { APP_CONFIG } from '../config/web3';
+import { type PublicClient, createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
 interface Wallet {
   address: string;
+  provider: any;
 }
 
 interface Web3State {
@@ -17,12 +20,14 @@ interface Web3State {
   error: string | null;
   walletType: WalletType;
   wallet: Wallet | null;
+  publicClient: PublicClient | null;
 }
 
 type Web3Action =
   | { type: 'START_CONNECTING' }
-  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType }
+  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType; provider: any }
   | { type: 'CONNECTION_FAILED'; error: string }
+  | { type: 'SET_PUBLIC_CLIENT'; client: PublicClient }
   | { type: 'DISCONNECT' };
 
 const initialState: Web3State = {
@@ -31,7 +36,8 @@ const initialState: Web3State = {
   isConnecting: false,
   error: null,
   walletType: 'none',
-  wallet: null
+  wallet: null,
+  publicClient: null
 };
 
 const Web3Context = createContext<{
@@ -54,7 +60,8 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         isConnecting: false,
         error: null,
         wallet: {
-          address: action.address
+          address: action.address,
+          provider: action.provider
         }
       };
     case 'CONNECTION_FAILED':
@@ -67,6 +74,11 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         walletType: 'none',
         wallet: null
       };
+    case 'SET_PUBLIC_CLIENT':
+      return {
+        ...state,
+        publicClient: action.client
+      };
     case 'DISCONNECT':
       return initialState;
     default:
@@ -77,6 +89,15 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Initialize public client
+  useEffect(() => {
+    const client = createPublicClient({
+      chain: mainnet,
+      transport: http()
+    });
+    dispatch({ type: 'SET_PUBLIC_CLIENT', client });
+  }, []);
+
   const connectSmartWallet = useCallback(async () => {
     dispatch({ type: 'START_CONNECTING' });
 
@@ -86,20 +107,16 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         appLogoUrl: APP_CONFIG.icon
       });
 
-      const provider = sdk.makeWeb3Provider({
-        walletMode: 'smart'
-      });
-
+      const provider = sdk.makeWeb3Provider({ walletMode: 'smart' });
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
-      if (!accounts[0]) {
-        throw new Error('No accounts returned');
-      }
+      if (!accounts[0]) throw new Error('No accounts returned');
 
       dispatch({ 
         type: 'CONNECTION_SUCCESSFUL', 
         address: accounts[0],
-        walletType: 'smart'
+        walletType: 'smart',
+        provider
       });
     } catch (err) {
       console.error('Smart wallet connection failed:', err);
@@ -119,20 +136,16 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         appLogoUrl: APP_CONFIG.icon
       });
 
-      const provider = sdk.makeWeb3Provider({
-        walletMode: 'eoa'
-      });
-
+      const provider = sdk.makeWeb3Provider({ walletMode: 'eoa' });
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
-      if (!accounts[0]) {
-        throw new Error('No accounts returned');
-      }
+      if (!accounts[0]) throw new Error('No accounts returned');
 
       dispatch({ 
         type: 'CONNECTION_SUCCESSFUL', 
         address: accounts[0],
-        walletType: 'regular'
+        walletType: 'regular',
+        provider
       });
     } catch (err) {
       console.error('Regular wallet connection failed:', err);
@@ -144,8 +157,15 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   }, []);
 
   const disconnect = useCallback(() => {
+    if (state.wallet?.provider) {
+      try {
+        state.wallet.provider.close();
+      } catch (err) {
+        console.error('Error disconnecting wallet:', err);
+      }
+    }
     dispatch({ type: 'DISCONNECT' });
-  }, []);
+  }, [state.wallet]);
 
   return (
     <Web3Context.Provider value={{ 
