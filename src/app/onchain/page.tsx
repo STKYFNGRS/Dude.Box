@@ -10,11 +10,11 @@ export default function Onchain() {
   const { isConnected, address, connect, disconnect } = useWeb3();
 
   const handleConnect = useCallback(() => {
-    connect();
+    connect(false);
   }, [connect]);
 
   const handleCreateWallet = useCallback(() => {
-    connect();
+    connect(true);
   }, [connect]);
 
   const handleDisconnect = useCallback(() => {
@@ -46,7 +46,7 @@ export default function Onchain() {
                   Welcome to the future, dude
                 </h1>
                 <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-                  Join the decentralized revolution. Connect your wallet to explore the boundless possibilities of Web3 - where innovation meets community.
+                  Join the decentralized revolution. Connect your wallet to explore the boundless possibilities of Web3.
                 </p>
               </div>
             </div>
@@ -61,7 +61,7 @@ export default function Onchain() {
                   {/* Create Wallet Section */}
                   <div className="text-center p-6 rounded-lg border border-purple-500/20 bg-purple-500/5">
                     <h3 className="text-lg font-semibold mb-2">New to Web3?</h3>
-                    <p className="text-gray-400 mb-4">Create your first smart wallet - no extension needed, just one click to get started.</p>
+                    <p className="text-gray-400 mb-4">Create your first smart wallet - no extension needed.</p>
                     <button
                       onClick={handleCreateWallet}
                       className="w-full sm:w-auto px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors text-lg"
@@ -73,7 +73,7 @@ export default function Onchain() {
                   {/* Connect Wallet Section */}
                   <div className="text-center p-6 rounded-lg border border-blue-500/20 bg-blue-500/5">
                     <h3 className="text-lg font-semibold mb-2">Already have a wallet?</h3>
-                    <p className="text-gray-400 mb-4">Connect with your existing wallet and choose between smart or extension.</p>
+                    <p className="text-gray-400 mb-4">Connect with your existing wallet.</p>
                     <button
                       onClick={handleConnect}
                       className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition-colors text-lg"
@@ -96,7 +96,7 @@ export default function Onchain() {
                     onClick={handleDisconnect}
                     className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                   >
-                    Disconnect Wallet
+                    Disconnect
                   </button>
                 </div>
               </div>
