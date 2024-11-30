@@ -1,6 +1,13 @@
 'use client';
 
-import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { 
+  createContext, 
+  useContext, 
+  useReducer, 
+  useCallback, 
+  useEffect,
+  ReactNode 
+} from 'react';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import { APP_CONFIG } from '../config/web3';
 import { type PublicClient, createPublicClient, http } from 'viem';
