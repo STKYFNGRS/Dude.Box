@@ -4,9 +4,14 @@ import { ClientLayout } from '@/app/components/Client-Layout';
 import { Analytics } from "@vercel/analytics/react";
 import { WalletOptions } from '../components/wallet/WalletOptions';
 import { useWeb3 } from '../context/Web3Context';
+import { useCallback } from 'react';
 
 export default function Onchain() {
   const { state, disconnect } = useWeb3();
+
+  const handleDisconnect = useCallback(() => {
+    disconnect();
+  }, [disconnect]);
 
   return (
     <ClientLayout>
@@ -25,7 +30,7 @@ export default function Onchain() {
                   Connected with <span className="font-mono">{`${state.address?.slice(0, 6)}...${state.address?.slice(-4)}`}</span>
                 </p>
                 <button
-                  onClick={disconnect}
+                  onClick={handleDisconnect}
                   className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm"
                 >
                   Disconnect
