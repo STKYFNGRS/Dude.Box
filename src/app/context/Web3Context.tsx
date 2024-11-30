@@ -14,6 +14,12 @@ interface Web3ContextType {
 
 const Web3Context = createContext<Web3ContextType | null>(null);
 
+interface CoinbaseSDKConfig {
+  appName: string;
+  appLogoUrl: string;
+  defaultChainId: number;
+}
+
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
@@ -22,12 +28,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
   const initializeSDK = useCallback(() => {
     try {
-      const newSdk = new CoinbaseWalletSDK({
+      const config: CoinbaseSDKConfig = {
         appName: 'Dude Box',
         appLogoUrl: '/Dude logo 3.jpg',
-        darkMode: true,
-        chainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID),
-      });
+        defaultChainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID),
+      };
+
+      const newSdk = new CoinbaseWalletSDK(config);
       setSdk(newSdk);
       return newSdk;
     } catch (err) {
@@ -42,7 +49,11 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       const currentSdk = sdk || initializeSDK();
       if (!currentSdk) throw new Error('Failed to initialize wallet');
 
-      const provider = currentSdk.makeWeb3Provider();
+      const provider = currentSdk.makeWeb3Provider(
+        process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
+        Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID)
+      );
+
       const accounts = await provider.request({
         method: 'eth_requestAccounts'
       });
@@ -63,7 +74,10 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const disconnect = useCallback(async () => {
     try {
       if (sdk) {
-        const provider = sdk.makeWeb3Provider();
+        const provider = sdk.makeWeb3Provider(
+          process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
+          Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID)
+        );
         await provider.close();
         
         // Reset state
