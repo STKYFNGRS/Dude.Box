@@ -13,15 +13,19 @@ export default function Onchain() {
     connectSmartWallet();
   }, [connectSmartWallet]);
 
+  const handleCreateWallet = useCallback(() => {
+    // The SDK will handle the creation flow when we force smart wallet mode
+    connectSmartWallet(true);
+  }, [connectSmartWallet]);
+
   const handleDisconnect = useCallback(() => {
     disconnect();
   }, [disconnect]);
 
   return (
     <ClientLayout>
-      {/* Main content area excluding footer */}
       <div className="relative flex-1 min-h-[calc(100vh-64px)]">
-        {/* Background Image - now contained within main content */}
+        {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src="/hunt pick 2.png"
@@ -53,15 +57,31 @@ export default function Onchain() {
           <div className="w-full max-w-7xl mx-auto px-4 py-8">
             {!state.isConnected ? (
               <div className="mb-8 p-8 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-sm">
-                <h2 className="text-2xl font-bold mb-4 text-center">Connect Your Wallet</h2>
-                <p className="text-gray-300 mb-8 text-center">Choose between Smart Wallet or browser extension in the next step</p>
-                <div className="flex justify-center">
-                  <button
-                    onClick={handleConnect}
-                    className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors text-lg"
-                  >
-                    Connect Wallet
-                  </button>
+                <h2 className="text-2xl font-bold mb-4 text-center">Get Started with Web3</h2>
+                <div className="max-w-xl mx-auto space-y-8">
+                  {/* Create Wallet Section */}
+                  <div className="text-center p-6 rounded-lg border border-purple-500/20 bg-purple-500/5">
+                    <h3 className="text-lg font-semibold mb-2">New to Web3?</h3>
+                    <p className="text-gray-400 mb-4">Create your first smart wallet - no extension needed, just one click to get started.</p>
+                    <button
+                      onClick={handleCreateWallet}
+                      className="w-full sm:w-auto px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors text-lg"
+                    >
+                      Create Wallet
+                    </button>
+                  </div>
+
+                  {/* Connect Wallet Section */}
+                  <div className="text-center p-6 rounded-lg border border-blue-500/20 bg-blue-500/5">
+                    <h3 className="text-lg font-semibold mb-2">Already have a wallet?</h3>
+                    <p className="text-gray-400 mb-4">Connect with your existing wallet and choose between smart or extension.</p>
+                    <button
+                      onClick={handleConnect}
+                      className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition-colors text-lg"
+                    >
+                      Connect Wallet
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

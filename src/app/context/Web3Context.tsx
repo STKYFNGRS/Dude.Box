@@ -31,7 +31,7 @@ type Web3Action =
 
 const Web3Context = createContext<{
   state: Web3State;
-  connectSmartWallet: () => Promise<void>;
+  connectSmartWallet: (forceCreate?: boolean) => Promise<void>;
   disconnect: () => void;
 } | null>(null);
 
@@ -65,14 +65,10 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const detectWalletType = (address: string): WalletType => {
-    // Smart wallet addresses end in 37db in your case
-    if (address.toLowerCase().endsWith('37db')) {
-      return 'smart';
-    }
-    return 'regular';
+    return address.toLowerCase().endsWith('37db') ? 'smart' : 'regular';
   };
 
-  const connectSmartWallet = useCallback(async () => {
+  const connectSmartWallet = useCallback(async (forceCreate?: boolean) => {
     try {
       dispatch({ type: 'CONNECT_START' });
 
@@ -83,7 +79,10 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         defaultChainId: Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID) || 84532,
       });
 
-      const provider = sdk.makeWeb3Provider();
+      // If forceCreate is true, we'll force the smart wallet flow
+      const provider = sdk.makeWeb3Provider(undefined, undefined, {
+        ...(forceCreate ? { walletMode: 'smart' as const } : undefined)
+      });
       
       const accounts = await provider.request({
         method: 'eth_requestAccounts'
@@ -96,6 +95,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       // Detect wallet type based on the address
       const walletType = detectWalletType(accounts[0]);
 
+      // Switch to Base chain
       await provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID || 84532).toString(16)}` }],
