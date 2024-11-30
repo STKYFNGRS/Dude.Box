@@ -56,8 +56,14 @@ const Web3Context = createContext<{
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const disconnect = useCallback(() => {
+    dispatch({ type: 'DISCONNECT' });
+  }, []);
+
   const connectSmartWallet = useCallback(async () => {
     try {
+      dispatch({ type: 'CONNECT_START' });
+      
       const sdk = createCoinbaseWalletSDK({
         appName: 'Dude Box',
         appLogoUrl: '/Dude logo 3.jpg',
@@ -87,6 +93,8 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
   const connectRegularWallet = useCallback(async () => {
     try {
+      dispatch({ type: 'CONNECT_START' });
+      
       const sdk = createCoinbaseWalletSDK({
         appName: 'Dude Box',
         appLogoUrl: '/Dude logo 3.jpg',
@@ -109,10 +117,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         error: 'Failed to connect wallet'
       });
     }
-  }, []);
-
-  const disconnect = useCallback(() => {
-    dispatch({ type: 'DISCONNECT' });
   }, []);
 
   return (
