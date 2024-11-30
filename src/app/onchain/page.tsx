@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import Image from 'next/image';
 
 export default function Onchain() {
-  const { isConnected, address, connect, disconnect } = useWeb3();
+  const { isConnected, address, walletType, connect, disconnect } = useWeb3();
 
   const handleConnect = useCallback(() => {
     connect(false);
@@ -86,8 +86,11 @@ export default function Onchain() {
             ) : (
               <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-sm">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">Connected Wallet</h3>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold">Connected Wallet</h3>
+                    <p className="text-gray-300">
+                      Type: <span className="capitalize">{walletType}</span>
+                    </p>
                     <p className="text-gray-300">
                       Address: <span className="font-mono">{`${address?.slice(0, 6)}...${address?.slice(-4)}`}</span>
                     </p>
