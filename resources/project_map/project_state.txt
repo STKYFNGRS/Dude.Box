@@ -1,0 +1,27 @@
+# /resources/project_state.txt
+DUDE.BOX PROJECT STATE
+
+Current Stack:
+- Next.js 15.0.3 app
+- Shopify Storefront API
+- TailwindCSS
+- Web3/Coinbase Wallet Integration
+- SQL Integration (pending)
+
+Active Components:
+- Shop page with product grid
+- Cart functionality
+- Web3 wallet connection
+- Dark theme UI
+
+Immediate Tasks:
+1. Fix Web3Context implementation
+2. Complete Shopify product display
+3. Implement cart checkout flow
+4. Add proper error handling
+
+Key Files:
+- src/app/shop/page.tsx
+- src/app/components/CartContext.tsx
+- src/app/context/Web3Context.tsx
+- src/lib/shopify.ts

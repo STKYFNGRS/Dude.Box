@@ -1,0 +1,22 @@
+# /resources/web3.txt
+WEB3 INTEGRATION
+
+Wallet Integration:
+- Coinbase Wallet SDK
+- Smart/Regular wallet support
+- Chain configuration
+- Provider management
+
+Security Considerations:
+- Chain ID validation
+- Provider disposal
+- Session management
+- Error recovery
+
+Testing Requirements:
+- Connection flows
+- Chain switching
+- Error scenarios
+- Provider interactions
+
+I'd like for you to keep in mind. Our onchain/page.txt should offer two options. On the left, Smart wallet SDK. On the right is a wallet aggregator where they can connect with exsisting wallet extensions. 

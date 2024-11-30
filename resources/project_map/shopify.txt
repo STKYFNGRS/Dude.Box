@@ -1,0 +1,20 @@
+# /resources/shopify.txt
+SHOPIFY INTEGRATION
+
+API Configuration:
+- Storefront API 2024-01
+- Product fetching
+- Cart management
+- Checkout flow
+
+Data Models:
+- Products with variants
+- Cart items
+- Collections
+- Orders
+
+Current Issues:
+- Product type mismatches
+- Cart provider context
+- Image optimization
+- Category filtering

@@ -1,0 +1,91 @@
+Current Issues Identified:
+- Web3Context implementation mismatch with CoinbaseWallet SDK
+- Type safety issues in wallet connection flows
+- Configuration property misalignment
+- Missing error handling patterns
+
+Recommended Improvements:
+
+Architecture:
+- Implement proper type definitions for SDK responses
+- Separate wallet provider configurations
+- Add connection state management
+- Create fallback connection strategies
+
+Error Handling:
+- Add detailed error logging
+- Implement user-friendly error messages
+- Create recovery flows for failed connections
+- Add timeout handling for wallet operations
+
+Testing Additions:
+- Add unit tests for wallet connection flows
+- Create integration tests for provider interactions
+- Test chain switching scenarios
+- Validate error handling paths
+
+Documentation Updates:
+- Add troubleshooting section for common wallet errors
+- Document provider configuration requirements
+- Include type definition references
+- Add code examples for proper implementation
+
+Configuration Management:
+- Centralize provider configurations
+- Document required environment variables
+- Add chain configuration validation
+- Include fallback RPC endpoints
+
+Monitoring & Debugging:
+- Add connection event logging
+- Implement performance tracking
+- Create debugging tools for wallet states
+- Add network detection and handling
+
+Security Considerations:
+- Validate chain IDs before connecting
+- Implement proper provider disposal
+- Add session management
+- Include security best practices documentation
+
+Next Steps:
+1. Fix current Web3Context implementation
+2. Update type definitions
+3. Implement improved error handling
+4. Add comprehensive testing suite
+5. Update documentation with new patterns
+
+does our project need mcp.json file? Is this coming from the claude desktop? Are these set right for our brave-search mcp to work. Create a new mcp.txt file in this project_map folder and start working on how to get this brave-search mcp to work 
+
+This is our current claude config file 
+
+{
+  "mcpServers": {
+    "sqlite": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-sqlite",
+        "--db-path",
+        "C:\\Users\\Alex Moore\\Dude.Box\\dude\\test.db"
+      ]
+    },
+    "filesystem": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\Users\\Alex Moore\\Dude.Box\\dude"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "BSAUze8xPkjm8_VHWL8IK8LdMlzYdke"
+      }
+    }
+  }
+}
