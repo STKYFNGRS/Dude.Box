@@ -2,23 +2,13 @@
 
 import { ClientLayout } from '@/app/components/Client-Layout';
 import { Analytics } from "@vercel/analytics/react";
-import { useState } from 'react';
-import { BarChart3, ImageIcon, Coins, Wallet } from 'lucide-react';
 import { HeroSection } from './components/HeroSection';
 import { WalletOptions } from '../components/wallet/WalletOptions';
 import { TabContent } from './components/TabContent';
 import { useWeb3 } from '@/app/context/Web3Context';
 
 export default function Onchain() {
-  const [activeTab, setActiveTab] = useState('overview');
   const { isConnected, address } = useWeb3();
-
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'nft', label: 'NFT', icon: ImageIcon },
-    { id: 'token', label: 'Token', icon: Coins },
-    { id: 'wallet', label: 'Wallet', icon: Wallet }
-  ];
 
   return (
     <ClientLayout>
@@ -38,28 +28,7 @@ export default function Onchain() {
                 <h2 className="text-xl font-bold text-blue-400">Connected Wallet</h2>
                 <p className="font-mono text-sm text-gray-400 mt-2">{address}</p>
               </div>
-
-              <div className="flex flex-col gap-4">
-                {/* Navigation Tabs */}
-                <div className="flex flex-wrap gap-4 mb-8">
-                  {tabs.map(tab => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
-                        ${activeTab === tab.id 
-                          ? 'bg-blue-600 text-white' 
-                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
-                    >
-                      <tab.icon className="w-5 h-5" />
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab Content */}
-                <TabContent activeTab={activeTab} />
-              </div>
+              <TabContent activeTab="wallet" />
             </>
           )}
         </div>

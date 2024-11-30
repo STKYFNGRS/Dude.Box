@@ -6,10 +6,8 @@ import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 interface Web3ContextType {
   isConnected: boolean;
   address: string | null;
-  wallet: CoinbaseWalletSDK | null;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  error: string | null;
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -18,7 +16,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [wallet, setWallet] = useState<CoinbaseWalletSDK | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [provider, setProvider] = useState<any>(null);
 
   // Initialize Coinbase Wallet
   const initializeWallet = useCallback(() => {
@@ -30,12 +28,17 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         defaultChainId: 84532, // Base Sepolia
       });
 
-      // Store the SDK instance
+      const provider = walletSDK.makeWeb3Provider(
+        process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL,
+        84532
+      );
+      
       setWallet(walletSDK);
-      return walletSDK;
+      setProvider(provider);
+      
+      return { walletSDK, provider };
     } catch (err) {
       console.error('Failed to initialize wallet:', err);
-      setError('Failed to initialize wallet');
       return null;
     }
   }, []);
@@ -43,19 +46,12 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   // Connect wallet
   const connect = useCallback(async () => {
     try {
-      setError(null);
-      const sdk = wallet || initializeWallet();
-      if (!sdk) {
+      const currentProvider = provider || initializeWallet()?.provider;
+      if (!currentProvider) {
         throw new Error('Failed to initialize wallet SDK');
       }
 
-      const provider = sdk.makeWeb3Provider(
-        process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL,
-        84532
-      );
-
-      // Request accounts
-      const accounts = await provider.request({
+      const accounts = await currentProvider.request({
         method: 'eth_requestAccounts'
       });
 
@@ -67,67 +63,66 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       setAddress(userAddress);
       setIsConnected(true);
       
-      // Store connection info
       localStorage.setItem('walletConnected', 'true');
       localStorage.setItem('walletAddress', userAddress);
 
-      // Subscribe to account changes
-      provider.on('accountsChanged', (accounts: string[]) => {
+      // Handle accountsChanged
+      currentProvider.on('accountsChanged', (accounts: string[]) => {
         if (accounts.length === 0) {
-          // User disconnected their wallet
           disconnect();
         } else {
           setAddress(accounts[0]);
         }
       });
 
-      // Subscribe to chain changes
-      provider.on('chainChanged', (chainId: string) => {
-        if (chainId !== '0x14a34') { // Base Sepolia chainId in hex
-          setError('Please switch to Base Sepolia network');
-        } else {
-          setError(null);
-        }
-      });
-
     } catch (err) {
       console.error('Failed to connect wallet:', err);
-      setError(err instanceof Error ? err.message : 'Failed to connect wallet');
       setIsConnected(false);
       setAddress(null);
       localStorage.removeItem('walletConnected');
       localStorage.removeItem('walletAddress');
       throw err;
     }
-  }, [wallet, initializeWallet]);
+  }, [provider, initializeWallet]);
 
   // Disconnect wallet
   const disconnect = useCallback(async () => {
-    if (wallet) {
+    if (provider) {
       try {
-        const provider = wallet.makeWeb3Provider(
-          process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL,
-          84532
-        );
-        
-        // Clean up event listeners
+        // Remove event listeners
         provider.removeAllListeners();
-        
-        // Reset state
-        setIsConnected(false);
-        setAddress(null);
-        setWallet(null);
-        setError(null);
-        
-        // Clear storage
-        localStorage.removeItem('walletConnected');
-        localStorage.removeItem('walletAddress');
+
+        // Close the provider connection
+        if (provider.close) {
+          await provider.close();
+        }
+
+        // Attempt to trigger disconnect in the wallet
+        try {
+          await provider.request({
+            method: 'wallet_disconnect'
+          });
+        } catch (e) {
+          console.log('Wallet disconnect method not supported');
+        }
+
+        // Clear the SDK instance
+        if (wallet) {
+          wallet.disconnect();
+        }
       } catch (err) {
         console.error('Error during disconnect:', err);
-        setError('Failed to disconnect wallet');
       }
     }
-  }, [wallet]);
+
+    // Reset all state regardless of success/failure
+    setIsConnected(false);
+    setAddress(null);
+    setWallet(null);
+    setProvider(null);
+    localStorage.removeItem('walletConnected');
+    localStorage.removeItem('walletAddress');
+  }, [provider, wallet]);
 
   // Check for existing connection on mount
   useEffect(() => {
@@ -141,17 +136,22 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         localStorage.removeItem('walletAddress');
       });
     }
-  }, [connect]);
+
+    // Cleanup on unmount
+    return () => {
+      if (provider) {
+        provider.removeAllListeners();
+      }
+    };
+  }, [connect, provider]);
 
   return (
     <Web3Context.Provider
       value={{
         isConnected,
         address,
-        wallet,
         connect,
-        disconnect,
-        error
+        disconnect
       }}
     >
       {children}

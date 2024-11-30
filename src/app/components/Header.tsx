@@ -6,11 +6,13 @@ import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useWeb3 } from '@/app/context/Web3Context';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
   const { isConnected, disconnect } = useWeb3();
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -19,19 +21,26 @@ const Header = () => {
 
   const handleDisconnect = async () => {
     await disconnect();
-    window.location.href = '/onchain';
+    router.push('/onchain');
+    router.refresh();
   };
 
   const navigationItems = [
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
-    { href: "/shop", label: "Shop" },
-    { 
-      href: "/onchain", 
-      label: isConnected ? "Disconnect" : "Onchain",
-      onClick: isConnected ? handleDisconnect : undefined
-    }
+    { href: "/shop", label: "Shop" }
   ];
+
+  if (isConnected) {
+    navigationItems.push({
+      href: "#",
+      label: "Disconnect",
+      onClick: handleDisconnect,
+      className: "text-red-400 hover:text-red-300"
+    });
+  } else {
+    navigationItems.push({ href: "/onchain", label: "Onchain" });
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full bg-black text-white flex items-center justify-between p-4 z-30">
@@ -115,7 +124,7 @@ const Header = () => {
                     }
                     toggleMenu();
                   }}
-                  className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className={`block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${item.className || ''}`}
                   role="menuitem"
                 >
                   {item.label}
