@@ -37,7 +37,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         method: 'eth_requestAccounts'
       }) as string[];
 
-      // Type-safe check for array and first element
       if (!Array.isArray(response) || response.length === 0) {
         throw new Error('No account selected');
       }
@@ -63,15 +62,24 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     try {
       if (sdk) {
         const provider = sdk.makeWeb3Provider();
-        await provider.close();
+        // Instead of using close(), just clear the connection state
+        await provider.request({
+          method: 'eth_accounts',
+          params: []
+        });
       }
+      // Reset all state
       setIsConnected(false);
       setAddress(null);
       setError(null);
       setSdk(null);
     } catch (err) {
       console.error('Disconnect failed:', err);
+      // Even if there's an error, reset the state
+      setIsConnected(false);
+      setAddress(null);
       setError('Failed to disconnect wallet');
+      setSdk(null);
     }
   }, [sdk]);
 
