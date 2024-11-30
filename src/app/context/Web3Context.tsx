@@ -7,16 +7,10 @@ import {
   useCallback,
   ReactNode 
 } from 'react';
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
-import { APP_CONFIG } from '../config/web3';
-import { DEFAULT_CHAIN } from '@/config/chains';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { useConfig, useConnect } from 'wagmi';
 
 type WalletType = 'none' | 'smart' | 'regular';
-
-interface Wallet {
-  address: string;
-  provider: any;
-}
 
 interface Web3State {
   isConnected: boolean;
@@ -24,12 +18,11 @@ interface Web3State {
   isConnecting: boolean;
   error: string | null;
   walletType: WalletType;
-  wallet: Wallet | null;
 }
 
 type Web3Action =
   | { type: 'START_CONNECTING' }
-  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType; provider: any }
+  | { type: 'CONNECTION_SUCCESSFUL'; address: string; walletType: WalletType }
   | { type: 'CONNECTION_FAILED'; error: string }
   | { type: 'DISCONNECT' };
 
@@ -38,8 +31,7 @@ const initialState: Web3State = {
   address: null,
   isConnecting: false,
   error: null,
-  walletType: 'none',
-  wallet: null
+  walletType: 'none'
 };
 
 const Web3Context = createContext<{
@@ -60,11 +52,7 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         address: action.address,
         walletType: action.walletType,
         isConnecting: false,
-        error: null,
-        wallet: {
-          address: action.address,
-          provider: action.provider
-        }
+        error: null
       };
     case 'CONNECTION_FAILED':
       return {
@@ -73,8 +61,7 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
         address: null,
         isConnecting: false,
         error: action.error,
-        walletType: 'none',
-        wallet: null
+        walletType: 'none'
       };
     case 'DISCONNECT':
       return initialState;
@@ -85,31 +72,27 @@ function reducer(state: Web3State, action: Web3Action): Web3State {
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const config = useConfig();
+  const { connectAsync } = useConnect();
 
   const connectSmartWallet = useCallback(async () => {
     dispatch({ type: 'START_CONNECTING' });
 
     try {
-      // Initialize with app config and chain IDs
-      const sdk = new CoinbaseWalletSDK({
-        appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon,
-        appChainIds: [DEFAULT_CHAIN.id],
+      const connector = new CoinbaseWalletConnector({
+        chains: config.chains,
+        options: {
+          appName: 'Dude.Box',
+          headlessMode: true, // Enable smart wallet mode
+        },
       });
 
-      // Make web3 provider
-      const provider = sdk.makeWeb3Provider();
-
-      // Request accounts
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
-
-      if (!accounts[0]) throw new Error('No accounts returned');
-
+      const result = await connectAsync({ connector });
+      
       dispatch({ 
         type: 'CONNECTION_SUCCESSFUL', 
-        address: accounts[0],
-        walletType: 'smart',
-        provider
+        address: result.accounts[0],
+        walletType: 'smart'
       });
     } catch (err) {
       console.error('Smart wallet connection failed:', err);
@@ -118,27 +101,25 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         error: err instanceof Error ? err.message : 'Failed to connect smart wallet'
       });
     }
-  }, []);
+  }, [config.chains, connectAsync]);
 
   const connectRegularWallet = useCallback(async () => {
     dispatch({ type: 'START_CONNECTING' });
 
     try {
-      const sdk = new CoinbaseWalletSDK({
-        appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon,
+      const connector = new CoinbaseWalletConnector({
+        chains: config.chains,
+        options: {
+          appName: 'Dude.Box',
+        },
       });
 
-      const provider = sdk.makeWeb3Provider(DEFAULT_CHAIN.rpcUrls.default.http[0], DEFAULT_CHAIN.id);
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
-
-      if (!accounts[0]) throw new Error('No accounts returned');
-
+      const result = await connectAsync({ connector });
+      
       dispatch({ 
         type: 'CONNECTION_SUCCESSFUL', 
-        address: accounts[0],
-        walletType: 'regular',
-        provider
+        address: result.accounts[0],
+        walletType: 'regular'
       });
     } catch (err) {
       console.error('Regular wallet connection failed:', err);
@@ -147,18 +128,11 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         error: err instanceof Error ? err.message : 'Failed to connect wallet'
       });
     }
-  }, []);
+  }, [config.chains, connectAsync]);
 
   const disconnect = useCallback(() => {
-    if (state.wallet?.provider) {
-      try {
-        state.wallet.provider.disconnect?.();
-      } catch (err) {
-        console.error('Error disconnecting wallet:', err);
-      }
-    }
     dispatch({ type: 'DISCONNECT' });
-  }, [state.wallet]);
+  }, []);
 
   return (
     <Web3Context.Provider value={{ 
