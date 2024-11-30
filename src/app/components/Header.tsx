@@ -18,7 +18,7 @@ interface NavItem {
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
-  const { isConnected, disconnect } = useWeb3();
+  const { state, disconnect } = useWeb3();
   const router = useRouter();
 
   const toggleMenu = () => {
@@ -38,7 +38,7 @@ const Header = () => {
     { href: "/shop", label: "Shop" }
   ];
 
-  if (isConnected) {
+  if (state.isConnected) {
     navigationItems.push({
       href: "#",
       label: "Disconnect",
