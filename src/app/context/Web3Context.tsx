@@ -4,16 +4,13 @@ import {
   createContext, 
   useContext, 
   useReducer, 
-  useCallback, 
-  useEffect,
+  useCallback,
   ReactNode 
 } from 'react';
+import { createSmartWallet } from '@coinbase/wallet-sdk/smart';
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import { APP_CONFIG } from '../config/web3';
-
-// Chain Configuration
-const DEFAULT_RPC_URL = 'https://mainnet.infura.io/v3/your-infura-id';
-const DEFAULT_CHAIN_ID = 1;  // Ethereum Mainnet
+import { DEFAULT_CHAIN, SUPPORTED_CHAINS } from '@/config/chains';
 
 type WalletType = 'none' | 'smart' | 'regular';
 
@@ -94,18 +91,18 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     dispatch({ type: 'START_CONNECTING' });
 
     try {
-      const sdk = createCoinbaseWalletSDK({
+      const smartWallet = createSmartWallet({
         appName: APP_CONFIG.name,
-        appLogoUrl: APP_CONFIG.icon
+        appIcon: APP_CONFIG.icon,
+        defaultNetwork: DEFAULT_CHAIN,
+        smartWalletConfig: {
+          appId: process.env.NEXT_PUBLIC_COINBASE_SMART_WALLET_APP_ID,
+          clientId: process.env.NEXT_PUBLIC_COINBASE_SMART_WALLET_CLIENT_ID,
+        }
       });
 
-      // Note: We pass RPC URL and Chain ID first, then options
-      const provider = sdk.makeWeb3Provider(
-        DEFAULT_RPC_URL,
-        DEFAULT_CHAIN_ID
-      );
-
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+      await smartWallet.connect();
+      const accounts = await smartWallet.getAccounts();
 
       if (!accounts[0]) throw new Error('No accounts returned');
 
@@ -113,7 +110,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         type: 'CONNECTION_SUCCESSFUL', 
         address: accounts[0],
         walletType: 'smart',
-        provider
+        provider: smartWallet
       });
     } catch (err) {
       console.error('Smart wallet connection failed:', err);
@@ -133,12 +130,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         appLogoUrl: APP_CONFIG.icon
       });
 
-      // Note: We pass RPC URL and Chain ID first, then options
-      const provider = sdk.makeWeb3Provider(
-        DEFAULT_RPC_URL,
-        DEFAULT_CHAIN_ID
-      );
-
+      const provider = sdk.makeWeb3Provider(DEFAULT_CHAIN.rpcUrl, DEFAULT_CHAIN.id);
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
       if (!accounts[0]) throw new Error('No accounts returned');
@@ -161,7 +153,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const disconnect = useCallback(() => {
     if (state.wallet?.provider) {
       try {
-        state.wallet.provider.close();
+        state.wallet.provider.disconnect();
       } catch (err) {
         console.error('Error disconnecting wallet:', err);
       }
