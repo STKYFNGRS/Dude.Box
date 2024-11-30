@@ -6,23 +6,6 @@ import { useWeb3 } from '../context/Web3Context';
 import { useCallback } from 'react';
 import Image from 'next/image';
 
-const buttonStyles = {
-  background: 'transparent',
-  border: '1px solid transparent',
-  boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  width: 200,
-  fontFamily: 'Arial, sans-serif',
-  fontWeight: 'bold',
-  fontSize: 18,
-  backgroundColor: '#0052FF',
-  paddingLeft: 15,
-  paddingRight: 30,
-  borderRadius: 10,
-};
-
 export default function Onchain() {
   const { isConnected, address, connect, disconnect } = useWeb3();
 
@@ -64,13 +47,21 @@ export default function Onchain() {
           {/* Wallet Section */}
           <div className="w-full max-w-7xl mx-auto px-4 py-8">
             {!isConnected ? (
-              <div className="flex justify-center">
-                <button 
-                  style={buttonStyles}
-                  onClick={connect}
-                >
-                  Create Wallet
-                </button>
+              <div className="mb-8 p-8 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-sm">
+                <h2 className="text-2xl font-bold mb-4 text-center">Get Started with Web3</h2>
+                <div className="max-w-xl mx-auto space-y-8">
+                  {/* Create Wallet Section */}
+                  <div className="text-center p-6 rounded-lg border border-purple-500/20 bg-purple-500/5">
+                    <h3 className="text-lg font-semibold mb-2">New to Web3?</h3>
+                    <p className="text-gray-400 mb-4">Create your first smart wallet - no extension needed.</p>
+                    <button
+                      onClick={connect}
+                      className="w-full sm:w-auto px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors text-lg"
+                    >
+                      Create Wallet
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-sm">

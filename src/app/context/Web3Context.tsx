@@ -1,21 +1,23 @@
 'use client';
 
 import { createContext, useContext, useCallback, useState, ReactNode } from 'react';
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
-const sdk = new CoinbaseWalletSDK({
+// Initialize SDK with recommended configuration
+const sdk = createCoinbaseWalletSDK({
   appName: 'Dude Box',
   appLogoUrl: '/Dude logo 3.jpg',
-  appChainIds: [84532], // Base Sepolia
+  appChainIds: [84532] // Base Sepolia
 });
 
-const provider = sdk.makeWeb3Provider();
+const provider = sdk.getProvider();
 
 interface Web3ContextType {
   isConnected: boolean;
   address: string | null;
+  error: string | null;
   connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  disconnect: () => void;
 }
 
 const Web3Context = createContext<Web3ContextType | null>(null);
@@ -23,36 +25,39 @@ const Web3Context = createContext<Web3ContextType | null>(null);
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const connect = useCallback(async () => {
     try {
-      const [accounts] = await provider.request({
-        method: 'eth_requestAccounts'
-      }) as string[];
+      const [address] = await provider.request({
+        method: 'eth_requestAccounts',
+      });
 
-      if (accounts) {
-        setAddress(accounts);
+      if (address) {
         setIsConnected(true);
+        setAddress(address);
+        setError(null);
       }
     } catch (error) {
-      console.error('Connection failed:', error);
+      console.error('Failed to connect:', error);
+      setError(error instanceof Error ? error.message : 'Failed to connect wallet');
     }
   }, []);
 
-  const disconnect = useCallback(async () => {
+  const disconnect = useCallback(() => {
     setIsConnected(false);
     setAddress(null);
+    setError(null);
   }, []);
 
   return (
-    <Web3Context.Provider 
-      value={{
-        isConnected,
-        address,
-        connect,
-        disconnect
-      }}
-    >
+    <Web3Context.Provider value={{
+      isConnected,
+      address,
+      error,
+      connect,
+      disconnect
+    }}>
       {children}
     </Web3Context.Provider>
   );
