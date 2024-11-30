@@ -15,14 +15,14 @@ export default function Onchain() {
           {!state.isConnected ? (
             <div className="mb-8 p-8 bg-gray-800/50 rounded-xl border border-gray-700">
               <h2 className="text-2xl font-bold mb-4 text-center">Choose Your Wallet</h2>
-              <p className="text-gray-300 mb-8 text-center">Select how you'd like to connect to the Dude Box Web3 experience</p>
+              <p className="text-gray-300 mb-8 text-center">Select how you&apos;d like to connect to the Dude Box Web3 experience</p>
               <WalletOptions />
             </div>
           ) : (
             <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700">
               <div className="flex justify-between items-center">
                 <p className="text-gray-300">
-                  Connected with <span className="font-mono">{state.address?.slice(0, 6)}...{state.address?.slice(-4)}</span>
+                  Connected with <span className="font-mono">{`${state.address?.slice(0, 6)}...${state.address?.slice(-4)}`}</span>
                 </p>
                 <button
                   onClick={disconnect}
