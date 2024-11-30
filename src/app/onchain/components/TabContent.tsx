@@ -3,14 +3,14 @@
 import { StatsGrid } from './StatsGrid';
 import { NFTProject } from './NFTProject';
 import { TokenProject } from './TokenProject';
-import { useAccount } from 'wagmi';
+import { useWeb3 } from '@/app/context/Web3Context';
 
 interface TabContentProps {
   activeTab: string;
 }
 
 export const TabContent = ({ activeTab }: TabContentProps) => {
-  const { address } = useAccount();
+  const { address } = useWeb3();
 
   switch (activeTab) {
     case 'overview':
@@ -53,7 +53,7 @@ export const TabContent = ({ activeTab }: TabContentProps) => {
                   {address ? (
                     <div className="space-y-4">
                       <p className="text-sm text-gray-400">Connected Address:</p>
-                      <p className="font-mono">{address}</p>
+                      <p className="font-mono break-all">{address}</p>
                       <p className="text-sm text-gray-400 mt-4">Transaction history will be available soon</p>
                     </div>
                   ) : (
@@ -65,12 +65,15 @@ export const TabContent = ({ activeTab }: TabContentProps) => {
             <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
               <h3 className="text-lg font-medium mb-4">Quick Actions</h3>
               <div className="space-y-4">
-                <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                <button 
+                  className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  disabled={!address}
+                >
                   Send ETH
                 </button>
                 {address && (
                   <button 
-                    onClick={() => window.open(`https://basescan.org/address/${address}`, '_blank')}
+                    onClick={() => window.open(`https://sepolia.basescan.org/address/${address}`, '_blank')}
                     className="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
                   >
                     View on Explorer

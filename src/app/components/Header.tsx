@@ -10,7 +10,7 @@ import { useWeb3 } from '@/app/context/Web3Context';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
-  const { disconnect } = useWeb3();
+  const { isConnected, disconnect } = useWeb3();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -26,7 +26,11 @@ const Header = () => {
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" },
-    { href: "/onchain", label: "Onchain", onClick: handleDisconnect }
+    { 
+      href: "/onchain", 
+      label: isConnected ? "Disconnect" : "Onchain",
+      onClick: isConnected ? handleDisconnect : undefined
+    }
   ];
 
   return (
