@@ -86,7 +86,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
         appLogoUrl: APP_CONFIG.icon,
-        chainId: DEFAULT_CHAIN.id
+        appChainIds: [DEFAULT_CHAIN.id]
       });
 
       const provider = sdk.makeWeb3Provider(
@@ -124,7 +124,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       const sdk = createCoinbaseWalletSDK({
         appName: APP_CONFIG.name,
         appLogoUrl: APP_CONFIG.icon,
-        chainId: DEFAULT_CHAIN.id
+        appChainIds: [DEFAULT_CHAIN.id]
       });
 
       const provider = sdk.makeWeb3Provider(
