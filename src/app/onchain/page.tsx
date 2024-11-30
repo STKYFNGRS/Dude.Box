@@ -6,7 +6,7 @@ import { WalletOptions } from '../components/wallet/WalletOptions';
 import { useWeb3 } from '../context/Web3Context';
 
 export default function Onchain() {
-  const { state } = useWeb3();
+  const { state, disconnect } = useWeb3();
 
   return (
     <ClientLayout>
@@ -20,9 +20,17 @@ export default function Onchain() {
             </div>
           ) : (
             <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700">
-              <p className="text-center text-gray-300">
-                Connected Address: <span className="font-mono">{`${state.address?.slice(0, 6)}...${state.address?.slice(-4)}`}</span>
-              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-300">
+                  Connected with <span className="font-mono">{state.address?.slice(0, 6)}...{state.address?.slice(-4)}</span>
+                </p>
+                <button
+                  onClick={disconnect}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm"
+                >
+                  Disconnect
+                </button>
+              </div>
             </div>
           )}
         </div>

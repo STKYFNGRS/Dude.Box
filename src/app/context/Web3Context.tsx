@@ -1,168 +1,136 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 
-interface Web3ContextType {
+interface Web3State {
   isConnected: boolean;
   address: string | null;
-  connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  walletType: 'none' | 'smart' | 'regular';
+  error: string | null;
 }
 
-const Web3Context = createContext<Web3ContextType | undefined>(undefined);
+const initialState: Web3State = {
+  isConnected: false,
+  address: null,
+  walletType: 'none',
+  error: null
+};
+
+type Web3Action =
+  | { type: 'CONNECT_START' }
+  | { type: 'CONNECT_SUCCESS'; address: string; walletType: 'smart' | 'regular' }
+  | { type: 'CONNECT_ERROR'; error: string }
+  | { type: 'DISCONNECT' };
+
+function reducer(state: Web3State, action: Web3Action): Web3State {
+  switch (action.type) {
+    case 'CONNECT_START':
+      return { ...state, error: null };
+    case 'CONNECT_SUCCESS':
+      return {
+        isConnected: true,
+        address: action.address,
+        walletType: action.walletType,
+        error: null
+      };
+    case 'CONNECT_ERROR':
+      return {
+        ...initialState,
+        error: action.error
+      };
+    case 'DISCONNECT':
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+const Web3Context = createContext<{
+  state: Web3State;
+  connectSmartWallet: () => Promise<void>;
+  connectRegularWallet: () => Promise<void>;
+  disconnect: () => void;
+} | null>(null);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const [isConnected, setIsConnected] = useState(false);
-  const [address, setAddress] = useState<string | null>(null);
-  const [wallet, setWallet] = useState<CoinbaseWalletSDK | null>(null);
-  const [provider, setProvider] = useState<any>(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Initialize Coinbase Wallet
-  const initializeWallet = useCallback(() => {
+  const connectSmartWallet = useCallback(async () => {
     try {
-      const walletSDK = new CoinbaseWalletSDK({
-        appName: 'Dude.Box',
-        appLogoUrl: '/logo.png',
+      const sdk = createCoinbaseWalletSDK({
+        appName: 'Dude Box',
+        appLogoUrl: '/Dude logo 3.jpg',
         darkMode: true,
-        defaultChainId: 84532, // Base Sepolia
+        preference: {
+          options: 'smartWalletOnly'
+        }
       });
 
-      const provider = walletSDK.makeWeb3Provider(
-        process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL,
-        84532
-      );
-      
-      setWallet(walletSDK);
-      setProvider(provider);
-      
-      return { walletSDK, provider };
-    } catch (err) {
-      console.error('Failed to initialize wallet:', err);
-      return null;
+      const provider = sdk.getProvider();
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+
+      if (!accounts[0]) throw new Error('No account selected');
+
+      dispatch({ 
+        type: 'CONNECT_SUCCESS', 
+        address: accounts[0],
+        walletType: 'smart'
+      });
+    } catch (error) {
+      dispatch({ 
+        type: 'CONNECT_ERROR', 
+        error: 'Failed to connect smart wallet'
+      });
     }
   }, []);
 
-  // Connect wallet
-  const connect = useCallback(async () => {
+  const connectRegularWallet = useCallback(async () => {
     try {
-      const currentProvider = provider || initializeWallet()?.provider;
-      if (!currentProvider) {
-        throw new Error('Failed to initialize wallet SDK');
-      }
-
-      const accounts = await currentProvider.request({
-        method: 'eth_requestAccounts'
+      const sdk = createCoinbaseWalletSDK({
+        appName: 'Dude Box',
+        appLogoUrl: '/Dude logo 3.jpg',
+        darkMode: true
       });
 
-      if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts returned from wallet');
-      }
+      const provider = sdk.getProvider();
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
 
-      const userAddress = accounts[0];
-      setAddress(userAddress);
-      setIsConnected(true);
-      
-      localStorage.setItem('walletConnected', 'true');
-      localStorage.setItem('walletAddress', userAddress);
+      if (!accounts[0]) throw new Error('No account selected');
 
-      // Handle accountsChanged
-      currentProvider.on('accountsChanged', (accounts: string[]) => {
-        if (accounts.length === 0) {
-          disconnect();
-        } else {
-          setAddress(accounts[0]);
-        }
+      dispatch({ 
+        type: 'CONNECT_SUCCESS', 
+        address: accounts[0],
+        walletType: 'regular'
       });
-
-    } catch (err) {
-      console.error('Failed to connect wallet:', err);
-      setIsConnected(false);
-      setAddress(null);
-      localStorage.removeItem('walletConnected');
-      localStorage.removeItem('walletAddress');
-      throw err;
-    }
-  }, [provider, initializeWallet]);
-
-  // Disconnect wallet
-  const disconnect = useCallback(async () => {
-    if (provider) {
-      try {
-        // Remove event listeners
-        provider.removeAllListeners();
-
-        // Close the provider connection
-        if (provider.close) {
-          await provider.close();
-        }
-
-        // Attempt to trigger disconnect in the wallet
-        try {
-          await provider.request({
-            method: 'wallet_disconnect'
-          });
-        } catch (e) {
-          console.log('Wallet disconnect method not supported');
-        }
-
-        // Clear the SDK instance
-        if (wallet) {
-          wallet.disconnect();
-        }
-      } catch (err) {
-        console.error('Error during disconnect:', err);
-      }
-    }
-
-    // Reset all state regardless of success/failure
-    setIsConnected(false);
-    setAddress(null);
-    setWallet(null);
-    setProvider(null);
-    localStorage.removeItem('walletConnected');
-    localStorage.removeItem('walletAddress');
-  }, [provider, wallet]);
-
-  // Check for existing connection on mount
-  useEffect(() => {
-    const wasConnected = localStorage.getItem('walletConnected') === 'true';
-    const savedAddress = localStorage.getItem('walletAddress');
-
-    if (wasConnected && savedAddress) {
-      connect().catch((err) => {
-        console.error('Failed to restore connection:', err);
-        localStorage.removeItem('walletConnected');
-        localStorage.removeItem('walletAddress');
+    } catch (error) {
+      dispatch({ 
+        type: 'CONNECT_ERROR', 
+        error: 'Failed to connect wallet'
       });
     }
+  }, []);
 
-    // Cleanup on unmount
-    return () => {
-      if (provider) {
-        provider.removeAllListeners();
-      }
-    };
-  }, [connect, provider]);
+  const disconnect = useCallback(() => {
+    dispatch({ type: 'DISCONNECT' });
+  }, []);
 
   return (
-    <Web3Context.Provider
-      value={{
-        isConnected,
-        address,
-        connect,
-        disconnect
-      }}
-    >
+    <Web3Context.Provider value={{ 
+      state, 
+      connectSmartWallet, 
+      connectRegularWallet, 
+      disconnect 
+    }}>
       {children}
     </Web3Context.Provider>
   );
 }
 
-export const useWeb3 = () => {
+export function useWeb3() {
   const context = useContext(Web3Context);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useWeb3 must be used within a Web3Provider');
   }
   return context;
-};
+}
