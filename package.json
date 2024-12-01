@@ -28,7 +28,6 @@
     "graphql-request": "^7.1.2",
     "lucide-react": "^0.454.0",
     "next": "^14.0.4",
-    "pino-pretty": "^10.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "shadcn-ui": "^0.2.3",
@@ -37,10 +36,14 @@
     "viem": "1.19.11"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@modelcontextprotocol/server-brave-search": "^0.5.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "babel-loader": "^9.2.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
