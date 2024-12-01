@@ -5,6 +5,7 @@ Last Updated: December 1, 2024
 - Removed all Web3/wallet functionality (December 1, 2024)
   - Archived mint and token pages in project_map directory
   - Archived Web3 services (smartWallet.ts, traditionalWallet.ts, web3.ts)
+  - Archived Web3 types (web3.ts)
   - Removed /mint and /token routes
   - Updated next.config.js to support Shopify CDN image loading
   - Simplified project structure by removing wallet-related components
@@ -16,5 +17,6 @@ The following features have been archived and their code is stored in the projec
 - Mint Page (archived_mint_page.txt) - NFT minting and collection display
 - Token Page (archived_token_page.txt) - Token utility and distribution information
 - Web3 Services (archived_web3_services.txt) - Smart wallet and Web3 functionality
+- Web3 Types (archived_web3_types.txt) - TypeScript types for Web3 functionality
 
 [Rest of the original content remains the same...]
