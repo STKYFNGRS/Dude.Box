@@ -3,23 +3,19 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "@/app/components/CartContext";
-import { CartDrawer } from "@/components/CartDrawer";
 
-const Header = () => {
+const BaseHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setIsOpen: setCartOpen } = useCart();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    setCartOpen(false);
   };
 
   const navigationItems = [
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" },
-    { href: "/onchain", label: "Onchain" },
+    { href: "/onchain", label: "Onchain" }
   ];
 
   return (
@@ -36,8 +32,6 @@ const Header = () => {
       </Link>
 
       <div className="flex items-center gap-4">
-        <CartDrawer />
-
         {!isOpen && (
           <button
             onClick={toggleMenu}
@@ -112,4 +106,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default BaseHeader;

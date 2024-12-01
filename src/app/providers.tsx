@@ -1,16 +1,12 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CartProvider } from './components/CartContext';
-
-const queryClient = new QueryClient();
+import React from "react";
+import { OnchainKitProvider } from '@coinbase/onchainkit';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        {children}
-      </CartProvider>
-    </QueryClientProvider>
+    <OnchainKitProvider>
+      {children}
+    </OnchainKitProvider>
   );
 }
