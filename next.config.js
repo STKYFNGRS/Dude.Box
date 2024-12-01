@@ -1,13 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(js|mjs|jsx)$/,
+      include: [/node_modules\/@metamask\/sdk/],
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['@babel/plugin-proposal-class-properties']
+        }
+      }
+    });
+    return config;
+  },
   images: {
-    domains: ['cdn.shopify.com'],
-    remotePatterns: [{
-      protocol: 'https',
-      hostname: 'cdn.shopify.com',
-      pathname: '/s/files/**'
-    }]
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.shopify.com'
+      }
+    ]
   }
 };
 
