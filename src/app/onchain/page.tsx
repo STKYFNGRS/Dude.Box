@@ -3,15 +3,10 @@
 import { ClientLayout } from '@/app/components/Client-Layout';
 import { Analytics } from "@vercel/analytics/react";
 import { useWeb3 } from '../context/Web3Context';
-import { useCallback } from 'react';
 import Image from 'next/image';
 
 export default function Onchain() {
   const { isConnected, address, connect, disconnect } = useWeb3();
-
-  const handleDisconnect = useCallback(() => {
-    disconnect();
-  }, [disconnect]);
 
   return (
     <ClientLayout>
@@ -73,7 +68,7 @@ export default function Onchain() {
                     </p>
                   </div>
                   <button
-                    onClick={handleDisconnect}
+                    onClick={disconnect}
                     className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                   >
                     Disconnect

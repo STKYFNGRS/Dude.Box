@@ -2,21 +2,33 @@ import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  transpilePackages: ['@coinbase/onchainkit'],
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      encoding: false,
+      bufferutil: false,
+      'utf-8-validate': false
+    };
+    return config;
+  },
   async headers() {
     return [
       {
-        source: '/api/:path*',
+        source: '/:path*',
         headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
-        ],
-      },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          }
+        ]
+      }
     ];
-  },
-  images: {
-    domains: ['keys.coinbase.com', 'api.developer.coinbase.com'],
-  },
+  }
 };
 
 export default nextConfig;
