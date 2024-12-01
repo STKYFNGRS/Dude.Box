@@ -63,7 +63,6 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 📧 Contact
 For any questions or suggestions, feel free to reach out to us:
 
-GitHub: STKYFNGRS
-Email: support@dude.box
+Email: dude@dude.box
 Made with ❤️ by the Dude.Box team.
 
