@@ -18,8 +18,9 @@
       ]
     },
     "brave-search": {
-      "command": "npx",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
       "args": [
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js",
         "-y",
         "@modelcontextprotocol/server-brave-search"
       ],
@@ -27,7 +28,8 @@
         "BRAVE_API_KEY": "BSAUze8xPkjm8_VHWL8IK8LdMlzYdke",
         "SERVER_PORT": "4000",
         "SERVER_HOST": "localhost",
-        "CORS_ORIGIN": "http://localhost:3000"
+        "CORS_ORIGIN": "http://localhost:3000",
+        "APPDATA": "C:\\Users\\Alex Moore\\AppData\\Roaming"
       }
     }
   }

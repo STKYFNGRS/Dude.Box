@@ -5,49 +5,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
-import { useWeb3 } from '@/app/context/Web3Context';
-import { useRouter } from 'next/navigation';
 
 interface NavItem {
   href: string;
   label: string;
-  className?: string;
-  onClick?: () => void;
 }
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
-  const { isConnected, disconnect } = useWeb3();
-  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setCartOpen(false);
   };
 
-  const handleDisconnect = async () => {
-    await disconnect();
-    router.push('/onchain');
-    router.refresh();
-  };
-
   const navigationItems: NavItem[] = [
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
-    { href: "/shop", label: "Shop" }
+    { href: "/shop", label: "Shop" },
+    { href: "/onchain", label: "Onchain" }
   ];
-
-  if (isConnected) {
-    navigationItems.push({
-      href: "#",
-      label: "Disconnect",
-      className: "text-red-400 hover:text-red-300",
-      onClick: handleDisconnect
-    });
-  } else {
-    navigationItems.push({ href: "/onchain", label: "Onchain" });
-  }
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full bg-black text-white flex items-center justify-between p-4 z-30">
@@ -124,14 +102,8 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={(e) => {
-                    if (item.onClick) {
-                      e.preventDefault();
-                      item.onClick();
-                    }
-                    toggleMenu();
-                  }}
-                  className={`block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${item.className || ''}`}
+                  onClick={toggleMenu}
+                  className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                   role="menuitem"
                 >
                   {item.label}

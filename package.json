@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@coinbase/onchainkit": "0.35.8",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-select": "^2.1.2",
@@ -32,8 +31,7 @@
     "react-dom": "18.2.0",
     "shadcn-ui": "^0.2.3",
     "tailwind-merge": "latest",
-    "tailwindcss-animate": "^1.0.7",
-    "viem": "1.19.11"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
