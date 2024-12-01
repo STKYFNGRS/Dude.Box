@@ -5,28 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
-import { useWeb3 } from '@/app/context/Web3Context';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setIsOpen: setCartOpen } = useCart();
-  const { disconnect } = useWeb3();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setCartOpen(false);
   };
 
-  const handleDisconnect = async () => {
-    await disconnect();
-    window.location.href = '/onchain';
-  };
-
   const navigationItems = [
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
-    { href: "/shop", label: "Shop" },
-    { href: "/onchain", label: "Onchain", onClick: handleDisconnect }
+    { href: "/shop", label: "Shop" }
   ];
 
   return (
@@ -104,13 +96,7 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={(e) => {
-                    if (item.onClick) {
-                      e.preventDefault();
-                      item.onClick();
-                    }
-                    toggleMenu();
-                  }}
+                  onClick={toggleMenu}
                   className="block py-4 px-6 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 transition-colors duration-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                   role="menuitem"
                 >
