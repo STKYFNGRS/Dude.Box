@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
-import { ConnectWallet } from '@coinbase/onchainkit';
-import { useConnectWallet } from '@coinbase/onchainkit';
+import { useOnchainKit } from '@coinbase/onchainkit';
 import type { Address } from 'viem';
 
 interface Web3ContextType {
@@ -15,22 +14,22 @@ interface Web3ContextType {
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const { connect, disconnect, isConnected, address } = useConnectWallet();
+  const { isConnected, address, connect, disconnect } = useOnchainKit();
 
   return (
     <Web3Context.Provider value={{
-      isConnected,
-      address,
-      connect,
-      disconnect
+      isConnected: Boolean(isConnected),
+      address: address as Address,
+      connect: () => {
+        if (connect) connect();
+      },
+      disconnect: () => {
+        if (disconnect) disconnect();
+      }
     }}>
       {children}
     </Web3Context.Provider>
   );
-}
-
-export function ConnectButton() {
-  return <ConnectWallet />;
 }
 
 export function useWeb3() {

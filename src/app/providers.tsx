@@ -7,17 +7,10 @@ import { OnchainKitProvider } from '@coinbase/onchainkit';
 
 const queryClient = new QueryClient();
 
-const onchainConfig = {
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID || '',
-  appName: 'Dude Box',
-  appIcon: '/Dude logo 3.jpg',
-  chainId: Number(process.env.NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID) || 84532
-};
-
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <OnchainKitProvider {...onchainConfig}>
+      <OnchainKitProvider>
         <Web3Provider>
           {children}
           <Toaster />
