@@ -5,20 +5,20 @@ import Header from '../Header';
 import { OnchainKitProvider } from '@coinbase/onchainkit';
 
 const onchainConfig = {
-  rpcUrl: process.env.NEXT_PUBLIC_BASE_MAINNET_RPC,
-  chainId: Number(process.env.NEXT_PUBLIC_BASE_MAINNET_CHAIN_ID),
-  walletConnect: {
-    projectId: process.env.NEXT_PUBLIC_COINBASE_SMART_WALLET_CLIENT_ID,
-    metadata: {
-      name: 'Dude Box',
-      description: 'Onchain Experience',
-      url: process.env.NEXT_PUBLIC_APP_URL,
-      icons: ['/Dude logo 3.jpg']
-    }
-  }
+  wallets: ['coinbase'],
+  chains: [{
+    id: Number(process.env.NEXT_PUBLIC_BASE_MAINNET_CHAIN_ID),
+    name: 'Base',
+    rpcUrl: process.env.NEXT_PUBLIC_BASE_MAINNET_RPC || '',
+  }],
+  appName: 'Dude Box',
+  appIcon: '/Dude logo 3.jpg', // Path to app icon
+  theme: 'dark',
 };
 
 export function OnchainLayout({ children }: { children: React.ReactNode }) {
+  console.log('Rendering OnchainLayout with config:', onchainConfig);
+  
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
