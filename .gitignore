@@ -34,5 +34,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Don't ignore resources folder - we need it for development context
-# /resources/
+
+/resources/
