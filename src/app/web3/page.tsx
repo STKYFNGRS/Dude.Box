@@ -3,11 +3,10 @@
 import React from 'react';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { WalletConnect } from '../components/onchain/WalletConnect';
 import { OnchainLayout } from '../components/layouts/OnchainLayout';
 import { CartProvider } from '../components/CartContext';
 
-export default function OnchainPage() {
+export default function Web3Page() {
   const handleConnect = (address: string) => {
     console.log('Wallet connected:', address);
   };
@@ -28,9 +27,7 @@ export default function OnchainPage() {
                 
                 <div className="w-full max-w-md p-6 bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl mt-8">
                   <h2 className="text-2xl font-bold text-white mb-6 text-center">Connect Your Wallet</h2>
-                  <div className="flex justify-center">
-                    <WalletConnect onConnect={handleConnect} />
-                  </div>
+                  
                 </div>
               </div>
             </div>

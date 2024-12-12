@@ -19,7 +19,7 @@ const Header = () => {
     { href: "/", label: "Home" },
     { href: "/roadmap", label: "Roadmap" },
     { href: "/shop", label: "Shop" },
-    { href: "/onchain", label: "Onchain" },
+    { href: "/web3", label: "Web3" },
   ];
 
   return (
