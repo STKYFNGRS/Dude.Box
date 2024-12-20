@@ -1,43 +1,25 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+export default {
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.accentuate.io',
-        pathname: '**',
+        pathname: '/s/files/**'
       }
-    ]
+    ],
+    minimumCacheTTL: 60,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    domains: ['cdn.shopify.com'],
+    unoptimized: true  // Added this line
   },
-  // Enable experimental features
   experimental: {
-    // Add any experimental features if needed
+    serverActions: {
+      bodySizeLimit: '2mb'
+    }
   },
-  // Environment variables that should be available on the client
-  env: {
-    NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN,
-    NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-  },
-  // TypeScript configuration
-  typescript: {
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    ignoreBuildErrors: false,
-  },
-  // Enable strict mode for additional checks
-  reactStrictMode: true,
-  // Disable x-powered-by header
-  poweredByHeader: false,
-  // Configure compression
-  compress: true,
-  // Asset prefix configuration (if needed)
-  assetPrefix: undefined,
+  httpAgentOptions: {
+    keepAlive: true,
+  }
 };
-
-export default nextConfig;
