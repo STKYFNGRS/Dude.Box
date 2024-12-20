@@ -44,7 +44,7 @@ function ThreeItemGridItem({
 export async function ThreeItemGrid() {
   // Collections that start with `hidden-*` are hidden from the search page.
   const homepageItems = await getCollectionProducts({
-    collection: 'dystopian-delights'
+    collection: 'the-origin-collection-first-drop'
   });
 
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
