@@ -16,7 +16,7 @@ export default function AboutPage() {
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-gray-900">
         <main className="flex-grow flex items-center justify-center p-4">
           <div className="max-w-3xl mx-auto text-center text-white space-y-8">
-            <h1 className="text-4xl font-bold mb-6">About DUDE.BOX</h1>
+            <h1 className="text-4xl font-bold mb-6" style={{ color: '#A020F0' }}>About DUDE.BOX</h1>
             <p className="text-xl leading-relaxed">
               Welcome to the frontier of the human spirit, where the digital meets the visceral, 
               the blockchain intersects with the beating heart of community. Here at DUDE.BOX, 
