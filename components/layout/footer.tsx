@@ -1,17 +1,11 @@
 import Link from 'next/link';
-
-import FooterMenu from 'components/layout/footer-menu';
-import LogoSquare from 'components/logo-square';
 import { getMenu } from 'lib/shopify';
-import { Suspense } from 'react';
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
-  const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700';
-  const menu = await getMenu('next-js-frontend-footer-menu');
   const copyrightName = COMPANY_NAME || SITE_NAME || '';
 
   const XIcon = () => (
@@ -38,57 +32,69 @@ export default async function Footer() {
     </svg>
   );
 
+  const TikTokIcon = () => (
+    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.05A6.34 6.34 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+    </svg>
+  );
+
   return (
     <footer className="text-sm text-neutral-500 dark:text-neutral-400">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 border-t border-neutral-200 px-6 py-12 text-sm md:flex-row md:gap-12 md:px-4 min-[1320px]:px-0 dark:border-neutral-700">
-        <div>
-          <Link className="flex items-center gap-2 text-black md:pt-1 dark:text-white" href="/">
-            <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
-          </Link>
-        </div>
-        <Suspense
-          fallback={
-            <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-            </div>
-          }
-        >
-          <FooterMenu menu={menu} />
-        </Suspense>
-        <div className="md:ml-auto">
-          
-        </div>
-      </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
-  <p>
-    &copy; {copyrightDate} {copyrightName}
-    {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
-  </p>
-  {/* Reduced margin from mx-4 to mx-2 */}
-  <hr className="mx-2 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-  {/* Reduced space between icons from space-x-6 to space-x-4 */}
-  <div className="flex space-x-4">
-    <Link href="https://x.com/dudedotbox" className="hover:text-black dark:hover:text-white transition-colors" aria-label="X (Twitter)">
-      <XIcon />
-    </Link>
-    <Link href="https://facebook.com/61568186610770" className="hover:text-black dark:hover:text-white transition-colors" aria-label="Facebook">
-      <FacebookIcon />
-    </Link>
-    <Link href="https://instagram.com/dudedotbox" className="hover:text-black dark:hover:text-white transition-colors" aria-label="Instagram">
-      <InstagramIcon />
-    </Link>
-    <Link href="https://discord.gg/yourinvite" className="hover:text-black dark:hover:text-white transition-colors" aria-label="Discord">
-      <DiscordIcon />
-    </Link>
-  </div>
-</div>
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
+          <p>
+            &copy; {copyrightDate} {copyrightName}
+            {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
+          </p>
+          <hr className="mx-2 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
+          <div className="flex space-x-4">
+            <Link 
+              href="https://x.com/dudedotbox" 
+              className="hover:text-black dark:hover:text-white transition-colors" 
+              aria-label="X (Twitter)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <XIcon />
+            </Link>
+            <Link 
+              href="https://facebook.com/61568186610770" 
+              className="hover:text-black dark:hover:text-white transition-colors" 
+              aria-label="Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FacebookIcon />
+            </Link>
+            <Link 
+              href="https://instagram.com/dudedotbox" 
+              className="hover:text-black dark:hover:text-white transition-colors" 
+              aria-label="Instagram"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramIcon />
+            </Link>
+            <Link 
+              href="https://tiktok.com/@dudedotbox" 
+              className="hover:text-black dark:hover:text-white transition-colors" 
+              aria-label="TikTok"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TikTokIcon />
+            </Link>
+            <Link 
+              href="https://discord.gg/yourinvite" 
+              className="hover:text-black dark:hover:text-white transition-colors" 
+              aria-label="Discord"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <DiscordIcon />
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
