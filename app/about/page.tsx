@@ -40,7 +40,7 @@ export default function AboutPage() {
                     </li>
                     <li className="flex items-center">
                       <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 flex-shrink-0"></span>
-                      <span>Professional services events like resume writing classes, free haircuts and interview preparation workshops</span>
+                      <span>Professional services events like resume writing classes, haircuts and interview preparation workshops</span>
                     </li>
                     <li className="flex items-center">
                       <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 flex-shrink-0"></span>
