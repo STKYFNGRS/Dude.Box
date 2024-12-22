@@ -11,7 +11,7 @@ export default function AboutPage() {
           <div className="pt-20 pb-16">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8" style={{ color: '#A020F0' }}>
-                About Us
+                
               </h1>
               
               {/* Mission Statement */}
