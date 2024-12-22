@@ -15,7 +15,7 @@ export default function AboutPage() {
               </h1>
               
               {/* Mission Statement */}
-              <div className="bg-gray-900 p-6 sm:p-8 rounded-lg mb-12 border border-gray-700 shadow-lg max-w-4xl mx-auto">
+              <div className="bg-gray-900 p-6 sm:p-8 rounded-lg mb-12 border border-gray-700 shadow-lg max-w-4xl mx-auto transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl">
                 <h2 className="text-2xl sm:text-3xl font-semibold mb-4 text-white">Our Mission</h2>
                 <p className="text-lg sm:text-xl text-gray-200">
                   To create products that people actually want while building spaces where they can
@@ -27,7 +27,7 @@ export default function AboutPage() {
               {/* Services Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 max-w-7xl mx-auto">
                 {/* Core Services */}
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h3 className="text-xl font-semibold mb-4 text-white">Core Services</h3>
                   <ul className="space-y-3 text-left text-gray-200">
                     <li className="flex items-center">
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Community Focus */}
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h3 className="text-xl font-semibold mb-4 text-white">Community-Driven Growth</h3>
                   <ul className="space-y-3 text-left text-gray-200">
                     <li className="flex items-center">
@@ -73,7 +73,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Physical Space */}
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg h-full transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h3 className="text-xl font-semibold mb-4 text-white">Our Future Home</h3>
                   <ul className="space-y-3 text-left text-gray-200">
                     <li className="flex items-center">
@@ -97,7 +97,7 @@ export default function AboutPage() {
               </div>
 
               {/* From the Founder Section */}
-              <div className="bg-gray-900 p-6 sm:p-8 rounded-lg border border-gray-700 shadow-lg max-w-4xl mx-auto mb-12">
+              <div className="bg-gray-900 p-6 sm:p-8 rounded-lg border border-gray-700 shadow-lg max-w-4xl mx-auto mb-12 transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-6 text-white">From the Founder</h3>
                 <div className="flex flex-col md:flex-row md:items-center gap-8">
                   <div className="relative w-full md:w-1/2 h-64 md:h-80 rounded-lg overflow-hidden shadow-lg border border-gray-800">
@@ -122,23 +122,23 @@ export default function AboutPage() {
                 </div>
               </div>
 
-               {/* Statistics Section */}
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg">
+              {/* Statistics Section */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h4 className="text-3xl font-bold text-blue-400 mb-2">1 in 5</h4>
                   <p className="text-gray-200">
                     Adult men experience mental illness each year, but less than 40% seek help
                   </p>
                 </div>
 
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h4 className="text-3xl font-bold text-blue-400 mb-2">4x</h4>
                   <p className="text-gray-200">
                     Men are four times more likely to die by suicide, with over 38,000 men dying annually
                   </p>
                 </div>
 
-                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg">
+                <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 shadow-lg transition duration-300 hover:bg-gray-800 hover:border-gray-600 hover:shadow-xl hover:-translate-y-1">
                   <h4 className="text-3xl font-bold text-blue-400 mb-2">75%</h4>
                   <p className="text-gray-200">
                     Of all suicide deaths in the US are men.
@@ -147,7 +147,7 @@ export default function AboutPage() {
               </div>
 
               {/* Call to Action */}
-              <div className="mt-12 p-6 sm:p-8 bg-blue-500/20 border border-blue-500/40 rounded-lg text-center max-w-4xl mx-auto">
+              <div className="mt-12 p-6 sm:p-8 bg-blue-500/20 border border-blue-500/40 rounded-lg text-center max-w-4xl mx-auto transition duration-300 hover:bg-blue-500/30 hover:border-blue-500/50 hover:shadow-xl">
                 <p className="text-lg sm:text-xl font-semibold text-blue-400">
                   Every purchase, every NFT, every member brings us closer to opening our first location 
                   and providing free mental health support to those who need it.
