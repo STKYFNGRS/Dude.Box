@@ -21,6 +21,10 @@ export const metadata = {
     default: SITE_NAME!,
     template: `%s | ${SITE_NAME}`
   },
+  icons: {
+    icon: [{ url: '/logos/favicon.ico' }],
+    shortcut: ['/logos/favicon.ico'],
+  },
   robots: {
     follow: true,
     index: true
@@ -37,18 +41,19 @@ export const metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const cartId = (await cookies()).get('cartId')?.value;
-  // Don't await the fetch, pass the Promise to the context provider
   const cart = getCart(cartId);
 
   return (
     <html lang="en" className={GeistSans.variable}>
+      <head>
+        <link rel="icon" href="/logos/favicon.ico" sizes="any" />
+      </head>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-black dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <CartProvider cartPromise={cart}>
           <Navbar />
           <main>
             {children}
             <Toaster closeButton />
-            
           </main>
         </CartProvider>
       </body>
