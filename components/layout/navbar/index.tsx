@@ -30,9 +30,7 @@ export async function Navbar() {
         <div className="flex-none">
           <Link href="/" prefetch={true} className="flex items-center justify-center">
             <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase">
-              {SITE_NAME}
-            </div>
+          
           </Link>
         </div>
         <div className="flex-none">
@@ -49,9 +47,7 @@ export async function Navbar() {
             className="mr-2 flex items-center justify-center md:w-auto lg:mr-6"
           >
             <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase lg:block">
-              {SITE_NAME}
-            </div>
+           
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">

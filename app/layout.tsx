@@ -48,7 +48,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <main>
             {children}
             <Toaster closeButton />
-            
           </main>
         </CartProvider>
       </body>
