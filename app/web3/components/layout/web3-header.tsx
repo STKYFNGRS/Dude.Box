@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { injected } from 'wagmi/connectors';
-import LogoSquare from '../../../../components/logo-square';
+import LogoSquare from '../logo-square';
 
 export default function Web3Header() {
   const [mounted, setMounted] = useState(false);
@@ -16,13 +16,10 @@ export default function Web3Header() {
 
   useEffect(() => {
     setMounted(true);
-    // Initialize with Base chain configuration
+    // Initialize with only valid configuration options
     setCoinbaseWallet(new CoinbaseWalletSDK({
       appName: "DUDE.BOX",
-      appLogoUrl: "/logo.png",
-      darkMode: true,
-      chainId: 8453, // Base Mainnet
-      rpcUrl: process.env.BASE_RPC_URL
+      appLogoUrl: "/logo.png"
     }));
   }, []);
 
@@ -34,10 +31,7 @@ export default function Web3Header() {
   const handleDisconnect = async () => {
     try {
       if (coinbaseWallet) {
-        const provider = coinbaseWallet.makeWeb3Provider(
-          process.env.BASE_RPC_URL,
-          8453
-        );
+        const provider = coinbaseWallet.makeWeb3Provider();
         if (provider) {
           try {
             await provider.close();
@@ -65,8 +59,7 @@ export default function Web3Header() {
     } else {
       try {
         await connect({ 
-          connector: injected(),
-          chainId: 8453 // Ensure connecting to Base Mainnet
+          connector: injected()
         });
       } catch (error) {
         console.error('Connection error:', error);
@@ -82,7 +75,7 @@ export default function Web3Header() {
             href="/"
             className="mr-2 flex items-center justify-center md:w-auto lg:mr-6"
           >
-            <LogoSquare />
+            <LogoSquare size="sm" />
           </Link>
         </div>
         
