@@ -40,21 +40,17 @@ export default function Web3Header() {
       await handleDisconnect();
     } else {
       try {
+        // Clear any existing permissions before connecting
+        if (typeof window !== 'undefined' && window.ethereum?.selectedAddress) {
+          await window.ethereum.request({
+            method: 'wallet_requestPermissions',
+            params: [{ eth_accounts: {} }],
+          });
+        }
+        
         await connect({
           connector: injected({
-            shimDisconnect: true,
-            getProvider: () => {
-              if (typeof window !== 'undefined') {
-                // Clear any existing permissions
-                if (window.ethereum?.selectedAddress) {
-                  window.ethereum.request({
-                    method: 'wallet_requestPermissions',
-                    params: [{ eth_accounts: {} }],
-                  });
-                }
-                return window.ethereum;
-              }
-            }
+            shimDisconnect: true
           })
         });
       } catch (error) {
