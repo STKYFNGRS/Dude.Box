@@ -5,7 +5,7 @@ const { COMPANY_NAME, SITE_NAME } = process.env;
 export default function Web3Footer() {
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
-  const copyrightName = COMPANY_NAME || SITE_NAME || '';
+  const copyrightName = "Dude dot box LLC" || SITE_NAME || '';
 
   const XIcon = () => (
     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

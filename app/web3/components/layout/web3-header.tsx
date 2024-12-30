@@ -1,26 +1,23 @@
 'use client';
 
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi';
 import { injected } from 'wagmi/connectors';
-import LogoSquare from '../logo-square';
+import LogoSquare from '../../../../components/logo-square';
 
 export default function Web3Header() {
   const [mounted, setMounted] = useState(false);
-  const { address, isConnected, connector } = useAccount();
+  const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
-  const [coinbaseWallet, setCoinbaseWallet] = useState<any>(null);
+  const { data: ensName } = useEnsName({
+    address: address as `0x${string}`,
+    chainId: 1
+  });
 
   useEffect(() => {
     setMounted(true);
-    // Initialize with only valid configuration options
-    setCoinbaseWallet(new CoinbaseWalletSDK({
-      appName: "DUDE.BOX",
-      appLogoUrl: "/logo.png"
-    }));
   }, []);
 
   const truncateAddress = (addr: string) => {
@@ -30,26 +27,11 @@ export default function Web3Header() {
 
   const handleDisconnect = async () => {
     try {
-      if (coinbaseWallet) {
-        const provider = coinbaseWallet.makeWeb3Provider();
-        if (provider) {
-          try {
-            await provider.close();
-          } catch (e) {
-            console.error('Close error:', e);
-          }
-          try {
-            await provider.disconnect();
-          } catch (e) {
-            console.error('Disconnect error:', e);
-          }
-        }
-      }
       disconnect();
+      localStorage.clear();
       window.location.reload();
     } catch (error) {
       console.error('Disconnect error:', error);
-      disconnect();
     }
   };
 
@@ -58,8 +40,22 @@ export default function Web3Header() {
       await handleDisconnect();
     } else {
       try {
-        await connect({ 
-          connector: injected()
+        await connect({
+          connector: injected({
+            shimDisconnect: true,
+            getProvider: () => {
+              if (typeof window !== 'undefined') {
+                // Clear any existing permissions
+                if (window.ethereum?.selectedAddress) {
+                  window.ethereum.request({
+                    method: 'wallet_requestPermissions',
+                    params: [{ eth_accounts: {} }],
+                  });
+                }
+                return window.ethereum;
+              }
+            }
+          })
         });
       } catch (error) {
         console.error('Connection error:', error);
@@ -67,40 +63,34 @@ export default function Web3Header() {
     }
   };
 
+  const displayAddress = ensName || truncateAddress(address || '');
+
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6 border-b border-neutral-200 dark:border-neutral-700">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
-          <Link
+          <Link 
             href="/"
             className="mr-2 flex items-center justify-center md:w-auto lg:mr-6"
           >
-            <LogoSquare size="sm" />
+            <LogoSquare />
           </Link>
         </div>
-        
-        <div className="flex items-center gap-6">
-          <ul className="flex gap-6 text-sm items-center">
-            <li>
-              <Link
-                href="/"
-                className="text-neutral-400 underline-offset-4 hover:text-white hover:underline"
-              >
-                Shop
-              </Link>
-            </li>
-          </ul>
-          
-          <div className="flex justify-end">
-            {mounted && (
-              <button 
-                onClick={handleConnect}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                {isConnected ? truncateAddress(address!) : 'Connect Wallet'}
-              </button>
-            )}
-          </div>
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/"
+            className="text-neutral-400 underline-offset-4 hover:text-white hover:underline"
+          >
+            Shop
+          </Link>
+          {mounted && (
+            <button
+              onClick={handleConnect}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+            >
+              {isConnected ? displayAddress : 'Connect Wallet'}
+            </button>
+          )}
         </div>
       </div>
     </nav>

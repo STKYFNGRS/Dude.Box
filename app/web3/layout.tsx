@@ -1,37 +1,24 @@
 'use client';
 
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { WagmiProvider, createConfig } from 'wagmi';
+import { base, mainnet } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { injected } from 'wagmi/connectors';
 import { http } from 'viem';
 
 const config = createConfig({
-  chains: [{
-    id: 8453,
-    name: 'Base',
-    nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://mainnet.base.org'] }
-    }
-  }],
+  chains: [base, mainnet],
+  connectors: [injected()],
   transports: {
-    8453: http()
+    [base.id]: http(),
+    [mainnet.id]: http()
   }
 });
 
+const queryClient = new QueryClient();
+
 export default function Web3Layout({ children }: { children: ReactNode }) {
-  // Create the queryClient in the component
-  const [queryClient] = useState(() => new QueryClient());
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
