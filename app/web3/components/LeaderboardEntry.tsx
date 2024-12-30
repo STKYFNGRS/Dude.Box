@@ -16,7 +16,7 @@ export default function LeaderboardEntry({ address, points, rank, previousRank }
     chainId: 1
   });
   const { data: ensAvatar } = useEnsAvatar({
-    name: ensName,
+    name: ensName || undefined,
     chainId: 1
   });
 
