@@ -20,20 +20,20 @@ export default function EthIdentity({ address }: { address: string }) {
   });
 
   const { data: ensAvatar } = useEnsAvatar({
-    name: ensName,
+    name: ensName || undefined,
     chainId: 1
   });
 
   const { data: twitterHandle } = useEnsText({
-    name: ensName,
+    name: ensName || undefined,
     key: 'com.twitter'
   });
 
   useEffect(() => {
     if (ensName) {
       setProfileData({
-        name: ensName,
-        avatar: ensAvatar || null,
+        name: ensName || null,
+        avatar: (ensAvatar as string) || null,
         bio: null,
         twitter: twitterHandle || null
       });
