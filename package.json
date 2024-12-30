@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npx @modelcontextprotocol/server-postgres postgres://default:DHdeQCBXg1A2@ep-lively-tree-a4mc6w0c.us-east-1.aws.neon.tech/verceldb?sslmode=require\" \"next dev\"",
+    "dev": "concurrently \"npx @modelcontextprotocol/server-postgres $POSTGRES_URL\" \"next dev\"",
     "build": "next build",
     "start": "next start",
     "prettier": "prettier --write --ignore-unknown .",

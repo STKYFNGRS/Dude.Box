@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useEnsName, useEnsAvatar, useEnsText } from 'wagmi';
-import { ProfileCard } from 'ethereum-identity-kit';
 
 interface ProfileData {
   name: string | null;
@@ -42,38 +41,34 @@ export default function EthIdentity({ address }: { address: string }) {
 
   return (
     <div className="w-[400px] mx-auto bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-xl p-6">
-      <ProfileCard 
-        address={address}
-        name={profileData?.name}
-        avatar={profileData?.avatar}
-        socials={{
-          twitter: profileData?.twitter
-        }}
-        config={{
-          theme: 'dark',
-          size: 'md',
-          customStyles: {
-            card: {
-              backgroundColor: 'transparent',
-              width: '100%',
-              maxWidth: '400px',
-              padding: '1rem'
-            },
-            avatar: {
-              width: '80px',
-              height: '80px'
-            },
-            text: {
-              color: '#e5e7eb',
-              fontSize: '0.9rem'
-            },
-            heading: {
-              color: '#a78bfa',
-              fontSize: '1.1rem'
-            }
-          }
-        }}
-      />
+      <div className="flex flex-col items-center space-y-4">
+        {profileData?.avatar && (
+          <img 
+            src={profileData.avatar} 
+            alt="Profile" 
+            className="w-20 h-20 rounded-full"
+          />
+        )}
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-white">
+            {profileData?.name || truncateAddress(address)}
+          </h2>
+          {profileData?.twitter && (
+            <a 
+              href={`https://twitter.com/${profileData.twitter}`}
+              className="text-blue-400 hover:text-blue-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @{profileData.twitter}
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   );
+
+  function truncateAddress(addr: string) {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  }
 }
