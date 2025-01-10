@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\" \"cd sqlite-server && npm run build && node build/index.js\"",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "prettier": "prettier --write --ignore-unknown .",
@@ -60,7 +60,6 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.20",
-    "concurrently": "^9.1.1",
     "cross-env": "^7.0.3",
     "pino-pretty": "^13.0.0",
     "postcss": "^8.4.49",
