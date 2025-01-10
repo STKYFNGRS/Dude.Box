@@ -5,14 +5,13 @@ export default {
       {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
-        pathname: '/s/files/**'
+        pathname: '/**'  // Allow all paths under cdn.shopify.com
       }
     ],
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    domains: ['cdn.shopify.com'],
-    unoptimized: true  // Added this line
+    unoptimized: true
   },
   experimental: {
     serverActions: {

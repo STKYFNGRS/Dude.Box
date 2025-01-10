@@ -41,3 +41,6 @@ next-env.d.ts
 mcp.json
 /resources
 .env*.local
+app/dev/
+app/api/claude
+dude.db
