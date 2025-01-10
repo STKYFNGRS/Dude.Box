@@ -13,12 +13,14 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <>
-      <ThreeItemGrid />
-      <Carousel />
-      <Footer />
-      <Analytics/>
-      <SpeedInsights/>
-    </>
+    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">
+      <div className="relative">
+        <ThreeItemGrid />
+        <Carousel />
+        <Footer />
+        <Analytics/>
+        <SpeedInsights/>
+      </div>
+    </div>
   );
 }
