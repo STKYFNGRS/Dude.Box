@@ -5,10 +5,10 @@ import Footer from '../../components/layout/footer';
 
 export default function AboutPage() {
   return (
-    <>
-      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">
+    <div className="relative min-h-screen bg-gradient-to-b from-black to-gray-900">
+      <div className="pb-16"> {/* Added pb-16 for footer spacing */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="pt-20 pb-16">
+          <div className="pt-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8" style={{ color: '#A020F0' }}>
                 
@@ -156,10 +156,10 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-        <Footer />
-        <Analytics/>
-        <SpeedInsights/>
       </div>
-    </>
+      <Footer />
+      <Analytics/>
+      <SpeedInsights/>
+    </div>
   );
 }
