@@ -32,14 +32,16 @@ export default async function CategoryPage(props: {
   const products = await getCollectionProducts({ collection: params.collection, sortKey, reverse });
 
   return (
-    <section>
-      {products.length === 0 ? (
-        <p className="py-3 text-lg">{`No products found in this collection`}</p>
-      ) : (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      )}
-    </section>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        {products.length === 0 ? (
+          <p className="py-3 text-lg">{`No products found in this collection`}</p>
+        ) : (
+          <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <ProductGridItems products={products} />
+          </Grid>
+        )}
+      </div>
+    </div>
   );
 }

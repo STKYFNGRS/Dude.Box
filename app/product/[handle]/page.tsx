@@ -74,38 +74,42 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
 
   return (
     <ProductProvider>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productJsonLd)
-        }}
-      />
-      <div className="mx-auto max-w-screen-2xl px-4">
-        <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
-          <div className="h-full w-full basis-full lg:basis-4/6">
-            <Suspense
-              fallback={
-                <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
-              }
-            >
-              <Gallery
-                images={product.images.slice(0, 5).map((image: Image) => ({
-                  src: image.url,
-                  altText: image.altText
-                }))}
-              />
-            </Suspense>
-          </div>
+      <div className="relative min-h-screen bg-gradient-to-b from-black to-gray-900">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productJsonLd)
+          }}
+        />
+        <div className="pb-16"> {/* Added padding for footer */}
+          <div className="mx-auto max-w-screen-2xl px-4">
+            <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
+              <div className="h-full w-full basis-full lg:basis-4/6">
+                <Suspense
+                  fallback={
+                    <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
+                  }
+                >
+                  <Gallery
+                    images={product.images.slice(0, 5).map((image: Image) => ({
+                      src: image.url,
+                      altText: image.altText
+                    }))}
+                  />
+                </Suspense>
+              </div>
 
-          <div className="basis-full lg:basis-2/6">
-            <Suspense fallback={null}>
-              <ProductDescription product={product} />
-            </Suspense>
+              <div className="basis-full lg:basis-2/6">
+                <Suspense fallback={null}>
+                  <ProductDescription product={product} />
+                </Suspense>
+              </div>
+            </div>
+            <RelatedProducts id={product.id} />
           </div>
         </div>
-        <RelatedProducts id={product.id} />
+        <Footer />
       </div>
-      <Footer />
     </ProductProvider>
   );
 }
@@ -117,7 +121,7 @@ async function RelatedProducts({ id }: { id: string }) {
 
   return (
     <div className="py-8">
-      <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
+      <h2 className="mb-4 text-2xl font-bold text-white">Related Products</h2>
       <ul className="flex w-full gap-4 overflow-x-auto pt-1">
         {relatedProducts.map((product) => (
           <li

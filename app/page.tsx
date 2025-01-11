@@ -14,11 +14,13 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-black to-gray-900">
-      <div className="pb-16 space-y-8">
-        <ThreeItemGrid />
-        <Carousel />
-        <ViewAllButton />
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-gray-900">
+      <div className="flex-grow">
+        <div className="space-y-8">
+          <ThreeItemGrid />
+          <Carousel />
+          <ViewAllButton />
+        </div>
       </div>
       <Footer />
       <Analytics/>

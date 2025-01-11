@@ -19,20 +19,22 @@ export default async function SearchPage(props: {
   const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (
-    <>
-      {searchValue ? (
-        <p className="mb-4">
-          {products.length === 0
-            ? 'There are no products that match '
-            : `Showing ${products.length} ${resultsText} for `}
-          <span className="font-bold">&quot;{searchValue}&quot;</span>
-        </p>
-      ) : null}
-      {products.length > 0 ? (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      ) : null}
-    </>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        {searchValue ? (
+          <p className="mb-4">
+            {products.length === 0
+              ? 'There are no products that match '
+              : `Showing ${products.length} ${resultsText} for `}
+            <span className="font-bold">&quot;{searchValue}&quot;</span>
+          </p>
+        ) : null}
+        {products.length > 0 ? (
+          <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <ProductGridItems products={products} />
+          </Grid>
+        ) : null}
+      </div>
+    </div>
   );
 }
