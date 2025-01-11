@@ -3,6 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
+import ViewAllButton from 'components/ui/view-all-button';
 
 export const metadata = {
   description: 'Web3 and ecommerce store built with Next.js, Vercel, and Shopify.',
@@ -17,6 +18,7 @@ export default function HomePage() {
       <div className="pb-16 space-y-8">
         <ThreeItemGrid />
         <Carousel />
+        <ViewAllButton />
       </div>
       <Footer />
       <Analytics/>
