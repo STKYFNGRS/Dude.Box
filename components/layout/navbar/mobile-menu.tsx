@@ -16,8 +16,8 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
 
-  // Filter regular menu items
-  const mainMenu = menu.filter(item => !['About', 'Web3'].includes(item.title));
+  // Filter out Mint/Web3 from regular menu items
+  const mainMenu = menu.filter(item => !item.title.toLowerCase().includes('mint') && !item.title.toLowerCase().includes('web3'));
 
   useEffect(() => {
     const handleResize = () => {
@@ -80,7 +80,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                   </Suspense>
                 </div>
 
-                {/* Contextual Navigation */}
+                {/* Single Mint Link */}
                 <div className="flex flex-col gap-3 mb-6">
                   <Link
                     href="/web3"

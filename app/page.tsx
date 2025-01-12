@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
+import BottomCTA from 'components/layout/bottom-cta';
 import CallToAction from 'components/layout/call-to-action';
 import Footer from 'components/layout/footer';
 import FounderSection from 'components/layout/founder-section';
@@ -42,6 +43,7 @@ export default function HomePage() {
             <FounderSection />
             <StatisticsSection />
             <CallToAction />
+            <BottomCTA />
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import Search, { SearchSkeleton } from './search';
 const { SITE_NAME } = process.env;
 
 const STATIC_PAGES = [
-  { title: 'Web3', path: '/web3' }
+  { title: 'Mint', path: '/web3' }
 ];
 
 export async function Navbar() {

@@ -5,7 +5,7 @@ export default function ViewAllButton() {
     <div className="flex justify-center mt-8 mb-8">
       <Link
         href="/search"
-        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-200 ease-in-out"
+        className="border-2 border-indigo-700 text-blue-300 hover:text-blue-200 hover:bg-indigo-900/20 px-6 py-2 rounded-lg font-semibold transition-all duration-300"
       >
         View All Products
       </Link>
