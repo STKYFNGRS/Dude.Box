@@ -10,7 +10,6 @@ import Search, { SearchSkeleton } from './search';
 const { SITE_NAME } = process.env;
 
 const STATIC_PAGES = [
-  { title: 'About', path: '/about' },
   { title: 'Web3', path: '/web3' }
 ];
 

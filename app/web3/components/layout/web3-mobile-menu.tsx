@@ -11,8 +11,7 @@ export default function Web3MobileMenu() {
   const closeMobileMenu = () => setIsOpen(false);
 
   const menuItems = [
-    { title: 'Shop', path: '/' },
-    { title: 'About', path: '/about' }
+    { title: 'Shop', path: '/search' }
   ];
 
   useEffect(() => {

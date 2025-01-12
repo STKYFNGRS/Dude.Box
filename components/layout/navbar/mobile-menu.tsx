@@ -16,9 +16,8 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
 
-  // Filter out About and Web3 from the main menu
+  // Filter regular menu items
   const mainMenu = menu.filter(item => !['About', 'Web3'].includes(item.title));
-  const specialLinks = menu.filter(item => ['About', 'Web3'].includes(item.title));
 
   useEffect(() => {
     const handleResize = () => {
@@ -81,18 +80,15 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                   </Suspense>
                 </div>
 
-                {/* Special Links (About and Web3) */}
+                {/* Contextual Navigation */}
                 <div className="flex flex-col gap-3 mb-6">
-                  {specialLinks.map((item) => (
-                    <Link 
-                      key={item.title}
-                      href={item.path}
-                      onClick={closeMobileMenu}
-                      className="flex h-12 items-center justify-center rounded-md border border-neutral-200 bg-white text-black transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-black dark:text-white dark:hover:bg-neutral-900"
-                    >
-                      <span className="text-xl">{item.title}</span>
-                    </Link>
-                  ))}
+                  <Link
+                    href="/web3"
+                    onClick={closeMobileMenu}
+                    className="flex h-12 items-center justify-center rounded-md border border-neutral-200 bg-white text-black transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-black dark:text-white dark:hover:bg-neutral-900"
+                  >
+                    <span className="text-xl">Mint</span>
+                  </Link>
                 </div>
 
                 {/* Regular Menu Items */}
