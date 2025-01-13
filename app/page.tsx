@@ -30,19 +30,23 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="relative z-10">
         <HeroSection />
-        <div className="space-y-8 mt-8 container mx-auto px-4">
-          <ThreeItemGrid />
-          <Carousel />
-          <ViewAllButton />
-          
-          {/* About Section Content */}
-          <div className="py-16">
-            <MissionStatement />
-            <ServicesGrid />
-            <FounderSection />
-            <StatisticsSection />
-            <CallToAction />
-            <BottomCTA />
+        <div className="space-y-8 mt-8">
+          <div className="w-full">
+            <ThreeItemGrid />
+          </div>
+          <div className="container mx-auto px-4">
+            <Carousel />
+            <ViewAllButton />
+            
+            {/* About Section Content */}
+            <div className="py-16">
+              <MissionStatement />
+              <ServicesGrid />
+              <FounderSection />
+              <StatisticsSection />
+              <CallToAction />
+              <BottomCTA />
+            </div>
           </div>
         </div>
       </div>
