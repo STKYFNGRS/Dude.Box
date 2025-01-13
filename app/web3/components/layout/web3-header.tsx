@@ -64,28 +64,34 @@ export default function Web3Header() {
   const displayAddress = ensName || truncateAddress(address || '');
 
   return (
-    <nav className="w-full flex items-center justify-between p-4 lg:px-6 border-b border-neutral-700">
-      <div className="md:hidden flex w-full justify-between items-center">
-        <button 
-          onClick={() => setIsMenuOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
-          aria-label="Open Menu"
-        >
-          <Menu className="h-4" />
-        </button>
-
-        <Link href="/" className="flex items-center justify-center">
-          <LogoSquare />
-        </Link>
-
-        {mounted && (
-          <button
-            onClick={handleConnect}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md text-sm font-medium"
+    <nav className="w-full flex items-center justify-between px-4 lg:px-6 pt-12 pb-8">
+      <div className="md:hidden flex w-full items-center justify-between relative">
+        <div className="w-11">
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
+            aria-label="Open Menu"
           >
-            {isConnected ? displayAddress : 'Connect Wallet'}
+            <Menu className="h-4" />
           </button>
-        )}
+        </div>
+
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <Link href="/" className="flex items-center justify-center">
+            <LogoSquare />
+          </Link>
+        </div>
+
+        <div className="min-w-[44px] flex justify-end pr-2">
+          {mounted && (
+            <button
+              onClick={handleConnect}
+              className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white px-2 py-2 rounded-md text-xs font-medium"
+            >
+              {isConnected ? displayAddress : 'Connect'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="hidden md:flex w-full items-center justify-between">

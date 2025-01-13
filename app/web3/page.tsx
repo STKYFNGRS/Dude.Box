@@ -9,11 +9,7 @@ import Web3Header from './components/layout/web3-header';
 
 export default function Web3Page() {
   return (
-    <div className="fixed inset-0 flex flex-col">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-gray-900 to-black"></div>
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-grid-16 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"></div>
-      </div>
+    <div className="fixed inset-0 flex flex-col bg-gradient-to-b from-black to-gray-900">
       <Web3Header />
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="max-w-3xl mx-auto text-center text-white space-y-8">
