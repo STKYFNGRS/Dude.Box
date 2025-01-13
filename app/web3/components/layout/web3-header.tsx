@@ -64,9 +64,9 @@ export default function Web3Header() {
   const displayAddress = ensName || truncateAddress(address || '');
 
   return (
-    <nav className="w-full flex items-center justify-between p-4 lg:px-6">
-      <div className="md:hidden flex w-full items-center justify-between relative">
-        <div className="w-11">
+    <nav className="relative flex items-center justify-between py-5 px-4 lg:px-6">
+      <div className="md:hidden flex w-full justify-between items-center">
+        <div className="flex-none">
           <button 
             onClick={() => setIsMenuOpen(true)}
             className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
@@ -76,13 +76,13 @@ export default function Web3Header() {
           </button>
         </div>
 
-        <div className="absolute left-1/2 transform -translate-x-1/2">
+        <div className="flex-none">
           <Link href="/" className="flex items-center justify-center">
             <LogoSquare />
           </Link>
         </div>
 
-        <div className="min-w-[44px] flex justify-end pr-2">
+        <div className="flex-none">
           {mounted && (
             <button
               onClick={handleConnect}
@@ -94,6 +94,7 @@ export default function Web3Header() {
         </div>
       </div>
 
+      {/* Rest of the component remains the same */}
       <div className="hidden md:flex w-full items-center justify-between">
         <div className="flex items-center">
           <Link 
