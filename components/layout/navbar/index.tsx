@@ -5,7 +5,6 @@ import { Menu } from 'lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import MobileMenu from './mobile-menu';
-import Search, { SearchSkeleton } from './search';
 
 const { SITE_NAME } = process.env;
 
@@ -64,11 +63,7 @@ export async function Navbar() {
             </ul>
           ) : null}
         </div>
-        <div className="hidden absolute left-1/2 transform -translate-x-1/2 md:block">
-          <Suspense fallback={<SearchSkeleton />}>
-            <Search />
-          </Suspense>
-        </div>
+     
         <div className="hidden md:flex items-center gap-6">
           <ul className="flex gap-6 text-sm items-center">
             {STATIC_PAGES.map((item) => (
