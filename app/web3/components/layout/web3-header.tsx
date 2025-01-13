@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState, Fragment } from 'react';
 import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi';
 import { injected } from 'wagmi/connectors';
-import { Menu, X } from 'lucide-react';
+import { Bars3Icon as Menu, XMarkIcon as X } from '@heroicons/react/24/outline';
 import LogoSquare from '../../../../components/logo-square';
 import { Dialog, Transition } from '@headlessui/react';
 
@@ -64,7 +64,7 @@ export default function Web3Header() {
   const displayAddress = ensName || truncateAddress(address || '');
 
   return (
-    <nav className="w-full flex items-center justify-between px-4 lg:px-6 pt-12 pb-8">
+    <nav className="w-full flex items-center justify-between p-4 lg:px-6">
       <div className="md:hidden flex w-full items-center justify-between relative">
         <div className="w-11">
           <button 
@@ -72,7 +72,7 @@ export default function Web3Header() {
             className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
             aria-label="Open Menu"
           >
-            <Menu className="h-4" />
+            <Menu className="h-4 w-4" />
           </button>
         </div>
 
@@ -151,7 +151,7 @@ export default function Web3Header() {
                   onClick={() => setIsMenuOpen(false)}
                   aria-label="Close mobile menu"
                 >
-                  <X className="h-4" />
+                  <X className="h-4 w-4" />
                 </button>
                 <div className="flex flex-col gap-4">
                   <Link 
