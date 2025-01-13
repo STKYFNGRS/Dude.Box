@@ -20,23 +20,22 @@ const HeroSection = () => {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">
-            Join a community that's revolutionizing mental health support. 
-            Every purchase brings us closer to opening our first physical location.
+            Join a community that's revolutionizing mental health support.
           </p>
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-4 mb-8">
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">10,000 sq ft</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Future Community Hub</p>
+              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Zero Barriers</h3>
+              <p className="text-xs sm:text-sm text-gray-300">No Waitlists, No Referrals</p>
             </div>
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Free</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Mental Health Support</p>
+              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">One Mission</h3>
+              <p className="text-xs sm:text-sm text-gray-300">Building Better Men</p>
             </div>
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Community</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Driven Progress</p>
+              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">1:1 Support</h3>
+              <p className="text-xs sm:text-sm text-gray-300">Direct Personal Access</p>
             </div>
           </div>
 
