@@ -1,61 +1,93 @@
 'use client';
 
+import { Tab } from '@headlessui/react';
 import { useState } from 'react';
-import Leaderboard from './Leaderboard';
+import EnhanceTab from './EnhanceTab';
+import MintTab from './MintTab';
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
 
 export default function TabInterface() {
-  const [activeTab, setActiveTab] = useState('leaderboard');
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-gray-800/40 backdrop-blur-sm rounded-xl p-6">
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setActiveTab('mint')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'mint'
-              ? 'bg-purple-600 text-white'
-              : 'bg-gray-700 text-white hover:bg-gray-600'
-          }`}
-        >
-          Mint
-        </button>
-        <button
-          onClick={() => setActiveTab('enhance')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'enhance'
-              ? 'bg-purple-600 text-white'
-              : 'bg-gray-700 text-white hover:bg-gray-600'
-          }`}
-        >
-          Enhance
-        </button>
-        <button
-          onClick={() => setActiveTab('leaderboard')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'leaderboard'
-              ? 'bg-purple-600 text-white'
-              : 'bg-gray-700 text-white hover:bg-gray-600'
-          }`}
-        >
-          Leaderboard
-        </button>
-      </div>
-
-      <div className="mt-4">
-        {activeTab === 'mint' && (
-          <div className="text-white min-h-[600px]">
-            <h2 className="text-xl font-bold mb-4">Mint Your Robot</h2>
-            <p className="text-gray-300">Minting interface coming soon...</p>
-          </div>
-        )}
-        {activeTab === 'enhance' && (
-          <div className="text-white min-h-[600px]">
-            <h2 className="text-xl font-bold mb-4">Enhance Your Robot</h2>
-            <p className="text-gray-300">Enhancement interface coming soon...</p>
-          </div>
-        )}
-        {activeTab === 'leaderboard' && <Leaderboard />}
-      </div>
+    <div className="w-full max-w-3xl px-2 sm:px-0">
+      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+        <Tab.List className="flex space-x-1 rounded-xl bg-gray-900/20 p-1">
+          <Tab
+            className={({ selected }) =>
+              classNames(
+                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
+                'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                selected
+                  ? 'bg-indigo-700 text-white shadow'
+                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+              )
+            }
+          >
+            Mint
+          </Tab>
+          <Tab
+            className={({ selected }) =>
+              classNames(
+                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
+                'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                selected
+                  ? 'bg-indigo-700 text-white shadow'
+                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+              )
+            }
+          >
+            Enhance
+          </Tab>
+          <Tab
+            className={({ selected }) =>
+              classNames(
+                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
+                'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                selected
+                  ? 'bg-indigo-700 text-white shadow'
+                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+              )
+            }
+          >
+            Leaderboard
+          </Tab>
+        </Tab.List>
+        <Tab.Panels className="mt-2">
+          <Tab.Panel
+            className={classNames(
+              'rounded-xl bg-gray-900/20 p-3',
+              'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+            )}
+          >
+            <MintTab />
+          </Tab.Panel>
+          <Tab.Panel
+            className={classNames(
+              'rounded-xl bg-gray-900/20 p-3',
+              'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+            )}
+          >
+            <EnhanceTab />
+          </Tab.Panel>
+          <Tab.Panel
+            className={classNames(
+              'rounded-xl bg-gray-900/20 p-3',
+              'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+            )}
+          >
+            <div className="flex flex-col items-center justify-center p-8">
+              <h3 className="text-xl font-semibold text-blue-300 mb-4">Coming Soon</h3>
+              <p className="text-gray-300 text-center">
+                The Leaderboard Interface is coming soon. Stay tuned for updates!
+              </p>
+            </div>
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   );
 }
