@@ -26,15 +26,15 @@ const HeroSection = () => {
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
+            <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">10,000 sq ft</h3>
               <p className="text-xs sm:text-sm text-gray-300">Future Community Hub</p>
             </div>
-            <div className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
+            <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Free</h3>
               <p className="text-xs sm:text-sm text-gray-300">Mental Health Support</p>
             </div>
-            <div className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
+            <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Community</h3>
               <p className="text-xs sm:text-sm text-gray-300">Driven Progress</p>
             </div>

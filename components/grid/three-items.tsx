@@ -14,9 +14,9 @@ export async function ThreeItemGrid() {
   const [firstProduct, secondProduct, thirdProduct] = homepageItems;
 
   return (
-    <div className="mx-auto px-4">
+    <div className="mx-auto">
       {/* Mobile and tablet layout */}
-      <div className="md:hidden flex gap-4">
+      <div className="md:hidden flex">
         <div className="w-[60vw] h-[60vw] max-w-[300px] max-h-[300px]">
           <Link href={`/product/${firstProduct.handle}`}>
             <GridTileImage
@@ -33,8 +33,8 @@ export async function ThreeItemGrid() {
             />
           </Link>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="w-[28vw] h-[28vw] max-w-[140px] max-h-[140px]">
+        <div className="flex flex-col">
+          <div className="w-[40vw] h-[30vw] max-w-[140px] max-h-[140px] mb-4">
             <Link href={`/product/${secondProduct.handle}`}>
               <GridTileImage
                 alt={secondProduct.title}
@@ -45,12 +45,12 @@ export async function ThreeItemGrid() {
                 }}
                 src={secondProduct.featuredImage?.url}
                 fill
-                sizes="28vw"
+                sizes="40vw"
                 priority={true}
               />
             </Link>
           </div>
-          <div className="w-[28vw] h-[28vw] max-w-[140px] max-h-[140px]">
+          <div className="w-[40vw] h-[30vw] max-w-[140px] max-h-[140px]">
             <Link href={`/product/${thirdProduct.handle}`}>
               <GridTileImage
                 alt={thirdProduct.title}
@@ -61,7 +61,7 @@ export async function ThreeItemGrid() {
                 }}
                 src={thirdProduct.featuredImage?.url}
                 fill
-                sizes="28vw"
+                sizes="40vw"
               />
             </Link>
           </div>
