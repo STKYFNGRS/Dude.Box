@@ -1,5 +1,3 @@
-import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const HeroSection = () => {
@@ -27,11 +25,11 @@ const HeroSection = () => {
           <div className="grid grid-cols-3 gap-4 mb-8">
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Zero Barriers</h3>
-              <p className="text-xs sm:text-sm text-gray-300">No Waitlists, No Referrals</p>
+              <p className="text-xs sm:text-sm text-gray-300">Help, When You Need It</p>
             </div>
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">One Mission</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Building Better Men</p>
+              <p className="text-xs sm:text-sm text-gray-300">Fostering Growth</p>
             </div>
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-indigo-900/30 hover:border-indigo-700/40 transition-colors">
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">1:1 Support</h3>

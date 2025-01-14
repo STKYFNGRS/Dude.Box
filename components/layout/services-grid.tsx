@@ -12,15 +12,15 @@ const ServicesGrid = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Sacred space for AA and support groups to do the real work</span>
+              <span>Dedicated space for AA and other peer-led support groups</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Life-skill workshops where theory meets practice (resumes, interviews, professional grooming)</span>
+              <span>Life-skill workshops where theory meets practice (resume writing, interviews prep, career guidance, etc)</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>A tribe of brothers who understand the fight</span>
+              <span>A community of dudes who get it.</span>
             </li>
           </ul>
         </div>
@@ -35,15 +35,19 @@ const ServicesGrid = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Premium social spaces where coffee meets gaming meets purpose</span>
+              <span>Premium social spaces</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Regular gatherings that turn strangers into brothers</span>
+              <span>Regular gatherings and events</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Event space for the moments that matter</span>
+              <span>Local impact with national reach</span>
+            </li>
+            <li className="flex items-start">
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+              <span>Member-led initiatives</span>
             </li>
           </ul>
         </div>
@@ -54,15 +58,19 @@ const ServicesGrid = () => {
           <ul className="space-y-4 text-left text-gray-200">
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>10,000 sq ft fortress of solitude in San Diego's heart</span>
+              <span>10,000 sq ft HQ in the heart of San Diego</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Full arsenal of products that speak to the soul</span>
+              <span>Private and Group Meeting Spaces</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>Private chambers for the battles fought one-on-one</span>
+              <span>State of the art exercise facility</span>
+            </li>
+            <li className="flex items-start">
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+              <span>Gourmet Deli and Beverage Counter</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
