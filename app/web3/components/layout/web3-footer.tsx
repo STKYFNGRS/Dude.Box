@@ -4,7 +4,7 @@ const { COMPANY_NAME, SITE_NAME } = process.env;
 
 export default function Web3Footer() {
   const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
+  const copyrightDate = 2024 + (currentYear > 2024 ? `-${currentYear}` : '');
   const copyrightName = "Dude dot box LLC" || SITE_NAME || '';
 
   const XIcon = () => (
@@ -38,14 +38,14 @@ export default function Web3Footer() {
   );
 
   return (
-    <footer className="mt-16 w-full text-sm text-neutral-500 dark:text-neutral-400 bg-transparent">
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4">
+    <footer className="w-full text-sm text-neutral-500 dark:text-neutral-400 bg-transparent">
+      <div className="border-t border-neutral-200 py-4 dark:border-neutral-700">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4">
           <p className="text-center">
             &copy; {copyrightDate} {copyrightName}
             {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
           </p>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 mt-2">
             <Link 
               href="https://x.com/dudedotbox" 
               className="hover:text-white transition-colors" 

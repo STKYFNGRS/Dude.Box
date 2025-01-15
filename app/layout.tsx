@@ -39,10 +39,16 @@ export const metadata = {
     })
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ 
+  children,
+  params
+}: { 
+  children: ReactNode,
+  params: { segment?: string[] }
+}) {
   const cartId = (await cookies()).get('cartId')?.value;
   const cart = getCart(cartId);
-  const isWeb3Page = typeof window !== 'undefined' && window.location.pathname.startsWith('/web3');
+  const isWeb3 = params?.segment?.[0] === 'web3';
 
   return (
     <html lang="en" className={GeistSans.variable}>
@@ -51,7 +57,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-black dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <CartProvider cartPromise={cart}>
-          {!isWeb3Page && <Navbar />}
+          {!isWeb3 && <Navbar />}
           <main>
             {children}
             <Toaster closeButton />

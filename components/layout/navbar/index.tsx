@@ -17,7 +17,7 @@ export async function Navbar() {
   const allMenuItems = [...menu, ...STATIC_PAGES];
 
   return (
-    <nav className="relative flex items-center justify-between p-4 lg:px-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 lg:px-6 bg-black/30 backdrop-blur-xl border-b border-neutral-800">
       {/* Mobile Layout */}
       <div className="md:hidden flex w-full justify-between items-center">
         <div className="flex-none">
@@ -28,7 +28,6 @@ export async function Navbar() {
         <div className="flex-none">
           <Link href="/" prefetch={true} className="flex items-center justify-center">
             <LogoSquare />
-          
           </Link>
         </div>
         <div className="flex-none">
@@ -45,7 +44,6 @@ export async function Navbar() {
             className="mr-2 flex items-center justify-center md:w-auto lg:mr-6"
           >
             <LogoSquare />
-           
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
@@ -54,7 +52,7 @@ export async function Navbar() {
                   <Link
                     href={item.path}
                     prefetch={true}
-                    className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                    className="text-neutral-400 underline-offset-4 hover:text-white transition-colors"
                   >
                     {item.title}
                   </Link>
@@ -70,7 +68,7 @@ export async function Navbar() {
               <li key={item.title}>
                 <Link
                   href={item.path}
-                  className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                  className="text-neutral-400 underline-offset-4 hover:text-white transition-colors"
                 >
                   {item.title}
                 </Link>

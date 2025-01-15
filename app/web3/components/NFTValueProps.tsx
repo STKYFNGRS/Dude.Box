@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Star, Gift, Zap, Users, Shield, Dumbbell, LucideIcon } from 'lucide-react';
+import { Dumbbell, Gift, LucideIcon, Shield, Star, Users, Zap } from 'lucide-react';
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -88,8 +88,8 @@ const NFTValueProps = () => {
           />
           <FeatureCard
             icon={Dumbbell}
-            title="Elite Gym Access"
-            description="Unlimited access to our state-of-the-art fitness facility, designed exclusively for our founding members."
+            title="Gym Access"
+            description="Unlimited access to our state-of-the-art fitness facility."
             delay={0.8}
           />
         </div>

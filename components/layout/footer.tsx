@@ -38,9 +38,9 @@ export default async function Footer() {
   );
 
   return (
-    <footer className="mt-16 w-full text-sm text-neutral-500 dark:text-neutral-400 bg-transparent">
+    <footer className="mt-16 w-full text-sm text-neutral-500 dark:text-neutral-400">
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4">
           <p className="text-center">
             &copy; {copyrightDate} {copyrightName}
             {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.

@@ -64,25 +64,25 @@ export default function Web3Header() {
   const displayAddress = ensName || truncateAddress(address || '');
 
   return (
-    <nav className="relative flex items-center justify-between py-5 px-4 lg:px-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 lg:px-6 border-b border-neutral-800 bg-black/30 backdrop-blur-xl">
       <div className="md:hidden flex w-full justify-between items-center">
-        <div className="flex-none">
+        <div className="flex w-11">
           <button 
             onClick={() => setIsMenuOpen(true)}
-            className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-white transition-colors md:hidden dark:border-neutral-700"
             aria-label="Open Menu"
           >
             <Menu className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex-none">
+        <div className="flex justify-center">
           <Link href="/" className="flex items-center justify-center">
             <LogoSquare />
           </Link>
         </div>
 
-        <div className="flex-none">
+        <div className="flex w-11 justify-end">
           {mounted && (
             <button
               onClick={handleConnect}
@@ -94,7 +94,6 @@ export default function Web3Header() {
         </div>
       </div>
 
-      {/* Rest of the component remains the same */}
       <div className="hidden md:flex w-full items-center justify-between">
         <div className="flex items-center">
           <Link 
@@ -145,10 +144,10 @@ export default function Web3Header() {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-[-100%]"
           >
-            <Dialog.Panel className="fixed bottom-0 left-0 right-0 top-0 flex h-full w-full flex-col bg-black">
+            <Dialog.Panel className="fixed bottom-0 left-0 right-0 top-0 flex h-full w-full flex-col bg-black/95">
               <div className="p-4">
                 <button
-                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
+                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-white transition-colors dark:border-neutral-700"
                   onClick={() => setIsMenuOpen(false)}
                   aria-label="Close mobile menu"
                 >

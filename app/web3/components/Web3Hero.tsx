@@ -5,7 +5,7 @@ import { BadgeCheck, Sparkles, Shield } from 'lucide-react';
 
 const Web3Hero = () => {
   return (
-    <div className="relative overflow-hidden py-16">
+    <div className="relative overflow-hidden py-16 pt-40">
       {/* Local Glow Effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-900/20 blur-[120px] rounded-full"></div>
