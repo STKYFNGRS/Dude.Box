@@ -3,24 +3,39 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Suspense } from 'react';
-import TabInterface from './components/TabInterface';
 import Web3Footer from './components/layout/web3-footer';
 import Web3Header from './components/layout/web3-header';
+import Web3Hero from './components/Web3Hero';
+import NFTValueProps from './components/NFTValueProps';
+import LegalDisclaimer from './components/LegalDisclaimer';
+import MintInterface from './components/MintInterface';
 
 export default function Web3Page() {
   return (
     <div className="fixed inset-0 flex flex-col bg-gradient-to-b from-black to-gray-900">
       <Web3Header />
-      <main className="flex-grow flex items-center justify-center p-4">
-        <div className="max-w-3xl mx-auto text-center text-white space-y-8">
-          <h1 className="text-4xl font-bold mb-6" style={{ color: '#A020F0' }}>
-            
-          </h1>
-          <Suspense fallback={<div>Loading...</div>}>
-            <TabInterface />
-          </Suspense>
+      
+      {/* Main Content */}
+      <main className="flex-grow overflow-y-auto">
+        {/* Hero Section */}
+        <Web3Hero />
+
+        {/* Mint Interface Section */}
+        <div className="w-full py-16">
+          <div className="max-w-3xl mx-auto px-4">
+            <Suspense fallback={<div className="text-center text-gray-400">Loading...</div>}>
+              <MintInterface />
+            </Suspense>
+          </div>
         </div>
+
+        {/* Value Proposition Section */}
+        <NFTValueProps />
+
+        {/* Legal Disclaimer */}
+        <LegalDisclaimer />
       </main>
+
       <Web3Footer />
       <Analytics />
       <SpeedInsights />

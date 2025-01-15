@@ -15,15 +15,15 @@ export default function TabInterface() {
   return (
     <div className="w-full max-w-3xl px-2 sm:px-0">
       <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-        <Tab.List className="flex space-x-1 rounded-xl bg-gray-900/20 p-1">
+        <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/10 border border-blue-900/30 p-1">
           <Tab
             className={({ selected }) =>
               classNames(
                 'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
                 'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                 selected
-                  ? 'bg-indigo-700 text-white shadow'
-                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+                  ? 'bg-blue-900/50 text-blue-300 shadow'
+                  : 'text-blue-100 hover:bg-blue-900/[0.12] hover:text-blue-300'
               )
             }
           >
@@ -35,8 +35,8 @@ export default function TabInterface() {
                 'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
                 'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                 selected
-                  ? 'bg-indigo-700 text-white shadow'
-                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+                  ? 'bg-blue-900/50 text-blue-300 shadow'
+                  : 'text-blue-100 hover:bg-blue-900/[0.12] hover:text-blue-300'
               )
             }
           >
@@ -48,8 +48,8 @@ export default function TabInterface() {
                 'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
                 'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                 selected
-                  ? 'bg-indigo-700 text-white shadow'
-                  : 'text-blue-100 hover:bg-indigo-700/[0.12] hover:text-white'
+                  ? 'bg-blue-900/50 text-blue-300 shadow'
+                  : 'text-blue-100 hover:bg-blue-900/[0.12] hover:text-blue-300'
               )
             }
           >
@@ -59,7 +59,7 @@ export default function TabInterface() {
         <Tab.Panels className="mt-2">
           <Tab.Panel
             className={classNames(
-              'rounded-xl bg-gray-900/20 p-3',
+              'rounded-xl bg-gray-900/20 p-3 border border-blue-900/30',
               'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
             )}
           >
@@ -67,7 +67,7 @@ export default function TabInterface() {
           </Tab.Panel>
           <Tab.Panel
             className={classNames(
-              'rounded-xl bg-gray-900/20 p-3',
+              'rounded-xl bg-gray-900/20 p-3 border border-blue-900/30',
               'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
             )}
           >
@@ -75,7 +75,7 @@ export default function TabInterface() {
           </Tab.Panel>
           <Tab.Panel
             className={classNames(
-              'rounded-xl bg-gray-900/20 p-3',
+              'rounded-xl bg-gray-900/20 p-3 border border-blue-900/30',
               'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
             )}
           >
