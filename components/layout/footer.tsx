@@ -4,7 +4,7 @@ const { COMPANY_NAME, SITE_NAME } = process.env;
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
+  const copyrightDate = 2024 + (currentYear > 2024 ? `-${currentYear}` : '');
   const copyrightName = COMPANY_NAME || SITE_NAME || '';
 
   const XIcon = () => (
