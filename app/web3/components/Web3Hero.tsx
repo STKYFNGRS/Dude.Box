@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BadgeCheck, Sparkles, Shield } from 'lucide-react';
+import { Crown, Dumbbell, Gift, Zap } from 'lucide-react';
 
 const Web3Hero = () => {
   return (
@@ -21,7 +21,7 @@ const Web3Hero = () => {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 bg-blue-900/30 border border-blue-500/20 rounded-full px-4 py-1 mb-8"
           >
-            <Sparkles className="w-4 h-4 text-blue-400" />
+            <Crown className="w-4 h-4 text-blue-400" />
             <span className="text-sm font-medium text-blue-300">Founding Members Collection</span>
           </motion.div>
 
@@ -42,8 +42,7 @@ const Web3Hero = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto"
           >
-            Join our founding members and shape the future of mental health support. 
-            Early holders receive lifetime benefits and direct influence on our growth.
+            Become a founding member and shape the future of mental health support. 
           </motion.p>
 
           {/* Stats */}
@@ -54,21 +53,21 @@ const Web3Hero = () => {
             className="grid grid-cols-3 gap-4 mb-8"
           >
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-blue-900/30 hover:border-blue-700/40 transition-colors">
-              <BadgeCheck className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Priority</h3>
-              <p className="text-xs sm:text-sm text-gray-300">First Access to Features</p>
+              <Zap className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Project Hosting</h3>
+              <p className="text-xs sm:text-sm text-gray-300">Web3 Server Space</p>
             </div>
 
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-blue-900/30 hover:border-blue-700/40 transition-colors">
-              <Shield className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+              <Dumbbell className="w-6 h-6 text-blue-400 mx-auto mb-2" />
               <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Lifetime</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Member Benefits</p>
+              <p className="text-xs sm:text-sm text-gray-300">Gym Access</p>
             </div>
 
             <div className="bg-gray-900/50 backdrop-blur-sm p-2 sm:p-4 rounded-lg border border-blue-900/30 hover:border-blue-700/40 transition-colors">
-              <Sparkles className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Member</h3>
-              <p className="text-xs sm:text-sm text-gray-300">Community Voice</p>
+              <Gift className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-blue-400">Rewards</h3>
+              <p className="text-xs sm:text-sm text-gray-300">Permanent Benefits</p>
             </div>
           </motion.div>
         </div>

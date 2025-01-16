@@ -63,12 +63,12 @@ export async function Navbar() {
         </div>
      
         <div className="hidden md:flex items-center gap-6">
-          <ul className="flex gap-6 text-sm items-center">
+          <ul className="flex gap-6 items-center">
             {STATIC_PAGES.map((item) => (
               <li key={item.title}>
                 <Link
                   href={item.path}
-                  className="text-neutral-400 underline-offset-4 hover:text-white transition-colors"
+                  className="text-blue-300 hover:text-blue-200 transition-colors text-base"
                 >
                   {item.title}
                 </Link>

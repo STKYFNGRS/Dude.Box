@@ -63,6 +63,20 @@ export default function Web3Header() {
 
   const displayAddress = ensName || truncateAddress(address || '');
 
+  const connectButtonClasses = `
+    whitespace-nowrap text-white px-4 py-2 rounded-md text-sm font-medium
+    bg-gradient-to-r from-blue-500 to-violet-500
+    hover:from-blue-600 hover:to-violet-600
+    transition-all duration-300
+  `;
+
+  const mobileConnectButtonClasses = `
+    whitespace-nowrap text-white px-2 py-2 rounded-md text-xs font-medium
+    bg-gradient-to-r from-blue-500 to-violet-500
+    hover:from-blue-600 hover:to-violet-600
+    transition-all duration-300
+  `;
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 lg:px-6 border-b border-neutral-800 bg-black/30 backdrop-blur-xl">
       <div className="md:hidden flex w-full justify-between items-center">
@@ -86,7 +100,7 @@ export default function Web3Header() {
           {mounted && (
             <button
               onClick={handleConnect}
-              className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white px-2 py-2 rounded-md text-xs font-medium"
+              className={mobileConnectButtonClasses}
             >
               {isConnected ? displayAddress : 'Connect'}
             </button>
@@ -113,7 +127,7 @@ export default function Web3Header() {
           {mounted && (
             <button
               onClick={handleConnect}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              className={connectButtonClasses}
             >
               {isConnected ? displayAddress : 'Connect Wallet'}
             </button>

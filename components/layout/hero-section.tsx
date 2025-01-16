@@ -18,7 +18,7 @@ const HeroSection = () => {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">
-            Join a community that's revolutionizing mental health support.
+            Join the community that's revolutionizing mental health support.
           </p>
 
           {/* Stats Row */}

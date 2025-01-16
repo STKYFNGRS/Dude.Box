@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Dumbbell, Gift, LucideIcon, Shield, Star, Users, Zap } from 'lucide-react';
+import { Dumbbell, Gift, LucideIcon, Star, Users, Zap } from 'lucide-react';
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -50,7 +50,7 @@ const NFTValueProps = () => {
             viewport={{ once: true }}
             className="text-lg md:text-xl text-gray-300"
           >
-            As a founding member, you'll receive exclusive benefits and help shape the future of men's mental health support.
+            As a founding member, you'll receive exclusive benefits and help shape the future of mental health support.
           </motion.p>
         </div>
 
@@ -59,19 +59,19 @@ const NFTValueProps = () => {
           <FeatureCard
             icon={Star}
             title="Priority Access"
-            description="First access to new features, exclusive content, and special community events before they're available to the public."
+            description="First access to new features and exclusive content before they're available to the public."
             delay={0.3}
           />
           <FeatureCard
             icon={Gift}
             title="Lifetime Rewards"
-            description="Exclusive discounts, free limited-edition swag drops, and permanent benefits on all future products and services."
+            description="Permanent discounts on all future products and services."
             delay={0.4}
           />
           <FeatureCard
             icon={Zap}
-            title="Premium Support"
-            description="Direct access to our support team and priority assistance whenever you need it."
+            title="Web3 Project Hosting"
+            description="Dedicated server space allocation for your Web3 projects."
             delay={0.5}
           />
           <FeatureCard
@@ -81,9 +81,9 @@ const NFTValueProps = () => {
             delay={0.6}
           />
           <FeatureCard
-            icon={Shield}
-            title="Founder Status"
-            description="Verified on-chain founding member status with unique profile badges and recognition."
+            icon={Users}
+            title="Members-Only Events"
+            description="Exclusive access to in-person and virtual community gatherings and networking opportunities."
             delay={0.7}
           />
           <FeatureCard

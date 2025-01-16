@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import Web3Footer from './components/layout/web3-footer';
 import Web3Hero from './components/Web3Hero';
 import NFTValueProps from './components/NFTValueProps';
+import ProjectRoadmap from './components/ProjectRoadmap';
 import LegalDisclaimer from './components/LegalDisclaimer';
 import MintInterface from './components/MintInterface';
 
@@ -27,6 +28,9 @@ export default function Web3Page() {
 
         {/* Value Proposition Section */}
         <NFTValueProps />
+
+        {/* Project Roadmap */}
+        <ProjectRoadmap />
 
         {/* Legal Disclaimer */}
         <LegalDisclaimer />

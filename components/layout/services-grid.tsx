@@ -58,7 +58,7 @@ const ServicesGrid = () => {
           <ul className="space-y-4 text-left text-gray-200">
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-              <span>10,000 sq ft HQ in the heart of San Diego</span>
+              <span>Headquartered in the heart of San Diego</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
