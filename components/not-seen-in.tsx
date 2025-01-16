@@ -54,7 +54,7 @@ const NotSeenIn = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-[10px] text-gray-600/50 mt-8 italic"
+            className="text-[10px] text-gray-600/20 mt-8 italic"
           >
             (Because we just launched and haven&apos;t been featured anywhere... yet)
           </motion.p>
