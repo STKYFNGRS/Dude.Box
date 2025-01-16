@@ -43,7 +43,7 @@ const MintInterface = () => {
         {/* Additional Info */}
         <div className="text-center">
           <p className="text-sm text-gray-400">
-            Gas optimized contract
+            Built on Base
           </p>
         </div>
       </div>
