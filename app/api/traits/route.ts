@@ -4,11 +4,10 @@ import path from 'path';
 
 export async function GET() {
   try {
-    // Use the correct database
     const dbPath = path.resolve('./dude.db');
     const db = new Database(dbPath, { readonly: true });
     
-    // Get all traits
+    // Add COALESCE to ensure color_variants is never null
     const traits = db.prepare(`
       SELECT 
         id,
@@ -17,11 +16,11 @@ export async function GET() {
         display_name,
         rarity_score,
         rarity_tier,
-        color_variants,
+        COALESCE(color_variants, '') as color_variants,
         metadata_key,
         description
       FROM nft_traits 
-      ORDER BY category, rarity_score DESC
+      ORDER BY category, rarity_score DESC;
     `).all();
     
     db.close();

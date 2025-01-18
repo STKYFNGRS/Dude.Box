@@ -6,6 +6,18 @@ import { ImageIcon } from 'lucide-react';
 type CategoryType = 'HEAD' | 'FACE' | 'BODY' | 'CLOTHING' | 'NEURAL_INTERFACE' | 'ENERGY_CORE' | 'AURA';
 type RarityTier = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
 
+interface APITrait {
+  id: number;
+  category: CategoryType;
+  trait_type: string;
+  display_name: string;
+  rarity_score: number;
+  rarity_tier: RarityTier;
+  color_variants: string | null;
+  metadata_key: string;
+  description: string;
+}
+
 interface DBTrait {
   id: number;
   category: CategoryType;
@@ -32,67 +44,48 @@ const TRAIT_CATEGORIES: CategoryType[] = [
 
 const MintInterface = () => {
   const [traits, setTraits] = useState<TraitsByCategory | null>(null);
-  const [selectedTraits, setSelectedTraits] = useState<Record<CategoryType, DBTrait | null>>({
-    HEAD: null,
-    FACE: null,
-    BODY: null,
-    CLOTHING: null,
-    NEURAL_INTERFACE: null,
-    ENERGY_CORE: null,
-    AURA: null
-  });
-  const [selectedColors, setSelectedColors] = useState<Record<CategoryType, string>>({} as Record<CategoryType, string>);
+  const [selectedTraits, setSelectedTraits] = useState<{ [key in CategoryType]?: DBTrait }>({});
+  const [selectedColors, setSelectedColors] = useState<{ [key in CategoryType]?: string }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const getRandomColorVariant = (colorVariants: string): string => {
-    const variants = colorVariants.split(',').map(v => v.trim());
+    const variants = colorVariants.split(',').map(v => v.trim()).filter(Boolean);
     return variants[Math.floor(Math.random() * variants.length)];
   };
 
-  const selectTraitByRarity = (traits: DBTrait[]): DBTrait => {
+  const selectTraitByRarity = (categoryTraits: DBTrait[] | undefined): DBTrait | undefined => {
+    if (!categoryTraits?.length) return undefined;
+    
     const roll = Math.random() * 100;
     let cumulativeProbability = 0;
     
-    for (const trait of traits) {
+    for (const trait of categoryTraits) {
       cumulativeProbability += trait.rarity_score;
       if (roll <= cumulativeProbability) {
         return trait;
       }
     }
     
-    return traits[0];
+    return categoryTraits[0];
   };
 
   const generateNewCombination = () => {
-    console.log('Generating new combination');
-    console.log('Current traits:', traits);
+    if (!traits) return;
 
-    if (!traits) {
-      console.log('No traits data available');
-      return;
-    }
-
-    const newTraits: Record<CategoryType, DBTrait | null> = {} as Record<CategoryType, DBTrait | null>;
-    const newColors: Record<CategoryType, string> = {} as Record<CategoryType, string>;
+    const newTraits: { [key in CategoryType]?: DBTrait } = {};
+    const newColors: { [key in CategoryType]?: string } = {};
 
     TRAIT_CATEGORIES.forEach(category => {
       const categoryTraits = traits[category];
-      console.log(`Processing category ${category}:`, categoryTraits);
-
-      if (categoryTraits && categoryTraits.length > 0) {
-        const selectedTrait = selectTraitByRarity(categoryTraits);
-        console.log(`Selected trait for ${category}:`, selectedTrait);
+      const selectedTrait = selectTraitByRarity(categoryTraits);
+      
+      if (selectedTrait) {
         newTraits[category] = selectedTrait;
         newColors[category] = getRandomColorVariant(selectedTrait.color_variants);
-      } else {
-        console.log(`No traits found for category ${category}`);
-        newTraits[category] = null;
-        newColors[category] = '';
       }
     });
 
-    console.log('New traits selected:', newTraits);
     setSelectedTraits(newTraits);
     setSelectedColors(newColors);
   };
@@ -104,26 +97,33 @@ const MintInterface = () => {
         const response = await fetch('/api/traits');
         if (!response.ok) throw new Error('Failed to fetch traits');
         
-        const data: DBTrait[] = await response.json();
-        console.log('Fetched trait data:', data);
+        const data = await response.json();
         
-        // Initialize grouped traits with empty arrays
-        const grouped: TraitsByCategory = TRAIT_CATEGORIES.reduce((acc, category) => {
+        if (!Array.isArray(data)) {
+          throw new Error('Expected array of traits from API');
+        }
+
+        // Convert APITrait to DBTrait with guaranteed string for color_variants
+        const validatedData: DBTrait[] = data.map((trait: APITrait) => ({
+          ...trait,
+          color_variants: trait.color_variants || ''
+        }));
+
+        // Initialize grouped traits
+        const grouped = TRAIT_CATEGORIES.reduce<TraitsByCategory>((acc, category) => {
           acc[category] = [];
           return acc;
         }, {} as TraitsByCategory);
 
         // Group traits by category
-        data.forEach(trait => {
-          if (trait.category in grouped) {
+        validatedData.forEach((trait) => {
+          if (TRAIT_CATEGORIES.includes(trait.category)) {
             grouped[trait.category].push(trait);
           }
         });
 
-        console.log('Grouped traits:', grouped);
         setTraits(grouped);
         
-        // Generate initial combination after a short delay
         setTimeout(() => {
           setIsLoading(false);
           generateNewCombination();
@@ -157,7 +157,10 @@ const MintInterface = () => {
         <div className="bg-red-900/50 rounded-2xl border border-red-900/30 backdrop-blur-sm p-6">
           <h3 className="text-xl font-semibold text-red-300 mb-2">Error Loading Traits</h3>
           <p className="text-red-200">{error}</p>
-          <button onClick={() => window.location.reload()} className="mt-4 bg-red-900/50 hover:bg-red-900/70 text-red-300 font-semibold py-2 px-4 rounded-xl border border-red-900/30">
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 bg-red-900/50 hover:bg-red-900/70 text-red-300 font-semibold py-2 px-4 rounded-xl border border-red-900/30"
+          >
             Retry
           </button>
         </div>
@@ -208,10 +211,7 @@ const MintInterface = () => {
 
       <div className="space-y-4">
         <button 
-          onClick={() => {
-            console.log('Generate button clicked');
-            generateNewCombination();
-          }}
+          onClick={generateNewCombination}
           className="w-full bg-blue-900/50 hover:bg-blue-900/70 text-blue-300 font-semibold py-4 rounded-xl border border-blue-900/30 backdrop-blur-sm transition-all duration-200"
         >
           Generate New Combination
