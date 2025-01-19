@@ -82,7 +82,7 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({
 }) => {
   const statusColors: Record<Status, string> = {
     completed: 'bg-green-500',
-    current: 'bg-blue-500',
+    current: 'bg-green-500',
     upcoming: 'bg-gray-300'
   };
 
