@@ -1,4 +1,4 @@
-import NotSeenIn from 'components/not-seen-in';
+
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Carousel } from 'components/carousel';
@@ -31,7 +31,7 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="relative z-10">
         <HeroSection />
-        <NotSeenIn />
+        
         <div className="space-y-8 mt-8">
           <div className="w-full">
             <ThreeItemGrid />

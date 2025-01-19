@@ -49,9 +49,10 @@ const MintInterface = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getRandomColorVariant = (colorVariants: string): string => {
+  const getRandomColorVariant = (colorVariants: string | undefined): string => {
+    if (!colorVariants) return '';
     const variants = colorVariants.split(',').map(v => v.trim()).filter(Boolean);
-    return variants[Math.floor(Math.random() * variants.length)];
+    return variants[Math.floor(Math.random() * variants.length)] || '';
   };
 
   const selectTraitByRarity = (categoryTraits: DBTrait[] | undefined): DBTrait | undefined => {
