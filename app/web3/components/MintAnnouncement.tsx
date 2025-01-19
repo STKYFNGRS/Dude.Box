@@ -97,7 +97,7 @@ export default function MintAnnouncement() {
             >
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 text-sm">
                 <span className="w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse" />
-                Launching Soon
+                Coming May 1 2025
               </span>
             </motion.div>
           </div>
