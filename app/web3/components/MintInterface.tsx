@@ -173,7 +173,7 @@ const MintInterface = () => {
     <div className="w-full max-w-xl mx-auto">
       <div className="bg-gray-900/50 rounded-2xl border border-blue-900/30 backdrop-blur-sm p-6 mb-6">
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-blue-300">Trait Preview</h3>
+          <h3 className="text-xl font-semibold text-blue-300 text-center">Trait Preview</h3>
           <div className="space-y-3">
             {TRAIT_CATEGORIES.map((category) => {
               const trait = selectedTraits[category];

@@ -10,12 +10,17 @@ import ProjectRoadmap from './components/ProjectRoadmap';
 import LegalDisclaimer from './components/LegalDisclaimer';
 import MintInterface from './components/MintInterface';
 
+import MintAnnouncement from './components/MintAnnouncement';
+
 export default function Web3Page() {
   return (
     <>
       <main className="flex-grow overflow-y-auto">
         {/* Hero Section */}
         <Web3Hero />
+
+        {/* Mint Announcement */}
+        <MintAnnouncement />
 
         {/* Mint Interface Section */}
         <div className="w-full py-16">
