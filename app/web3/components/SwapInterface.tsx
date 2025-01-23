@@ -147,7 +147,7 @@ const SwapInterface = () => {
 
         <div className="text-center">
           <p className="text-sm text-gray-400">
-            Built on Base • 0% Trading Fees
+            Built on Base • No Trading Fees • No gas fees
           </p>
         </div>
 
