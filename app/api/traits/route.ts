@@ -4,10 +4,14 @@ import path from 'path';
 
 export async function GET() {
   try {
-    const dbPath = path.resolve('./dude.db');
+    console.log('API route hit');
+    console.log('Current working directory:', process.cwd());
+    console.log('Database path:', process.cwd(), 'dude.db');
+    const dbPath = path.resolve(process.cwd(), 'dude.db');
     const db = new Database(dbPath, { readonly: true });
     
     // Add COALESCE to ensure color_variants is never null
+    console.log('Database connected successfully');
     const traits = db.prepare(`
       SELECT 
         id,
@@ -22,6 +26,7 @@ export async function GET() {
       FROM nft_traits 
       ORDER BY category, rarity_score DESC;
     `).all();
+    console.log('Query executed, found traits:', traits?.length || 0);
     
     db.close();
 

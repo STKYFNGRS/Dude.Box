@@ -46,7 +46,7 @@ const HeroSection = () => {
             </Link>
             <Link href="/web3">
               <button className="border-2 border-indigo-700 text-blue-300 hover:text-blue-200 hover:bg-indigo-900/20 px-6 py-2 rounded-lg font-semibold transition-all duration-300">
-                Mint
+                Web3
               </button>
             </Link>
           </div>

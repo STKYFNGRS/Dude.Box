@@ -9,7 +9,7 @@ import MobileMenu from './mobile-menu';
 const { SITE_NAME } = process.env;
 
 const STATIC_PAGES = [
-  { title: 'Mint', path: '/web3' }
+  { title: 'Web3', path: '/web3' }
 ];
 
 export async function Navbar() {

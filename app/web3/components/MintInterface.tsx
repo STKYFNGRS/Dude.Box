@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { ImageIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-type CategoryType = 'HEAD' | 'FACE' | 'BODY' | 'CLOTHING' | 'NEURAL_INTERFACE' | 'ENERGY_CORE' | 'AURA';
+type CategoryType = 'BODY' | 'POSE' | 'EXPRESSION' | 'GEAR' | 'EQUIPMENT' | 'BACKGROUND' | 'AURA';
+type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
 type RarityTier = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
 
 interface APITrait {
@@ -33,12 +34,12 @@ interface DBTrait {
 type TraitsByCategory = Record<CategoryType, DBTrait[]>;
 
 const TRAIT_CATEGORIES: CategoryType[] = [
-  'HEAD',
-  'FACE',
   'BODY',
-  'CLOTHING',
-  'NEURAL_INTERFACE',
-  'ENERGY_CORE',
+  'POSE',
+  'EXPRESSION',
+  'GEAR',
+  'EQUIPMENT',
+  'BACKGROUND',
   'AURA'
 ];
 

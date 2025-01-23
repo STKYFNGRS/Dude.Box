@@ -67,7 +67,17 @@ export default function MintAnnouncement() {
               animate="animate"
             >
               <div className="p-4 rounded-full bg-blue-500/10">
-                <Rocket className="w-8 h-8 text-blue-400" />
+                <div className="relative">
+                  <svg width="0" height="0">
+                    <defs>
+                      <linearGradient id="rocketGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="100%" stopColor="#ffffff" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <Rocket className="w-8 h-8" style={{ stroke: 'url(#rocketGradient)' }} />
+                </div>
               </div>
             </motion.div>
 
@@ -97,7 +107,7 @@ export default function MintAnnouncement() {
             >
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 text-sm">
                 <span className="w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse" />
-                Coming May 1 2025
+                Coming Q4 2025
               </span>
             </motion.div>
           </div>

@@ -87,7 +87,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                     onClick={closeMobileMenu}
                     className="flex h-12 items-center justify-center rounded-md border border-neutral-200 bg-white text-black transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-black dark:text-white dark:hover:bg-neutral-900"
                   >
-                    <span className="text-xl">Mint</span>
+                    <span className="text-xl">Web3</span>
                   </Link>
                 </div>
 
