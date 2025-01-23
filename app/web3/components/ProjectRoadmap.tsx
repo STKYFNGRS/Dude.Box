@@ -23,6 +23,7 @@ const roadmapData: RoadmapPhase[] = [
     title: 'Initial NFT Mint & Infrastructure',
     details: [
       'Smart contract deployment and testing',
+      'Launch of token on Base',
       'Launch of 20,000 unique Dude Box NFTs',
       'Team expansion'
     ],
