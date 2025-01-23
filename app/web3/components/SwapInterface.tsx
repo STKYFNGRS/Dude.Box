@@ -21,14 +21,12 @@ const SwapInterface = () => {
   // Get ETH balance
   const { data: ethBalance } = useBalance({
     address,
-    watch: true,
   });
 
   // Get DUDE token balance
   const { data: dudeBalance } = useBalance({
     address,
     token: '0x...', // DUDE token address
-    watch: true,
   });
 
   const handleSwap = () => {

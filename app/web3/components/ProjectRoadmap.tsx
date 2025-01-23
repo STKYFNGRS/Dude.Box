@@ -20,7 +20,7 @@ interface RoadmapCardProps extends RoadmapPhase {
 const roadmapData: RoadmapPhase[] = [
   {
     phase: 'Phase 1: Launch',
-    title: 'Initial NFT Mint & Infrastructure',
+    title: 'Infrastructure Development',
     details: [
       'Smart contract deployment and testing',
       'Launch of token on Base',
