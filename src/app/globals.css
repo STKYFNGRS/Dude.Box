@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #EDEDED;
+  --background: #111111;
+  --accent-color: #5d4fff;
+  --card-bg: #1A1A1A;
+  --card-hover: #222222;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-sans, system-ui, sans-serif);
+}
+
+@layer base {
+  :root {
+    --font-geist-sans: "Geist Sans", system-ui, sans-serif;
+    --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+  }
+}
