@@ -96,7 +96,7 @@ export default function Home() {
         <section id="mission" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Our Mission</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            This is more than a brand—it's a movement. We're veteran-owned, story-driven, and obsessed with making tech fun, accessible, and a little bit rebellious. Our ultimate goal: <span className="text-accent">fund a real-world facility</span> with free mental health support, STEM workshops for kids, and a robot-run gym. For now? We're building a cult following, one bot at a time.
+            Engineer the future with attitude. We fuse robotics, AI, and unapologetic creativity to build the wildest tech on the planet—collectibles, gadgets, and bots with a soul. Whether a lamp with attitude, robot with a story, or a defense bot for the world of tomorrow, Dude is where underground ideas come to life. 
           </p>
         </section>
 
@@ -131,7 +131,7 @@ export default function Home() {
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
             Want to collaborate, join the team, or just say hi? Drop us a line. We love meeting fellow makers, dreamers, and survivors.
           </p>
-          <a href="mailto:hello@dude.box" className="px-8 py-4 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in">Email Us</a>
+          <a href="mailto:dude@dude.box" className="px-8 py-4 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in">Email Us</a>
         </section>
       </main>
 
