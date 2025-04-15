@@ -16,7 +16,6 @@ export default function Home() {
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
-            <span className="text-2xl font-extrabold tracking-widest text-accent drop-shadow-md select-none">D.U.D.E. Box</span>
           </div>
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="#about" className="hover:text-accent transition-colors">About</a>
@@ -72,7 +71,7 @@ export default function Home() {
         <section id="about" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">What is D.U.D.E. Box?</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            We a post-apocalyptic robot foundry, creative lab, and high-tech misfit collective. We design, print, and engineer quirky, collectible robots, smart lamps, and interactive tech, right from our underground lair. Our mission: <span className="text-accent">bring joy, weirdness, and STEM inspiration to the world</span> — one glitched bot at a time.
+            We are a post-apocalyptic robot foundry, creative lab, and high-tech misfit collective. We design, print, and engineer quirky, collectible robots, smart lamps, and interactive tech, right from our underground lair. Our mission: <span className="text-accent">bring joy, weirdness, and STEM inspiration to the world</span> — one glitched bot at a time.
           </p>
           <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
@@ -83,12 +82,12 @@ export default function Home() {
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">🧑‍🔬</span>
               <span className="font-bold text-lg mb-1 text-accent">Maker Culture</span>
-              <span className="text-[#b0b0b0] text-center">3D printed, hand-finished, and open for hacking. DIY kits, live builds, and more.</span>
+              <span className="text-[#b0b0b0] text-center">3D printed, hand-finished, and open for hacking. DIY kits, live builds  and more.</span>
             </div>
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">☢️</span>
               <span className="font-bold text-lg mb-1 text-accent">Nuclear Aesthetic</span>
-              <span className="text-[#b0b0b0] text-center">Glowing, glitchy, and a little dangerous. Our bots survived the end of the world—so can you.</span>
+              <span className="text-[#b0b0b0] text-center">Glowing, glitchy, and a little dangerous. Our bots will survive the end of the world.</span>
             </div>
           </div>
         </section>
@@ -97,7 +96,7 @@ export default function Home() {
         <section id="mission" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Our Mission</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            D.U.D.E. Box is more than a brand—it's a movement. We're veteran-owned, story-driven, and obsessed with making tech fun, accessible, and a little bit rebellious. Our ultimate goal: <span className="text-accent">fund a real-world facility</span> with free mental health support, STEM workshops for kids, and a robot-run gym. For now? We're building a cult following, one bot at a time.
+            This is more than a brand—it's a movement. We're veteran-owned, story-driven, and obsessed with making tech fun, accessible, and a little bit rebellious. Our ultimate goal: <span className="text-accent">fund a real-world facility</span> with free mental health support, STEM workshops for kids, and a robot-run gym. For now? We're building a cult following, one bot at a time.
           </p>
         </section>
 
@@ -105,7 +104,7 @@ export default function Home() {
         <section id="tech" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Tech & Tinkering</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            We use 3D printers, Orange Pi, and a dash of nuclear-powered imagination. Our bots are powered by open hardware, AI, and a love for all things weird. Want to see how it's made? <span className="text-accent">Watch our live 3D printing streams</span> (coming soon) or chat with our AI bot to design your own collectible.
+            We use 3D printers, chips, circuitry, sensors and imagination. Our bots are powered by open hardware, AI, and a love for all things weird. Want to see how it's made? <span className="text-accent">Watch our live 3D printing streams</span> (coming soon) or chat with our AI bot to design your own collectible.
           </p>
           <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
@@ -116,7 +115,7 @@ export default function Home() {
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">🤝</span>
               <span className="font-bold text-lg mb-1 text-accent">Community Builds</span>
-              <span className="text-[#b0b0b0] text-center">Join our Discord, vote on new designs, and help shape the next generation of D.U.D.E. bots.</span>
+              <span className="text-[#b0b0b0] text-center">Join our Discord, vote on new designs, and help shape the next generation of bots.</span>
             </div>
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">🧠</span>
