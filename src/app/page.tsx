@@ -42,10 +42,10 @@ export default function Home() {
               Welcome to
             </h1>
             <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-center text-white animate-glitch-subtle">
-              Digital Underground
+              Dude.Box
             </h2>
             <h3 className="text-3xl md:text-4xl font-bold text-center text-accent animate-fade-in-slow">
-              Design & Engineering
+              Robot Foundry, Smart Collectibles & DIY Kits 
             </h3>
           </div>
           <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
@@ -88,7 +88,7 @@ export default function Home() {
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">☢️</span>
               <span className="font-bold text-lg mb-1 text-accent">Nuclear Aesthetic</span>
-              <span className="text-[#b0b0b0] text-center">Glowing, glitchy, and a little dangerous. Our bots will survive the end of the world.</span>
+              <span className="text-[#b0b0b0] text-center">Glowing, glitchy, and slightly unhinged. The aesthetics of tomorrow as imagined yesterday, built today.</span>
             </div>
           </div>
         </section>
@@ -97,7 +97,7 @@ export default function Home() {
         <section id="mission" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Our Mission</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            We fuse robotics, AI, and creativity to build the funnest tech on the planet from collectibles to gadgets and bots with a soul. Whether a lamp with attitude, robot with a story, Dude is where ideas come to life. 
+            We're fusion chefs cooking up the perfect storm of robotics, AI, and deranged creativity to build the most entertaining tech this side of the apocalypse. Our toys aren't just objects—they're characters with backstories, attitudes, and the occasional existential crisis. From sassy desk lamps to robots that judge your music taste, Dude is where mechanical personalities are born.
           </p>
         </section>
 
@@ -105,7 +105,7 @@ export default function Home() {
         <section id="tech" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Tech & Tinkering</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            We use 3D printers, chips, circuitry, sensors and imagination. Our bots are powered by open hardware, AI, and a love for all things weird. Want to see how it's made? <span className="text-accent">Watch our live 3D printing streams</span> (coming soon) or chat with our AI bot to design your own collectible.
+            Our workshop looks like a mad scientist's lab had a one-night stand with Radio Shack circa 1982. We transform 3D filament, circuitry, and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our pathological need to make inanimate objects talk back. <span className="text-accent">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or collaborate with our AI to birth your own mechanical offspring.
           </p>
           <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">

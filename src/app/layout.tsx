@@ -13,8 +13,8 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "Dude Box | Post-Apocalyptic Robotic Lamps, Smart Collectibles & DIY Kits",
-  description: "Build, collect, and connect with Dude — home of robotic smart lamps, DIY kits, and tech-powered collectibles. Veteran-owned. Story-driven. Maker-built.",
+  title: "Dude Box | Robot Foundry, Smart Collectibles & DIY Kits",
+  description: "Build, collect, and connect with Dude — home of handmade robotic smart lamps, DIY kits, and tech-powered collectibles. Disabled Veteran-owned. Story-driven. Maker-built.",
 };
 
 export default function RootLayout({
