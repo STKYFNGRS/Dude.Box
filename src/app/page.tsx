@@ -69,10 +69,11 @@ export default function Home() {
 
         {/* About Section */}
         <section id="about" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">What is D.U.D.E. Box?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">What is Dude?</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
             We are a post-apocalyptic robot foundry, creative lab, and high-tech misfit collective. We design, print, and engineer quirky, collectible robots, smart lamps, and interactive tech, right from our underground lair. Our mission: <span className="text-accent">bring joy, weirdness, and STEM inspiration to the world</span> — one glitched bot at a time.
           </p>
+
           <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
             <div className="bg-[#181818] border border-accent/40 rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center">
               <span className="text-4xl mb-2">🤖</span>
@@ -96,7 +97,7 @@ export default function Home() {
         <section id="mission" className="relative z-10 flex flex-col items-center justify-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-fade-in">Our Mission</h2>
           <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-            Engineer the future with attitude. We fuse robotics, AI, and unapologetic creativity to build the wildest tech on the planet—collectibles, gadgets, and bots with a soul. Whether a lamp with attitude, robot with a story, or a defense bot for the world of tomorrow, Dude is where underground ideas come to life. 
+            We fuse robotics, AI, and creativity to build the funnest tech on the planet from collectibles to gadgets and bots with a soul. Whether a lamp with attitude, robot with a story, Dude is where ideas come to life. 
           </p>
         </section>
 
@@ -141,10 +142,9 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-8 w-8 favicon-spin" />
             <span className="font-bold text-white">Dude Dot Box LLC</span>
-            <span className="text-xs ml-2 px-2 py-1 bg-gray-800 rounded text-yellow-400 border border-yellow-700">Disabled Veteran Owned</span>
           </div>
           <div className="text-xs text-center md:text-right">
-            &copy; {new Date().getFullYear()} D.U.D.E. Box. All rights reserved. <span className="text-accent">|</span> Built in the wasteland.
+            &copy; {new Date().getFullYear()} Dude Dot Box LLC. All rights reserved. <span className="text-accent">|</span> Built in the wasteland.
           </div>
         </div>
       </footer>
