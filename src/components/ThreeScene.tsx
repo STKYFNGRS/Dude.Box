@@ -1,484 +1,709 @@
 'use client';
 
 /**
- * ThreeScene - D.U.D.E. Bot Showcase
- * An interactive 3D scene featuring the Dude Box robot characters
+ * ThreeScene - Futuristic Data Visualization
+ * Modern network visualization with vibrant colors and dynamic effects
  */
 
 import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { RoundedBox, Float, Sparkles, GradientTexture, Environment } from '@react-three/drei'
+import { Canvas, useFrame, extend } from '@react-three/fiber'
+import { 
+  Float, 
+  Sparkles, 
+  PerformanceMonitor,
+  OrbitControls,
+  Line,
+  useTexture,
+  Effects,
+  MeshDistortMaterial,
+  GradientTexture,
+  MeshTransmissionMaterial,
+  useFBO
+} from '@react-three/drei'
 import * as THREE from 'three'
+import { UnrealBloomPass } from 'three-stdlib'
 
-// Create a simple environment map for reflections
-function createSimpleEnvMap() {
-  const size = 128
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext('2d')
-  
-  if (!ctx) return null
-  
-  // Create a more dynamic gradient background for reflection
-  const gradient = ctx.createLinearGradient(0, 0, 0, size)
-  gradient.addColorStop(0, '#050000') // Very dark sky
-  gradient.addColorStop(0.45, '#150500')
-  gradient.addColorStop(0.5, '#ff5500') // Sharp, bright horizon
-  gradient.addColorStop(0.55, '#331100') // Darker ground
-  gradient.addColorStop(1, '#110500')
-  
-  ctx.fillStyle = gradient
-  ctx.fillRect(0, 0, size, size)
-  
-  // Add more varied shapes/colors for reflections
-  ctx.fillStyle = '#FFAA55'
-  ctx.beginPath();
-  ctx.ellipse(size * 0.3, size * 0.3, size * 0.05, size * 0.15, Math.PI / 4, 0, Math.PI * 2); // Skewed ellipse
-  ctx.fill();
+// Extend Three.js with shader passes
+extend({ UnrealBloomPass })
 
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(size * 0.7, size * 0.6, size * 0.2, size * 0.02); // Sharper horizontal light streak
-
-  ctx.fillStyle = '#FF5500';
-  ctx.beginPath();
-  ctx.moveTo(size * 0.1, size * 0.8);
-  ctx.lineTo(size * 0.35, size * 0.75); // Different shape
-  ctx.lineTo(size * 0.15, size * 0.95);
-  ctx.closePath();
-  ctx.fill();
-
-  // Add a couple more small, bright spots
-  ctx.fillStyle = '#FFFF88';
-  ctx.fillRect(size * 0.5, size * 0.2, size * 0.03, size * 0.03);
-  ctx.fillRect(size * 0.85, size * 0.85, size * 0.04, size * 0.04);
-
-  const texture = new THREE.CanvasTexture(canvas)
-  texture.mapping = THREE.EquirectangularReflectionMapping
-  
-  return texture
+// Define interfaces for our component props
+interface GlowingNodeProps {
+  position: [number, number, number];
+  radius: number;
+  color: string;
+  intensity?: number;
+  speed?: number;
 }
 
-// Face component that includes all TV screen elements and effects
-function DudeBoxFace() {
-  // Refs and state for animation - properly typed for THREE.js objects
-  const groupRef = useRef<THREE.Group>(null)
-  const leftEyeRef = useRef<THREE.Group>(null)
-  const rightEyeRef = useRef<THREE.Group>(null)
-  const mouthRef = useRef<THREE.Group>(null)
-  const [glowIntensity, setGlowIntensity] = useState(0.5)
-  const [flicker, setFlicker] = useState(1.0)
-  
-  // Common shader setup
-  const vertexShader = `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `
-  
-  // TV static shader (for X eye)
-  const staticShader = useMemo(() => ({
-    uniforms: { time: { value: 0 } },
-    vertexShader,
-    fragmentShader: `
-      uniform float time;
-      varying vec2 vUv;
-      
-      float random(vec2 st) {
-        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-      }
-      
-      void main() {
-        // Dense TV static
-        float noise = random(vUv * 300.0 + time * 2.0);
-        float staticMask = step(0.6, noise);
-        
-        // Occasional glitches
-        if (random(vec2(time * 0.5, 0.0)) < 0.05) {
-          staticMask = random(vUv * 200.0 + time * 5.0);
-        }
-        
-        gl_FragColor = vec4(vec3(staticMask), 1.0);
-      }
-    `
-  }), [])
-  
-  // 404 error message shader (green eye)
-  const errorShader = useMemo(() => ({
-    uniforms: { time: { value: 0 } },
-    vertexShader,
-    fragmentShader: `
-      uniform float time;
-      varying vec2 vUv;
-      
-      float random(vec2 st) {
-        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453);
-      }
-      
-      // Binary pattern function
-      float binaryPattern(vec2 st, float scale, float t) {
-        vec2 grid = fract(st * scale);
-        float cell = random(floor(st * scale) + floor(t * 2.0));
-        return step(0.6, cell);
-      }
-      
-      void main() {
-        vec2 p = vUv;
-        // Dark green background
-        vec3 color = vec3(0.0, 0.15, 0.05);
-        
-        // Draw "404" text and binary patterns
-        if ((p.y > 0.7 && p.y < 0.9 && p.x > 0.1 && p.x < 0.9 && 
-            ((p.x > 0.1 && p.x < 0.3) || // 4
-             (p.x > 0.4 && p.x < 0.6) || // 0
-             (p.x > 0.7 && p.x < 0.9)))) { // 4
-          color = vec3(0.0, 0.8, 0.2) * (0.7 + 0.3 * sin(time * 3.0));
-        }
-        
-        // ERROR text in middle
-        if (p.y > 0.45 && p.y < 0.55 && p.x > 0.2 && p.x < 0.8) {
-          color = vec3(0.0, 0.9, 0.25) * (0.8 + 0.2 * sin(time * 2.0 + p.x * 5.0));
-        }
-        
-        // Binary in bottom
-        if (p.y < 0.4) {
-          float binary = binaryPattern(p, 20.0, time * 0.2);
-          if (binary > 0.5) color = vec3(0.0, 0.7, 0.2);
-        }
-        
-        // Occasional red glitch
-        if (random(vec2(floor(time * 2.0), 23.45)) < 0.03) {
-          color = vec3(0.9, 0.2, 0.1);
-        }
-        
-        gl_FragColor = vec4(color, 1.0);
-      }
-    `
-  }), [])
+interface DataConnectionProps {
+  startPoint: [number, number, number];
+  endPoint: [number, number, number];
+  color: string;
+  thickness?: number;
+  speed?: number;
+  pulseIntensity?: number;
+}
 
-  // Wavelength visualization shader (mouth)
-  const wavelengthShader = useMemo(() => ({
-    uniforms: { time: { value: 0 } },
-    vertexShader,
-    fragmentShader: `
-      uniform float time;
-      varying vec2 vUv;
-      
-      float random(vec2 st) {
-        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-      }
-      
-      // Create wave pattern
-      float wave(float x, float freq, float speed, float amp, float phase) {
-        // Add some noise to amplitude and frequency
-        float noise = random(vec2(x * 0.1, time * 0.1));
-        float noisyAmp = amp * (0.8 + noise * 0.4);
-        float noisyFreq = freq * (0.9 + noise * 0.2);
-        return sin(x * noisyFreq + time * speed + phase) * noisyAmp;
-      }
-      
-      void main() {
-        vec2 uv = vUv;
-        float y = uv.y * 2.0 - 1.0;
-        
-        // Multiple overlapping waves - Increased Amplitudes
-        float wave1 = wave(uv.x, 8.0, 2.0, 0.6, 0.0); // Amp 0.4 -> 0.6
-        float wave2 = wave(uv.x, 12.0, -1.5, 0.25, 1.5); // Amp 0.15 -> 0.25
-        float wave3 = wave(uv.x, 4.0, 3.0, 0.35, 2.0); // Amp 0.25 -> 0.35
-        float wave4 = wave(uv.x, 20.0, 1.0, 0.1, 3.0); // Added a faster, smaller wave
-        
-        float combinedWave = wave1 + wave2 + wave3 + wave4;
-        float dist = abs(y - combinedWave * 0.5); // Scale combined effect slightly more
-        float mask = smoothstep(0.12, 0.0, dist); // Make the line thicker
-        
-        // Pulse effect
-        float pulse = 0.7 + 0.3 * sin(time * 3.0);
-        
-        // Mix colors from dark red to bright orange
-        vec3 color = mix(vec3(0.7, 0.0, 0.0), vec3(1.0, 0.2, 0.0), mask * pulse);
-        
-        gl_FragColor = vec4(color, 1.0);
-      }
-    `
-  }), [])
+interface DataPacketProps {
+  points: [number, number, number][];
+  color: string;
+  speed?: number;
+}
+
+interface ConnectionData {
+  startPoint: [number, number, number];
+  endPoint: [number, number, number];
+  color: string;
+  thickness: number;
+  speed: number;
+  pulseIntensity: number;
+}
+
+// Glowing Node Component
+function GlowingNode({ position, radius, color, intensity = 1.0, speed = 1.0 }: GlowingNodeProps) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const haloRef = useRef<THREE.Mesh>(null);
+  const lightRef = useRef<THREE.PointLight>(null);
   
-  // Materials instances
-  const materials = useMemo(() => ({
-    static: new THREE.ShaderMaterial(staticShader),
-    error: new THREE.ShaderMaterial(errorShader),
-    waveform: new THREE.ShaderMaterial(wavelengthShader),
-    feature: new THREE.MeshStandardMaterial({
-      color: '#000000',
-      roughness: 0.3,
-      metalness: 0.7,
-      emissive: new THREE.Color('#330000').multiplyScalar(flicker),
-      emissiveIntensity: glowIntensity * 2.5
-    })
-  }), [staticShader, errorShader, wavelengthShader, flicker, glowIntensity])
-  
-  // Animation loop
+  // Animation
   useFrame((state) => {
-    if (!groupRef.current) return
-    const t = state.clock.getElapsedTime()
+    if (!meshRef.current || !haloRef.current || !lightRef.current) return;
     
-    // Update shader times
-    Object.values(materials).forEach(material => {
-      if ('uniforms' in material && material.uniforms && 'time' in material.uniforms) {
-        material.uniforms.time.value = t
-      }
-    })
+    const t = state.clock.getElapsedTime() * speed;
     
-    // Random flickering effect - more pronounced
-    if (Math.random() > 0.95) {
-      const newFlicker = Math.random() * 0.7 + 0.3
-      setFlicker(newFlicker)
-      
-      if (materials.feature.emissiveIntensity !== undefined) {
-        materials.feature.emissiveIntensity = glowIntensity * 2.5 * newFlicker
-        materials.feature.emissive.setRGB(0.05 * newFlicker, 0, 0)
-      }
+    // Pulse effect
+    const pulse = Math.sin(t) * 0.1 + 0.9;
+    haloRef.current.scale.set(pulse, pulse, pulse);
+    
+    if (meshRef.current.material instanceof THREE.MeshStandardMaterial) {
+      meshRef.current.material.emissiveIntensity = 0.7 + Math.sin(t * 1.5) * 0.3;
     }
     
-    // Glow pulsation
-    setGlowIntensity((Math.sin(t * 2) * 0.2 + 0.8) * flicker)
-    
-    // Eye sizing - now with proper null checks and random jitters
-    if (leftEyeRef.current) {
-      // Add some random jitter
-      const jitterX = Math.random() > 0.98 ? (Math.random() - 0.5) * 0.1 : 0
-      const jitterY = Math.random() > 0.98 ? (Math.random() - 0.5) * 0.1 : 0
-      leftEyeRef.current.scale.set(0.85 + jitterX, 0.85 + jitterY, 1)
-    }
-    
-    if (rightEyeRef.current) {
-      // Different jitter pattern
-      const jitterX = Math.random() > 0.97 ? (Math.random() - 0.5) * 0.15 : 0
-      const jitterY = Math.random() > 0.97 ? (Math.random() - 0.5) * 0.15 : 0
-      rightEyeRef.current.scale.set(0.75 + jitterX, 0.75 + jitterY, 1)
-    }
-    
-    // Mouth subtle animation with occasional glitches
-    if (mouthRef.current) {
-      // Base animation
-      let scaleX = 1.0 + Math.sin(t * 0.5) * 0.02
-      let scaleY = 1.0 + Math.cos(t * 0.7) * 0.02
-      
-      // Occasional glitch
-      if (Math.random() > 0.99) {
-        scaleX *= Math.random() * 0.3 + 0.85
-        scaleY *= Math.random() * 0.3 + 0.85
-      }
-      
-      mouthRef.current.scale.x = scaleX
-      mouthRef.current.scale.y = scaleY
-    }
-  })
+    // Subtle light intensity variation
+    lightRef.current.intensity = intensity * (0.8 + Math.sin(t * 0.5) * 0.2);
+  });
   
   return (
-    <group ref={groupRef}>
-      {/* Left eye - 404 error screen */}
-      <group position={[-0.4, 0.3, 1.02]} ref={leftEyeRef}>
-        <mesh>
-          <planeGeometry args={[0.8, 0.8]} />
-          <primitive object={materials.error} attach="material" />
-        </mesh>
-        
-        {/* Green glow */}
-        <pointLight position={[0, 0, 0.1]} color="#00ff77" 
-                  intensity={1.8 * flicker} distance={1.2} />
-        
-        {/* Plus shape */}
-        <mesh>
-          <boxGeometry args={[0.65, 0.12, 0.01]} />
-          <primitive object={materials.feature} attach="material" />
-        </mesh>
-        
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <boxGeometry args={[0.65, 0.12, 0.01]} />
-          <primitive object={materials.feature} attach="material" />
-        </mesh>
-      </group>
+    <group position={position}>
+      {/* Core sphere */}
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[radius, 32, 32]} />
+        <meshStandardMaterial 
+          color={color} 
+          emissive={color} 
+          emissiveIntensity={1} 
+          metalness={0.2}
+          roughness={0.3} 
+        />
+      </mesh>
       
-      {/* Right eye - Static with X */}
-      <group position={[0.4, 0.3, 1.02]} ref={rightEyeRef}>
-        <mesh>
-          <circleGeometry args={[0.35, 32]} />
-          <primitive object={materials.static} attach="material" />
-        </mesh>
-        
-        {/* Reduced static around the X */}
-        <mesh position={[0, 0, -0.01]}>
-          <circleGeometry args={[0.42, 32]} />
-          <primitive object={materials.static} attach="material" transparent opacity={0.4} />
-        </mesh>
-        
-        {/* Red glow */}
-        <pointLight position={[0, 0, 0.1]} color="#ff0022" 
-                  intensity={2.0 * flicker} distance={1.2} />
-        
-        {/* X shape */}
-        <mesh rotation={[0, 0, Math.PI / 4]}>
-          <boxGeometry args={[0.65, 0.12, 0.01]} />
-          <primitive object={materials.feature} attach="material" />
-        </mesh>
-        
-        <mesh rotation={[0, 0, -Math.PI / 4]}>
-          <boxGeometry args={[0.65, 0.12, 0.01]} />
-          <primitive object={materials.feature} attach="material" />
-        </mesh>
-      </group>
+      {/* Outer glow halo */}
+      <mesh ref={haloRef} scale={1.2}>
+        <sphereGeometry args={[radius, 32, 32]} />
+        <MeshTransmissionMaterial
+          backside
+          samples={4}
+          thickness={1.5}
+          chromaticAberration={0.5}
+          transmission={1}
+          clearcoat={0.1}
+          clearcoatRoughness={0.1}
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.5}
+          distortion={0.2}
+          temporalDistortion={0.1}
+          distortionScale={0.5}
+          reflectivity={0.2}
+        />
+      </mesh>
       
-      {/* Mouth with wavelength visualization INSIDE the rectangle */}
-      <group position={[0, -0.3, 1.02]} ref={mouthRef}>
-        {/* Red rectangle background - WIDER */} 
-        <RoundedBox args={[1.0, 0.1, 0.02]} radius={0.02} smoothness={4}>
-          <meshBasicMaterial color="#6b0000" />
-        </RoundedBox>
-        
-        {/* Wavelength inside the red rectangle - WIDER */} 
-        <mesh position={[0, 0, 0.01]}>
-          <planeGeometry args={[0.95, 0.08]} />
-          <primitive object={materials.waveform} attach="material" />
-        </mesh>
-        
-        {/* Glow effects */}
-        <pointLight position={[0, 0, 0.2]} color="#ff2200" 
-                  intensity={1.2 * flicker} distance={1.0} />
-      </group>
+      {/* Point light */}
+      <pointLight 
+        ref={lightRef} 
+        color={color} 
+        intensity={intensity} 
+        distance={radius * 10} 
+        decay={2} 
+      />
     </group>
   );
 }
 
-// Chrome box with face - positioned so the face always faces the camera
-function ChromeBox() {
-  const boxRef = useRef<THREE.Group>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+// Data Connection Line
+function DataConnection({ startPoint, endPoint, color, thickness = 1.0, speed = 1.0, pulseIntensity = 0.3 }: DataConnectionProps) {
+  // Not using ref for Line component since it's causing type issues
+  const [lineOpacity, setLineOpacity] = useState(0.7);
+  const [points, setPoints] = useState<[number, number, number][]>([]);
   
-  // Track mouse movement globally, not just within the canvas
+  // Generate a slightly curved path
   useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      // Convert screen coordinates to normalized -1 to 1 range
-      const x = (event.clientX / window.innerWidth) * 2 - 1
-      const y = -(event.clientY / window.innerHeight) * 2 + 1
-      setMousePos({ x, y })
+    const curvePoints: [number, number, number][] = [];
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(...startPoint),
+      new THREE.Vector3(
+        (startPoint[0] + endPoint[0]) / 2,
+        (startPoint[1] + endPoint[1]) / 2 + (Math.random() - 0.5) * 2,
+        (startPoint[2] + endPoint[2]) / 2 + (Math.random() - 0.5) * 2
+      ),
+      new THREE.Vector3(...endPoint)
+    );
+    
+    const divisions = 20;
+    for (let i = 0; i <= divisions; i++) {
+      const point = curve.getPoint(i / divisions);
+      curvePoints.push([point.x, point.y, point.z] as [number, number, number]);
     }
     
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
+    setPoints(curvePoints);
+  }, [startPoint, endPoint]);
   
-  // Animation with glitching and tracking global mouse position
+  // Animation - pulse of light along the line
   useFrame((state) => {
-    if (!boxRef.current) return
-    const t = state.clock.getElapsedTime()
+    const t = state.clock.getElapsedTime() * speed;
     
-    // More strictly limited rotation (20 degrees maximum)
-    const maxRotation = Math.PI / 9 // About 20 degrees
-    
-    // Get normalized mouse position (now from our state, not Three.js)
-    const { x: mouseX, y: mouseY } = mousePos
-    
-    // Base rotation from mouse with stricter limits
-    let targetX = Math.max(Math.min(mouseY * -maxRotation, maxRotation), -maxRotation)
-    let targetY = Math.max(Math.min(mouseX * maxRotation, maxRotation), -maxRotation)
-    
-    // Add occasional glitches with random jerky movements (smaller amplitude)
-    if (Math.random() > 0.99) {
-      targetX += (Math.random() - 0.5) * 0.2 // Smaller random jerk
-      targetY += (Math.random() - 0.5) * 0.2
-    }
-    
-    // Apply rotation with damping for smoother movement
-    if (boxRef.current) {
-      // Faster response when moving toward mouse
-      const damping = 0.15
-      boxRef.current.rotation.x += (targetX - boxRef.current.rotation.x) * damping
-      boxRef.current.rotation.y += (targetY - boxRef.current.rotation.y) * damping
-      
-      // Add a subtle floating motion with occasional glitchy positional shifts
-      boxRef.current.position.y = Math.sin(t * 0.5) * 0.05
-      
-      // Random position glitches
-      if (Math.random() > 0.995) {
-        boxRef.current.position.x += (Math.random() - 0.5) * 0.03
-        boxRef.current.position.y += (Math.random() - 0.5) * 0.03
-      }
-    }
-  })
-  
-  // Chrome material with reflection
-  const chromeMaterial = new THREE.MeshStandardMaterial({
-    color: '#D8D8D8',
-    roughness: 0.03,
-    metalness: 1.0,
-    envMapIntensity: 2.5
-  })
+    // Subtle pulse effect
+    setLineOpacity(0.7 + Math.sin(t) * pulseIntensity);
+  });
   
   return (
-    <group ref={boxRef} scale={[2, 2, 2]}>
-      {/* Make the cube face the camera */}
-      <group rotation={[0, 0, 0]}> 
-        {/* Chrome cube with TV face on front */}
-        <RoundedBox args={[2, 2, 2]} radius={0.3} smoothness={16}>
-          <meshStandardMaterial attach="material-0" {...chromeMaterial} />
-          <meshStandardMaterial attach="material-1" {...chromeMaterial} />
-          <meshStandardMaterial attach="material-2" {...chromeMaterial} />
-          <meshStandardMaterial attach="material-3" {...chromeMaterial} />
-          <meshStandardMaterial attach="material-4" {...chromeMaterial} />
-          {/* Face on the front side */}
-          <meshBasicMaterial attach="material-5" color="#000000" />
-        </RoundedBox>
-        
-        {/* Face components */}
-        <DudeBoxFace />
-      </group>
+    <group>
+      {points.length >= 2 && (
+        <Line
+          points={points}
+          color={color}
+          lineWidth={thickness}
+          transparent={true}
+          opacity={lineOpacity}
+        />
+      )}
+      
+      {/* Data packet moving along the line */}
+      {points.length >= 2 && (
+        <DataPacket 
+          points={points} 
+          color={color} 
+          speed={speed * 0.5} 
+        />
+      )}
     </group>
-  )
+  );
 }
 
-// Modify this to be the actual component in your page.tsx file
-// This replaces the existing ThreeScene component
+// Data packet that travels along a line
+function DataPacket({ points, color, speed = 1.0 }: DataPacketProps) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [position, setPosition] = useState<[number, number, number]>([0, 0, 0]);
+  const [progress, setProgress] = useState(0);
+  
+  // Animation - move packet along the path
+  useFrame((state, delta) => {
+    if (!meshRef.current || points.length < 2) return;
+    
+    // Update progress
+    setProgress((prev) => {
+      const newProgress = (prev + delta * speed) % 1;
+      
+      // Calculate position along the path
+      const index = Math.floor(newProgress * (points.length - 1));
+      const nextIndex = Math.min(index + 1, points.length - 1);
+      const subProgress = (newProgress * (points.length - 1)) % 1;
+      
+      const currentPos = points[index];
+      const nextPos = points[nextIndex];
+      
+      const newPos: [number, number, number] = [
+        currentPos[0] + (nextPos[0] - currentPos[0]) * subProgress,
+        currentPos[1] + (nextPos[1] - currentPos[1]) * subProgress,
+        currentPos[2] + (nextPos[2] - currentPos[2]) * subProgress
+      ];
+      
+      setPosition(newPos);
+      
+      return newProgress;
+    });
+  });
+  
+  useEffect(() => {
+    if (points.length > 0) {
+      setPosition(points[0]);
+    }
+  }, [points]);
+  
+  // Match rotation to direction of travel
+  const rotation = useMemo(() => {
+    if (points.length < 2) return [0, 0, 0];
+    
+    const index = Math.floor(progress * (points.length - 1));
+    const nextIndex = Math.min(index + 1, points.length - 1);
+    
+    const current = points[index];
+    const next = points[nextIndex];
+    
+    // Calculate direction vector
+    const dir = {
+      x: next[0] - current[0],
+      y: next[1] - current[1],
+      z: next[2] - current[2]
+    };
+    
+    // Convert to rotation
+    const angle = Math.atan2(dir.z, dir.x);
+    
+    return [0, angle, 0];
+  }, [points, progress]);
+  
+  return (
+    <mesh 
+      ref={meshRef}
+      position={position}
+      rotation={rotation as [number, number, number]}
+    >
+      <coneGeometry args={[0.05, 0.15, 16]} />
+      <meshStandardMaterial 
+        color={color} 
+        emissive={color} 
+        emissiveIntensity={1}
+        metalness={0.5}
+        roughness={0.2}
+      />
+    </mesh>
+  );
+}
+
+// Digital Rain - Matrix-style falling particles
+function DigitalRain({ count = 200, speed = 1 }) {
+  // Ensure count is always positive
+  const particleCount = Math.max(1, count);
+  const rainRef = useRef<THREE.Points>(null);
+  
+  // Create particles
+  const [positions, colors, sizes, speeds] = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    const speeds = new Float32Array(particleCount);
+    
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      
+      // Position
+      positions[i3] = (Math.random() - 0.5) * 20;
+      positions[i3 + 1] = Math.random() * 30 - 10;
+      positions[i3 + 2] = (Math.random() - 0.5) * 20;
+      
+      // Color - vibrant glowing colors
+      const colorChoice = Math.random();
+      if (colorChoice < 0.5) {
+        // Bright cyan
+        colors[i3] = 0.1;
+        colors[i3 + 1] = 0.8 + Math.random() * 0.2;
+        colors[i3 + 2] = 0.8 + Math.random() * 0.2;
+      } else if (colorChoice < 0.8) {
+        // Electric blue
+        colors[i3] = 0.1;
+        colors[i3 + 1] = 0.4 + Math.random() * 0.2;
+        colors[i3 + 2] = 0.9 + Math.random() * 0.1;
+      } else {
+        // Bright green
+        colors[i3] = 0.1;
+        colors[i3 + 1] = 0.9 + Math.random() * 0.1;
+        colors[i3 + 2] = 0.3 + Math.random() * 0.2;
+      }
+      
+      // Size - varied for parallax effect
+      sizes[i] = Math.random() * 0.5 + 0.2;
+      
+      // Speed - varies by particle
+      speeds[i] = (Math.random() * 0.8 + 0.5) * speed;
+    }
+    
+    return [positions, colors, sizes, speeds];
+  }, [particleCount, speed]);
+  
+  // Animation for falling particles
+  useFrame((state, delta) => {
+    if (!rainRef.current) return;
+    
+    const geometry = rainRef.current.geometry;
+    const positionAttribute = geometry.getAttribute('position') as THREE.BufferAttribute;
+    
+    // Make sure attribute exists and has the expected size
+    if (!positionAttribute || positionAttribute.count < particleCount) return;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      
+      // Make sure we don't go out of bounds
+      if (i3 + 2 >= positionAttribute.array.length) continue;
+      
+      // Move down based on speed
+      positionAttribute.array[i3 + 1] -= speeds[i] * delta * 5;
+      
+      // Reset if out of view
+      if (positionAttribute.array[i3 + 1] < -15) {
+        positionAttribute.array[i3 + 1] = 15;
+        positionAttribute.array[i3] = (Math.random() - 0.5) * 20;
+        positionAttribute.array[i3 + 2] = (Math.random() - 0.5) * 20;
+      }
+    }
+    
+    positionAttribute.needsUpdate = true;
+  });
+  
+  return (
+    <points ref={rainRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          array={positions}
+          count={particleCount}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          array={colors}
+          count={particleCount}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          array={sizes}
+          count={particleCount}
+          itemSize={1}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.3}
+        sizeAttenuation
+        vertexColors
+        transparent
+        opacity={0.9}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+// Network Grid - sleek modern grid structure
+function NetworkGrid() {
+  const gridRef = useRef<THREE.Group>(null);
+  
+  // Grid size parameters
+  const gridSize = 20;
+  const cellSize = 5;
+  
+  // Define node type
+  interface NodeData {
+    position: [number, number, number];
+    radius: number;
+    color: string;
+    intensity: number;
+    speed: number;
+  }
+  
+  // Nodes to place throughout the grid
+  const nodes = useMemo<NodeData[]>(() => {
+    const items: NodeData[] = [];
+    
+    // Create nodes at key intersections
+    for (let i = 0; i < 15; i++) {
+      const x = (Math.random() - 0.5) * gridSize;
+      const y = (Math.random() - 0.5) * (gridSize * 0.5);
+      const z = (Math.random() - 0.5) * gridSize;
+      
+      // Random radius
+      const radius = Math.random() * 0.2 + 0.1;
+      
+      // Random color - bright neons
+      const colors = [
+        "#00ffff", // Cyan
+        "#00ff88", // Bright green
+        "#0088ff", // Electric blue
+        "#5500ff", // Violet
+        "#ff00ff"  // Magenta
+      ];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      items.push({
+        position: [x, y, z] as [number, number, number],
+        radius,
+        color,
+        intensity: Math.random() * 0.5 + 0.5,
+        speed: Math.random() * 1.5 + 0.5
+      });
+    }
+    
+    return items;
+  }, []);
+  
+  // Create connections between nodes
+  const connections = useMemo<ConnectionData[]>(() => {
+    const lines: ConnectionData[] = [];
+    
+    // Connect nodes with probability
+    nodes.forEach((nodeA, i) => {
+      nodes.forEach((nodeB, j) => {
+        if (i !== j && Math.random() < 0.2) {
+          // Only connect some nodes
+          lines.push({
+            startPoint: nodeA.position,
+            endPoint: nodeB.position,
+            color: Math.random() > 0.5 ? nodeA.color : nodeB.color,
+            thickness: Math.random() * 2 + 1,
+            speed: Math.random() * 1.5 + 0.5,
+            pulseIntensity: Math.random() * 0.3 + 0.1
+          });
+        }
+      });
+    });
+    
+    return lines;
+  }, [nodes]);
+  
+  // Subtle animation for the whole grid
+  useFrame((state) => {
+    if (!gridRef.current) return;
+    const t = state.clock.getElapsedTime();
+    
+    // Very subtle movement
+    gridRef.current.rotation.y = Math.sin(t * 0.05) * 0.05;
+    gridRef.current.rotation.x = Math.sin(t * 0.04) * 0.03;
+  });
+  
+  return (
+    <group ref={gridRef}>
+      {/* Nodes */}
+      {nodes.map((node, i) => (
+        <GlowingNode
+          key={`node-${i}`}
+          position={node.position}
+          radius={node.radius}
+          color={node.color}
+          intensity={node.intensity}
+          speed={node.speed}
+        />
+      ))}
+      
+      {/* Connections */}
+      {connections.map((conn, i) => (
+        <DataConnection
+          key={`conn-${i}`}
+          startPoint={conn.startPoint}
+          endPoint={conn.endPoint}
+          color={conn.color}
+          thickness={conn.thickness}
+          speed={conn.speed}
+          pulseIntensity={conn.pulseIntensity}
+        />
+      ))}
+    </group>
+  );
+}
+
+// Floating Data Cubes
+function DataCubes({ count = 20 }) {
+  const cubeRefs = useRef<THREE.Group[]>([]);
+  
+  // Generate cube positions and properties
+  const cubes = useMemo(() => {
+    const items = [];
+    
+    for (let i = 0; i < count; i++) {
+      const size = Math.random() * 0.5 + 0.1;
+      const x = (Math.random() - 0.5) * 20;
+      const y = (Math.random() - 0.5) * 10;
+      const z = (Math.random() - 0.5) * 20;
+      
+      items.push({
+        position: [x, y, z] as [number, number, number],
+        rotation: [Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI],
+        size,
+        speed: Math.random() * 0.5 + 0.2,
+        color: Math.random() > 0.5 ? "#00ffaa" : "#00aaff"
+      });
+    }
+    
+    return items;
+  }, [count]);
+  
+  // Animation
+  useFrame((state) => {
+    cubeRefs.current.forEach((cube, i) => {
+      if (!cube) return;
+      
+      const t = state.clock.getElapsedTime() * cubes[i].speed;
+      
+      // Rotate cubes
+      cube.rotation.x += 0.002 * cubes[i].speed;
+      cube.rotation.y += 0.003 * cubes[i].speed;
+      
+      // Subtle floating motion
+      cube.position.y += Math.sin(t) * 0.003;
+    });
+  });
+  
+  return (
+    <group>
+      {cubes.map((cube, i) => (
+        <group 
+          key={`cube-${i}`}
+          position={cube.position}
+          rotation={cube.rotation as [number, number, number]}
+          ref={(el) => { if (el) cubeRefs.current[i] = el; }}
+        >
+          <mesh>
+            <boxGeometry args={[cube.size, cube.size, cube.size]} />
+            <meshStandardMaterial 
+              color={cube.color}
+              emissive={cube.color}
+              emissiveIntensity={0.5}
+              metalness={0.8}
+              roughness={0.2}
+              transparent={true}
+              opacity={0.7}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// Post-processing effects
+function BloomEffect({ intensity = 1.5 }) {
+  return (
+    <Effects disableGamma>
+      {/* @ts-ignore - UnrealBloomPass is extended but TypeScript doesn't recognize it */}
+      <unrealBloomPass 
+        threshold={0.1} 
+        strength={intensity} 
+        radius={1} 
+      />
+    </Effects>
+  );
+}
+
+// Main Scene Component
+function DataNetwork() {
+  const groupRef = useRef<THREE.Group>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  
+  // Track mouse movement for parallax effect
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      setMousePos({ x, y });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+  
+  // Responsive camera movement based on mouse position
+  useFrame((state, delta) => {
+    if (!groupRef.current) return;
+    
+    const { x: mouseX, y: mouseY } = mousePos;
+    
+    // Apply smooth rotation based on mouse
+    groupRef.current.rotation.y += (mouseX * 0.2 - groupRef.current.rotation.y) * delta * 2;
+    groupRef.current.rotation.x += (mouseY * 0.2 - groupRef.current.rotation.x) * delta * 2;
+  });
+  
+  // Use error boundary to prevent entire scene from crashing
+  const [hasError, setHasError] = useState(false);
+  
+  if (hasError) {
+    return (
+      <group>
+        {/* Fallback simple visualization */}
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <mesh>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#00aaff" />
+        </mesh>
+      </group>
+    );
+  }
+  
+  return (
+    <group ref={groupRef}>
+      <NetworkGrid />
+      <DigitalRain count={200} speed={1.5} />
+      <DataCubes count={30} />
+      
+      {/* Ambient volume particles */}
+      <Sparkles
+        count={1000}
+        scale={25}
+        size={0.2}
+        speed={0.3}
+        opacity={0.2}
+        color="#00ffff"
+      />
+      
+      {/* Ambient lighting */}
+      <ambientLight intensity={0.2} />
+      <pointLight position={[0, 5, 5]} intensity={0.5} color="#ffffff" />
+      <pointLight position={[-5, -5, -5]} intensity={0.3} color="#00ffff" />
+    </group>
+  );
+}
+
+// Main ThreeScene component
 interface ThreeSceneProps {
   className?: string;
 }
 
 const ThreeScene: React.FC<ThreeSceneProps> = ({ className = "" }) => {
+  const [perfLevel, setPerfLevel] = useState<number>(1);
+  
   return (
     <div className={`w-full h-[600px] ${className}`} style={{ background: 'transparent' }}>
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 40 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, outputColorSpace: THREE.SRGBColorSpace }}
+        camera={{ position: [0, 0, 10], fov: 60 }}
+        dpr={[1, perfLevel > 0.75 ? 2 : 1.5]}
+        gl={{ 
+          antialias: true, 
+          alpha: true,
+          preserveDrawingBuffer: true,
+          outputColorSpace: THREE.SRGBColorSpace,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.5
+        }}
         style={{ background: 'transparent' }}
       >
-        {/* Environment for nuclear explosion reflections */}
-        <Environment files="/Nuclear-Explosion.jpg" background={false} />
-        
-        {/* Basic lighting */}
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffcc99" />
-        <directionalLight position={[-5, 5, 5]} intensity={0.5} color="#ff5500" />
-        <pointLight position={[0, 3, 3]} intensity={1.0} color="#ff3300" />
-        
-        {/* Atmosphere particles */}
-        <Sparkles count={250} scale={15} size={0.6} speed={0.3} opacity={0.3} color="#553333" />
-        
-        {/* Floating chrome box - with glitchy movements */}
-        <Float 
-          speed={2}
-          rotationIntensity={0.1} 
-          floatIntensity={0.3} 
-          floatingRange={[-0.1, 0.1]}
+        {/* Performance monitoring */}
+        <PerformanceMonitor 
+          onDecline={() => setPerfLevel(0.5)} 
+          onIncline={() => setPerfLevel(1)}
         >
-          <ChromeBox />
-        </Float>
+          {/* Scene content */}
+          <DataNetwork />
+          
+          {/* Post-processing effects */}
+          <BloomEffect intensity={1.5} />
+          
+          {/* Camera controls */}
+          <OrbitControls 
+            enableZoom={false}
+            enablePan={false}
+            rotateSpeed={0.3}
+            minPolarAngle={Math.PI * 0.4}
+            maxPolarAngle={Math.PI * 0.6}
+            enableDamping={true}
+            dampingFactor={0.05}
+          />
+        </PerformanceMonitor>
       </Canvas>
     </div>
-  )
-}
+  );
+};
 
 export default ThreeScene;
