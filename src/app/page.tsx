@@ -46,7 +46,6 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
-              <a href="#mission" className={`transition-colors ${activeSection==='mission'?'text-accent font-bold animate-glitch-text-mini':''}`}>Mission</a>
               <a href="#tech" className={`transition-colors ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':''}`}>Tech</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
@@ -75,7 +74,10 @@ export default function Home() {
                 </h3>
               </div>
               <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
-                A Father-Son Workshop for Robots & Other <span className="text-accent animate-glitch-text-mini">Weird Tech</span> things.
+                A Father-Son Workshop for Robots & 
+              </p>
+               <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
+                 Other <span className="text-accent animate-glitch-text-mini">Fun Tech</span> things.
               </p>
               <div className="flex gap-4 mt-2 justify-center">
                 <a href="#about" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Learn More</a>
@@ -87,9 +89,13 @@ export default function Home() {
           {/* About Section - Reverted height back to h-screen */}
           <section id="about" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
             <div className="section-box p-8 rounded-md max-w-3xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">What is Dude?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">What it is, Dude.</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                We are a post-apocalyptic robot foundry, creative lab, and high-tech misfit collective. We design, print, and engineer quirky, collectible robots, smart lamps, and interactive tech, right from our underground lair. Our mission: <span className="text-accent animate-glitch-text-mini">bring joy, weirdness, and STEM inspiration to the world</span> — one glitched bot at a time.
+                We are a father son team who are running our own little robot foundry, creative lab, and high-tech misfit collective. We design, print, and engineer quirky, collectible robots, smart lamps, and other interactive tech, right from our underground lair. Our mission: <span className="text-accent animate-glitch-text-mini">bring joy, weirdness, and STEM inspiration to the world</span> — one glitched bot at a time.
+              </p>
+              
+              <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
+                My son's love for robots inspired this journey. I believe these projects will kickstart his imagination and prepare him for a future where robotics is everywhere. Teaching kids today how to build, use, and repair robots is <span className="text-accent animate-glitch-text-mini">critically important</span> for tomorrow's world. Through hands-on creation, we're learning together while building something unique.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-slow">
@@ -112,22 +118,12 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Mission Section - Reverted height back to h-screen */}
-          <section id="mission" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
-            <div className="section-box p-8 rounded-md max-w-3xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Our Mission</h2>
-              <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                We're fusion chefs cooking up the perfect storm of robotics, AI, and deranged creativity to build the most entertaining tech this side of the apocalypse. Our toys aren't just objects—they're characters with backstories, attitudes, and the occasional existential crisis. From sassy desk lamps to robots that judge your music taste, Dude is where mechanical personalities are born.
-              </p>
-            </div>
-          </section>
-
           {/* Tech Section - Reverted height back to h-screen */}
           <section id="tech" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
             <div className="section-box p-8 rounded-md max-w-3xl">
               <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Tech & Tinkering</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                Our workshop looks like a mad scientist's lab had a one-night stand with Radio Shack circa 1982. We transform 3D filament, circuitry, and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our pathological need to make inanimate objects talk back. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or collaborate with our AI to birth your own mechanical offspring.
+                We transform 3D filament, circuitry, and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our pathological need to make inanimate objects talk back. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or collaborate with our AI to birth your own mechanical offspring.
               </p>
               <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
