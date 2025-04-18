@@ -5,6 +5,7 @@ import MatrixRain from "@/components/MatrixRain";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string>('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   // Scroll spy: track which section is in view
   useEffect(() => {
@@ -20,6 +21,11 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  // Close mobile menu when clicking a nav item
+  const handleNavClick = () => {
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen overflow-hidden flex flex-col text-[#EDEDED] font-mono bg-black">
       {/* Matrix-style rain overlay - rendered first, behind all content */}
@@ -31,12 +37,59 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
           </div>
+          
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
             <a href="#mission" className={`transition-colors ${activeSection==='mission'?'text-accent font-bold animate-glitch-text-mini':''}`}>Mission</a>
             <a href="#tech" className={`transition-colors ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':''}`}>Tech</a>
             <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
           </nav>
+          
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 animate-glitch-hover" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform -rotate-45 -translate-y-2' : ''}`}></span>
+          </button>
+        </div>
+        
+        {/* Mobile Navigation Overlay */}
+        <div className={`fixed inset-0 bg-black bg-opacity-95 z-10 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} md:hidden`}>
+          <div className="flex flex-col items-center justify-center h-full space-y-8 text-2xl">
+            <a 
+              href="#about" 
+              className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              About
+            </a>
+            <a 
+              href="#mission" 
+              className={`transition-colors p-4 ${activeSection==='mission'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Mission
+            </a>
+            <a 
+              href="#tech" 
+              className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Tech
+            </a>
+            <a 
+              href="#contact" 
+              className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Contact
+            </a>
+          </div>
         </div>
       </header>
 
@@ -56,7 +109,7 @@ export default function Home() {
               </h3>
             </div>
             <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
-              Where retro-future robots, nuclear powered alarm clocks, and <span className="text-accent animate-glitch-text-mini">AI misfits</span> are born.
+              A Father-Son Workshop For Robots & Other <span className="text-accent animate-glitch-text-mini">Weird Tech</span> Things.
             </p>
             <div className="flex gap-4 mt-2 justify-center">
               <a href="#about" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Learn More</a>
@@ -302,6 +355,30 @@ export default function Home() {
         }
         .bg-noise {
           background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.5"/></svg>');
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .section-box {
+            width: 95%;
+            padding: 1.5rem;
+          }
+          
+          h1 {
+            font-size: 2.5rem;
+          }
+          
+          h2 {
+            font-size: 2.2rem;
+          }
+          
+          h3 {
+            font-size: 1.8rem;
+          }
+          
+          p {
+            font-size: 1rem;
+          }
         }
 
         /* Scroll behavior */
