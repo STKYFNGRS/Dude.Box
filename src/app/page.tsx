@@ -367,6 +367,15 @@ export default function Home() {
             padding: 1.5rem; /* Reduced padding */
             margin-top: 1rem; /* Add some top margin */
             margin-bottom: 1rem; /* Add some bottom margin */
+            /* Add max-height and overflow to prevent overlap */
+            max-height: calc(100vh - 4rem - 2rem); /* 100vh - header height - top/bottom margin */
+            overflow-y: auto;
+            /* Hide internal scrollbar */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          .section-box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
           }
           
           /* Reduce heading sizes further */
