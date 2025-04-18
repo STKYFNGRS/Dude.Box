@@ -99,15 +99,9 @@ const MatrixRain: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="matrix-rain fixed inset-0 pointer-events-none"
-      style={{ 
-        mixBlendMode: 'lighten', 
-        zIndex: 0, // Lower z-index so it renders behind content
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-        display: 'block'
-      }}
+      // Keep fixed positioning, remove z-index
+      className="fixed top-0 left-0 w-full h-full" // Removed -z-10
+      aria-hidden="true" // Decorative element
     />
   );
 };
