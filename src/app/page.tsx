@@ -95,10 +95,10 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Changed main height to min-h-screen for better flexibility */}
-      <main className="min-h-screen snap-mandatory snap-y overflow-y-auto no-scrollbar pt-16 relative z-10">
-        {/* Hero Section - Changed height to min-h-screen */}
-        <section id="hero" className="min-h-screen snap-always snap-start flex flex-col items-center justify-center w-full">
+      {/* Reverted main height back to h-screen for scroll snapping */}
+      <main className="h-screen snap-mandatory snap-y overflow-y-auto no-scrollbar pt-16 relative z-10">
+        {/* Hero Section - Reverted height back to h-screen */}
+        <section id="hero" className="h-screen snap-always snap-start flex flex-col items-center justify-center w-full">
           <div className="section-box p-8 rounded-md max-w-3xl text-center">
             <div className="flex flex-col items-center gap-2 md:gap-3">
               <h1 className="text-4xl md:text-6xl font-black tracking-tight text-center text-accent drop-shadow-lg animate-glitch">
@@ -121,8 +121,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* About Section - Changed height to min-h-screen */}
-        <section id="about" className="min-h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
+        {/* About Section - Reverted height back to h-screen */}
+        <section id="about" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
           <div className="section-box p-8 rounded-md max-w-3xl">
             <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">What is Dude?</h2>
             <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
@@ -149,8 +149,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Mission Section - Changed height to min-h-screen */}
-        <section id="mission" className="min-h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
+        {/* Mission Section - Reverted height back to h-screen */}
+        <section id="mission" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
           <div className="section-box p-8 rounded-md max-w-3xl">
             <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Our Mission</h2>
             <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
@@ -159,8 +159,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tech Section - Changed height to min-h-screen */}
-        <section id="tech" className="min-h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
+        {/* Tech Section - Reverted height back to h-screen */}
+        <section id="tech" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
           <div className="section-box p-8 rounded-md max-w-3xl">
             <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Tech & Tinkering</h2>
             <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
@@ -186,8 +186,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section - Changed height to min-h-screen */}
-        <section id="contact" className="min-h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4 pb-24 relative">
+        {/* Contact Section - Reverted height back to h-screen */}
+        <section id="contact" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4 pb-24 relative">
           <div className="section-box p-8 rounded-md max-w-3xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Contact & Collaborate</h2>
             <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
