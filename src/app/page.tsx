@@ -62,8 +62,8 @@ export default function Home() {
         {/* Mobile Navigation Overlay */}
         {/* Changed bg-opacity-95 to bg-black for solid background, kept z-30 */}
         <div className={`fixed inset-0 bg-black z-30 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} md:hidden`}>
-          {/* Removed justify-center, increased top padding to pt-32 */}
-          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
+          {/* Removed justify-center, increased top padding to pt-32, added explicit bg-black */} 
+          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32 bg-black">
             <a 
               href="#about" 
               className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
