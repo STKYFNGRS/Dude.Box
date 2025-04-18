@@ -52,9 +52,9 @@ export default function Home() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
           >
-            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-            <span className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform -rotate-45 -translate-y-2' : ''}`}></span>
+            <div className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform rotate-45 translate-y-2' : ''}`}></div>
+            <div className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></div>
+            <div className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform -rotate-45 -translate-y-2' : ''}`}></div>
           </button>
         </div>
         
@@ -109,7 +109,7 @@ export default function Home() {
               </h3>
             </div>
             <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
-              A Father-Son Workshop For Robots & Other <span className="text-accent animate-glitch-text-mini">Weird Tech</span> Things.
+              A Father-Son Workshop for Robots & Other <span className="text-accent animate-glitch-text-mini">Weird Tech</span> things.
             </p>
             <div className="flex gap-4 mt-2 justify-center">
               <a href="#about" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Learn More</a>
