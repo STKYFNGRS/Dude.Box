@@ -46,9 +46,9 @@ export default function Home() {
             <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
           </nav>
           
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Increased z-index to 40 */}
           <button 
-            className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 animate-glitch-hover z-30" // Added z-30
+            className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 animate-glitch-hover z-40" // Changed z-30 to z-40
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
           >
