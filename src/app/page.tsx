@@ -36,9 +36,12 @@ export default function Home() {
         {/* Header - Fixed at top */}
         <header className="fixed top-0 left-0 right-0 p-4 border-b border-gray-800 shadow-lg bg-gradient-to-b from-[#181818] to-[#111111] z-20 backdrop-blur">
           <div className="container mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
-            </div>
+            {/* Wrap logo image in an anchor tag linking to root */}
+            <a href="/" aria-label="Return to homepage">
+              <div className="flex items-center gap-3">
+                <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
+              </div>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
