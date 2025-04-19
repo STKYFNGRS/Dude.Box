@@ -66,37 +66,81 @@ export default function ShopPage() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 text-lg">
-            <Link href="/#about" className="transition-colors">About</Link>
-            <Link href="/shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</Link>
-            <Link href="/#tech" className="transition-colors">Tech</Link>
-            <Link href="/#contact" className="transition-colors">Contact</Link>
+            <a href="/#about" className="transition-colors">About</a>
+            <a href="/#shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
+            <a href="/#tech" className="transition-colors">Tech</a>
+            <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
-          {/* Cart Icon - Always visible */}
-          <CartIcon />
+          <div className="flex items-center">
+            {/* Cart Icon - Always visible */}
+            <CartIcon />
 
-          {/* Mobile Menu Toggle Button */}
-          <button 
-            className="md:hidden z-50" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2 bg-white' : 'bg-gray-300'}`}></div>
-            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : 'bg-gray-300'}`}></div>
-            <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 bg-white' : 'bg-gray-300'}`}></div>
-          </button>
+            {/* Mobile Menu Toggle Button */}
+            <button 
+              className="md:hidden z-50 ml-4" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2 bg-white' : 'bg-gray-300'}`}></div>
+              <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : 'bg-gray-300'}`}></div>
+              <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 bg-white' : 'bg-gray-300'}`}></div>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Menu - Overlay */}
-      <div className={`fixed inset-0 bg-black bg-opacity-95 z-40 flex items-center justify-center transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <nav className="flex flex-col items-center space-y-8 text-2xl">
-          <Link href="/#about" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>About</Link>
-          <Link href="/shop" className="text-accent font-bold animate-glitch-text-mini" onClick={() => setMobileMenuOpen(false)}>Shop</Link>
-          <Link href="/#tech" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Tech</Link>
-          <Link href="/#contact" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-        </nav>
-      </div>
+      {/* Mobile Navigation Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-30 md:hidden">
+          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
+            <a 
+              href="/#about" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </a>
+            <a 
+              href="/#shop" 
+              className="transition-colors p-4 text-accent font-bold animate-glitch-text-mini"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Shop
+            </a>
+            <a 
+              href="/#tech" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Tech
+            </a>
+            <a 
+              href="/#contact" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Extra Close Button - Only visible when menu is open */}
+      {mobileMenuOpen && (
+        <button 
+          className="fixed top-4 z-[9999] flex items-center" 
+          style={{ right: '1rem' }}
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <div className="rounded-full p-2 bg-accent">
+            <div className="w-6 h-0.5 bg-white mb-1.5 rotate-45 translate-y-2"></div>
+            <div className="w-6 h-0.5 bg-white mb-1.5 opacity-0"></div>
+            <div className="w-6 h-0.5 bg-white -rotate-45"></div>
+          </div>
+        </button>
+      )}
 
       {/* Shop Content */}
       <main className="pt-24 pb-16 px-4 md:px-8 relative z-10">
@@ -186,6 +230,205 @@ export default function ShopPage() {
           </div>
         </div>
       </footer>
+
+      {/* Global Styles for Animations and Components */}
+      <style jsx global>{`
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Section and card styling to match header */
+        .section-box {
+          background: linear-gradient(to bottom, #181818, #111111);
+          border: 1px solid #222;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+          position: relative;
+          z-index: 5;
+        }
+        
+        .card-box {
+          background: linear-gradient(to bottom, #1a1a1a, #131313);
+          border: 1px solid rgba(255, 0, 68, 0.4);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+          position: relative;
+          z-index: 6;
+        }
+        
+        /* Color definitions */
+        .text-accent { color: #ff0044; }
+        .bg-accent { background: #ff0044; }
+        .border-accent { border-color: #ff0044; }
+        
+        /* Main title glitch effect */
+        .animate-glitch {
+          animation: glitch 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch {
+          0% { text-shadow: 2px 0 #ff0044, -2px 0 #00fff7; }
+          20% { text-shadow: -2px 2px #ff0044, 2px -2px #00fff7; }
+          40% { text-shadow: 2px -2px #ff0044, -2px 2px #00fff7; }
+          60% { text-shadow: 0 2px #ff0044, 0 -2px #00fff7; }
+          80% { text-shadow: 2px 2px #ff0044, -2px -2px #00fff7; }
+          100% { text-shadow: -2px 0 #ff0044, 2px 0 #00fff7; }
+        }
+        
+        /* Subtle glitch for subtitles */
+        .animate-glitch-subtle {
+          animation: glitchSubtle 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitchSubtle {
+          0% { text-shadow: 1px 0 #ff0044, -1px 0 #00fff7; transform: translateX(0); }
+          25% { text-shadow: -1px 1px #ff0044, 1px -1px #00fff7; transform: translateX(-2px); }
+          50% { text-shadow: 1px -1px #ff0044, -1px 1px #00fff7; transform: translateX(2px); }
+          75% { text-shadow: 0 1px #ff0044, 0 -1px #00fff7; transform: translateX(-1px); }
+          100% { text-shadow: -1px 0 #ff0044, 1px 0 #00fff7; transform: translateX(0); }
+        }
+        
+        /* Mini glitch for smaller text elements */
+        .animate-glitch-text-mini {
+          animation: glitchTextMini 4s infinite linear alternate-reverse;
+        }
+        @keyframes glitchTextMini {
+          0% { text-shadow: 1px 0 #00fff7, 0 0 transparent; }
+          25% { text-shadow: -1px 0 #ff0044, 0 0 transparent; }
+          50% { text-shadow: 0.5px 0 #00fff7, -0.5px 0 #ff0044; }
+          75% { text-shadow: -0.5px 0 #00fff7, 0.5px 0 #ff0044; }
+          100% { text-shadow: 1px 0 #00fff7, -1px 0 transparent; }
+        }
+        
+        /* Hover glitch effect for buttons/cards */
+        .animate-glitch-hover {
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        .animate-glitch-hover:hover {
+          transform: scale(1.02);
+          box-shadow: 0 0 10px rgba(255, 0, 68, 0.5), 0 0 15px rgba(0, 255, 247, 0.3);
+        }
+
+        /* Other animations */
+        .animate-flicker {
+          animation: flicker 2s infinite alternate;
+        }
+        @keyframes flicker {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+          60% { opacity: 0.4; }
+          80% { opacity: 0.9; }
+        }
+        .animate-fade-in {
+          animation: fadeIn 1.2s ease-in;
+        }
+        .animate-fade-in-slow {
+          animation: fadeIn 2.2s ease-in;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: none; }
+        }
+        .animate-spin-slow {
+          animation: spin 12s linear infinite;
+        }
+        .favicon-spin {
+          animation: spin 12s linear infinite;
+        }
+        @keyframes spin {
+          100% { transform: rotate(360deg); }
+        }
+        .bg-noise {
+          background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.5"/></svg>');
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .section-box {
+            width: 95%;
+            padding: 1.5rem; /* Reduced padding */
+            margin-top: 1rem; /* Add some top margin */
+            margin-bottom: 1rem; /* Add some bottom margin */
+            /* Add max-height and overflow to prevent overlap */
+            max-height: calc(100vh - 4rem - 2rem); /* 100vh - header height - top/bottom margin */
+            overflow-y: auto;
+            /* Hide internal scrollbar */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          .section-box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+          }
+          
+          /* Reduce gaps */
+          .gap-2 { gap: 0.5rem; }
+          .gap-3 { gap: 0.75rem; }
+          .gap-4 { gap: 0.75rem; }
+          .gap-6 { gap: 1rem; }
+          .mt-2 { margin-top: 0.5rem; }
+          .mt-4 { margin-top: 1rem; }
+          .mb-2 { margin-bottom: 0.5rem; }
+          .mb-4 { margin-bottom: 1rem; }
+          .mb-6 { margin-bottom: 1.25rem; }
+
+          /* Adjust footer */
+          footer .container {
+            flex-direction: column; /* Stack elements vertically */
+            gap: 0.5rem; /* Reduce gap */
+          }
+          footer .text-xs {
+            text-align: center; /* Center text */
+          }
+        }
+
+        /* Scroll behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        /* Ensure background colors appear */
+        body {
+          background-color: black;
+        }
+      `}</style>
+
+      {/* Favicon Spinner Script */}
+      <script dangerouslySetInnerHTML={{__html:`
+        (function() {
+          const faviconUrl = '/android-chrome-192x192.png';
+          let angle = 0;
+          let link = document.querySelector('link[rel="icon"]') || document.createElement('link');
+          link.rel = 'icon';
+          link.type = 'image/png';
+          if (!link.parentNode) document.head.appendChild(link);
+          const img = new window.Image();
+          img.src = faviconUrl;
+          img.crossOrigin = 'anonymous';
+          img.onload = function() {
+            const size = 64;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            function draw() {
+              ctx.clearRect(0, 0, size, size);
+              ctx.save();
+              ctx.translate(size/2, size/2);
+              ctx.rotate(angle * Math.PI / 180);
+              ctx.drawImage(img, -size/2, -size/2, size, size);
+              ctx.restore();
+              link.href = canvas.toDataURL('image/png');
+              angle = (angle + 0.5) % 360; // Slower spin to match header logo
+              requestAnimationFrame(draw);
+            }
+            draw();
+          };
+        })();
+      `}} />
     </div>
   );
 }

@@ -87,37 +87,81 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 text-lg">
-            <Link href="/#about" className="transition-colors">About</Link>
-            <Link href="/shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</Link>
-            <Link href="/#tech" className="transition-colors">Tech</Link>
-            <Link href="/#contact" className="transition-colors">Contact</Link>
+            <a href="/#about" className="transition-colors">About</a>
+            <a href="/#shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
+            <a href="/#tech" className="transition-colors">Tech</a>
+            <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
-          {/* Cart Icon - Always visible */}
-          <CartIcon />
+          <div className="flex items-center">
+            {/* Cart Icon - Always visible */}
+            <CartIcon />
 
-          {/* Mobile Menu Toggle Button */}
-          <button 
-            className="md:hidden z-50" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2 bg-white' : 'bg-gray-300'}`}></div>
-            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : 'bg-gray-300'}`}></div>
-            <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 bg-white' : 'bg-gray-300'}`}></div>
-          </button>
+            {/* Mobile Menu Toggle Button */}
+            <button 
+              className="md:hidden z-50 ml-4" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2 bg-white' : 'bg-gray-300'}`}></div>
+              <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : 'bg-gray-300'}`}></div>
+              <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 bg-white' : 'bg-gray-300'}`}></div>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Menu - Overlay */}
-      <div className={`fixed inset-0 bg-black bg-opacity-95 z-40 flex items-center justify-center transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <nav className="flex flex-col items-center space-y-8 text-2xl">
-          <Link href="/#about" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>About</Link>
-          <Link href="/shop" className="text-accent font-bold animate-glitch-text-mini" onClick={() => setMobileMenuOpen(false)}>Shop</Link>
-          <Link href="/#tech" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Tech</Link>
-          <Link href="/#contact" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-        </nav>
-      </div>
+      {/* Mobile Navigation Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-30 md:hidden">
+          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
+            <a 
+              href="/#about" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </a>
+            <a 
+              href="/#shop" 
+              className="transition-colors p-4 text-accent font-bold animate-glitch-text-mini"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Shop
+            </a>
+            <a 
+              href="/#tech" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Tech
+            </a>
+            <a 
+              href="/#contact" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Extra Close Button - Only visible when menu is open */}
+      {mobileMenuOpen && (
+        <button 
+          className="fixed top-4 z-[9999] flex items-center" 
+          style={{ right: '1rem' }}
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <div className="rounded-full p-2 bg-accent">
+            <div className="w-6 h-0.5 bg-white mb-1.5 rotate-45 translate-y-2"></div>
+            <div className="w-6 h-0.5 bg-white mb-1.5 opacity-0"></div>
+            <div className="w-6 h-0.5 bg-white -rotate-45"></div>
+          </div>
+        </button>
+      )}
 
       {/* Product Detail Content */}
       <main className="pt-24 pb-16 px-4 md:px-8 relative z-10">

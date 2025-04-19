@@ -48,7 +48,7 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
-              <a href="#shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
+              <a href="/shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
               <a href="#tech" className={`transition-colors ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':''}`}>Tech</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
@@ -416,38 +416,56 @@ export default function Home() {
       </div>
 
       {/* Mobile Navigation Overlay */}
-      <div className={`fixed inset-0 bg-black z-30 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} md:hidden`}>
-        <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
-          <a 
-            href="#about" 
-            className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-            onClick={handleNavClick}
-          >
-            About
-          </a>
-          <a 
-            href="#shop" 
-            className={`transition-colors p-4 ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-            onClick={handleNavClick}
-          >
-            Shop
-          </a>
-          <a 
-            href="#tech" 
-            className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-            onClick={handleNavClick}
-          >
-            Tech
-          </a>
-          <a 
-            href="#contact" 
-            className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-            onClick={handleNavClick}
-          >
-            Contact
-          </a>
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-30 md:hidden">
+          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
+            <a 
+              href="#about" 
+              className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              About
+            </a>
+            <a 
+              href="/shop" 
+              className={`transition-colors p-4 ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Shop
+            </a>
+            <a 
+              href="#tech" 
+              className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Tech
+            </a>
+            <a 
+              href="#contact" 
+              className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Contact
+            </a>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Extra Close Button - Only visible when menu is open */}
+      {mobileMenuOpen && (
+        <button 
+          className="fixed top-4 z-[9999] flex items-center" 
+          style={{ right: '1rem' }}
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <div className="rounded-full p-2 bg-accent">
+            <div className="w-6 h-0.5 bg-white mb-1.5 rotate-45 translate-y-2"></div>
+            <div className="w-6 h-0.5 bg-white mb-1.5 opacity-0"></div>
+            <div className="w-6 h-0.5 bg-white -rotate-45"></div>
+          </div>
+        </button>
+      )}
     </>
   );
 }
