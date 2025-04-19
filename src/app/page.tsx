@@ -116,7 +116,7 @@ export default function Home() {
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🤖</span>
                   <span className="font-bold text-lg mb-1 text-accent">Robots & Lamps</span>
-                  <span className="text-[#b0b0b0] text-center">Collectible, customizable, and always a little bit broken. Each bot tells a story.</span>
+                  <span className="text-[#b0b0b0] text-center">Collectible, customizable, and always a little bit broken. Each creation tells a story.</span>
                 </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🧑‍🔬</span>
@@ -140,7 +140,7 @@ export default function Home() {
             <div className="section-box p-8 rounded-md max-w-3xl">
               <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Tech & Tinkering</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                We transform 3D filament, circuitry, and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our pathological need to make inanimate objects talk back. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or collaborate with our AI to birth your own mechanical offspring.
+                We transform resin, filament, circuitry, paint and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our desire to give inanimate objects personality. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or commision your own mechanical offspring.
               </p>
               <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
@@ -151,12 +151,17 @@ export default function Home() {
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🤝</span>
                   <span className="font-bold text-lg mb-1 text-accent">Community Builds</span>
-                  <span className="text-[#b0b0b0] text-center">Join our Discord, vote on new designs, and help shape the next generation of bots.</span>
+                  <span className="text-[#b0b0b0] text-center">Join our Discord, vote on new designs, and help shape the next generation of little dudes.</span>
                 </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🧠</span>
                   <span className="font-bold text-lg mb-1 text-accent">AI + Retro Tech</span>
-                  <span className="text-[#b0b0b0] text-center">Our bots combine AI with retro-futuristic designs to create something truly unique.</span>
+                  <span className="text-[#b0b0b0] text-center">Our designs combine modern hardware with retro-futuristic designs to create something truly unique.</span>
+                </div>
+                <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
+                  <span className="text-4xl mb-2">🛡️</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Defense</span>
+                  <span className="text-[#b0b0b0] text-center"> Defense-ready robotics, built from the circuit up. Embedded protection systems engineered with uncompromising standards.</span>
                 </div>
               </div>
             </div>
