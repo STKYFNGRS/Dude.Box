@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import MatrixRain from "@/components/MatrixRain";
+import ShopSection from "@/components/ShopSection";
+import CartIcon from "@/components/CartIcon";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string>('');
@@ -46,14 +48,26 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
+              <a href="#shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
               <a href="#tech" className={`transition-colors ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':''}`}>Tech</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
 
-            {/* Placeholder for Mobile Button alignment */}
-            {/* Use invisible on mobile to maintain space for justify-between */}
-            <div className="md:hidden w-8 h-8 invisible"></div>
+            <div className="flex items-center">
+              {/* Cart Icon - Always visible */}
+              <CartIcon />
 
+              {/* Mobile Menu Toggle Button */}
+              <button 
+                className="md:hidden z-50 ml-4" 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2 bg-white' : 'bg-gray-300'}`}></div>
+                <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : 'bg-gray-300'}`}></div>
+                <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 bg-white' : 'bg-gray-300'}`}></div>
+              </button>
+            </div>
           </div>
         </header>
 
@@ -117,6 +131,9 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* Shop Section - New section for featured products */}
+          <ShopSection />
 
           {/* Tech Section - Reverted height back to h-screen */}
           <section id="tech" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
@@ -398,53 +415,37 @@ export default function Home() {
         `}</style>
       </div>
 
-      {/* Separate Container for Mobile Menu Button and Overlay */}
-      <div>
-        {/* Mobile Menu Button - REMOVED animate-glitch-hover */}
-        <button
-          className={`md:hidden z-40 fixed top-4 right-4 p-2 w-auto`} // Removed animate-glitch-hover
-          style={{ left: 'auto' }}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle navigation menu"
-        >
-          {/* Hamburger lines */}
-          <div className={`block w-8 h-0.5 bg-white mb-1.5 transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform rotate-45 translate-y-2' : ''}`}></div>
-          <div className={`block w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></div>
-          <div className={`block w-8 h-0.5 bg-white mt-1.5 transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'transform -rotate-45 -translate-y-2' : ''}`}></div>
-        </button>
-
-        {/* Mobile Navigation Overlay - Now in separate container */}
-        <div className={`fixed inset-0 bg-black z-30 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} md:hidden`}>
-          <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
-            <a 
-              href="#about" 
-              className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-              onClick={handleNavClick}
-            >
-              About
-            </a>
-            <a 
-              href="#mission" 
-              className={`transition-colors p-4 ${activeSection==='mission'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-              onClick={handleNavClick}
-            >
-              Mission
-            </a>
-            <a 
-              href="#tech" 
-              className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-              onClick={handleNavClick}
-            >
-              Tech
-            </a>
-            <a 
-              href="#contact" 
-              className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-              onClick={handleNavClick}
-            >
-              Contact
-            </a>
-          </div>
+      {/* Mobile Navigation Overlay */}
+      <div className={`fixed inset-0 bg-black z-30 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} md:hidden`}>
+        <div className="flex flex-col items-center h-full space-y-8 text-2xl pt-32">
+          <a 
+            href="#about" 
+            className={`transition-colors p-4 ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+            onClick={handleNavClick}
+          >
+            About
+          </a>
+          <a 
+            href="#shop" 
+            className={`transition-colors p-4 ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+            onClick={handleNavClick}
+          >
+            Shop
+          </a>
+          <a 
+            href="#tech" 
+            className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+            onClick={handleNavClick}
+          >
+            Tech
+          </a>
+          <a 
+            href="#contact" 
+            className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+            onClick={handleNavClick}
+          >
+            Contact
+          </a>
         </div>
       </div>
     </>

@@ -22,3 +22,12 @@ body {
     --font-geist-mono: "Geist Mono", ui-monospace, monospace;
   }
 }
+
+@layer components {
+  .section-box {
+    background-color: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(80, 80, 80, 0.2);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  }
+}

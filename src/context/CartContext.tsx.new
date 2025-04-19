@@ -1,0 +1,204 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { ShopifyProduct } from '@/utils/shopify';
+
+// Define cart item type
+export interface CartItem {
+  id: string;
+  productId: string;
+  title: string;
+  price: string;
+  quantity: number;
+  image: string;
+  variantId?: string;
+}
+
+// Define cart context type
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (product: ShopifyProduct, quantity: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  isCartOpen: boolean;
+  toggleCart: () => void;
+  totalItems: number;
+  subtotal: number;
+  checkout: () => Promise<string>;
+  isCheckingOut: boolean;
+}
+
+// Create the context with a default empty implementation
+const CartContext = createContext<CartContextType>({
+  cart: [],
+  addToCart: () => {},
+  removeFromCart: () => {},
+  updateQuantity: () => {},
+  clearCart: () => {},
+  isCartOpen: false,
+  toggleCart: () => {},
+  totalItems: 0,
+  subtotal: 0,
+  checkout: async () => '',
+  isCheckingOut: false,
+});
+
+// Custom hook to use the cart context
+export const useCart = () => useContext(CartContext);
+
+// Provider component that wraps the app and provides cart functionality
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedCart = localStorage.getItem('dudebox_cart');
+      if (savedCart) {
+        setCart(JSON.parse(savedCart));
+      }
+    } catch (err) {
+      console.error('Failed to load cart from localStorage:', err);
+    }
+  }, []);
+  
+  // Save cart to localStorage when it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('dudebox_cart', JSON.stringify(cart));
+      
+      // Calculate totals
+      const items = cart.reduce((total, item) => total + item.quantity, 0);
+      setTotalItems(items);
+      
+      const total = cart.reduce((sum, item) => 
+        sum + (parseFloat(item.price) * item.quantity), 0);
+      setSubtotal(total);
+    } catch (err) {
+      console.error('Failed to save cart to localStorage:', err);
+    }
+  }, [cart]);
+  
+  // Add a product to the cart
+  const addToCart = (product: ShopifyProduct, quantity: number) => {
+    setCart(prevCart => {
+      // Check if product already exists in cart
+      const existingItem = prevCart.find(item => 
+        item.productId === product.id && 
+        item.variantId === product.variants.edges[0]?.node.id
+      );
+      
+      if (existingItem) {
+        // Update quantity if already in cart
+        return prevCart.map(item => 
+          item.id === existingItem.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        // Add new item to cart
+        const newItem: CartItem = {
+          id: `${product.id}_${Date.now()}`, // Create unique cart item ID
+          productId: product.id,
+          title: product.title,
+          price: product.variants.edges[0]?.node.price.amount || 
+                 product.priceRange.minVariantPrice.amount,
+          quantity: quantity,
+          image: product.images.edges[0]?.node.originalSrc || '/android-chrome-512x512.png',
+          variantId: product.variants.edges[0]?.node.id
+        };
+        return [...prevCart, newItem];
+      }
+    });
+    
+    // Open cart drawer when adding items
+    setIsCartOpen(true);
+  };
+  
+  // Remove an item from the cart
+  const removeFromCart = (id: string) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== id));
+  };
+  
+  // Update the quantity of an item in the cart
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity < 1) {
+      removeFromCart(id);
+      return;
+    }
+    
+    setCart(prevCart => 
+      prevCart.map(item => 
+        item.id === id ? { ...item, quantity } : item
+      )
+    );
+  };
+  
+  // Clear the entire cart
+  const clearCart = () => {
+    setCart([]);
+  };
+  
+  // Toggle cart open/closed
+  const toggleCart = () => {
+    setIsCartOpen(prev => !prev);
+  };
+
+  // Checkout function to create a Shopify cart and redirect to checkout
+  const checkout = async (): Promise<string> => {
+    try {
+      setIsCheckingOut(true);
+      
+      // Format cart items for the API
+      const checkoutItems = cart.map(item => ({
+        variantId: item.variantId,
+        quantity: item.quantity
+      }));
+      
+      // Call our API to create a Shopify cart
+      const response = await fetch('/api/cart/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: checkoutItems }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout');
+      }
+      
+      return data.checkoutUrl;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      throw error;
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  return (
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      isCartOpen,
+      toggleCart,
+      totalItems,
+      subtotal,
+      checkout,
+      isCheckingOut
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
