@@ -150,7 +150,7 @@ export default function ShopPage() {
               Dude.Box Shop
             </h1>
             <p className="max-w-2xl mx-auto text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-              All our <span className="text-accent animate-glitch-text-mini">robots, kits, and tech wonders</span> in one place. Each item is crafted with our signature glitchy perfection.
+              All our <span className="text-accent animate-glitch-text-mini"> available robots, kits, and tech wonders</span> in one place. 
             </p>
           </div>
 
