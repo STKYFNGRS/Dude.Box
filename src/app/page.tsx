@@ -140,7 +140,7 @@ export default function Home() {
             <div className="section-box p-8 rounded-md max-w-3xl">
               <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Tech & Tinkering</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                We transform resin, filament, circuitry, paint and caffeine-fueled coding sessions into objects with personality. The secret sauce? Open hardware designs, questionable decision-making, and our desire to give inanimate objects personality. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or commision your own mechanical offspring.
+                We transform resin, filament, circuitry, paint and caffeine-fueled coding sessions into one of a kind creations. The secret sauce? Open hardware designs, questionable decision-making, and our desire to give inanimate objects personality. <span className="text-accent animate-glitch-text-mini">Want a front-row seat to the chaos?</span> Tune into our live 3D printing streams (coming soon) or commission your own mechanical offspring.
               </p>
               <div className="flex flex-wrap gap-6 justify-center animate-fade-in-slow">
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
