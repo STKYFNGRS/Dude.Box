@@ -196,6 +196,13 @@ export default function Home() {
                     <div className="social-icon-glitch-effect"></div>
                   </a>
                 </div>
+                <div className="mt-4">
+                  <img 
+                    src="/ZoraQR.png" 
+                    alt="Zora QR Code" 
+                    className="w-24 h-24 mx-auto border border-gray-700 rounded" 
+                  />
+                </div>
               </div>
             </div>
           </section>
