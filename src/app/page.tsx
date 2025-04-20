@@ -175,7 +175,6 @@ export default function Home() {
                 Want to collaborate, join the team, or just say hi? Drop us a line. We love meeting fellow makers, dreamers, and survivors.
               </p>
               <div className="flex flex-col items-center gap-6">
-                <a href="mailto:dude@dude.box" className="px-8 py-4 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Email Us</a>
                 
                 {/* Social Media Icons */}
                 <div className="flex flex-wrap justify-center gap-6 mt-4">
@@ -195,6 +194,12 @@ export default function Home() {
                     />
                     <div className="social-icon-glitch-effect"></div>
                   </a>
+                  <a href="mailto:dude@dude.box" className="social-icon-container group" aria-label="Email us">
+          <svg className="w-8 h-8 text-gray-400 group-hover:text-accent transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+          </svg>
+          <div className="social-icon-glitch-effect"></div>
+        </a>
                 </div>
                 <div className="mt-4">
                   <img 
