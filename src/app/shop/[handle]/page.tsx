@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ShopifyProduct, formatPrice } from '@/utils/shopify';
+import { ShopifyProduct, ShopifyVariant, formatPrice } from '@/utils/shopify'; // Ensure ShopifyVariant is imported if needed elsewhere
 import MatrixRain from '@/components/MatrixRain';
 import { useCart } from '@/context/CartContext';
 import CartIcon from '@/components/CartIcon';
@@ -14,7 +14,10 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const { addToCart } = useCart();  useEffect(() => {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0); // State for selected image index
+  const { addToCart } = useCart();
+
+  useEffect(() => {
     async function loadProduct() {
       try {
         // Use the product featured API route 
@@ -67,10 +70,22 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
 
   const handleVariantChange = (index: number) => {
     setSelectedVariantIndex(index);
+    // Reset image to the first one when variant changes, or find a variant-specific image if available
+    setSelectedImageIndex(0); 
+  };
+
+  // Function to handle thumbnail clicks
+  const handleImageSelect = (index: number) => {
+    setSelectedImageIndex(index);
   };
 
   // Get the current variant
-  const currentVariant = product?.variants.edges[selectedVariantIndex]?.node;  return (
+  const currentVariant = product?.variants.edges[selectedVariantIndex]?.node;
+
+  // Get the currently selected image based on the index
+  const selectedImage = product?.images.edges[selectedImageIndex]?.node;
+
+  return (
     <div className="min-h-screen flex flex-col text-[#EDEDED] font-mono bg-black">
       {/* Matrix-style rain overlay */}
       <MatrixRain />
@@ -189,11 +204,19 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Product Image Gallery */}
                 <div className="space-y-4">
+                  {/* Main Image Display */}
                   <div className="w-full h-80 md:h-96 overflow-hidden rounded border border-gray-800">
-                    {product.images.edges[0] ? (
-                      <img 
-                        src={product.images.edges[0].node.originalSrc} 
-                        alt={product.images.edges[0].node.altText || product.title} 
+                    {/* Use selectedImage state here */}
+                    {selectedImage ? (
+                      <img
+                        src={selectedImage.originalSrc}
+                        alt={selectedImage.altText || `${product.title} - Image ${selectedImageIndex + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : product.images.edges[0] ? ( // Fallback to first image if selectedImage is somehow null
+                      <img
+                        src={product.images.edges[0].node.originalSrc}
+                        alt={product.images.edges[0].node.altText || product.title}
                         className="w-full h-full object-contain"
                       />
                     ) : (
@@ -202,18 +225,23 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Thumbnail Gallery */}
                   {product.images.edges.length > 1 && (
                     <div className="flex flex-wrap gap-2">
                       {product.images.edges.map((image, index) => (
-                        <button 
-                          key={index}
-                          className="w-16 h-16 overflow-hidden rounded border border-gray-800 hover:border-accent focus:border-accent transition-colors"
+                        <button
+                          key={image.node.originalSrc || index} // Use image src or index as key
+                          onClick={() => handleImageSelect(index)} // Add onClick handler
+                          className={`
+                            w-16 h-16 overflow-hidden rounded border-2 transition-colors
+                            ${selectedImageIndex === index ? 'border-accent' : 'border-gray-800 hover:border-gray-600'}
+                          `} // Add active state styling
+                          aria-label={`View image ${index + 1}`}
                         >
-                          <img 
-                            src={image.node.originalSrc} 
-                            alt={image.node.altText || `${product.title} - Image ${index + 1}`} 
+                          <img
+                            src={image.node.originalSrc}
+                            alt={image.node.altText || `${product.title} - Thumbnail ${index + 1}`}
                             className="w-full h-full object-cover"
                           />
                         </button>
@@ -221,7 +249,8 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                     </div>
                   )}
                 </div>
-                  {/* Product Details */}
+
+                {/* Product Details */}
                 <div className="flex flex-col section-box p-6 rounded-lg">
                   <h1 className="text-3xl md:text-4xl font-bold text-accent mb-2 animate-glitch-text-subtle">
                     {product.title}
