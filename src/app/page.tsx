@@ -48,6 +48,7 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
+              <a href="#token" className={`transition-colors ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':''}`}>Token</a>
               <a href="/shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
@@ -132,6 +133,43 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Token Section - LittleDude (SON) */}
+          <section id="token" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
+            <div className="section-box p-8 rounded-md max-w-3xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">LittleDude (SON) Token</h2>
+              <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
+                Our ecosystem token powering the future of Dude.Box
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-slow mb-6">
+                <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <span className="text-4xl mb-2">💰</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Token Supply</span>
+                  <span className="text-[#b0b0b0] text-center">Total supply of 99,000,000 SON tokens.</span>
+                </div>
+                <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <span className="text-4xl mb-2">🔒</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Liquidity Lock</span>
+                  <span className="text-[#b0b0b0] text-center">Initial liquidity pool locked.</span>
+                </div>
+                <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <span className="text-4xl mb-2">🔝</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Governance Rights</span>
+                  <span className="text-[#b0b0b0] text-center">Shape the future of the Dude.Box ecosystem.</span>
+                </div>
+                <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <span className="text-4xl mb-2">🔐</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Multi-Sig Vault</span>
+                  <span className="text-[#b0b0b0] text-center">Stored Securely</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <a href="#" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover text-lg">Get Some, SON</a>
+              </div>
+            </div>
+          </section>
+
           {/* Shop Section - New section for featured products */}
           <ShopSection />
 
@@ -186,6 +224,14 @@ export default function Home() {
                     <a href="https://www.instagram.com/dudedotbox/" target="_blank" rel="noopener noreferrer" className="social-icon-container group" aria-label="Follow us on Instagram">
                       <svg className="w-6 h-6 text-gray-400 group-hover:text-accent transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                      </svg>
+                      <div className="social-icon-glitch-effect"></div>
+                    </a>
+                    
+                    {/* YouTube */}
+                    <a href="https://www.youtube.com/@dudedotbox" target="_blank" rel="noopener noreferrer" className="social-icon-container group" aria-label="Subscribe to our YouTube channel">
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-accent transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                       </svg>
                       <div className="social-icon-glitch-effect"></div>
                     </a>
@@ -580,11 +626,11 @@ export default function Home() {
               Shop
             </a>
             <a 
-              href="#tech" 
-              className={`transition-colors p-4 ${activeSection==='tech'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              href="#token" 
+              className={`transition-colors p-4 ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
               onClick={handleNavClick}
             >
-              Tech
+              Token
             </a>
             <a 
               href="#contact" 
