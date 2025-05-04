@@ -22,6 +22,11 @@ export async function GET() {
               title
               handle
               description
+              options {
+                id
+                name
+                values
+              }
               priceRange {
                 minVariantPrice {
                   amount
@@ -36,7 +41,7 @@ export async function GET() {
                   }
                 }
               }
-              variants(first: 5) {
+              variants(first: 25) {
                 edges {
                   node {
                     id
@@ -46,6 +51,10 @@ export async function GET() {
                       currencyCode
                     }
                     availableForSale
+                    selectedOptions {
+                      name
+                      value
+                    }
                   }
                 }
               }

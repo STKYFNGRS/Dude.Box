@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ShopifyProduct } from '@/utils/shopify';
+import { ShopifyProduct, ShopifyVariant } from '@/utils/shopify';
 
 // Define cart item type
 export interface CartItem {
@@ -17,7 +17,7 @@ export interface CartItem {
 // Define cart context type
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: ShopifyProduct, quantity: number) => void;
+  addToCart: (product: ShopifyProduct, variant: ShopifyVariant, quantity: number) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => Promise<void>;
@@ -104,12 +104,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [shopifyCartId]);
   
   // Add a product to the cart
-  const addToCart = (product: ShopifyProduct, quantity: number) => {
+  const addToCart = (product: ShopifyProduct, variant: ShopifyVariant, quantity: number) => {
     setCart(prevCart => {
-      // Check if product already exists in cart
+      // Check if the specific variant already exists in cart
       const existingItem = prevCart.find(item => 
         item.productId === product.id && 
-        item.variantId === product.variants.edges[0]?.node.id
+        item.variantId === variant.id // Use the passed variant ID
       );
       
       if (existingItem) {
@@ -120,16 +120,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       } else {
-        // Add new item to cart
+        // Add new item to cart using the specific variant details
         const newItem: CartItem = {
-          id: `${product.id}_${Date.now()}`, // Create unique cart item ID
+          id: `${product.id}_${variant.id}_${Date.now()}`, // Create unique cart item ID using variant
           productId: product.id,
-          title: product.title,
-          price: product.variants.edges[0]?.node.price.amount || 
-                 product.priceRange.minVariantPrice.amount,
+          title: `${product.title} ${variant.title !== 'Default Title' ? `- ${variant.title}` : ''}`, // Add variant title if not default
+          price: variant.price.amount, // Use the passed variant price
           quantity: quantity,
-          image: product.images.edges[0]?.node.originalSrc || '/android-chrome-512x512.png',
-          variantId: product.variants.edges[0]?.node.id
+          image: variant.image?.originalSrc || product.images.edges[0]?.node.originalSrc || '/android-chrome-512x512.png',
+          variantId: variant.id // Use the passed variant ID
         };
         return [...prevCart, newItem];
       }

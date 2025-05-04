@@ -89,7 +89,6 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="/#about" className="transition-colors">About</a>
             <a href="/#shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
-            <a href="/#tech" className="transition-colors">Tech</a>
             <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
@@ -235,27 +234,158 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                     </p>
                   </div>
                   
-                  {/* Variants */}
-                  {product.variants.edges.length > 1 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-bold mb-2">Options</h3>
-                      <div className="flex flex-wrap gap-3">
-                        {product.variants.edges.map((variant, index) => (
-                          <button 
-                            key={variant.node.id}
-                            onClick={() => handleVariantChange(index)}
-                            className={`px-3 py-2 border rounded-md ${
-                              selectedVariantIndex === index 
-                                ? 'border-accent text-accent' 
-                                : 'border-gray-600 text-gray-300 hover:border-gray-400'
-                            } transition-colors`}
-                            disabled={!variant.node.availableForSale}
-                          >
-                            {variant.node.title}
-                            {!variant.node.availableForSale && " (Sold Out)"}
-                          </button>
-                        ))}
-                      </div>
+                  {/* Variants - Using proper Shopify options data */}
+                  {product.options && product.options.length > 0 && (
+                    <div className="mb-6 space-y-4">
+                      <h3 className="text-lg font-bold">Options</h3>
+                      
+                      {/* Map through each option type (like Color, Size) */}
+                      {product.options.map((option, index) => {
+                        // Get current selection for this option
+                        const currentVariant = product.variants.edges[selectedVariantIndex].node;
+                        const currentSelection = currentVariant.selectedOptions.find(
+                          opt => opt.name === option.name
+                        )?.value || '';
+                        
+                        // For Color option, use buttons with swatches
+                        if (option.name.toLowerCase() === 'color') {
+                          return (
+                            <div key={option.id} className="mb-4">
+                              <label className="block text-white mb-2">Select {option.name}</label>
+                              <div className="flex flex-wrap gap-3">
+                                {option.values.map(value => {
+                                  // Check if this option combination is available
+                                  // We need to find a variant that matches current selections but with this color
+                                  
+                                  // Get all current selections
+                                  const otherSelections = currentVariant.selectedOptions
+                                    .filter(opt => opt.name !== option.name)
+                                    .map(opt => ({ name: opt.name, value: opt.value }));
+                                  
+                                  // Find a variant with this color and same other options
+                                  const matchingVariantEdge = product.variants.edges.find(edge => {
+                                    const variant = edge.node;
+                                    // Must have this color
+                                    const hasThisColor = variant.selectedOptions.some(
+                                      opt => opt.name === option.name && opt.value === value
+                                    );
+                                    
+                                    // Must match all other selected options
+                                    const matchesOtherOptions = otherSelections.every(selection => 
+                                      variant.selectedOptions.some(
+                                        opt => opt.name === selection.name && opt.value === selection.value
+                                      )
+                                    );
+                                    
+                                    return hasThisColor && matchesOtherOptions;
+                                  });
+                                  
+                                  const isAvailable = matchingVariantEdge?.node.availableForSale || false;
+                                  const variantIndex = matchingVariantEdge ? 
+                                    product.variants.edges.indexOf(matchingVariantEdge) : -1;
+                                  
+                                  return (
+                                    <button 
+                                      key={value}
+                                      className={`px-3 py-2 border rounded-md ${
+                                        currentSelection === value
+                                          ? 'border-accent text-accent' 
+                                          : isAvailable 
+                                            ? 'border-gray-600 text-gray-300 hover:border-gray-400'
+                                            : 'border-gray-800 text-gray-600 cursor-not-allowed'
+                                      } transition-colors`}
+                                      disabled={!isAvailable}
+                                      onClick={() => {
+                                        if (variantIndex !== -1) {
+                                          handleVariantChange(variantIndex);
+                                        }
+                                      }}
+                                    >
+                                      {value}
+                                      {!isAvailable && " (Sold Out)"}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        }
+                        
+                        // For all other options (like Size), use a dropdown
+                        return (
+                          <div key={option.id} className="mb-4">
+                            <label className="block text-white mb-2">Select {option.name}</label>
+                            <select
+                              className="w-full bg-[#111111] border border-gray-700 rounded-md px-3 py-2 text-white focus:border-accent focus:outline-none"
+                              value={currentSelection}
+                              onChange={(e) => {
+                                const newValue = e.target.value;
+                                
+                                // Get all current selections
+                                const newSelections = currentVariant.selectedOptions.map(opt => 
+                                  opt.name === option.name 
+                                    ? { name: opt.name, value: newValue }
+                                    : { name: opt.name, value: opt.value }
+                                );
+                                
+                                // Find a variant that matches these selections
+                                const matchingVariantIndex = product.variants.edges.findIndex(edge => {
+                                  const variant = edge.node;
+                                  return newSelections.every(selection => 
+                                    variant.selectedOptions.some(
+                                      opt => opt.name === selection.name && opt.value === selection.value
+                                    )
+                                  );
+                                });
+                                
+                                if (matchingVariantIndex !== -1) {
+                                  handleVariantChange(matchingVariantIndex);
+                                }
+                              }}
+                            >
+                              {option.values.map(value => {
+                                // Check if this option combination is available
+                                // We need to find a variant that matches current selections but with this value
+                                
+                                // Get all current selections
+                                const otherSelections = currentVariant.selectedOptions
+                                  .filter(opt => opt.name !== option.name)
+                                  .map(opt => ({ name: opt.name, value: opt.value }));
+                                
+                                // Find a variant with this value and same other options
+                                const matchingVariantEdge = product.variants.edges.find(edge => {
+                                  const variant = edge.node;
+                                  // Must have this value
+                                  const hasThisValue = variant.selectedOptions.some(
+                                    opt => opt.name === option.name && opt.value === value
+                                  );
+                                  
+                                  // Must match all other selected options
+                                  const matchesOtherOptions = otherSelections.every(selection => 
+                                    variant.selectedOptions.some(
+                                      opt => opt.name === selection.name && opt.value === selection.value
+                                    )
+                                  );
+                                  
+                                  return hasThisValue && matchesOtherOptions;
+                                });
+                                
+                                const isAvailable = matchingVariantEdge?.node.availableForSale || false;
+                                
+                                return (
+                                  <option 
+                                    key={value} 
+                                    value={value}
+                                    disabled={!isAvailable}
+                                  >
+                                    {value}{!isAvailable && " (Sold Out)"}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                     {/* Description */}
@@ -274,15 +404,17 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                         <button 
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
                           className="h-10 w-10 flex items-center justify-center border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-colors rounded-l-md"
+                          aria-label="Decrease quantity"
                         >
                           -
                         </button>
-                        <div className="h-10 w-12 flex items-center justify-center border-t border-b border-gray-700 text-white">
+                        <span className="h-10 w-12 flex items-center justify-center border-t border-b border-gray-700 text-white">
                           {quantity}
-                        </div>
+                        </span>
                         <button 
                           onClick={() => setQuantity(quantity + 1)}
                           className="h-10 w-10 flex items-center justify-center border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-colors rounded-r-md"
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>
@@ -290,15 +422,19 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                     </div>
                     
                     <button 
-                      className="w-full md:w-auto px-8 py-4 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover"
+                      className="w-full md:w-auto px-8 py-4 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => {
-                        if (product) {
-                          addToCart(product, quantity);
+                        // Ensure product and currentVariant exist before adding to cart
+                        if (product && currentVariant) {
+                          addToCart(product, currentVariant, quantity); // Pass product, selected variant, and quantity
+                        } else {
+                          console.error("Cannot add to cart: Product or variant not selected/available.");
+                          // Optionally show an error message to the user
                         }
                       }}
-                      disabled={currentVariant && !currentVariant.availableForSale}
+                      disabled={!currentVariant || !currentVariant.availableForSale}
                     >
-                      {currentVariant && !currentVariant.availableForSale ? 'Sold Out' : 'Add to Cart'}
+                      {currentVariant && currentVariant.availableForSale ? 'Add to Cart' : 'Sold Out'}
                     </button>
 
                     <div className="text-sm text-gray-400 mt-4">

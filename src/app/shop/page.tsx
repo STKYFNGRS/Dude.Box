@@ -68,7 +68,6 @@ export default function ShopPage() {
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="/#about" className="transition-colors">About</a>
             <a href="/#shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
-            <a href="/#tech" className="transition-colors">Tech</a>
             <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
@@ -150,7 +149,7 @@ export default function ShopPage() {
               Dude.Box Shop
             </h1>
             <p className="max-w-2xl mx-auto text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-              All our <span className="text-accent animate-glitch-text-mini"> available robots, kits, and tech wonders</span> in one place. 
+              All our available <span className="text-accent animate-glitch-text-mini"> wonders</span> in one place. 
             </p>
           </div>
 

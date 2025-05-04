@@ -4,12 +4,36 @@
  * The API credentials are stored in .env files
  */
 
+// Define the structure for a single variant node
+export interface ShopifyVariant {
+  id: string;
+  title: string;
+  price: {
+    amount: string;
+    currencyCode: string;
+  };
+  availableForSale: boolean;
+  selectedOptions: Array<{
+    name: string;
+    value: string;
+  }>;
+  image?: { // Add image property, make it optional as it might not always be present per variant
+    originalSrc: string;
+    altText?: string;
+  };
+}
+
 // Types for Shopify products
 export interface ShopifyProduct {
   id: string;
   title: string;
   description: string;
   handle: string;
+  options: {
+    id: string;
+    name: string;
+    values: string[];
+  }[];
   priceRange: {
     minVariantPrice: {
       amount: string;
@@ -25,15 +49,9 @@ export interface ShopifyProduct {
     }>;
   };
   variants: {
+    // Use the defined ShopifyVariant type here
     edges: Array<{
-      node: {        id: string;
-        title: string;
-        price: {
-          amount: string;
-          currencyCode: string;
-        };
-        availableForSale: boolean;
-      };
+      node: ShopifyVariant;
     }>;
   };
 }

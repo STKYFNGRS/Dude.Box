@@ -3,13 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ShopifyProduct, formatPrice } from '@/utils/shopify';
-import { useCart } from '@/context/CartContext';
 
 export default function ShopSection() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const { addToCart } = useCart();useEffect(() => {    async function loadProducts() {
+  const [error, setError] = useState('');useEffect(() => {    async function loadProducts() {
       try {
         // Use a proper production API endpoint instead of the test one
         const response = await fetch('/api/product/featured');
@@ -39,7 +37,7 @@ export default function ShopSection() {
 
   // Placeholder products while loading
   const placeholderProducts = Array(3).fill(null).map((_, i) => (
-    <div key={`placeholder-${i}`} className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+    <div key={`placeholder-${i}`} className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover cursor-pointer h-full">
       <div className="w-full h-48 bg-gray-800 animate-pulse mb-4 rounded"></div>
       <div className="w-3/4 h-6 bg-gray-800 animate-pulse mb-2"></div>
       <div className="w-1/2 h-4 bg-gray-700 animate-pulse"></div>
@@ -60,47 +58,33 @@ export default function ShopSection() {
             products.length === 0 ? (
               <p className="text-center text-[#b0b0b0] col-span-3">No products available at the moment. Check back soon!</p>
             ) : (
-              products.map(product => (                <div key={product.id} className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover relative overflow-hidden">
-                  {/* Product Image */}
-                  <div className="w-full h-48 overflow-hidden mb-3 relative">
-                    {product.images.edges[0] ? (
-                      <img 
-                        src={product.images.edges[0].node.originalSrc} 
-                        alt={product.images.edges[0].node.altText || product.title} 
-                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                        <span className="text-4xl mb-2">🤖</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Product Name */}
-                  <h3 className="font-bold text-lg mb-1 text-accent text-center">{product.title}</h3>
-                  
-                  {/* Product Price */}
-                  <p className="text-[#b0b0b0] mb-3">
-                    {formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)}
-                  </p>
-                  
-                  {/* Buttons */}
-                  <div className="flex gap-2 mt-auto w-full">
-                    <button
-                      onClick={() => addToCart(product, 1)}
-                      className="flex-1 px-4 py-2 bg-accent text-white font-bold text-sm rounded-full hover:bg-opacity-80 transition-all animate-glitch-hover"
-                    >
-                      Add to Cart
-                    </button>
+              products.map(product => (
+                <Link href={`/shop/${product.handle}`} key={product.id}>
+                  <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover relative overflow-hidden cursor-pointer h-full">
+                    {/* Product Image */}
+                    <div className="w-full h-48 overflow-hidden mb-3 relative">
+                      {product.images.edges[0] ? (
+                        <img 
+                          src={product.images.edges[0].node.originalSrc} 
+                          alt={product.images.edges[0].node.altText || product.title} 
+                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                          <span className="text-4xl mb-2">🤖</span>
+                        </div>
+                      )}
+                    </div>
                     
-                    <Link 
-                      href={`/shop/${product.handle}`} 
-                      className="px-4 py-2 border border-accent text-accent font-bold text-sm rounded-full hover:bg-accent hover:text-white transition-all animate-glitch-hover"
-                    >
-                      Details
-                    </Link>
+                    {/* Product Name */}
+                    <h3 className="font-bold text-lg mb-1 text-accent text-center">{product.title}</h3>
+                    
+                    {/* Product Price */}
+                    <p className="text-[#b0b0b0] text-center">
+                      {formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)}
+                    </p>
                   </div>
-                </div>
+                </Link>
               ))
             )
           )}
