@@ -48,7 +48,7 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
-              <a href="#token" className={`transition-colors ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':''}`}>Token</a>
+              <a href="/token" className={`transition-colors ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':''}`}>Token</a>
               <a href="/shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
@@ -165,7 +165,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-center">
-                <a href="#" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover text-lg">Get Some, SON</a>
+                <a href="/token" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover text-lg">Get Some, SON</a>
               </div>
             </div>
           </section>
@@ -619,19 +619,20 @@ export default function Home() {
               About
             </a>
             <a 
+              href="/token" 
+              className={`transition-colors p-4 ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Token
+            </a>
+            <a 
               href="/shop" 
               className={`transition-colors p-4 ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
               onClick={handleNavClick}
             >
               Shop
             </a>
-            <a 
-              href="#token" 
-              className={`transition-colors p-4 ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
-              onClick={handleNavClick}
-            >
-              Token
-            </a>
+            
             <a 
               href="#contact" 
               className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
