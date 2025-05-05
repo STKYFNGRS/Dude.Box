@@ -103,8 +103,8 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="/#about" className="transition-colors">About</a>
-            <a href="/#token" className="transition-colors">Token</a>
-            <a href="/#shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
+            <a href="/token" className="transition-colors">Token</a>
+            <a href="/shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
             <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
@@ -138,14 +138,14 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
               About
             </a>
             <a 
-              href="/#token" 
+              href="/token" 
               className="transition-colors p-4"
               onClick={() => setMobileMenuOpen(false)}
             >
               Token
             </a>
             <a 
-              href="/#shop" 
+              href="/shop" 
               className="transition-colors p-4 text-accent font-bold animate-glitch-text-mini"
               onClick={() => setMobileMenuOpen(false)}
             >
