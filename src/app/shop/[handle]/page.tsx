@@ -138,19 +138,20 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
               About
             </a>
             <a 
+              href="/#token" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Token
+            </a>
+            <a 
               href="/#shop" 
               className="transition-colors p-4 text-accent font-bold animate-glitch-text-mini"
               onClick={() => setMobileMenuOpen(false)}
             >
               Shop
             </a>
-            <a 
-              href="/#tech" 
-              className="transition-colors p-4"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Tech
-            </a>
+            
             <a 
               href="/#contact" 
               className="transition-colors p-4"
