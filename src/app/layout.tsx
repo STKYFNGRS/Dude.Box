@@ -3,6 +3,9 @@ import { Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import Providers from "@/context/Providers";
 import CartDrawer from "@/components/CartDrawer";
+import { headers } from "next/headers";
+import { cookieToInitialState } from "wagmi";
+import { wagmiAdapter } from "@/config/reownAppKitConfig";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -24,12 +27,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, headers().get("cookie"));
+
   return (
     <html lang="en">
       <body
         className={`${inter.variable} ${sourceCodePro.variable} antialiased`}
       >
-        <Providers>
+        <Providers initialState={initialState}>
           {children}
           <CartDrawer />
         </Providers>

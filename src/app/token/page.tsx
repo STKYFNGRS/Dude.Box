@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from "react";
 import MatrixRain from "@/components/MatrixRain";
 import CartIcon from "@/components/CartIcon";
+import TokenVestingSchedule from "@/components/TokenVestingSchedule";
+import TokenRoadmap from "@/components/TokenRoadmap";
+import TokenPurchaseInterface from "@/components/TokenPurchaseInterface";
 
 export default function TokenPage() {
   const [activeSection, setActiveSection] = useState<string>('');
@@ -84,9 +87,9 @@ export default function TokenPage() {
 
               {/* Token Content Goes Here */}
               <div className="space-y-10">
-                <p className="text-[#b0b0b0] text-lg">
-                  This page is under construction. More details about the LittleDude (SON) token coming soon.
-                </p>
+                <TokenPurchaseInterface />
+                <TokenRoadmap />
+                <TokenVestingSchedule />
               </div>
             </div>
           </div>
