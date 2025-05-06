@@ -40,9 +40,9 @@ export default function Home() {
           <div className="container mx-auto flex justify-between items-center">
             {/* Wrap logo image in an anchor tag linking to root */}
             <a href="/" aria-label="Return to homepage">
-              <div className="flex items-center gap-3">
-                <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
-              </div>
+            <div className="flex items-center gap-3">
+              <img src="/android-chrome-192x192.png" alt="D.U.D.E. Box Logo" className="h-14 w-14 drop-shadow-lg animate-spin-slow" />
+            </div>
             </a>
 
             {/* Desktop Navigation */}
@@ -76,17 +76,17 @@ export default function Home() {
           {/* Hero Section - Reverted height back to h-screen */}
           <section id="hero" className="h-screen snap-always snap-start flex flex-col items-center justify-center w-full">
             <div className="section-box p-8 rounded-md max-w-3xl text-center">
-              <div className="flex flex-col items-center gap-2 md:gap-3">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
                 <h1 className="text-4xl md:text-6xl font-black tracking-tight text-center text-accent drop-shadow-lg animate-glitch">
-                  Welcome to
-                </h1>
-                <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-center text-white animate-glitch-subtle">
-                  Dude.Box
-                </h2>
+              Welcome to
+            </h1>
+            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-center text-white animate-glitch-subtle">
+              Dude.Box
+            </h2>
                 <h3 className="text-3xl md:text-4xl font-bold text-center text-accent animate-fade-in-slow">
                   Robot Foundry & Creative Lab
-                </h3>
-              </div>
+            </h3>
+          </div>
               <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
                 A Father-Son Workshop for Robots & 
               </p>
@@ -97,8 +97,8 @@ export default function Home() {
                 <a href="#about" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Learn More</a>
                 <a href="#contact" className="px-6 py-3 rounded-full border border-accent text-accent font-bold shadow-lg hover:bg-accent hover:text-white transition-all animate-fade-in animate-glitch-hover">Contact</a>
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
           {/* About Section - Reverted height back to h-screen */}
           <section id="about" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
@@ -110,7 +110,7 @@ export default function Home() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-slow">
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">🤖</span>
+                <span className="text-4xl mb-2">🤖</span>
                   <span className="font-bold text-lg mb-1 text-accent">Robotic Creativity</span>
                   <span className="text-[#b0b0b0] text-center">Small-batch, artisan robot designs with personality and purpose. Each creation combines modern tech with retro-future aesthetics to create something truly one-of-a-kind.</span>
                 </div>
@@ -118,20 +118,20 @@ export default function Home() {
                   <span className="text-4xl mb-2">👨‍👦</span>
                   <span className="font-bold text-lg mb-1 text-accent">Father-Son Workshop</span>
                   <span className="text-[#b0b0b0] text-center">Teaching the next generation about electronics, design, and making. Building robots today to prepare for tomorrow's world, one circuit and line of code at a time.</span>
-                </div>
+              </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🛠️</span>
                   <span className="font-bold text-lg mb-1 text-accent">Hands-On Engineering</span>
                   <span className="text-[#b0b0b0] text-center">3D printed, hand-finished, and open for hacking. DIY kits, interactive builds, and modular components designed for both beginners and advanced makers.</span>
-                </div>
+              </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">☢️</span>
+                <span className="text-4xl mb-2">☢️</span>
                   <span className="font-bold text-lg mb-1 text-accent">Post-Apocalyptic Vision</span>
                   <span className="text-[#b0b0b0] text-center">Glitchy, battle-worn aesthetics inspired by a world where robots continue their tasks long after humans have gone. Each creation tells a story from this alternate timeline.</span>
                 </div>
-              </div>
             </div>
-          </section>
+          </div>
+        </section>
 
           {/* Token Section - LittleDude (SON) */}
           <section id="token" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
@@ -156,19 +156,19 @@ export default function Home() {
                   <span className="text-4xl mb-2">🔝</span>
                   <span className="font-bold text-lg mb-1 text-accent">Governance Rights</span>
                   <span className="text-[#b0b0b0] text-center">Shape the future of the Dude.Box ecosystem.</span>
-                </div>
+          </div>
                 <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">🔐</span>
                   <span className="font-bold text-lg mb-1 text-accent">Multi-Sig Vault</span>
                   <span className="text-[#b0b0b0] text-center">Stored Securely</span>
-                </div>
+              </div>
               </div>
 
               <div className="flex justify-center">
                 <a href="/token" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover text-lg">Get Some, SON</a>
-              </div>
             </div>
-          </section>
+          </div>
+        </section>
 
           {/* Shop Section - New section for featured products */}
           <ShopSection />
@@ -255,8 +255,8 @@ export default function Home() {
                   
                 </div>
               </div>
-            </div>
-          </section>
+          </div>
+        </section>
         </main>
 
         {/* Footer - Only visible when on contact section */}
@@ -307,8 +307,8 @@ export default function Home() {
           })();
         `}} />
 
-        {/* Custom Animations */}
-        <style jsx global>{`
+      {/* Custom Animations */}
+      <style jsx global>{`
           /* Hide scrollbar for Chrome, Safari and Opera */
           .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -343,9 +343,9 @@ export default function Home() {
           .border-accent { border-color: #ff0044; }
           
           /* Main title glitch effect */
-          .animate-glitch {
-            animation: glitch 2.5s infinite linear alternate-reverse;
-          }
+        .animate-glitch {
+          animation: glitch 2.5s infinite linear alternate-reverse;
+        }
           @keyframes glitch {
             0% { text-shadow: 2px 0 #ff0044, -2px 0 #00fff7; }
             20% { text-shadow: -2px 2px #ff0044, 2px -2px #00fff7; }
@@ -356,9 +356,9 @@ export default function Home() {
           }
           
           /* Subtle glitch for subtitles */
-          .animate-glitch-subtle {
-            animation: glitchSubtle 2.5s infinite linear alternate-reverse;
-          }
+        .animate-glitch-subtle {
+          animation: glitchSubtle 2.5s infinite linear alternate-reverse;
+        }
           @keyframes glitchSubtle {
             0% { text-shadow: 1px 0 #ff0044, -1px 0 #00fff7; transform: translateX(0); }
             25% { text-shadow: -1px 1px #ff0044, 1px -1px #00fff7; transform: translateX(-2px); }
@@ -497,34 +497,34 @@ export default function Home() {
           }
 
           /* Other animations */
-          .animate-flicker {
-            animation: flicker 2s infinite alternate;
-          }
-          @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-            60% { opacity: 0.4; }
-            80% { opacity: 0.9; }
-          }
-          .animate-fade-in {
-            animation: fadeIn 1.2s ease-in;
-          }
-          .animate-fade-in-slow {
-            animation: fadeIn 2.2s ease-in;
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: none; }
-          }
-          .animate-spin-slow {
-            animation: spin 12s linear infinite;
-          }
-          .favicon-spin {
-            animation: spin 12s linear infinite;
-          }
-          @keyframes spin {
-            100% { transform: rotate(360deg); }
-          }
+        .animate-flicker {
+          animation: flicker 2s infinite alternate;
+        }
+        @keyframes flicker {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+          60% { opacity: 0.4; }
+          80% { opacity: 0.9; }
+        }
+        .animate-fade-in {
+          animation: fadeIn 1.2s ease-in;
+        }
+        .animate-fade-in-slow {
+          animation: fadeIn 2.2s ease-in;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: none; }
+        }
+        .animate-spin-slow {
+          animation: spin 12s linear infinite;
+        }
+        .favicon-spin {
+          animation: spin 12s linear infinite;
+        }
+        @keyframes spin {
+          100% { transform: rotate(360deg); }
+        }
           .bg-noise {
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.5"/></svg>');
           }
@@ -604,8 +604,8 @@ export default function Home() {
           body {
             background-color: black;
           }
-        `}</style>
-      </div>
+      `}</style>
+    </div>
 
       {/* Mobile Navigation Overlay */}
       {mobileMenuOpen && (
