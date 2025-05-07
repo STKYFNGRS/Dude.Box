@@ -108,6 +108,40 @@ export default function TokenPage() {
           </div>
         </footer>
 
+        {/* Favicon Spinner Script (Copied from src/app/page.tsx) */}
+        <script dangerouslySetInnerHTML={{__html:`
+          (function() {
+            const faviconUrl = '/android-chrome-192x192.png';
+            let angle = 0;
+            let link = document.querySelector('link[rel="icon"]') || document.createElement('link');
+            link.rel = 'icon';
+            link.type = 'image/png';
+            if (!link.parentNode) document.head.appendChild(link);
+            const img = new window.Image();
+            img.src = faviconUrl;
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+              const size = 64;
+              const canvas = document.createElement('canvas');
+              canvas.width = size;
+              canvas.height = size;
+              const ctx = canvas.getContext('2d');
+              function draw() {
+                ctx.clearRect(0, 0, size, size);
+                ctx.save();
+                ctx.translate(size/2, size/2);
+                ctx.rotate(angle * Math.PI / 180);
+                ctx.drawImage(img, -size/2, -size/2, size, size);
+                ctx.restore();
+                link.href = canvas.toDataURL('image/png');
+                angle = (angle + 0.5) % 360; // Slower spin
+                requestAnimationFrame(draw);
+              }
+              draw();
+            };
+          })();
+        `}} />
+
         {/* Custom Animations */}
         <style jsx global>{`
           /* Hide scrollbar for Chrome, Safari and Opera */
