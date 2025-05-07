@@ -27,7 +27,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, headers().get("cookie"));
+  // Safely handle cookie reading for initial state
+  let initialState;
+  try {
+    const cookieHeader = headers().get("cookie");
+    if (cookieHeader) {
+      initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookieHeader);
+    }
+  } catch (error) {
+    console.error("Error parsing cookie for initial state:", error);
+    // Continue without initial state if there's an error
+  }
 
   return (
     <html lang="en">
