@@ -9,12 +9,16 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_REOWN_PROJECT_ID is not defined');
 }
 
+// Determine environment for dynamic URLs
+const IS_PROD = process.env.NODE_ENV === 'production';
+const APP_URL = IS_PROD ? 'https://www.dude.box' : 'http://localhost:3000';
+
 // 2. Create metadata
 export const metadata = {
   name: 'Dude.Box',
   description: 'Dude.Box - Collectibles and Experiences',
-  url: 'https://yourwebsite.com', // TODO: Replace with your actual website URL
-  icons: ['https://yourwebsite.com/android-chrome-192x192.png'], // TODO: Replace with your actual icon URL
+  url: APP_URL, // Dynamic website URL
+  icons: [`${APP_URL}/android-chrome-192x192.png`], // Dynamic icon URL
 };
 
 export const networks = [base]; // Export networks
