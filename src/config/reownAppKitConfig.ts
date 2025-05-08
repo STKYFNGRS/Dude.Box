@@ -9,7 +9,7 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_REOWN_PROJECT_ID is not defined');
 }
 
-// Determine environment for dynamic URLs
+// Use the correct domain as specified by the client
 const IS_PROD = process.env.NODE_ENV === 'production';
 const APP_URL = IS_PROD ? 'https://www.dude.box' : 'http://localhost:3000';
 
@@ -17,8 +17,8 @@ const APP_URL = IS_PROD ? 'https://www.dude.box' : 'http://localhost:3000';
 export const metadata = {
   name: 'Dude.Box',
   description: 'Dude.Box - Collectibles and Experiences',
-  url: APP_URL, // Dynamic website URL
-  icons: [`${APP_URL}/android-chrome-192x192.png`], // Dynamic icon URL
+  url: APP_URL,
+  icons: [`${APP_URL}/android-chrome-192x192.png`],
 };
 
 export const networks = [base]; // Export networks
