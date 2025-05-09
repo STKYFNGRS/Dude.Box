@@ -48,6 +48,7 @@ export default function Home() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8 text-lg">
               <a href="#about" className={`transition-colors ${activeSection==='about'?'text-accent font-bold animate-glitch-text-mini':''}`}>About</a>
+              <a href="#projects" className={`transition-colors ${activeSection==='projects'?'text-accent font-bold animate-glitch-text-mini':''}`}>Projects</a>
               <a href="/token" className={`transition-colors ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':''}`}>Token</a>
               <a href="/shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
@@ -132,6 +133,78 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+          {/* Projects Section - New section */}
+          <section id="projects" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
+            <div className="section-box p-8 rounded-md max-w-3xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Current Projects</h2>
+              <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
+                Check out our digital ventures and experimental platforms
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-slow">
+                {/* Trivia Box */}
+                <a href="https://www.trivia.box" target="_blank" rel="noopener noreferrer" className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <div className="favicon-container mb-3">
+                    <img src="https://www.google.com/s2/favicons?domain=trivia.box&sz=64" 
+                         alt="trivia.box favicon" 
+                         className="w-12 h-12 object-contain" 
+                         onError={(e) => {
+                           e.currentTarget.src = "/placeholder-favicon.png";
+                           e.currentTarget.onerror = null;
+                         }} />
+                  </div>
+                  <span className="font-bold text-lg mb-1 text-accent">trivia.box</span>
+                  <span className="text-[#b0b0b0] text-center">Interactive trivia games with a post-apocalyptic twist</span>
+                </a>
+                
+                {/* MMA Box */}
+                <a href="https://www.mma.box" target="_blank" rel="noopener noreferrer" className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <div className="favicon-container mb-3">
+                    <img src="https://www.google.com/s2/favicons?domain=mma.box&sz=64" 
+                         alt="mma.box favicon" 
+                         className="w-12 h-12 object-contain" 
+                         onError={(e) => {
+                           e.currentTarget.src = "/placeholder-favicon.png";
+                           e.currentTarget.onerror = null;
+                         }} />
+                  </div>
+                  <span className="font-bold text-lg mb-1 text-accent">mma.box</span>
+                  <span className="text-[#b0b0b0] text-center">Mixed martial arts content and interactive fight guides</span>
+                </a>
+                
+                {/* Wrestling Box */}
+                <a href="https://www.wrestling.box" target="_blank" rel="noopener noreferrer" className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <div className="favicon-container mb-3">
+                    <img src="https://www.google.com/s2/favicons?domain=wrestling.box&sz=64" 
+                         alt="wrestling.box favicon" 
+                         className="w-12 h-12 object-contain" 
+                         onError={(e) => {
+                           e.currentTarget.src = "/placeholder-favicon.png";
+                           e.currentTarget.onerror = null;
+                         }} />
+                  </div>
+                  <span className="font-bold text-lg mb-1 text-accent">wrestling.box</span>
+                  <span className="text-[#b0b0b0] text-center">Pro wrestling events, stats, and fan connection platform</span>
+                </a>
+                
+                {/* Fart Box */}
+                <a href="https://www.fart.box" target="_blank" rel="noopener noreferrer" className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
+                  <div className="favicon-container mb-3">
+                    <img src="https://www.google.com/s2/favicons?domain=fart.box&sz=64" 
+                         alt="fart.box favicon" 
+                         className="w-12 h-12 object-contain" 
+                         onError={(e) => {
+                           e.currentTarget.src = "/placeholder-favicon.png";
+                           e.currentTarget.onerror = null;
+                         }} />
+                  </div>
+                  <span className="font-bold text-lg mb-1 text-accent">fart.box</span>
+                  <span className="text-[#b0b0b0] text-center">Quirky sound effects and novelty digital collectibles</span>
+                </a>
+              </div>
+            </div>
+          </section>
 
           {/* Token Section - LittleDude (SON) */}
           <section id="token" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
@@ -619,6 +692,13 @@ export default function Home() {
               About
             </a>
             <a 
+              href="#projects" 
+              className={`transition-colors p-4 ${activeSection==='projects'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Projects
+            </a>
+            <a 
               href="/token" 
               className={`transition-colors p-4 ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
               onClick={handleNavClick}
@@ -632,7 +712,6 @@ export default function Home() {
             >
               Shop
             </a>
-            
             <a 
               href="#contact" 
               className={`transition-colors p-4 ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}

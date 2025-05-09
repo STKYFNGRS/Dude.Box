@@ -7,6 +7,9 @@ import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
 import { wagmiAdapter } from "@/config/reownAppKitConfig";
 
+// Force dynamic rendering to allow headers() usage
+export const dynamic = 'force-dynamic';
+
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
