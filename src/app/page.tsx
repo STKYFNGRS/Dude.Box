@@ -191,7 +191,7 @@ export default function Home() {
                 {/* Fart Box */}
                 <a href="https://www.fart.box" target="_blank" rel="noopener noreferrer" className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
                   <div className="favicon-container mb-3">
-                    <img src="https://www.google.com/s2/favicons?domain=fart.box&sz=64" 
+                    <img src="https://fart.box/favicon.ico" 
                          alt="fart.box favicon" 
                          className="w-12 h-12 object-contain" 
                          onError={(e) => {
