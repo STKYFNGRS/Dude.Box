@@ -92,7 +92,7 @@ export default function Home() {
                 A Father-Son Workshop for Robots & 
               </p>
                <p className="max-w-2xl text-center text-lg md:text-2xl text-[#b0b0b0] mt-4 mb-2 animate-fade-in">
-                 Other <span className="text-accent animate-glitch-text-mini">Fun Tech</span> things.
+                 Other <span className="text-accent animate-glitch-text-mini">Fun</span> tech things.
               </p>
               <div className="flex gap-4 mt-2 justify-center">
                 <a href="#about" className="px-6 py-3 rounded-full bg-accent text-white font-bold shadow-lg hover:bg-opacity-80 transition-all animate-fade-in animate-glitch-hover">Learn More</a>
@@ -104,31 +104,31 @@ export default function Home() {
           {/* About Section - Reverted height back to h-screen */}
           <section id="about" className="h-screen snap-always snap-start flex flex-col items-center justify-center py-12 px-4">
             <div className="section-box p-8 rounded-md max-w-3xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">What it is, Dude.</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Our Story</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                We are a father son team who are running our own little robot foundry and creative lab. We design, print, and engineer quirky, collectible robots, smart lamps, and other interactive tech. 
+                Just a dad and his little dude making cool stuff together. This site is our digital playground and place to share the weird and wonderful things we create.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-slow">
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                 <span className="text-4xl mb-2">🤖</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Robotic Creativity</span>
-                  <span className="text-[#b0b0b0] text-center">Small-batch, artisan robot designs with personality and purpose. Each creation combines modern tech with retro-future aesthetics to create something truly one-of-a-kind.</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Robot Buddies</span>
+                  <span className="text-[#b0b0b0] text-center">We design quirky robot companions with personality. Sometimes they work, sometimes they don't—but we always have fun building them!</span>
                 </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                   <span className="text-4xl mb-2">👨‍👦</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Father-Son Workshop</span>
-                  <span className="text-[#b0b0b0] text-center">Teaching the next generation about electronics, design, and making. Building robots today to prepare for tomorrow's world, one circuit and line of code at a time.</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Learning Together</span>
+                  <span className="text-[#b0b0b0] text-center">Each project is a chance for us to learn something new—from coding and circuits to crypto and 3D modeling. Dad teaches son, son teaches dad.</span>
               </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">🛠️</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Hands-On Engineering</span>
-                  <span className="text-[#b0b0b0] text-center">3D printed, hand-finished, and open for hacking. DIY kits, interactive builds, and modular components designed for both beginners and advanced makers.</span>
+                  <span className="text-4xl mb-2">🎮</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Gaming & Making</span>
+                  <span className="text-[#b0b0b0] text-center">When we're not building robots, we're gaming or printing stuff. Sometimes our best ideas come from "what if we combined these games we love?"</span>
               </div>
                 <div className="card-box rounded-lg p-6 shadow-lg max-w-xs flex flex-col items-center animate-glitch-hover">
                 <span className="text-4xl mb-2">☢️</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Post-Apocalyptic Vision</span>
-                  <span className="text-[#b0b0b0] text-center">Glitchy, battle-worn aesthetics inspired by a world where robots continue their tasks long after humans have gone. Each creation tells a story from this alternate timeline.</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Post-Apocalyptic Vibe</span>
+                  <span className="text-[#b0b0b0] text-center">We share a weird fascination with dystopian aesthetics, glitchy tech, battle-worn robots, and the strange beauty of a world reclaimed by nature and machines.</span>
                 </div>
             </div>
           </div>
@@ -221,20 +221,20 @@ export default function Home() {
                   <span className="text-[#b0b0b0] text-center">Total supply of 99,000,000 SON tokens.</span>
                 </div>
                 <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">🔒</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Liquidity Lock</span>
-                  <span className="text-[#b0b0b0] text-center">Initial liquidity pool locked.</span>
+                  <span className="text-4xl mb-2">🛡️</span>
+                  <span className="font-bold text-lg mb-1 text-accent">No Rug Risk</span>
+                  <span className="text-[#b0b0b0] text-center">No treasury or large reserves that could be dumped.</span>
                 </div>
                 <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">🔝</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Governance Rights</span>
-                  <span className="text-[#b0b0b0] text-center">Shape the future of the Dude.Box ecosystem.</span>
-          </div>
+                  <span className="text-4xl mb-2">🔥</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Deflationary</span>
+                  <span className="text-[#b0b0b0] text-center">1% burn on every transaction reduces supply over time.</span>
+                </div>
                 <div className="card-box rounded-lg p-6 shadow-lg flex flex-col items-center animate-glitch-hover">
-                  <span className="text-4xl mb-2">🔐</span>
-                  <span className="font-bold text-lg mb-1 text-accent">Multi-Sig Vault</span>
-                  <span className="text-[#b0b0b0] text-center">Stored Securely</span>
-              </div>
+                  <span className="text-4xl mb-2">🔒</span>
+                  <span className="font-bold text-lg mb-1 text-accent">Liquidity Locked</span>
+                  <span className="text-[#b0b0b0] text-center">LP locked until August 5th, 2039</span>
+                </div>
               </div>
 
               <div className="flex justify-center">
@@ -251,7 +251,7 @@ export default function Home() {
             <div className="section-box p-8 rounded-md max-w-3xl text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 tracking-wider animate-glitch-text-subtle text-center">Contact & Collaborate</h2>
               <p className="max-w-2xl text-center text-lg md:text-xl text-[#b0b0b0] mb-6 animate-fade-in">
-                Want to collaborate or just say hi? Drop us a line. We love meeting fellow makers, dreamers, and survivors.
+                Want to collaborate or just say hi? Drop us a line. We love meeting fellow makers and dreamers.
               </p>
               <div className="flex flex-col items-center gap-6">
                 
