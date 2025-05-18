@@ -74,7 +74,7 @@ const TokenRoadmap: React.FC = () => {
             • Ascend humanity to post-scarcity civilization<br/>
             • Reverse climate change, revive extinct species<br/>
             • Achieve technological singularity (the good version)<br/>
-            • Founder develops god complex, floods planet to 'reboot humanity v3.2,' becomes the divine deceiver of the new world 
+            • Founder develops god complex, floods planet to 'reboot humanity v3.2.' becomes the divine deceiver of the new world 
           </p>
         </div>
       </div>
