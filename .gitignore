@@ -36,6 +36,7 @@ yarn-error.log*
 
 mcp.json
 /resources/
+/src/app/admin/
 
 # vercel
 .vercel

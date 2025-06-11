@@ -57,6 +57,13 @@ export default function Providers({ children, initialState }: { children: React.
             networks: [appNetworks[0], ...appNetworks.slice(1)],
             projectId: safeProjectId, // Use safeProjectId which is guaranteed to be a string
             metadata: metadata,
+            defaultNetwork: appNetworks[0],
+            features: {
+              analytics: false, // Disable analytics
+              onramp: false, // Disable onramp features
+              swaps: false, // Disable swap features
+            },
+            enableWalletConnect: false, // Disable WalletConnect auto-connection
           });
           setIsAppKitInitialized(true);
         };

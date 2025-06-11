@@ -51,6 +51,7 @@ export default function Home() {
               <a href="#projects" className={`transition-colors ${activeSection==='projects'?'text-accent font-bold animate-glitch-text-mini':''}`}>Projects</a>
               <a href="/token" className={`transition-colors ${activeSection==='token'?'text-accent font-bold animate-glitch-text-mini':''}`}>Token</a>
               <a href="/shop" className={`transition-colors ${activeSection==='shop'?'text-accent font-bold animate-glitch-text-mini':''}`}>Shop</a>
+              <a href="/thoughts" className={`transition-colors ${activeSection==='thoughts'?'text-accent font-bold animate-glitch-text-mini':''}`}>Thoughts</a>
               <a href="#contact" className={`transition-colors ${activeSection==='contact'?'text-accent font-bold animate-glitch-text-mini':''}`}>Contact</a>
             </nav>
 
@@ -317,13 +318,6 @@ export default function Home() {
                       <div className="social-icon-glitch-effect"></div>
                     </a>
                     
-                    {/* X (Twitter) */}
-                    <a href="https://x.com/dudedotbox" target="_blank" rel="noopener noreferrer" className="social-icon-container group" aria-label="Follow us on X">
-                      <svg className="w-6 h-6 text-gray-400 group-hover:text-accent transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                      </svg>
-                      <div className="social-icon-glitch-effect"></div>
-                    </a>
                   </div>
                   
                 </div>
@@ -711,6 +705,13 @@ export default function Home() {
               onClick={handleNavClick}
             >
               Shop
+            </a>
+            <a 
+              href="/thoughts" 
+              className={`transition-colors p-4 ${activeSection==='thoughts'?'text-accent font-bold animate-glitch-text-mini':'text-white'}`}
+              onClick={handleNavClick}
+            >
+              Thoughts
             </a>
             <a 
               href="#contact" 

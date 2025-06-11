@@ -67,8 +67,10 @@ export default function ShopPage() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 text-lg">
             <a href="/#about" className="transition-colors">About</a>
+            <a href="/#projects" className="transition-colors">Projects</a>
             <a href="/token" className="transition-colors">Token</a>
             <a href="/shop" className="transition-colors text-accent font-bold animate-glitch-text-mini">Shop</a>
+            <a href="/thoughts" className="transition-colors">Thoughts</a>
             <a href="/#contact" className="transition-colors">Contact</a>
           </nav>
 
@@ -101,7 +103,14 @@ export default function ShopPage() {
             >
               About
             </a>
-             <a 
+            <a 
+              href="/#projects" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Projects
+            </a>
+            <a 
               href="/token" 
               className="transition-colors p-4"
               onClick={() => setMobileMenuOpen(false)}
@@ -115,7 +124,13 @@ export default function ShopPage() {
             >
               Shop
             </a>
-           
+            <a 
+              href="/thoughts" 
+              className="transition-colors p-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Thoughts
+            </a>
             <a 
               href="/#contact" 
               className="transition-colors p-4"

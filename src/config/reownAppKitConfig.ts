@@ -27,8 +27,9 @@ export const networks = [base]; // Export networks
 export const wagmiAdapter = new WagmiAdapter({
   networks,
   projectId,
-  // ssr: true, // ssr for the adapter itself might be configured differently or implicitly handled
-  // storage for the adapter config might not be needed or is internal to WagmiAdapter
+  ssr: true,
+  // Disable automatic reconnection
+  storage: undefined, // This prevents persisting connection state
 });
 
 // The wagmiConfig to be used by WagmiProvider is now accessed via wagmiAdapter.wagmiConfig
