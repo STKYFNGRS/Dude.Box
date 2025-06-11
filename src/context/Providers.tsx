@@ -45,6 +45,14 @@ export default function Providers({ children, initialState }: { children: React.
 
   // Initialize Reown AppKit only on the client side
   useEffect(() => {
+    // TEMPORARILY DISABLED - Only initialize AppKit when specifically on /token page
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    
+    // Only initialize if we're on the token page
+    if (currentPath !== '/token') {
+      return;
+    }
+    
     // Only initialize if projectId is a non-empty string
     const safeProjectId = typeof projectId === 'string' && projectId.trim() !== '' ? projectId : null;
     
@@ -78,7 +86,7 @@ export default function Providers({ children, initialState }: { children: React.
       } catch (error) {
         console.error("Failed to initialize AppKit:", error);
       }
-    } else if (!safeProjectId) {
+    } else if (!safeProjectId && currentPath === '/token') {
       console.error("Cannot initialize AppKit: Project ID is not defined");
     }
   }, [isAppKitInitialized, isMobile]);
