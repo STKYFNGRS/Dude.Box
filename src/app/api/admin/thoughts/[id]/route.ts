@@ -8,9 +8,14 @@ export async function GET(
   try {
     const { id } = params;
     
+    console.log('GET: Fetching thought with ID:', id, 'parsed:', parseInt(id));
+    
+    // Try different ID formats
     const { rows } = await sql`
-      SELECT * FROM thoughts WHERE id = ${parseInt(id)}
+      SELECT * FROM thoughts WHERE id = ${id}
     `;
+    
+    console.log('GET: Found rows:', rows.length, rows);
     
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Thought not found' }, { status: 404 });
@@ -43,7 +48,7 @@ export async function PUT(
 
     // Check if slug already exists for other records
     const { rows: existingRows } = await sql`
-      SELECT id FROM thoughts WHERE slug = ${slug} AND id != ${parseInt(id)}
+      SELECT id FROM thoughts WHERE slug = ${slug} AND id != ${id}
     `;
     
     if (existingRows.length > 0) {
@@ -61,7 +66,7 @@ export async function PUT(
         pdf_url = ${pdf_url || null},
         published = ${published},
         updated_at = NOW()
-      WHERE id = ${parseInt(id)}
+      WHERE id = ${id}
       RETURNING id, title, slug, category, created_at, published
     `;
 
@@ -83,9 +88,20 @@ export async function DELETE(
   try {
     const { id } = params;
     
-    const { rowCount } = await sql`
-      DELETE FROM thoughts WHERE id = ${parseInt(id)}
+    console.log('DELETE: Attempting to delete thought with ID:', id, 'parsed:', parseInt(id));
+    
+    // First check if the record exists  
+    const { rows: existingRows } = await sql`
+      SELECT id FROM thoughts WHERE id = ${id}
     `;
+    
+    console.log('DELETE: Found existing records:', existingRows);
+    
+    const { rowCount } = await sql`
+      DELETE FROM thoughts WHERE id = ${id}
+    `;
+    
+    console.log('DELETE: Rows affected:', rowCount);
     
     if (rowCount === 0) {
       return NextResponse.json({ error: 'Thought not found' }, { status: 404 });
