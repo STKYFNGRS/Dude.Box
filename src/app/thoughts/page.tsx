@@ -22,7 +22,13 @@ export default function ThoughtsPage() {
     // Load thoughts metadata
     async function loadThoughts() {
       try {
-        const response = await fetch('/api/thoughts');
+        // Add cache-busting parameter
+        const response = await fetch(`/api/thoughts?t=${Date.now()}`, {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
+        });
         const data = await response.json();
         
         if (data.thoughts) {
@@ -136,7 +142,7 @@ export default function ThoughtsPage() {
       )}
 
       {/* Thoughts Content */}
-      <main className="pt-32 pb-16 px-4 md:px-8 relative z-10">
+      <main className="pt-32 pb-16 px-4 md:px-8 relative z-10 flex-1">
         <div className="container mx-auto">
           <div className="section-box p-8 rounded-md mb-8">
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-center text-accent drop-shadow-lg animate-glitch mb-2">
