@@ -153,6 +153,18 @@ export default function ThoughtsPage() {
             </p>
           </div>
 
+          {/* Introduction section */}
+          <div className="section-box p-8 rounded-md mb-8">
+            <div className="max-w-4xl mx-auto">
+              <p className="text-[#EDEDED] leading-relaxed text-lg mb-4">
+                My collection of essays present an exploration of how society has strayed from the principles that once made it strong. It begins by examining the post–World War II era, when high tax rates on the wealthy, robust public investment, and a shared national purpose led to the creation of the most prosperous middle class in history. I then explain how a shift toward individualism, tax cuts for the rich, and politically motivated culture wars began to erode that unity. As economic inequality grew, so has political polarization, weakening nation's ability to solve problems collectively. The essay on unity emphasizes how division, both political and moral, has made countries more vulnerable, with hardened hearts and partisan rhetoric taking precedence over shared values and compassion.
+              </p>
+              <p className="text-[#EDEDED] leading-relaxed text-lg">
+                From there, the writings move into a biblical framework, explaining how ancient warnings about nations and kings mirror our modern crises. The Bible cautions against placing trust in human rulers over God, showing how bad leadership and spiritual compromise often led to national collapse. A key theme running through the essays is the danger of false prophets, leaders, both religious and political, who distort truth for personal gain. The final piece on judgment ties everything together: God's justice is real, but so is His mercy. Rather than condemning others, we are called to examine ourselves, repent, and return to a life of truth, humility, and love. The overarching message is that prosperity, unity, and salvation are possible, but only if we recognize the path we've abandoned and choose to walk it once again.
+              </p>
+            </div>
+          </div>
+
           {loading ? (
             <div className="section-box p-8 rounded-md">
               <div className="space-y-4">
