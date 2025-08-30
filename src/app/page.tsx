@@ -275,14 +275,6 @@ export default function Home() {
                     </svg>
                     <div className="social-icon-glitch-effect"></div>
                   </a>
-
-                  {/* Threads */}
-                  <a href="https://www.threads.net/@dudedotbox" target="_blank" rel="noopener noreferrer" className="social-icon-container group" aria-label="Follow us on Threads">
-                    <svg className="w-6 h-6 text-gray-400 group-hover:text-accent transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.13-.17 3.12-.49-.1-.83-.17-1.7-.17-2.58 0-3.32.88-6.44 2.42-9.14C15.96 7.64 14.08 6 12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c.34 0 .68-.03 1-.09 0-.61.09-1.2.26-1.78C12.84 16.06 12.43 16 12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4c0 .87-.29 1.67-.78 2.31.49.69.78 1.53.78 2.44 0 .38-.05.75-.14 1.11C17.94 16.54 20 14.47 20 12c0-4.42-3.58-8-8-8z"/>
-                    </svg>
-                    <div className="social-icon-glitch-effect"></div>
-                  </a>
                 </div>
               </div>
           </div>
