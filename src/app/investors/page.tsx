@@ -1,14 +1,39 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
+
+export const metadata: Metadata = {
+  title: "Investors | dude.box",
+  description:
+    "Investor overview for dude.box. Membership cap, recurring revenue, and disciplined operations in San Diego.",
+};
 
 export default function InvestorsPage() {
   return (
     <Container className="py-12">
       <Section
-        eyebrow="For Investors"
-        title="High-impact metrics"
-        description="Clear, predictable revenue with disciplined operations."
+        eyebrow="Investment Thesis"
+        title="Disciplined recurring revenue"
+        description="Clear membership economics with controlled capacity."
+      >
+        <div className="grid gap-6 md:grid-cols-2 text-sm muted">
+          <p>
+            dude.box operates a capped membership model that emphasizes stability, predictable
+            revenue, and focused operating costs. The club is designed for consistent utilization
+            without expansion pressure.
+          </p>
+          <p>
+            Veteran leadership prioritizes accountability, safety, and a controlled experience.
+            The model is built for lender and investor review.
+          </p>
+        </div>
+      </Section>
+
+      <Section
+        eyebrow="Metrics"
+        title="Key snapshot"
+        description="Core numbers visible at a glance."
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card title="Member cap">
@@ -17,13 +42,24 @@ export default function InvestorsPage() {
           <Card title="Monthly dues">
             $200 per member. Predictable recurring revenue.
           </Card>
-          <Card title="Projected revenue">
-            Approximately $690,000 per year, including add-ons and merchandise.
+          <Card title="Base revenue">
+            $480,000 annually from base dues alone.
           </Card>
-          <Card title="Veteran leadership">
-            Owner-operated by veterans with disciplined operating standards.
+          <Card title="Projected revenue">
+            Approximately $690,000 per year with add-ons and merchandise.
           </Card>
         </div>
+      </Section>
+
+      <Section
+        eyebrow="Runway"
+        title="Operating stability"
+        description="Conservative cash flow with predictable staffing needs."
+      >
+        <p className="muted max-w-3xl">
+          The capped model supports steady monthly cash flow and controlled overhead. Staffing and
+          service delivery are planned around known member volume.
+        </p>
       </Section>
 
       <Section
@@ -74,6 +110,13 @@ export default function InvestorsPage() {
             <input
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
               name="organization"
+            />
+          </label>
+          <label className="text-sm flex flex-col gap-2">
+            Phone (optional)
+            <input
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+              name="phone"
             />
           </label>
           <label className="text-sm flex flex-col gap-2">

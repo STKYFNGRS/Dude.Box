@@ -4,6 +4,7 @@ export type ShopProduct = {
   description: string;
   price: string;
   image?: string;
+  url?: string;
 };
 
 const mockProducts: ShopProduct[] = [
@@ -12,20 +13,30 @@ const mockProducts: ShopProduct[] = [
     title: "dude.box Crewneck",
     description: "Heavyweight cotton blend, understated branding.",
     price: "$78",
+    url: undefined,
   },
   {
     id: "mock-2",
     title: "Recovery Journal",
     description: "Weekly structure, discipline tracking, and notes.",
     price: "$24",
+    url: undefined,
   },
   {
     id: "mock-3",
     title: "Membership Patch",
     description: "Leather-backed patch for members and supporters.",
     price: "$18",
+    url: undefined,
   },
 ];
+
+const clampText = (value: string, maxLength = 140) => {
+  if (value.length <= maxLength) {
+    return value;
+  }
+  return `${value.slice(0, maxLength - 1).trim()}…`;
+};
 
 export async function getShopifyProducts(): Promise<ShopProduct[]> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
@@ -43,6 +54,8 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
           id
           title
           description
+          handle
+          onlineStoreUrl
           priceRange {
             minVariantPrice {
               amount
@@ -81,11 +94,12 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
     return products.map((product: any) => ({
       id: product.id,
       title: product.title,
-      description: product.description || "Details available upon request.",
+      description: clampText(product.description || "Details available upon request."),
       price: `${Number(product.priceRange?.minVariantPrice?.amount ?? 0).toFixed(2)} ${
         product.priceRange?.minVariantPrice?.currencyCode ?? "USD"
       }`,
       image: product.images?.nodes?.[0]?.url,
+      url: product.onlineStoreUrl ?? undefined,
     }));
   } catch (error) {
     return mockProducts;
