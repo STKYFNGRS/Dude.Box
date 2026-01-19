@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Card } from "@/components/Card";
 import { Section } from "@/components/Section";
-import { amenities, membershipBenefits } from "@/lib/constants";
+import { amenities } from "@/lib/constants";
 
 export default function HomePage() {
   return (
@@ -14,15 +14,14 @@ export default function HomePage() {
             Veteran-Owned Men’s Recovery & Social Club
           </h1>
           <p className="text-lg muted">
-            dude.box is a disciplined, member-capped environment built for recovery, routine,
-            and decompression. The experience is structured, private, and intentional.
+            A disciplined, member-capped environment for recovery and decompression in San Diego.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/investors" className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]">
-              Investor Overview
-            </Link>
-            <Link href="/membership" className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]">
-              Membership Details
+            <Link
+              href="/membership"
+              className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
+            >
+              Learn About Membership
             </Link>
           </div>
         </div>
@@ -31,7 +30,7 @@ export default function HomePage() {
       <Section
         eyebrow="Positioning"
         title="What dude.box is / is not"
-        description="Clear boundaries keep the brand disciplined and credible."
+        description="Clear boundaries keep the model disciplined and credible."
       >
         <div className="grid gap-6 md:grid-cols-2">
           <Card title="What it is">
@@ -39,8 +38,8 @@ export default function HomePage() {
             without noise, hype, or public spectacle.
           </Card>
           <Card title="What it is not">
-            Not a trendy coworking space. Not a social media brand. Not a public drop-in gym.
-            Membership is capped and controlled.
+            Not a trendy coworking space. Not a social media brand. Not a public drop-in gym or
+            an open-membership facility.
           </Card>
         </div>
       </Section>
@@ -57,25 +56,6 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-      </Section>
-
-      <Section
-        eyebrow="Membership"
-        title="Capped membership model"
-        description="The club is limited to 200 members at $200/month."
-      >
-        <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
-          {membershipBenefits.map((item) => (
-            <li key={item} className="border-b border-border pb-3">
-              {item}
-            </li>
-          ))}
-        </ul>
-        <div className="pt-6">
-          <Link href="/membership" className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]">
-            Read Membership Details
-          </Link>
-        </div>
       </Section>
     </Container>
   );

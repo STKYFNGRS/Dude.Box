@@ -15,6 +15,9 @@ export default async function PortalPage() {
           title="Secure access required"
           description="Members must sign in to access bookings and announcements."
         />
+        <p className="text-xs muted">
+          TODO: Keep portal hidden from public navigation until member operations go live.
+        </p>
         <Link
           href="/portal/login"
           className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-fit"

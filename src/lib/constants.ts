@@ -1,11 +1,8 @@
 export const navigationLinks = [
   { label: "Overview", href: "/" },
-  { label: "The Concept", href: "/the-concept" },
   { label: "Membership", href: "/membership" },
   { label: "Investors", href: "/investors" },
-  { label: "Location", href: "/location" },
   { label: "Shop", href: "/shop" },
-  { label: "Member Portal", href: "/portal" },
 ];
 
 export const amenities = [

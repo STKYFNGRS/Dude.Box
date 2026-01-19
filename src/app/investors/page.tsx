@@ -7,33 +7,39 @@ export default function InvestorsPage() {
     <Container className="py-12">
       <Section
         eyebrow="For Investors"
-        title="Executive summary"
-        description="Business model, operating discipline, and leadership."
+        title="High-impact metrics"
+        description="Clear, predictable revenue with disciplined operations."
       >
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card title="Business model">
-            Membership revenue only. 200 members at $200/month creates predictable cash flow.
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <Card title="Member cap">
+            200 members maximum. Capacity is controlled and enforced.
           </Card>
-          <Card title="Estimated annual revenue">
-            Base membership revenue is $480,000 annually. With add-ons and merchandise, the
-            conservative annual estimate is approximately $690,000.
+          <Card title="Monthly dues">
+            $200 per member. Predictable recurring revenue.
           </Card>
-          <Card title="Operating discipline">
-            Controlled access, capped capacity, and focused services. Built for stability and
-            consistent margins.
+          <Card title="Projected revenue">
+            Approximately $690,000 per year, including add-ons and merchandise.
+          </Card>
+          <Card title="Veteran leadership">
+            Owner-operated by veterans with disciplined operating standards.
           </Card>
         </div>
       </Section>
 
       <Section
-        eyebrow="Leadership"
-        title="Veteran ownership & leadership"
-        description="Credible leadership and grounded operations."
+        eyebrow="Business Plan"
+        title="Download materials"
+        description="Business plan and supporting documents."
       >
-        <p className="muted max-w-3xl">
-          The leadership team prioritizes accountability, safety, and long-term sustainability.
-          The club is structured to meet lender and investor standards.
-        </p>
+        <div className="flex flex-wrap gap-4 items-center">
+          <a
+            href="#"
+            className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
+          >
+            Download Business Plan (PDF)
+          </a>
+          <span className="text-xs muted">TODO: Link to the final business plan file.</span>
+        </div>
       </Section>
 
       <Section

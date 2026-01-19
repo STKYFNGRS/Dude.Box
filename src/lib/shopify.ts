@@ -35,6 +35,59 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
     return mockProducts;
   }
 
-  // TODO: Replace with real Storefront API query and mapping.
-  return mockProducts;
+  const endpoint = `https://${domain}/api/2024-07/graphql.json`;
+  const query = `
+    query Products {
+      products(first: 8, sortKey: UPDATED_AT, reverse: true) {
+        nodes {
+          id
+          title
+          description
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 1) {
+            nodes {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Storefront-Access-Token": token,
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: 300 },
+    });
+
+    if (!response.ok) {
+      return mockProducts;
+    }
+
+    const payload = await response.json();
+    const products = payload?.data?.products?.nodes ?? [];
+
+    return products.map((product: any) => ({
+      id: product.id,
+      title: product.title,
+      description: product.description || "Details available upon request.",
+      price: `${Number(product.priceRange?.minVariantPrice?.amount ?? 0).toFixed(2)} ${
+        product.priceRange?.minVariantPrice?.currencyCode ?? "USD"
+      }`,
+      image: product.images?.nodes?.[0]?.url,
+    }));
+  } catch (error) {
+    return mockProducts;
+  }
 }
