@@ -8,15 +8,16 @@ module.exports = {
     theme: {
       extend: {
         fontFamily: {
-          sans: ["var(--font-geist-sans)"],
-          mono: ["var(--font-geist-mono)"],
+          sans: ["var(--font-sans)"],
+          serif: ["var(--font-serif)"],
         },
         colors: {
-          background: "var(--background)",
-          foreground: "var(--foreground)",
-          accent: "var(--accent-color)",
-          card: "var(--card-bg)",
-          'card-hover': "var(--card-hover)",
+          background: "var(--color-background)",
+          foreground: "var(--color-foreground)",
+          muted: "var(--color-muted)",
+          accent: "var(--color-accent)",
+          border: "var(--color-border)",
+          panel: "var(--color-panel)",
         },
         container: {
           center: true,

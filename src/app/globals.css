@@ -3,31 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #EDEDED;
-  --background: #111111;
-  --accent-color: #5d4fff;
-  --card-bg: #1A1A1A;
-  --card-hover: #222222;
+  --color-background: #0b0b0b;
+  --color-foreground: #f5f1ea;
+  --color-muted: #b3aea6;
+  --color-accent: #8a7562;
+  --color-border: #2a2521;
+  --color-panel: #14110f;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-geist-sans, system-ui, sans-serif);
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.01em;
 }
 
-@layer base {
-  :root {
-    --font-geist-sans: "Geist Sans", system-ui, sans-serif;
-    --font-geist-mono: "Geist Mono", ui-monospace, monospace;
-  }
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-@layer components {
-  .section-box {
-    background-color: rgba(26, 26, 26, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(80, 80, 80, 0.2);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  }
+main {
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-serif), Georgia, serif;
+  letter-spacing: 0.02em;
+}
+
+.card {
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.outline-button {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-foreground);
+}
+
+.solid-button {
+  background: var(--color-accent);
+  color: #0b0b0b;
 }
