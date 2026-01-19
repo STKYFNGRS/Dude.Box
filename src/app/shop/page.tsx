@@ -18,7 +18,7 @@ export default async function ShopPage() {
       <Section
         eyebrow="Shop"
         title="Merchandise"
-        description="Minimal merchandising language. Clean product grid."
+        description="Functional gear and accessories aligned with a recovery-focused lifestyle."
       >
         <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
@@ -53,6 +53,9 @@ export default async function ShopPage() {
           ))}
         </div>
         <div className="pt-6 flex flex-col gap-3 text-xs muted">
+          <span>
+            Built to support routine, recovery, and disciplined daily use.
+          </span>
           <span>
             Prefer to stay on site? Review{" "}
             <Link href="/membership" className="underline underline-offset-4">

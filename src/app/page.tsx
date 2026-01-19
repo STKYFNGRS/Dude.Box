@@ -17,26 +17,31 @@ export default function HomePage() {
         <div className="flex flex-col gap-6 max-w-3xl">
           <span className="text-xs uppercase tracking-[0.35em] muted">Overview</span>
           <h1 className="section-title text-4xl md:text-5xl">
-            Veteran-Owned Men’s Recovery & Social Club
+            Veteran-Owned Men’s Recovery & Social Club — Train. Recover. Reset.
           </h1>
           <p className="text-lg muted">
             A disciplined, member-capped environment built for recovery, routine, and
             decompression.
           </p>
+          <p className="text-sm muted">San Diego, California.</p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/membership"
-              className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
+              className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
             >
-              Learn About Membership
+              Explore Membership
             </Link>
             <Link
               href="/investors"
-              className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
+              className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
             >
               Investor Overview
             </Link>
           </div>
+          <p className="text-sm muted">
+            Structured routines, quiet recovery spaces, and intentional community for daily
+            balance.
+          </p>
         </div>
       </section>
 
@@ -47,8 +52,8 @@ export default function HomePage() {
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            Most recovery spaces lack routine or long-term accountability. dude.box is designed
-            to provide both, without distraction.
+            Too many spaces push performance or pressure. dude.box is built for routine,
+            recovery, and steady momentum.
           </p>
           <p>
             The club supports men who want consistent access to recovery resources, physical

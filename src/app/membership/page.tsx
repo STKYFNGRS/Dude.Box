@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
-import { amenities } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Membership | dude.box",
@@ -22,35 +21,40 @@ export default function MembershipPage() {
       <div className="grid gap-10 lg:grid-cols-[2fr_1fr] lg:items-start">
         <div className="flex flex-col gap-10">
           <Section
-            eyebrow="Overview"
-            title="Membership model"
-            description="Membership is capped, reviewed, and intentionally managed."
+            eyebrow="Why Membership Matters"
+            title="Recovery without pressure"
+            description="Value first, pricing second."
           >
             <p className="muted max-w-3xl">
-              Access is limited to preserve privacy, consistent availability, and operational
-              stability. Members are admitted based on fit and commitment to the environment.
+              Too many spaces push performance or noise. dude.box is built for routine, recovery,
+              and long-term balance. Members have consistent access to calm spaces, training, and
+              support without a public crowd.
             </p>
           </Section>
 
           <Section
             eyebrow="Benefits"
             title="What members receive"
-            description="Short, direct benefits with clear value."
+            description="Benefit-led and easy to scan."
           >
             <div className="grid gap-6 md:grid-cols-2">
-              <Card title="Recovery & routine">
-                <ul className="list-disc pl-4 space-y-2">
-                  <li>Daily structure and accountability.</li>
-                  <li>Quiet environment for decompression.</li>
-                  <li>Access to recovery protocols.</li>
-                </ul>
+              <Card title="Strength & conditioning">
+                Dedicated training space for consistent progress and routine.
               </Card>
-              <Card title="Facilities">
-                <ul className="list-disc pl-4 space-y-2">
-                  {amenities.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
+              <Card title="Sauna & cold plunge">
+                Recovery tools that support sleep, stress reduction, and resilience.
+              </Card>
+              <Card title="Casual lounge & games">
+                Quiet decompression without public crowds or noise.
+              </Card>
+              <Card title="Barber services">
+                Optional grooming with consistent scheduling and privacy.
+              </Card>
+              <Card title="Preventative therapist access">
+                Request-based sessions for support and accountability.
+              </Card>
+              <Card title="Member-only access">
+                200-member cap protects availability and culture.
               </Card>
             </div>
           </Section>
@@ -102,6 +106,10 @@ export default function MembershipPage() {
             <li>Veteran-led operations</li>
           </ul>
           <div className="border-t border-border pt-6">
+            <h4 className="section-title text-lg mb-3">Membership tier</h4>
+            <p className="text-sm muted mb-4">
+              $200/month. Capped at 200 members. Pricing follows value and access.
+            </p>
             <h4 className="section-title text-lg mb-3">Interest form</h4>
             <form action="/api/member-interest" method="post" className="flex flex-col gap-3">
               <label className="text-xs uppercase tracking-[0.2em] muted">
@@ -130,9 +138,9 @@ export default function MembershipPage() {
               </label>
               <button
                 type="submit"
-                className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]"
+                className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] w-full text-center"
               >
-                Express Interest
+                Express Membership Interest
               </button>
               <p className="text-xs muted">
                 TODO: Wire to member intake workflow. No submissions are processed yet.

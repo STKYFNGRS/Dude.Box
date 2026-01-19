@@ -1,11 +1,23 @@
+import Link from "next/link";
 import { Container } from "@/components/Container";
+import { navigationLinks } from "@/lib/constants";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-background">
-      <Container className="py-8 flex flex-col gap-3 text-sm muted">
-        <span>dude.box — San Diego, California</span>
-        <span>Investor inquiries: investors@dude.box (placeholder)</span>
+      <Container className="py-8 flex flex-col gap-6 text-sm muted">
+        <nav aria-label="Footer" className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.2em]">
+          {navigationLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex flex-col gap-2">
+          <span>dude.box — San Diego, California</span>
+          <span>Investor inquiries: investors@dude.box (placeholder)</span>
+          <span>General contact: contact@dude.box (placeholder)</span>
+        </div>
         <span className="text-xs">
           © {new Date().getFullYear()} dude.box. All rights reserved.
         </span>

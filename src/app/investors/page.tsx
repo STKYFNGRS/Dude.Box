@@ -12,6 +12,33 @@ export const metadata: Metadata = {
 export default function InvestorsPage() {
   return (
     <Container className="py-12">
+      <section className="pb-12 border-b border-border">
+        <div className="flex flex-col gap-6 max-w-3xl">
+          <span className="text-xs uppercase tracking-[0.35em] muted">Investors</span>
+          <h1 className="section-title text-4xl md:text-5xl">
+            Invest in dude.box — predictable revenue, disciplined model, veteran leadership
+          </h1>
+          <p className="text-lg muted">
+            A membership-driven club in San Diego with controlled capacity and repeatable
+            operations.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="#business-plan"
+              className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
+            >
+              Download SBA Business Plan
+            </a>
+            <a
+              href="#contact"
+              className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
+            >
+              Investor Contact
+            </a>
+          </div>
+        </div>
+      </section>
+
       <Section
         eyebrow="Investment Thesis"
         title="Disciplined recurring revenue"
@@ -52,14 +79,24 @@ export default function InvestorsPage() {
       </Section>
 
       <Section
-        eyebrow="Runway"
-        title="Operating stability"
-        description="Conservative cash flow with predictable staffing needs."
+        eyebrow="Why this model works"
+        title="Conservative assumptions"
+        description="Grounded in recurring revenue and capacity control."
       >
-        <p className="muted max-w-3xl">
-          The capped model supports steady monthly cash flow and controlled overhead. Staffing and
-          service delivery are planned around known member volume.
-        </p>
+        <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
+          <li className="border-b border-border pb-3">
+            Recurring dues create predictable monthly revenue.
+          </li>
+          <li className="border-b border-border pb-3">
+            Controlled capacity protects service quality and margins.
+          </li>
+          <li className="border-b border-border pb-3">
+            Conservative add-on assumptions reduce revenue risk.
+          </li>
+          <li className="border-b border-border pb-3">
+            Strong profit discipline through planned staffing and utilization.
+          </li>
+        </ul>
       </Section>
 
       <Section
@@ -69,10 +106,11 @@ export default function InvestorsPage() {
       >
         <div className="flex flex-wrap gap-4 items-center">
           <a
+            id="business-plan"
             href="#"
             className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
           >
-            Download Business Plan (PDF)
+            Download SBA Business Plan (PDF)
           </a>
           <span className="text-xs muted">TODO: Link to the final business plan file.</span>
         </div>
@@ -84,6 +122,7 @@ export default function InvestorsPage() {
         description="Submit a request for additional materials."
       >
         <form
+          id="contact"
           action="/api/investor-request"
           method="post"
           className="grid gap-4 max-w-2xl"
@@ -118,6 +157,20 @@ export default function InvestorsPage() {
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
               name="phone"
             />
+          </label>
+          <label className="text-sm flex flex-col gap-2">
+            Inquiry type
+            <select
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+              name="inquiryType"
+              required
+            >
+              <option value="">Select an option</option>
+              <option value="lender">Bank or SBA lender</option>
+              <option value="private-capital">Private capital</option>
+              <option value="strategic-partner">Strategic partner</option>
+              <option value="other">Other</option>
+            </select>
           </label>
           <label className="text-sm flex flex-col gap-2">
             Message
