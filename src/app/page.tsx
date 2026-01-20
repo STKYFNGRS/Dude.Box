@@ -17,7 +17,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-6 max-w-3xl">
           <span className="text-xs uppercase tracking-[0.35em] muted">Overview</span>
           <h1 className="section-title text-4xl md:text-5xl">
-            Veteran-Owned Men’s Recovery & Social Club — Train. Recover. Reset.
+            Men’s Recovery & Social Club — Train. Recover. Reset.
           </h1>
           <p className="text-lg muted">
             A disciplined, member-capped environment built for recovery, routine, and
