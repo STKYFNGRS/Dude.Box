@@ -6,7 +6,7 @@ import { headerNavigationLinks } from "@/lib/constants";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <Container className="py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <Container className="py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col">
           <Link href="/" aria-label="dude.box home" className="inline-flex items-center">
             <Image
@@ -14,7 +14,7 @@ export function SiteHeader() {
               alt="dude.box logo"
               width={400}
               height={100}
-              className="w-64 h-auto"
+              className="w-72 h-auto"
               priority
             />
           </Link>
