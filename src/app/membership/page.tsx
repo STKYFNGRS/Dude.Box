@@ -84,12 +84,22 @@ export default function MembershipPage() {
                 The cap preserves access, privacy, and predictable operations. It protects the
                 member experience and keeps the model stable.
               </Card>
+          <Card title="What does $200/month include?">
+            Core access to the club and facilities. Add-ons cover barber packages and recovery
+            priority.
+          </Card>
               <Card title="How does cancellation work?">
                 Membership is monthly. Requests to pause or end are handled directly.
               </Card>
+          <Card title="Are guests allowed?">
+            Access is member-only. Guest access is limited and only by approval.
+          </Card>
               <Card title="Is there a usage policy?">
                 Yes. Members are expected to respect shared spaces and scheduled sessions.
               </Card>
+          <Card title="How do I book barber or therapist sessions?">
+            Scheduling is handled directly once membership is active.
+          </Card>
               <Card title="Is the club open to the public?">
                 No. Access is limited to approved members and scheduled guests.
               </Card>

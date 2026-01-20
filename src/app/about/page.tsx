@@ -14,12 +14,11 @@ export default function AboutPage() {
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
           <span className="text-xs uppercase tracking-[0.35em] muted">About</span>
-          <h1 className="section-title text-4xl md:text-5xl">About</h1>
+          <h1 className="section-title text-4xl md:text-5xl">Built for reset</h1>
           <p className="text-lg muted">
-            dude.box provides a calm, structured space for men to recover, reset, and build steady
-            routines away from the noise and pressure of daily life. There’s no push to “optimize”
-            every moment or hustle harder here — it’s all about genuine decompression and finding
-            a sustainable balance in body and mind.
+            dude.box is a calm, structured club for men who want to recover, reset, and build
+            steady routines away from daily noise. There’s no push to optimize every moment. The
+            focus is real decompression and sustainable balance in body and mind.
           </p>
         </div>
       </section>
@@ -31,15 +30,12 @@ export default function AboutPage() {
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            Routine over intensity. Our philosophy is simple: we value routine over intensity.
-            The club is designed for men seeking consistent access to recovery and training in a
-            stable environment — this isn’t a high-performance, high-pressure gym.
+            Routine over intensity. The club is designed for men who want consistent access to
+            recovery and training in a stable environment — this isn’t a high-pressure gym.
           </p>
           <p>
-            Nobody is here to chase trophies or compete; instead, the focus is on steady,
-            long-term progress. Discipline, privacy, and calm form the backbone of everything we
-            do, so members always know what to expect and can count on the same supportive
-            environment every visit.
+            The focus is steady, long-term progress. Discipline, privacy, and calm shape every
+            visit so members know what to expect and can rely on the same supportive environment.
           </p>
         </div>
       </Section>
@@ -63,6 +59,10 @@ export default function AboutPage() {
             and effective recovery before anything else.
           </li>
         </ul>
+        <p className="text-sm muted max-w-3xl pt-6">
+          Expect a quiet lounge with casual games, a protein and coffee bar, simple sandwiches,
+          and access to scheduled sessions with a licensed therapist for preventative support.
+        </p>
       </Section>
 
       <Section
@@ -72,7 +72,7 @@ export default function AboutPage() {
       >
         <p className="text-sm muted max-w-3xl">
           dude.box is a veteran-owned club. Our founder’s military background instilled values of
-          discipline, consistency, and respect — principles at the core of dude.box’s mission. He
+          discipline, consistency, and respect — principles at the core of the mission. He
           created dude.box to share those ideals in a relaxed, no-nonsense environment where
           fellow men can decompress and rebuild at their own pace.
         </p>
