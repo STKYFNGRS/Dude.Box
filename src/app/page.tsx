@@ -71,8 +71,8 @@ export default function HomePage() {
           <div className="card rounded-lg p-6">
             <h3 className="section-title text-xl mb-3">What it is</h3>
             <ul className="list-disc pl-4 space-y-2">
-              <li>Veteran-led recovery and routine.</li>
-              <li>Member-capped and intentionally managed.</li>
+              <li>Recovery and routine.</li>
+              <li>Member-capped,managed membership model..</li>
               <li>Quiet, structured, and private.</li>
             </ul>
           </div>

@@ -9,9 +9,9 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
-  title: "dude.box | Veteran-Owned Men’s Recovery & Social Club",
+  title: "dude.box | Men’s Recovery & Social Club",
   description:
-    "Veteran-owned men’s recovery & social club in San Diego. Investor-grade overview, disciplined operations, and capped membership.",
+    "Men’s recovery & social club in San Diego.",
 };
 
 export default function RootLayout({
