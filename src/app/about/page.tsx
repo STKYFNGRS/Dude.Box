@@ -14,12 +14,12 @@ export default function AboutPage() {
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
           <span className="text-xs uppercase tracking-[0.35em] muted">About</span>
-          <h1 className="section-title text-4xl md:text-5xl">
-            Decompression, not optimization
-          </h1>
+          <h1 className="section-title text-4xl md:text-5xl">About</h1>
           <p className="text-lg muted">
-            dude.box exists to create a calm, structured place for men to recover, reset, and
-            build steady routines without noise or pressure.
+            dude.box provides a calm, structured space for men to recover, reset, and build steady
+            routines away from the noise and pressure of daily life. There’s no push to “optimize”
+            every moment or hustle harder here — it’s all about genuine decompression and finding
+            a sustainable balance in body and mind.
           </p>
         </div>
       </section>
@@ -31,27 +31,51 @@ export default function AboutPage() {
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            The club is designed for men who want consistent access to recovery and training in a
-            stable environment. This is not a performance brand.
+            Routine over intensity. Our philosophy is simple: we value routine over intensity.
+            The club is designed for men seeking consistent access to recovery and training in a
+            stable environment — this isn’t a high-performance, high-pressure gym.
           </p>
           <p>
-            The goal is simple: protect the experience with discipline, privacy, and calm
-            standards that members can count on.
+            Nobody is here to chase trophies or compete; instead, the focus is on steady,
+            long-term progress. Discipline, privacy, and calm form the backbone of everything we
+            do, so members always know what to expect and can count on the same supportive
+            environment every visit.
           </p>
         </div>
       </Section>
 
       <Section
         eyebrow="Culture"
-        title="No hustle, no alcohol"
-        description="A focused space with clear expectations."
+        title="Calm focus and respect"
+        description="Clear expectations for everyone who walks in the door."
       >
         <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
-          <li className="border-b border-border pb-3">No alcohol on premises.</li>
-          <li className="border-b border-border pb-3">Member-only access and controlled capacity.</li>
-          <li className="border-b border-border pb-3">Respectful, quiet environment.</li>
-          <li className="border-b border-border pb-3">Routine and recovery first.</li>
+          <li className="border-b border-border pb-3">
+            Member-only access, limited capacity: A private membership and controlled capacity
+            ensure a calm, crowd-free space.
+          </li>
+          <li className="border-b border-border pb-3">
+            Respectful, quiet environment: Courtesy and quiet are maintained at all times so
+            everyone can concentrate on their own recovery.
+          </li>
+          <li className="border-b border-border pb-3">
+            Routine and recovery come first: Every aspect of the club puts consistent routines
+            and effective recovery before anything else.
+          </li>
         </ul>
+      </Section>
+
+      <Section
+        eyebrow="Founder"
+        title="Veteran-owned and led"
+        description="Discipline, consistency, and respect."
+      >
+        <p className="text-sm muted max-w-3xl">
+          dude.box is a veteran-owned club. Our founder’s military background instilled values of
+          discipline, consistency, and respect — principles at the core of dude.box’s mission. He
+          created dude.box to share those ideals in a relaxed, no-nonsense environment where
+          fellow men can decompress and rebuild at their own pace.
+        </p>
       </Section>
     </Container>
   );
