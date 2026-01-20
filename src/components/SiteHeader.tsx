@@ -8,13 +8,13 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-background">
       <Container className="py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col">
-          <Link href="/" aria-label="dude.box home">
+          <Link href="/" aria-label="dude.box home" className="inline-flex items-center">
             <Image
               src="/Logo.png"
               alt="dude.box logo"
-              width={260}
-              height={64}
-              className="h-14 w-auto"
+              width={400}
+              height={100}
+              className="w-64 h-auto"
               priority
             />
           </Link>
