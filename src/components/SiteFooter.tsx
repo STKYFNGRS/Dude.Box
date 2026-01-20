@@ -17,7 +17,7 @@ export function SiteFooter() {
           <span>Contact: dude@dude.box</span>
         </div>
         <span className="text-xs">
-          © {new Date().getFullYear()} dude.box LLC. All rights reserved.
+          © {new Date().getFullYear()} dude dot box LLC. All rights reserved.
         </span>
       </Container>
     </footer>
