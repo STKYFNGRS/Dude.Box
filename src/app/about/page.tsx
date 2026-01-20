@@ -3,17 +3,17 @@ import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 
 export const metadata: Metadata = {
-  title: "Concept | dude.box",
+  title: "About | dude.box",
   description:
-    "The concept behind dude.box: decompression, recovery, and disciplined routines in a calm environment.",
+    "The purpose behind dude.box: decompression, recovery, and disciplined routines in a calm environment.",
 };
 
-export default function ConceptPage() {
+export default function AboutPage() {
   return (
     <Container className="py-12">
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
-          <span className="text-xs uppercase tracking-[0.35em] muted">Concept</span>
+          <span className="text-xs uppercase tracking-[0.35em] muted">About</span>
           <h1 className="section-title text-4xl md:text-5xl">
             Decompression, not optimization
           </h1>
