@@ -72,10 +72,10 @@ export function SiteHeader() {
             />
           </Link>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4 md:gap-6">
           <nav
             aria-label="Primary"
-            className="hidden md:flex flex-wrap gap-4 text-sm uppercase tracking-[0.2em]"
+            className="hidden md:flex flex-wrap items-center gap-6 text-sm uppercase tracking-[0.2em]"
           >
             {headerNavigationLinks.map((item) => (
               <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
@@ -84,7 +84,7 @@ export function SiteHeader() {
             ))}
             <Link
               href="/portal/login"
-              className="outline-button rounded px-3 py-2 text-xs uppercase tracking-[0.25em]"
+              className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
               Member Login
             </Link>
