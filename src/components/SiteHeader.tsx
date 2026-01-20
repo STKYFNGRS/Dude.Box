@@ -10,7 +10,7 @@ export function SiteHeader() {
           <Link href="/" className="text-xl font-semibold section-title">
             dude.box
           </Link>
-          <span className="text-sm muted">Veteran-Owned Men’s Recovery & Social Club</span>
+          <span className="text-sm muted">Men’s Recovery & Social Club</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <nav aria-label="Primary" className="flex flex-wrap gap-4 text-sm uppercase tracking-[0.2em]">
