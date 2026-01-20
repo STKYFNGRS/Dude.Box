@@ -14,12 +14,10 @@ export function SiteFooter() {
           ))}
         </nav>
         <div className="flex flex-col gap-2">
-          <span>dude.box — San Diego, California</span>
-          <span>Investor inquiries: investors@dude.box (placeholder)</span>
-          <span>General contact: contact@dude.box (placeholder)</span>
+          <span>Contact: dude@dude.box</span>
         </div>
         <span className="text-xs">
-          © {new Date().getFullYear()} dude.box. All rights reserved.
+          © {new Date().getFullYear()} dude.box LLC. All rights reserved.
         </span>
       </Container>
     </footer>

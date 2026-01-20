@@ -51,8 +51,8 @@ export default function InvestorsPage() {
             without expansion pressure.
           </p>
           <p>
-            Veteran leadership prioritizes accountability, safety, and a controlled experience.
-            The model is built for lender and investor review.
+            Veteran leadership prioritizes accountability and operating discipline. The model is
+            built for lender and investor review.
           </p>
         </div>
       </Section>
