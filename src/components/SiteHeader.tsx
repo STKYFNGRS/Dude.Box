@@ -12,9 +12,9 @@ export function SiteHeader() {
             <Image
               src="/Logo.png"
               alt="dude.box logo"
-              width={180}
-              height={48}
-              className="h-10 w-auto"
+              width={140}
+              height={36}
+              className="h-7 w-auto"
               priority
             />
           </Link>
