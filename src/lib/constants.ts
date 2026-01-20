@@ -1,12 +1,10 @@
 export const headerNavigationLinks = [
-  { label: "About", href: "/about" },
   { label: "Membership", href: "/membership" },
   { label: "Investors", href: "/investors" },
   { label: "Shop", href: "/shop" },
 ];
 
 export const footerNavigationLinks = [
-  { label: "About", href: "/about" },
   { label: "Membership", href: "/membership" },
   { label: "Investors", href: "/investors" },
   { label: "Shop", href: "/shop" },
