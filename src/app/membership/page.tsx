@@ -38,23 +38,23 @@ export default function MembershipPage() {
             description="Benefit-led and easy to scan."
           >
             <div className="grid gap-6 md:grid-cols-2">
-              <Card title="Strength & conditioning">
-                Dedicated training space for consistent progress and routine.
+              <Card title="Strength & conditioning equipment">
+                Dedicated training space with limited capacity and consistent access.
               </Card>
               <Card title="Sauna & cold plunge">
-                Recovery tools that support sleep, stress reduction, and resilience.
+                Recovery tools that support stress management and reset.
               </Card>
               <Card title="Casual lounge & games">
-                Quiet decompression without public crowds or noise.
+                Quiet decompression in a member-only environment.
               </Card>
               <Card title="Barber services">
-                Optional grooming with consistent scheduling and privacy.
+                Optional grooming with scheduled access and privacy.
               </Card>
               <Card title="Preventative therapist access">
-                Request-based sessions for support and accountability.
+                Scheduled, non-crisis support for long-term wellbeing.
               </Card>
-              <Card title="Member-only access">
-                200-member cap protects availability and culture.
+              <Card title="Coffee, protein, and simple food">
+                Functional fuel to support routine and recovery.
               </Card>
             </div>
           </Section>
@@ -65,10 +65,10 @@ export default function MembershipPage() {
             description="Clear add-ons without pressure."
           >
             <div className="grid gap-6 md:grid-cols-2">
-              <Card title="Barber services">
+              <Card title="Barber package">
                 Priority booking and regular maintenance without public traffic.
               </Card>
-              <Card title="Recovery priority access">
+              <Card title="Recovery priority">
                 Higher availability for recovery equipment and sessions.
               </Card>
             </div>
@@ -143,7 +143,7 @@ export default function MembershipPage() {
                 Express Membership Interest
               </button>
               <p className="text-xs muted">
-                TODO: Wire to member intake workflow. No submissions are processed yet.
+                Interest form only. Submissions are not yet processed.
               </p>
             </form>
           </div>

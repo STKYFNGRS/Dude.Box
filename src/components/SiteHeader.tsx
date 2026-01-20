@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/Container";
-import { navigationLinks } from "@/lib/constants";
+import { headerNavigationLinks } from "@/lib/constants";
 
 export function SiteHeader() {
   return (
@@ -14,7 +14,7 @@ export function SiteHeader() {
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <nav aria-label="Primary" className="flex flex-wrap gap-4 text-sm uppercase tracking-[0.2em]">
-            {navigationLinks.map((item) => (
+            {headerNavigationLinks.map((item) => (
               <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
                 {item.label}
               </Link>
@@ -24,7 +24,7 @@ export function SiteHeader() {
             href="/portal/login"
             className="outline-button rounded px-3 py-2 text-xs uppercase tracking-[0.25em]"
           >
-            Sign In
+            Member Login
           </Link>
         </div>
       </Container>

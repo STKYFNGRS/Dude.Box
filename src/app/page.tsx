@@ -6,7 +6,7 @@ import { Section } from "@/components/Section";
 export const metadata: Metadata = {
   title: "Home | dude.box",
   description:
-    "Men’s recovery & social club in San Diego. Member-focused experience for training, recovery, and reset.",
+    "Veteran-owned men’s recovery & social club in San Diego. Calm, member-focused environment for recovery and routine.",
 };
 
 export default function HomePage() {
@@ -19,7 +19,7 @@ export default function HomePage() {
             Veteran-Owned Men’s Recovery & Social Club
           </h1>
           <p className="text-lg muted">
-            A calm, member-focused space to train, recover, unwind, and reset.
+            A calm, member-focused space built for recovery, routine, and connection.
           </p>
           <p className="text-sm muted">San Diego, California.</p>
           <div className="flex flex-wrap gap-3">
@@ -48,35 +48,27 @@ export default function HomePage() {
           {[
             {
               title: "Gym",
-              description: "Strength and conditioning equipment for consistent training.",
+              description: "Limited-capacity training space focused on routine, not hype.",
             },
             {
-              title: "Sauna",
-              description: "Recovery support for stress reduction and sleep quality.",
+              title: "Sauna & cold plunge",
+              description: "Recovery tools for stress management and reset.",
             },
             {
-              title: "Cold plunge",
-              description: "Controlled cold therapy for recovery and resilience.",
+              title: "Lounge & casual games",
+              description: "Calm, member-only space to unwind and connect.",
             },
             {
-              title: "Lounge",
-              description: "Quiet space to decompress without public traffic.",
+              title: "Barber services",
+              description: "Scheduled services in a private, controlled setting.",
             },
             {
-              title: "Video games",
-              description: "Low-key social downtime and controlled competition.",
-            },
-            {
-              title: "Protein & coffee bar",
-              description: "Simple nutrition and caffeine for routine support.",
-            },
-            {
-              title: "Sandwiches & simple food",
-              description: "Quick, functional meals for busy schedules.",
+              title: "Coffee, protein, and simple food",
+              description: "Functional fuel that supports daily routine.",
             },
             {
               title: "Member-only events",
-              description: "Small group gatherings designed for connection.",
+              description: "Small group gatherings without public traffic.",
             },
           ].map((item) => (
             <div key={item.title} className="card rounded-lg p-6">
@@ -85,6 +77,30 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section
+        eyebrow="Mental health & therapy"
+        title="Scheduled, preventative support"
+        description="Professional, confidential, and stigma-free."
+      >
+        <p className="text-sm muted max-w-3xl">
+          Members have access to scheduled sessions with a licensed therapist as part of a broader
+          focus on preventative mental wellness, stress management, and life transitions.
+        </p>
+      </Section>
+
+      <Section
+        eyebrow="Who it’s for"
+        title="Built for men who want routine"
+        description="Not nightlife. Not performance culture."
+      >
+        <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
+          <li className="border-b border-border pb-3">Veterans</li>
+          <li className="border-b border-border pb-3">Professionals</li>
+          <li className="border-b border-border pb-3">Men seeking structure and recovery</li>
+          <li className="border-b border-border pb-3">Those who want calm, not crowds</li>
+        </ul>
       </Section>
 
       <Section
@@ -112,13 +128,13 @@ export default function HomePage() {
       </Section>
 
       <Section
-        eyebrow="Capacity"
-        title="Limited membership, no urgency"
-        description="Designed to stay uncrowded and intentional."
+        eyebrow="Capacity & discipline"
+        title="200-member cap"
+        description="Designed to stay uncrowded and predictable."
       >
         <p className="text-sm muted max-w-2xl">
-          Membership is limited by design to protect the experience. There is no public rush, and
-          no pressure language on this site.
+          Membership is limited by design to protect the experience. The environment stays calm
+          and consistent by keeping capacity controlled.
         </p>
       </Section>
     </Container>

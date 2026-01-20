@@ -1,8 +1,16 @@
-export const navigationLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+export const headerNavigationLinks = [
+  { label: "Concept", href: "/concept" },
   { label: "Membership", href: "/membership" },
   { label: "Investors", href: "/investors" },
+  { label: "Location", href: "/location" },
+  { label: "Shop", href: "/shop" },
+];
+
+export const footerNavigationLinks = [
+  { label: "Concept", href: "/concept" },
+  { label: "Membership", href: "/membership" },
+  { label: "Investors", href: "/investors" },
+  { label: "Location", href: "/location" },
   { label: "Shop", href: "/shop" },
 ];
 

@@ -24,16 +24,10 @@ export default function InvestorsPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <a
-              href="#business-plan"
+              href="#contact"
               className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
             >
-              Download SBA Business Plan
-            </a>
-            <a
-              href="#contact"
-              className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
-            >
-              Investor Contact
+              Request Investor Information
             </a>
           </div>
         </div>
@@ -96,24 +90,10 @@ export default function InvestorsPage() {
           <li className="border-b border-border pb-3">
             Strong profit discipline through planned staffing and utilization.
           </li>
+          <li className="border-b border-border pb-3">
+            Capital efficiency supported by a focused service model.
+          </li>
         </ul>
-      </Section>
-
-      <Section
-        eyebrow="Business Plan"
-        title="Download materials"
-        description="Business plan and supporting documents."
-      >
-        <div className="flex flex-wrap gap-4 items-center">
-          <a
-            id="business-plan"
-            href="#"
-            className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em]"
-          >
-            Download SBA Business Plan (PDF)
-          </a>
-          <span className="text-xs muted">TODO: Link to the final business plan file.</span>
-        </div>
       </Section>
 
       <Section
