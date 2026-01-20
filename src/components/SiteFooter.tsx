@@ -14,7 +14,12 @@ export function SiteFooter() {
           ))}
         </nav>
         <div className="flex flex-col gap-2">
-          <span>Contact: dude@dude.box</span>
+          <span>
+            Contact:{" "}
+            <a href="mailto:dude@dude.box" className="underline underline-offset-4">
+              dude@dude.box
+            </a>
+          </span>
         </div>
         <span className="text-xs">
           © {new Date().getFullYear()} dude dot box LLC. All rights reserved.

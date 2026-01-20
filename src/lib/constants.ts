@@ -3,9 +3,7 @@ export const navigationLinks = [
   { label: "About", href: "/about" },
   { label: "Membership", href: "/membership" },
   { label: "Investors", href: "/investors" },
-  { label: "Location", href: "/location" },
   { label: "Shop", href: "/shop" },
-  { label: "Member Portal", href: "/portal" },
 ];
 
 export const amenities = [
