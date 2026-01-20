@@ -7,7 +7,7 @@ import { amenities } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Overview | dude.box",
   description:
-    "Veteran-owned men’s recovery & social club in San Diego. Disciplined, member-capped environment for recovery, routine, and decompression.",
+    "Men’s recovery & social club in San Diego. Disciplined, member-capped environment for recovery, routine, and decompression.",
 };
 
 export default function HomePage() {
