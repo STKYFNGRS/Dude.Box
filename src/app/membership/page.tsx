@@ -6,7 +6,7 @@ import { Card } from "@/components/Card";
 export const metadata: Metadata = {
   title: "Membership | dude.box",
   description:
-    "Membership details for dude.box. Limited access, routine, and shared commitment to the space.",
+    "Membership details for dude.box. Private recharge club access, routine, and shared commitment to the space.",
 };
 
 export default function MembershipPage() {
@@ -18,9 +18,12 @@ export default function MembershipPage() {
         description="Ongoing access, consistency, and shared commitment to the space."
       >
         <p className="text-sm muted max-w-3xl">
-          Membership is ongoing access to a calm, structured environment built around routine and
-          recovery. It is limited to preserve the experience and keep the space consistent for
-          those who rely on it.
+          Membership provides ongoing access to the recharge club for men who value routine,
+          recovery, and calm. The membership is limited to preserve the experience and keep the
+          space consistent for those who rely on it.
+        </p>
+        <p className="text-sm muted max-w-3xl pt-4">
+          Membership is capped at 300 members. Dues are $200 per month.
         </p>
       </Section>
 
@@ -31,16 +34,22 @@ export default function MembershipPage() {
       >
         <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
           <li className="border-b border-border pb-3">Access to the training space</li>
-          <li className="border-b border-border pb-3">Sauna and cold plunge recovery</li>
-          <li className="border-b border-border pb-3">Lounge and casual games</li>
+          <li className="border-b border-border pb-3">
+            Recovery suite (whirlpool, sauna, cold plunge, lockers, showers)
+          </li>
+          <li className="border-b border-border pb-3">
+            Lounge with sports viewing, pool table, and limited gaming stations
+          </li>
           <li className="border-b border-border pb-3">Access to the barber (services optional)</li>
           <li className="border-b border-border pb-3">
             Access to the coffee, sandwich, and protein counter
           </li>
           <li className="border-b border-border pb-3">
-            Access to scheduled therapy support
+            Access to the therapist room (scheduled, preventative)
           </li>
-          <li className="border-b border-border pb-3">Member-only events and gatherings</li>
+          <li className="border-b border-border pb-3">
+            Access to the masseuse room (appointment-based)
+          </li>
         </ul>
       </Section>
 
@@ -51,13 +60,13 @@ export default function MembershipPage() {
       >
         <div className="grid gap-6 md:grid-cols-2">
           <div className="card rounded-lg p-6">
-            <h3 className="section-title text-xl mb-2">Barber Add-On</h3>
+            <h3 className="section-title text-xl mb-2">Haircut package</h3>
             <p className="text-sm muted">Includes two haircuts per month.</p>
             <p className="text-sm muted">Appointment-based scheduling.</p>
           </div>
           <div className="card rounded-lg p-6">
-            <h3 className="section-title text-xl mb-2">Daily Beverage Add-On</h3>
-            <p className="text-sm muted">One daily beverage from the coffee & protein bar.</p>
+            <h3 className="section-title text-xl mb-2">Daily beverage</h3>
+            <p className="text-sm muted">One daily drink from the coffee and protein counter.</p>
             <p className="text-sm muted">Designed to support routine and convenience.</p>
           </div>
         </div>

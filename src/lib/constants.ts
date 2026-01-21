@@ -11,17 +11,19 @@ export const footerNavigationLinks = [
 ];
 
 export const amenities = [
-  "Gym and strength training spaces",
-  "Recovery protocols and equipment",
-  "Barber services (add-on)",
-  "Therapist access (request-based)",
-  "Lounge and decompression areas",
+  "Training floor and gym access",
+  "Recovery suite (whirlpool, sauna, cold plunge, lockers, showers)",
+  "On-site barber",
+  "Therapist room (scheduled, preventative)",
+  "Masseuse room (appointment-based)",
+  "Lounge with sports viewing and pool table",
+  "Coffee, protein, and deli counter",
 ];
 
 export const membershipBenefits = [
-  "200-member cap with controlled access",
+  "300-member cap with controlled access",
   "$200/month base membership",
-  "Structured routine and accountability",
-  "Quiet, disciplined environment",
+  "Recharge-focused routine and consistency",
+  "Calm, private environment",
   "Veteran-owned leadership",
 ];

@@ -6,7 +6,7 @@ import { Card } from "@/components/Card";
 export const metadata: Metadata = {
   title: "Investors | dude.box",
   description:
-    "Investor overview for dude.box. Membership cap, recurring revenue, and disciplined operations in San Diego.",
+    "Investor overview for dude.box. Recharge club model, recurring revenue, and disciplined operations in San Diego.",
 };
 
 export default function InvestorsPage() {
@@ -19,7 +19,7 @@ export default function InvestorsPage() {
             Invest in dude.box — predictable revenue, disciplined model, veteran leadership
           </h1>
           <p className="text-lg muted">
-            A membership-driven club in San Diego with controlled capacity and repeatable
+            A private men’s recharge club in San Diego with controlled capacity and repeatable
             operations.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -45,8 +45,8 @@ export default function InvestorsPage() {
             without expansion pressure.
           </p>
           <p>
-            Veteran leadership prioritizes accountability and operating discipline. The model is
-            built for lender and investor review.
+            The recharge club format keeps service delivery clear and repeatable. Veteran
+            leadership prioritizes accountability and operating discipline.
           </p>
         </div>
       </Section>
@@ -58,18 +58,22 @@ export default function InvestorsPage() {
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card title="Member cap">
-            200 members maximum. Capacity is controlled and enforced.
+            300 members maximum. Capacity is controlled and enforced.
           </Card>
           <Card title="Monthly dues">
             $200 per member. Predictable recurring revenue.
           </Card>
           <Card title="Base revenue">
-            $480,000 annually from base dues alone.
+            $60,000 per month from base dues alone.
           </Card>
           <Card title="Projected revenue">
-            Approximately $690,000 per year with add-ons and merchandise.
+            $720,000 annually from base dues alone.
           </Card>
         </div>
+        <p className="text-sm muted max-w-3xl pt-6">
+          Add-on revenue is modeled conservatively using modest adoption rates for the haircut
+          package and daily beverage add-on.
+        </p>
       </Section>
 
       <Section
@@ -92,6 +96,9 @@ export default function InvestorsPage() {
           </li>
           <li className="border-b border-border pb-3">
             Capital efficiency supported by a focused service model.
+          </li>
+          <li className="border-b border-border pb-3">
+            Add-on assumptions modeled at modest adoption rates for haircuts and daily beverages.
           </li>
         </ul>
       </Section>

@@ -9,9 +9,9 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
-  title: "dude.box | Men’s Recovery & Social Club",
+  title: "dude.box | Private Men’s Recharge Club",
   description:
-    "Men’s recovery & social club in San Diego.",
+    "Private men’s recharge club in San Diego for training, recovery, and routine.",
 };
 
 export default function RootLayout({

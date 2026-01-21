@@ -6,7 +6,7 @@ import { Section } from "@/components/Section";
 export const metadata: Metadata = {
   title: "Home | dude.box",
   description:
-    "Veteran-owned men’s recovery & social club in San Diego. Calm, member-focused environment for recovery and routine.",
+    "Private men’s recharge club in San Diego. Calm, routine-based space to train, recover, and reset.",
 };
 
 export default function HomePage() {
@@ -15,10 +15,10 @@ export default function HomePage() {
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
           <h1 className="section-title text-4xl md:text-5xl">
-            Veteran-Owned Men’s Recovery & Social Club
+            Private Men’s Recharge Club
           </h1>
           <p className="text-lg muted">
-            A calm, structured place to recover, reset, and build steady routines.
+            A calm, routine-based place to train, recover, relax, and reset.
           </p>
         </div>
       </section>
@@ -31,28 +31,32 @@ export default function HomePage() {
         <div id="inside" className="grid gap-6 md:grid-cols-2">
           {[
             {
-              title: "Training space",
-              description: "Equipment and space for consistent, practical training.",
+              title: "Training floor",
+              description: "Gym access for consistent, practical training.",
             },
             {
-              title: "Sauna & cold plunge",
-              description: "Dedicated recovery tools for reset and restoration.",
+              title: "Recovery suite",
+              description: "Whirlpool, sauna, cold plunge, lockers, and showers.",
             },
             {
-              title: "Lounge & casual games",
-              description: "A quiet place to unwind and connect without noise.",
+              title: "Lounge",
+              description: "Man-cave atmosphere with sports viewing, pool table, and limited gaming.",
             },
             {
               title: "Barber services",
-              description: "Scheduled services integrated into the routine.",
+              description: "On-site barber with appointment-based service.",
             },
             {
-              title: "Coffee, sandwich, and protein counter",
-              description: "Simple, functional fuel for daily routines.",
+              title: "Coffee, protein, and deli counter",
+              description: "Simple, functional fuel built into the routine.",
             },
             {
-              title: "Member-only events",
-              description: "Small gatherings that keep the environment grounded.",
+              title: "Therapist room",
+              description: "Scheduled, preventative support in a private setting.",
+            },
+            {
+              title: "Masseuse room",
+              description: "Appointment-based massage in a dedicated room.",
             },
           ].map((item) => (
             <div key={item.title} className="card rounded-lg p-6">
@@ -70,8 +74,8 @@ export default function HomePage() {
       >
         <p className="text-sm muted max-w-3xl">
           Members have access to scheduled sessions with a licensed therapist as part of a broader
-          focus on preventative support and steady wellbeing. It is integrated into the space in a
-          calm, natural way.
+          focus on preventative support and steady wellbeing. It is integrated into the club as a
+          normal part of the space.
         </p>
       </Section>
 
@@ -95,12 +99,12 @@ export default function HomePage() {
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            The club is built around steady routines instead of short bursts of effort. Progress
-            comes from consistency, not pressure.
+            The club is built around steady routines instead of intensity or speed. Progress comes
+            from consistency, not pressure.
           </p>
           <p>
-            The environment is calm by design so members can focus on recovery, training, and
-            sustained improvement without noise.
+            The environment is calm by design so members can focus on training, recovery, and
+            long-term improvement without noise.
           </p>
         </div>
       </Section>
@@ -113,10 +117,10 @@ export default function HomePage() {
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
             The culture is quiet and grounded. Members look out for the space and each other, and
-            the environment stays focused on recovery and routine.
+            the environment stays focused on routine and respect.
           </p>
           <p>
-            It is a place to show up consistently, reset, and move forward without pressure or
+            It is a place to show up consistently, recharge, and move forward without pressure or
             noise.
           </p>
         </div>
@@ -139,8 +143,8 @@ export default function HomePage() {
         description="A place to improve and unwind."
       >
         <p className="text-sm muted max-w-3xl">
-          This is a place men return to regularly for recovery, training, and calm connection. It
-          is a reset, not an escape.
+          This is a place men return to regularly to train, recover, relax, and reconnect. It is a
+          reset, not an escape.
         </p>
       </Section>
     </Container>
