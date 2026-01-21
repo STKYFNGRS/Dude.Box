@@ -6,7 +6,7 @@ import { Section } from "@/components/Section";
 export const metadata: Metadata = {
   title: "Home | dude.box",
   description:
-    "Private men’s recharge club in San Diego. Calm, routine-based space to train, recover, and reset.",
+    "Private men’s recharge club in San Diego. Train, recover, relax and reset.",
 };
 
 export default function HomePage() {
@@ -18,15 +18,15 @@ export default function HomePage() {
             Private Men’s Recharge Club
           </h1>
           <p className="text-lg muted">
-            A calm, routine-based place to train, recover, relax, and reset.
+            A place to train, recover, relax and reset.
           </p>
         </div>
       </section>
 
       <Section
-        eyebrow="What’s Inside"
+    
         title="What’s Inside"
-        description="A straightforward overview of the core spaces."
+        description="Overview of core spaces."
       >
         <div id="inside" className="grid gap-6 md:grid-cols-2">
           {[
@@ -68,19 +68,18 @@ export default function HomePage() {
       </Section>
 
       <Section
-        eyebrow="Mental health & therapy"
-        title="Scheduled, preventative support"
+        
+        title="Mental health & therapy"
         description="Professional, confidential, and stigma-free."
       >
         <p className="text-sm muted max-w-3xl">
-          Members have access to scheduled sessions with a licensed therapist as part of a broader
-          focus on preventative support and steady wellbeing. It is integrated into the club as a
-          normal part of the space.
+          Members have access to scheduled sessions with an on-site licensed therapist as part of a broader
+          focus on preventative support and steady wellbeing. 
         </p>
       </Section>
 
       <Section
-        eyebrow="Who it’s for"
+        
         title="Built for men who want routine"
         description="Inclusive, grounded, and consistent."
       >
@@ -109,44 +108,9 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <Section
-        eyebrow="Culture"
-        title="Respectful, calm, and shared"
-        description="A steady environment built on mutual respect."
-      >
-        <div className="grid gap-6 md:grid-cols-2 text-sm muted">
-          <p>
-            The culture is quiet and grounded. Members look out for the space and each other, and
-            the environment stays focused on routine and respect.
-          </p>
-          <p>
-            It is a place to show up consistently, recharge, and move forward without pressure or
-            noise.
-          </p>
-        </div>
-      </Section>
+      
 
-      <Section
-        eyebrow="Founder"
-        title="Veteran-owned and led"
-        description="Values first, ego last."
-      >
-        <p className="text-sm muted max-w-3xl">
-          The founder is a veteran who built dude.box around discipline, consistency, and respect.
-          The focus is steady improvement in a relaxed, no-nonsense environment.
-        </p>
-      </Section>
-
-      <Section
-        eyebrow="The Experience"
-        title="The Experience"
-        description="A place to improve and unwind."
-      >
-        <p className="text-sm muted max-w-3xl">
-          This is a place men return to regularly to train, recover, relax, and reconnect. It is a
-          reset, not an escape.
-        </p>
-      </Section>
+     
     </Container>
   );
 }
