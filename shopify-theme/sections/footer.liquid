@@ -1,0 +1,27 @@
+<footer class="footer">
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <div class="section-title" style="font-size: 1.5rem;">{{ shop.name }}</div>
+        <p class="muted" style="margin-top: 0.75rem;">
+          Premium, veteran-owned gear delivered with purpose.
+        </p>
+      </div>
+      <div class="nav" style="justify-content: flex-end;">
+        <a href="/collections/all">Shop</a>
+        <a href="/pages/about">About</a>
+        <a href="/account/login">Login</a>
+      </div>
+    </div>
+    <div class="muted" style="margin-top: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3em;">
+      &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": []
+}
+{% endschema %}

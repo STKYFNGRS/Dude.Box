@@ -22,7 +22,7 @@ export default function TheBoxPage() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href="/shop"
+              href="/products/subscription-box"
               className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
             >
               Subscribe Now

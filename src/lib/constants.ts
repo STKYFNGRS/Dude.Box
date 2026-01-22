@@ -1,16 +1,12 @@
 export const headerNavigationLinks = [
-  { label: "The Box", href: "/the-box" },
-  { label: "Gift", href: "/gift" },
-  { label: "The Store", href: "/shop" },
-  { label: "Our Mission", href: "/our-mission" },
+  { label: "Shop", href: "/shop" },
+  { label: "About", href: "/our-mission" },
   { label: "Login", href: "/portal/login" },
 ];
 
 export const footerNavigationLinks = [
-  { label: "The Box", href: "/the-box" },
-  { label: "Gift", href: "/gift" },
-  { label: "The Store", href: "/shop" },
-  { label: "Our Mission", href: "/our-mission" },
+  { label: "Shop", href: "/shop" },
+  { label: "About", href: "/our-mission" },
   { label: "Login", href: "/portal/login" },
 ];
 

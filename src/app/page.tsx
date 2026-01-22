@@ -22,15 +22,15 @@ export default function HomePage() {
               Gear with Purpose. Stories with Soul.
             </h1>
             <p className="text-lg muted max-w-2xl">
-              The premier subscription box sourced from veteran-owned small businesses.
+              The only subscription box sourced entirely from Veteran-Owned Businesses.
               EDC-ready gear, tools, and grooming essentials curated monthly.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/the-box"
+                href="/products/subscription-box"
                 className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
               >
-                Join the Club
+                Start Your Subscription
               </Link>
               <Link
                 href="/gift"
@@ -85,9 +85,9 @@ export default function HomePage() {
       </Section>
 
       <Section
-        eyebrow="Past Boxes"
-        title="Proof of value"
-        description="See the caliber of previous drops."
+        eyebrow="Overflow"
+        title="Shop the Overflow"
+        description="Shop individual items from past drops while they last."
       >
         <div className="grid gap-6 md:grid-cols-3">
           {[

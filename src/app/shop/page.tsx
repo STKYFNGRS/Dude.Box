@@ -17,7 +17,7 @@ export default async function ShopPage() {
     <Container className="py-12">
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
-          <span className="text-xs uppercase tracking-[0.35em] muted">The Store</span>
+          <span className="text-xs uppercase tracking-[0.35em] muted">Shop</span>
           <h1 className="section-title text-4xl md:text-5xl">Limited gear, ready to ship.</h1>
           <p className="text-lg muted">
             Shop individual items from veteran-owned makers or start the subscription for monthly
@@ -25,7 +25,7 @@ export default async function ShopPage() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href="/the-box"
+              href="/products/subscription-box"
               className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
             >
               Subscribe Monthly
@@ -82,7 +82,7 @@ export default async function ShopPage() {
           </span>
           <span>
             Prefer a monthly drop? Review{" "}
-            <Link href="/the-box" className="underline underline-offset-4">
+            <Link href="/products/subscription-box" className="underline underline-offset-4">
               the subscription
             </Link>{" "}
             or{" "}

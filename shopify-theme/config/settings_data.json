@@ -1,0 +1,12 @@
+{
+  "current": {
+    "color_background": "#0f1628",
+    "color_foreground": "#ffffff",
+    "color_muted": "#b2bccb",
+    "color_accent": "#c79d7a",
+    "color_accent_secondary": "#4b5320",
+    "color_border": "#23314b",
+    "color_panel": "#141d33"
+  },
+  "presets": {}
+}

@@ -1,0 +1,39 @@
+<header class="header">
+  <div class="container header-inner">
+    <div>
+      {% if section.settings.logo != blank %}
+        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+          <img
+            src="{{ section.settings.logo | image_url: width: 360 }}"
+            alt="{{ shop.name }}"
+            loading="lazy"
+            style="height: auto; max-width: 240px;"
+          >
+        </a>
+      {% else %}
+        <a href="{{ routes.root_url }}" class="logo-text">{{ shop.name }}</a>
+      {% endif %}
+    </div>
+    <nav class="nav" aria-label="Primary">
+      <a href="/collections/all">Shop</a>
+      <a href="/pages/about">About</a>
+      <a href="/account/login">Login</a>
+      <a href="/products/subscription-box" class="solid-button" style="padding: 0.5rem 1.5rem; border-radius: 999px;">
+        Subscribe
+      </a>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    }
+  ]
+}
+{% endschema %}

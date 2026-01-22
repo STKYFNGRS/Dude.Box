@@ -1,0 +1,74 @@
+<section class="section">
+  <div class="container">
+    <div class="badge muted">{{ section.settings.eyebrow }}</div>
+    <h2 class="section-title" style="font-size: 2rem; margin: 1rem 0 0.75rem;">
+      {{ section.settings.title }}
+    </h2>
+    <p class="muted" style="max-width: 680px;">{{ section.settings.description }}</p>
+    <div class="grid-3" style="margin-top: 2rem;">
+      {% assign overflow_collection = collections[section.settings.collection] %}
+      {% if overflow_collection != blank %}
+        {% for product in overflow_collection.products limit: 3 %}
+          <div class="card" style="border-radius: 1rem; padding: 1.5rem;">
+            {% if product.featured_image %}
+              <div style="border-radius: 0.75rem; overflow: hidden; border: 1px solid var(--color-border);">
+                <img
+                  src="{{ product.featured_image | image_url: width: 600 }}"
+                  alt="{{ product.title }}"
+                  loading="lazy"
+                  style="width: 100%; height: 180px; object-fit: cover;"
+                >
+              </div>
+            {% endif %}
+            <h3 class="section-title" style="font-size: 1.25rem; margin-top: 1rem;">{{ product.title }}</h3>
+            <p class="muted" style="font-size: 0.9rem;">{{ product.description | strip_html | truncate: 120 }}</p>
+            <a href="{{ product.url }}" class="outline-button" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; border-radius: 999px;">
+              View Details
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for item in (1..3) %}
+          <div class="card" style="border-radius: 1rem; padding: 1.5rem;">
+            <div style="aspect-ratio: 4 / 3; border-radius: 0.75rem; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+              <span class="badge muted">Flat lay placeholder</span>
+            </div>
+            <h3 class="section-title" style="font-size: 1.25rem; margin-top: 1rem;">Overflow item {{ item }}</h3>
+            <p class="muted" style="font-size: 0.9rem;">Premium gear from past drops, ready to ship.</p>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Overflow",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Overflow"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Shop the Overflow"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Shop individual items from past drops while they last."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ]
+}
+{% endschema %}

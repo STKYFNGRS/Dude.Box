@@ -1,0 +1,54 @@
+<section class="section">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="card" style="border-radius: 1.5rem; padding: 1.5rem;">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 900 }}"
+            alt="{{ product.title }}"
+            style="width: 100%; height: auto; border-radius: 1rem; border: 1px solid var(--color-border);"
+          >
+        {% else %}
+          <div style="aspect-ratio: 4 / 5; border-radius: 1rem; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+            <span class="badge muted">Product image</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="card" style="border-radius: 1.5rem; padding: 2rem;">
+        <div class="badge muted">Product</div>
+        <h1 class="section-title" style="font-size: 2.5rem; margin: 1rem 0;">{{ product.title }}</h1>
+        <div class="muted" style="font-size: 1rem; margin-bottom: 1rem;">{{ product.description }}</div>
+        <div style="font-size: 1.15rem; margin-bottom: 1.5rem;">{{ product.price | money }}</div>
+        <form action="/cart/add" method="post" class="grid-2">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          {% if product.selling_plan_groups.size > 0 %}
+            <label class="muted" style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.7rem;">
+              Subscription
+              <select name="selling_plan" class="select" style="margin-top: 0.5rem;">
+                {% for group in product.selling_plan_groups %}
+                  {% for plan in group.selling_plans %}
+                    <option value="{{ plan.id }}">{{ plan.name }}</option>
+                  {% endfor %}
+                {% endfor %}
+              </select>
+            </label>
+          {% endif %}
+          <label class="muted" style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.7rem;">
+            Quantity
+            <input class="input" type="number" name="quantity" value="1" min="1" style="margin-top: 0.5rem;">
+          </label>
+          <button type="submit" class="solid-button" style="padding: 0.75rem 1.5rem; border-radius: 999px; width: 100%;">
+            Add to cart
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main product",
+  "settings": []
+}
+{% endschema %}
