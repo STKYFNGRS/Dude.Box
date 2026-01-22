@@ -6,6 +6,7 @@ export const headerNavigationLinks = [
 export const footerNavigationLinks = [
   { label: "About", href: "/about" },
   { label: "Login", href: "/portal/login" },
+  { label: "Shop", href: "/shop" },
 ];
 
 export const amenities = [
