@@ -57,7 +57,7 @@ export function SiteHeader() {
   }, [isOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
       <Container className="py-3 flex items-center justify-between">
         <div className="md:hidden w-10" aria-hidden="true" />
         <div className="flex flex-1 justify-center md:flex-none md:justify-start">

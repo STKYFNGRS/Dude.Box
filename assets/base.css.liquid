@@ -140,7 +140,7 @@ a {
   gap: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   align-items: center;
 }
 
@@ -169,6 +169,12 @@ a {
   flex: 1;
   display: flex;
   justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .header-logo {
+    justify-content: flex-start;
+  }
 }
 
 .header-nav {
