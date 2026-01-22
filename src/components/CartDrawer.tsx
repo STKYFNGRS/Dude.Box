@@ -185,6 +185,10 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             type="button"
             onClick={async () => {
               try {
+                if (!cart || !cart.totalQuantity) {
+                  window.location.href = "/shop";
+                  return;
+                }
                 setIsLoading(true);
                 const response = await fetch("/api/cart", {
                   method: "POST",
