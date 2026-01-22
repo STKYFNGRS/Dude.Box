@@ -88,7 +88,7 @@ export function SiteHeader() {
               href="/shop"
               className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
-              Subscribe
+              Shop
             </Link>
             <button
               type="button"
@@ -157,7 +157,7 @@ export function SiteHeader() {
                 href="/shop"
                 className="solid-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em] inline-flex justify-center"
               >
-                Subscribe
+                Shop
               </Link>
               <button
                 type="button"
