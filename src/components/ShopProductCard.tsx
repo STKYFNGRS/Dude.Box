@@ -53,7 +53,7 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
   };
 
   return (
-    <div className="card rounded-lg p-6 flex flex-col gap-4">
+    <div className="card rounded-lg p-6 flex flex-col gap-4 h-full">
       <div className="text-xs uppercase tracking-[0.3em] muted">Limited drop</div>
       {product.image ? (
         <div className="border border-border rounded overflow-hidden bg-background">
@@ -66,7 +66,7 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
         </div>
       ) : null}
       <h3 className="section-title text-xl">{product.title}</h3>
-      <p className="text-sm muted">{product.description}</p>
+      <p className="text-sm muted flex-1">{product.description}</p>
       <div className="text-sm">{product.price}</div>
       {variants.length > 1 ? (
         <label className="text-xs uppercase tracking-[0.2em] muted">
@@ -84,7 +84,7 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
           </select>
         </label>
       ) : null}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-auto">
         {product.handle ? (
           <Link
             href={`/products/${product.handle}`}

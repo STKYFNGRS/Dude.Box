@@ -152,9 +152,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         type="button"
         aria-label="Close cart drawer"
         onClick={onClose}
-        className="absolute inset-0 bg-background/80"
+        className="absolute inset-0 bg-background/70 backdrop-blur-sm"
       />
-      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel shadow-2xl p-6 flex flex-col">
+      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel/95 shadow-2xl p-6 flex flex-col">
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <span className="text-xs uppercase tracking-[0.3em] muted">Cart</span>
           <button
@@ -167,7 +167,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         <div className="flex-1 flex flex-col gap-6 pt-6">
-          <div className="card rounded-lg p-4 bg-background/40">
+          <div className="card rounded-lg p-4 bg-background/30">
             <div className="text-xs uppercase tracking-[0.3em] muted">Your drop</div>
             {isLoading ? (
               <div className="text-sm muted pt-3">Loading cart…</div>
@@ -226,7 +226,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             )}
           </div>
 
-          <div className="card rounded-lg p-4 flex flex-col gap-3 bg-background/40">
+          <div className="card rounded-lg p-4 flex flex-col gap-3 bg-background/30">
             <label className="inline-flex items-center gap-3 text-sm">
               <input
                 type="checkbox"
