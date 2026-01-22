@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,9 +11,23 @@ import { headerNavigationLinks } from "@/lib/constants";
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const openButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const refreshCartCount = useCallback(async () => {
+    try {
+      const response = await fetch("/api/cart", { method: "GET" });
+      if (!response.ok) {
+        return;
+      }
+      const payload = await response.json();
+      setCartCount(Number(payload?.cart?.totalQuantity ?? 0));
+    } catch (error) {
+      // Ignore cart badge failures.
+    }
+  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -58,6 +72,20 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  useEffect(() => {
+    refreshCartCount();
+    const handleCartUpdate = (event: Event) => {
+      const detail = (event as CustomEvent).detail as { totalQuantity?: number } | undefined;
+      if (typeof detail?.totalQuantity === "number") {
+        setCartCount(detail.totalQuantity);
+        return;
+      }
+      refreshCartCount();
+    };
+    window.addEventListener("cart:updated", handleCartUpdate);
+    return () => window.removeEventListener("cart:updated", handleCartUpdate);
+  }, [refreshCartCount]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
       <Container className="py-3 flex items-center justify-between">
@@ -93,9 +121,29 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+              className="outline-button rounded-full px-3 py-2 text-xs uppercase tracking-[0.25em] leading-none relative"
+              aria-label="Open cart"
             >
-              Cart
+              <span className="sr-only">Cart</span>
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="9" cy="20" r="1" />
+                <circle cx="17" cy="20" r="1" />
+                <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 7H6" />
+              </svg>
+              {cartCount > 0 ? (
+                <span className="absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full bg-accent text-[10px] text-background flex items-center justify-center px-1">
+                  {cartCount}
+                </span>
+              ) : null}
             </button>
           </nav>
           <button
@@ -165,9 +213,28 @@ export function SiteHeader() {
                   setIsOpen(false);
                   setIsCartOpen(true);
                 }}
-                className="outline-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em]"
+                className="outline-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em] inline-flex items-center justify-center gap-2"
               >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="9" cy="20" r="1" />
+                  <circle cx="17" cy="20" r="1" />
+                  <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 7H6" />
+                </svg>
                 Cart
+                {cartCount > 0 ? (
+                  <span className="ml-1 rounded-full bg-accent text-[10px] text-background px-2 py-0.5">
+                    {cartCount}
+                  </span>
+                ) : null}
               </button>
             </div>
           </div>

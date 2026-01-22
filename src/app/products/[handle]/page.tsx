@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
-import { ProductAddToCartButton } from "@/components/ProductAddToCartButton";
+import { ProductPurchaseOptions } from "@/components/ProductPurchaseOptions";
 import { getShopifyProductByHandle } from "@/lib/shopify";
 
 type ProductPageProps = {
@@ -27,6 +27,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+
+  const variants = product.variants ?? [];
+  const defaultVariantId = product.variantId ?? variants[0]?.id;
 
   return (
     <Container className="py-12">
@@ -59,7 +62,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
             <p className="text-sm muted">{product.description}</p>
             <div className="flex flex-col gap-3">
-              <ProductAddToCartButton variantId={product.variantId} />
+              <ProductPurchaseOptions
+                variants={variants}
+                initialVariantId={defaultVariantId}
+              />
               <Link
                 href="/shop"
                 className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full text-center"

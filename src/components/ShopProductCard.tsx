@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ShopProduct } from "@/lib/shopify";
 
@@ -11,9 +11,13 @@ type ShopProductCardProps = {
 export function ShopProductCard({ product }: ShopProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const variants = useMemo(() => product.variants ?? [], [product.variants]);
+  const [selectedVariantId, setSelectedVariantId] = useState(
+    product.variantId ?? variants[0]?.id ?? ""
+  );
 
   const handleAddToCart = async () => {
-    if (!product.variantId) {
+    if (!selectedVariantId) {
       setMessage("Unavailable right now.");
       return;
     }
@@ -27,7 +31,7 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "addLines",
-          lines: [{ merchandiseId: product.variantId, quantity: 1 }],
+          lines: [{ merchandiseId: selectedVariantId, quantity: 1 }],
         }),
       });
 
@@ -36,6 +40,11 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
       }
 
       setMessage("Added to cart.");
+      window.dispatchEvent(
+        new CustomEvent("cart:updated", {
+          detail: { totalQuantity: undefined },
+        })
+      );
     } catch (error) {
       setMessage("Unable to add to cart.");
     } finally {
@@ -59,6 +68,22 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
       <h3 className="section-title text-xl">{product.title}</h3>
       <p className="text-sm muted">{product.description}</p>
       <div className="text-sm">{product.price}</div>
+      {variants.length > 1 ? (
+        <label className="text-xs uppercase tracking-[0.2em] muted">
+          Size
+          <select
+            className="mt-2 w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+            value={selectedVariantId}
+            onChange={(event) => setSelectedVariantId(event.target.value)}
+          >
+            {variants.map((variant) => (
+              <option key={variant.id} value={variant.id}>
+                {variant.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
       <div className="flex flex-col gap-2">
         {product.handle ? (
           <Link

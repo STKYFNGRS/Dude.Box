@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { getShopifyProducts } from "@/lib/shopify";
@@ -24,20 +23,6 @@ export default async function ShopPage() {
             Shop individual items from veteran-owned makers or start the subscription for monthly
             drops.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/shop"
-              className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
-            >
-              Subscribe Monthly
-            </Link>
-            <Link
-              href="/shop"
-              className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
-            >
-              Gift Options
-            </Link>
-          </div>
         </div>
       </section>
       <Section

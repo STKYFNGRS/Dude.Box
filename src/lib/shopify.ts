@@ -7,6 +7,7 @@ export type ShopProduct = {
   url?: string;
   handle?: string;
   variantId?: string;
+  variants?: Array<{ id: string; title: string }>;
 };
 
 export type ShopProductDetail = {
@@ -17,6 +18,7 @@ export type ShopProductDetail = {
   image?: string;
   handle: string;
   variantId?: string;
+  variants?: Array<{ id: string; title: string }>;
 };
 
 const mockProducts: ShopProduct[] = [
@@ -150,9 +152,10 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
               currencyCode
             }
           }
-          variants(first: 1) {
+          variants(first: 10) {
             nodes {
               id
+              title
             }
           }
           images(first: 1) {
@@ -183,6 +186,10 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
       url: product.onlineStoreUrl ?? undefined,
       handle: product.handle,
       variantId: product.variants?.nodes?.[0]?.id,
+      variants: product.variants?.nodes?.map((variant: any) => ({
+        id: variant.id,
+        title: variant.title,
+      })),
     }));
   } catch (error) {
     return mockProducts;
@@ -495,9 +502,10 @@ export async function getShopifyProductByHandle(
             currencyCode
           }
         }
-        variants(first: 1) {
+        variants(first: 10) {
           nodes {
             id
+            title
           }
         }
         images(first: 1) {
@@ -527,5 +535,9 @@ export async function getShopifyProductByHandle(
     image: product.images?.nodes?.[0]?.url,
     handle: product.handle,
     variantId: product.variants?.nodes?.[0]?.id,
+    variants: product.variants?.nodes?.map((variant: any) => ({
+      id: variant.id,
+      title: variant.title,
+    })),
   };
 }

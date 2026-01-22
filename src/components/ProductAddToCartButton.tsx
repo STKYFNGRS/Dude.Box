@@ -33,6 +33,11 @@ export function ProductAddToCartButton({ variantId }: ProductAddToCartButtonProp
       }
 
       setMessage("Added to cart.");
+      window.dispatchEvent(
+        new CustomEvent("cart:updated", {
+          detail: { totalQuantity: undefined },
+        })
+      );
     } catch (error) {
       setMessage("Unable to add to cart.");
     } finally {

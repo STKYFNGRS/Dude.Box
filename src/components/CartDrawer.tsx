@@ -37,6 +37,13 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [hasAssociatedCustomer, setHasAssociatedCustomer] = useState(false);
   const { data: session } = useSession();
+  const emitCartUpdate = (updatedCart: CartState | null) => {
+    window.dispatchEvent(
+      new CustomEvent("cart:updated", {
+        detail: { totalQuantity: updatedCart?.totalQuantity ?? 0 },
+      })
+    );
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -52,7 +59,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         return response.json();
       })
       .then((payload) => {
-        setCart(payload.cart ?? null);
+        const nextCart = payload.cart ?? null;
+        setCart(nextCart);
+        emitCartUpdate(nextCart);
       })
       .catch(() => {
         setErrorMessage("Unable to load cart.");
@@ -86,6 +95,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       .then((payload) => {
         if (payload.cart) {
           setCart(payload.cart);
+          emitCartUpdate(payload.cart);
         }
         setHasAssociatedCustomer(true);
       })
@@ -106,9 +116,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         type="button"
         aria-label="Close cart drawer"
         onClick={onClose}
-        className="absolute inset-0 bg-background/70"
+        className="absolute inset-0 bg-background/80"
       />
-      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-background p-6 flex flex-col">
+      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel shadow-2xl p-6 flex flex-col">
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <span className="text-xs uppercase tracking-[0.3em] muted">Cart</span>
           <button
@@ -121,7 +131,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         <div className="flex-1 flex flex-col gap-6 pt-6">
-          <div className="card rounded-lg p-4">
+          <div className="card rounded-lg p-4 bg-background/40">
             <div className="text-xs uppercase tracking-[0.3em] muted">Your drop</div>
             {isLoading ? (
               <div className="text-sm muted pt-3">Loading cart…</div>
@@ -155,7 +165,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             )}
           </div>
 
-          <div className="card rounded-lg p-4 flex flex-col gap-3">
+          <div className="card rounded-lg p-4 flex flex-col gap-3 bg-background/40">
             <label className="inline-flex items-center gap-3 text-sm">
               <input
                 type="checkbox"
