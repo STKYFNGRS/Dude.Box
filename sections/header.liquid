@@ -2,7 +2,7 @@
   <div class="container header-inner">
     <div>
       {% if section.settings.logo != blank %}
-        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        <a href="https://dude.box/" aria-label="{{ shop.name }}">
           <img
             src="{{ section.settings.logo | image_url: width: 360 }}"
             alt="{{ shop.name }}"
@@ -11,14 +11,14 @@
           >
         </a>
       {% else %}
-        <a href="{{ routes.root_url }}" class="logo-text">{{ shop.name }}</a>
+        <a href="https://dude.box/" class="logo-text">{{ shop.name }}</a>
       {% endif %}
     </div>
     <nav class="nav" aria-label="Primary">
-      <a href="/collections/all">Shop</a>
-      <a href="/pages/about">About</a>
-      <a href="/account/login">Login</a>
-      <a href="/products/subscription-box" class="solid-button" style="padding: 0.5rem 1.5rem; border-radius: 999px;">
+      <a href="https://shop.dude.box/collections/all">Shop</a>
+      <a href="https://dude.box/our-mission">About</a>
+      <a href="https://shop.dude.box/account/login">Login</a>
+      <a href="https://shop.dude.box/products/subscription-box" class="solid-button" style="padding: 0.5rem 1.5rem; border-radius: 999px;">
         Subscribe
       </a>
     </nav>

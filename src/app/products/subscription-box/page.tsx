@@ -112,9 +112,12 @@ export default function SubscriptionBoxPage() {
                 <p className="text-sm muted pt-2">
                   $59.99/mo. Skip, pause, or cancel anytime. Subscription widgets can plug in here.
                 </p>
-                <button className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full">
+                <Link
+                  href="https://shop.dude.box/products/subscription-box"
+                  className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
+                >
                   Start Subscription
-                </button>
+                </Link>
               </div>
               <div className="rounded-xl border border-border bg-background/40 p-4">
                 <div className="text-xs uppercase tracking-[0.3em] muted">One-time</div>
@@ -122,14 +125,18 @@ export default function SubscriptionBoxPage() {
                 <p className="text-sm muted pt-2">
                   Limited inventory available when drops open.
                 </p>
-                <button className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full">
+                <Link
+                  href="https://shop.dude.box/products/subscription-box"
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
+                >
                   Buy Once
-                </button>
+                </Link>
               </div>
             </div>
 
             <div className="text-xs uppercase tracking-[0.3em] muted">
-              Need help? <Link href="/portal/login">Member support</Link>
+              Need help?{" "}
+              <Link href="https://shop.dude.box/account/login">Member support</Link>
             </div>
           </div>
         </div>

@@ -1,7 +1,11 @@
 {
   "sections": {
     "hero": {
-      "type": "hero"
+      "type": "hero",
+      "settings": {
+        "primary_link": "https://shop.dude.box/products/subscription-box",
+        "secondary_link": "https://shop.dude.box/collections/all"
+      }
     },
     "overflow": {
       "type": "overflow"

@@ -1,13 +1,13 @@
 export const headerNavigationLinks = [
-  { label: "Shop", href: "/shop" },
-  { label: "About", href: "/our-mission" },
-  { label: "Login", href: "/portal/login" },
+  { label: "Shop", href: "https://shop.dude.box/collections/all" },
+  { label: "About", href: "https://dude.box/our-mission" },
+  { label: "Login", href: "https://shop.dude.box/account/login" },
 ];
 
 export const footerNavigationLinks = [
-  { label: "Shop", href: "/shop" },
-  { label: "About", href: "/our-mission" },
-  { label: "Login", href: "/portal/login" },
+  { label: "Shop", href: "https://shop.dude.box/collections/all" },
+  { label: "About", href: "https://dude.box/our-mission" },
+  { label: "Login", href: "https://shop.dude.box/account/login" },
 ];
 
 export const amenities = [

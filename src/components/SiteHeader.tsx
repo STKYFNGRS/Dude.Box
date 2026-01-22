@@ -4,20 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Container } from "@/components/Container";
 import { headerNavigationLinks } from "@/lib/constants";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const openButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     setIsOpen(false);
-    setIsCartOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -86,18 +83,17 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              href="/products/subscription-box"
+              href="https://shop.dude.box/products/subscription-box"
               className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
               Subscribe
             </Link>
-            <button
-              type="button"
-              onClick={() => setIsCartOpen(true)}
+            <Link
+              href="https://shop.dude.box/cart"
               className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
               Cart
-            </button>
+            </Link>
           </nav>
           <button
             ref={openButtonRef}
@@ -155,26 +151,21 @@ export function SiteHeader() {
             ))}
             <div className="border-t border-border pt-6 flex flex-col gap-3">
               <Link
-                href="/products/subscription-box"
+                href="https://shop.dude.box/products/subscription-box"
                 className="solid-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em] inline-flex justify-center"
               >
                 Subscribe
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsOpen(false);
-                  setIsCartOpen(true);
-                }}
+              <Link
+                href="https://shop.dude.box/cart"
                 className="outline-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em]"
               >
                 Cart
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 }
