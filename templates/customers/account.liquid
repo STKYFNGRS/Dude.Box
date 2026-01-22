@@ -1,0 +1,38 @@
+<section class="section">
+  <div class="container">
+    <div class="badge muted">Account</div>
+    <h1 class="section-title" style="font-size: 2.25rem; margin: 1rem 0;">Welcome back</h1>
+    <div class="grid-2">
+      <div class="card" style="border-radius: 1rem; padding: 1.5rem;">
+        <div class="section-title" style="font-size: 1.25rem;">Account details</div>
+        <p class="muted" style="margin-top: 0.75rem;">
+          {{ customer.first_name }} {{ customer.last_name }}<br>
+          {{ customer.email }}
+        </p>
+        <a href="{{ routes.account_addresses_url }}" class="outline-button" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; border-radius: 999px;">
+          Manage addresses
+        </a>
+      </div>
+      <div class="card" style="border-radius: 1rem; padding: 1.5rem;">
+        <div class="section-title" style="font-size: 1.25rem;">Orders</div>
+        {% if customer.orders_count == 0 %}
+          <p class="muted" style="margin-top: 0.75rem;">No orders yet.</p>
+          <a href="/collections/all" class="solid-button" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; border-radius: 999px;">
+            Shop now
+          </a>
+        {% else %}
+          <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+            {% for order in customer.orders %}
+              <li style="border-bottom: 1px solid var(--color-border); padding: 0.75rem 0;">
+                <a href="{{ order.customer_url }}" class="section-title" style="font-size: 1rem;">{{ order.name }}</a>
+                <div class="muted" style="font-size: 0.85rem;">
+                  {{ order.created_at | date: "%b %d, %Y" }} · {{ order.financial_status_label }}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
