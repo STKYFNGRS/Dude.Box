@@ -5,6 +5,17 @@ export type ShopProduct = {
   price: string;
   image?: string;
   url?: string;
+  handle?: string;
+  variantId?: string;
+};
+
+export type ShopProductDetail = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  image?: string;
+  handle: string;
   variantId?: string;
 };
 
@@ -170,6 +181,7 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
       }`,
       image: product.images?.nodes?.[0]?.url,
       url: product.onlineStoreUrl ?? undefined,
+      handle: product.handle,
       variantId: product.variants?.nodes?.[0]?.id,
     }));
   } catch (error) {
@@ -465,4 +477,55 @@ export async function getCart(cartId: string): Promise<StorefrontCart> {
   }
 
   return data.cart;
+}
+
+export async function getShopifyProductByHandle(
+  handle: string
+): Promise<ShopProductDetail | null> {
+  const query = `
+    query ProductByHandle($handle: String!) {
+      productByHandle(handle: $handle) {
+        id
+        title
+        description
+        handle
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        variants(first: 1) {
+          nodes {
+            id
+          }
+        }
+        images(first: 1) {
+          nodes {
+            url
+            altText
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{ productByHandle: any | null }>(query, { handle });
+  const product = data.productByHandle;
+
+  if (!product) {
+    return null;
+  }
+
+  return {
+    id: product.id,
+    title: product.title,
+    description: product.description || "Details available upon request.",
+    price: `${Number(product.priceRange?.minVariantPrice?.amount ?? 0).toFixed(2)} ${
+      product.priceRange?.minVariantPrice?.currencyCode ?? "USD"
+    }`,
+    image: product.images?.nodes?.[0]?.url,
+    handle: product.handle,
+    variantId: product.variants?.nodes?.[0]?.id,
+  };
 }

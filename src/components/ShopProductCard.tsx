@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { ShopProduct } from "@/lib/shopify";
 
 type ShopProductCardProps = {
@@ -58,14 +59,24 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
       <h3 className="section-title text-xl">{product.title}</h3>
       <p className="text-sm muted">{product.description}</p>
       <div className="text-sm">{product.price}</div>
-      <button
-        type="button"
-        onClick={handleAddToCart}
-        disabled={isAdding}
-        className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center disabled:opacity-60"
-      >
-        {isAdding ? "Adding..." : "Add to Cart"}
-      </button>
+      <div className="flex flex-col gap-2">
+        {product.handle ? (
+          <Link
+            href={`/products/${product.handle}`}
+            className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center"
+          >
+            View Details
+          </Link>
+        ) : null}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center disabled:opacity-60"
+        >
+          {isAdding ? "Adding..." : "Add to Cart"}
+        </button>
+      </div>
       {message ? <div className="text-xs muted">{message}</div> : null}
     </div>
   );
