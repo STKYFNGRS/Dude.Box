@@ -28,7 +28,7 @@ export default function GiftPage() {
               Gift a Subscription
             </Link>
             <Link
-              href="https://shop.dude.box/products/subscription-box"
+              href="https://shop.dude.box/collections/all"
               className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
             >
               See The Box

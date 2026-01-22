@@ -25,7 +25,7 @@ export default async function ShopPage() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href="https://shop.dude.box/products/subscription-box"
+              href="https://shop.dude.box/collections/all"
               className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
             >
               Subscribe Monthly
@@ -82,7 +82,7 @@ export default async function ShopPage() {
           </span>
           <span>
             Prefer a monthly drop? Review{" "}
-            <Link href="https://shop.dude.box/products/subscription-box" className="underline underline-offset-4">
+            <Link href="https://shop.dude.box/collections/all" className="underline underline-offset-4">
               the subscription
             </Link>{" "}
             or{" "}

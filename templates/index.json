@@ -12,7 +12,7 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "primary_link": "https://shop.dude.box/products/subscription-box",
+        "primary_link": "https://shop.dude.box/collections/all",
         "secondary_link": "https://shop.dude.box/collections/all"
       }
     },

@@ -83,7 +83,7 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              href="https://shop.dude.box/products/subscription-box"
+              href="https://shop.dude.box/collections/all"
               className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
               Subscribe
@@ -151,7 +151,7 @@ export function SiteHeader() {
             ))}
             <div className="border-t border-border pt-6 flex flex-col gap-3">
               <Link
-                href="https://shop.dude.box/products/subscription-box"
+                href="https://shop.dude.box/collections/all"
                 className="solid-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em] inline-flex justify-center"
               >
                 Subscribe

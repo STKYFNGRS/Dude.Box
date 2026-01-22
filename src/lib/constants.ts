@@ -1,12 +1,12 @@
 export const headerNavigationLinks = [
   { label: "Shop", href: "https://shop.dude.box/collections/all" },
-  { label: "About", href: "https://dude.box/our-mission" },
+  { label: "About", href: "https://dude.box/about" },
   { label: "Login", href: "https://shop.dude.box/account/login" },
 ];
 
 export const footerNavigationLinks = [
   { label: "Shop", href: "https://shop.dude.box/collections/all" },
-  { label: "About", href: "https://dude.box/our-mission" },
+  { label: "About", href: "https://dude.box/about" },
   { label: "Login", href: "https://shop.dude.box/account/login" },
 ];
 
