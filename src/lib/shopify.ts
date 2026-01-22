@@ -334,6 +334,141 @@ export async function cartLinesAdd(
   return data.cartLinesAdd.cart;
 }
 
+export async function cartLinesUpdate(
+  cartId: string,
+  lines: Array<{ id: string; quantity: number }>
+): Promise<StorefrontCart> {
+  const mutation = `
+    mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+      cartLinesUpdate(cartId: $cartId, lines: $lines) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          buyerIdentity {
+            email
+          }
+          cost {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 50) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{
+    cartLinesUpdate: { cart: StorefrontCart | null; userErrors: Array<{ message: string }> };
+  }>(mutation, { cartId, lines });
+
+  const errors = data.cartLinesUpdate.userErrors ?? [];
+  if (!data.cartLinesUpdate.cart || errors.length) {
+    throw new Error(errors[0]?.message ?? "Unable to update cart.");
+  }
+
+  return data.cartLinesUpdate.cart;
+}
+
+export async function cartLinesRemove(cartId: string, lineIds: string[]): Promise<StorefrontCart> {
+  const mutation = `
+    mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          buyerIdentity {
+            email
+          }
+          cost {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 50) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{
+    cartLinesRemove: { cart: StorefrontCart | null; userErrors: Array<{ message: string }> };
+  }>(mutation, { cartId, lineIds });
+
+  const errors = data.cartLinesRemove.userErrors ?? [];
+  if (!data.cartLinesRemove.cart || errors.length) {
+    throw new Error(errors[0]?.message ?? "Unable to remove item from cart.");
+  }
+
+  return data.cartLinesRemove.cart;
+}
+
 export async function cartBuyerIdentityUpdate(
   cartId: string,
   customerAccessToken: string

@@ -44,6 +44,42 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       })
     );
   };
+  const updateLineQuantity = async (lineId: string, nextQuantity: number) => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      if (nextQuantity <= 0) {
+        const response = await fetch("/api/cart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "removeLines", lineIds: [lineId] }),
+        });
+        if (!response.ok) {
+          throw new Error("Unable to update cart.");
+        }
+        const payload = await response.json();
+        setCart(payload.cart ?? null);
+        emitCartUpdate(payload.cart ?? null);
+        return;
+      }
+
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "updateLines", lines: [{ id: lineId, quantity: nextQuantity }] }),
+      });
+      if (!response.ok) {
+        throw new Error("Unable to update cart.");
+      }
+      const payload = await response.json();
+      setCart(payload.cart ?? null);
+      emitCartUpdate(payload.cart ?? null);
+    } catch (error) {
+      setErrorMessage("Unable to update cart.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -148,7 +184,32 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <div className="text-xs muted">
                         {line.merchandise?.title ?? "Monthly Subscription"}
                       </div>
-                      <div className="text-xs muted pt-1">Qty {line.quantity}</div>
+                      <div className="mt-2 inline-flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => updateLineQuantity(line.id, line.quantity - 1)}
+                          className="outline-button rounded px-2 py-1 text-xs uppercase tracking-[0.2em]"
+                          aria-label="Decrease quantity"
+                        >
+                          -
+                        </button>
+                        <span className="text-xs muted">Qty {line.quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateLineQuantity(line.id, line.quantity + 1)}
+                          className="outline-button rounded px-2 py-1 text-xs uppercase tracking-[0.2em]"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => updateLineQuantity(line.id, 0)}
+                          className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                     <div className="text-sm text-foreground">
                       {line.merchandise?.price

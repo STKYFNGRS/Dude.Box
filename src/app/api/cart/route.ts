@@ -4,6 +4,8 @@ import {
   cartBuyerIdentityUpdate,
   cartCreate,
   cartLinesAdd,
+  cartLinesRemove,
+  cartLinesUpdate,
   getCart,
   getCheckoutUrl,
 } from "@/lib/shopify";
@@ -13,6 +15,8 @@ const CART_COOKIE_NAME = "dudebox_cart";
 type CartAction =
   | { action: "getOrCreate" }
   | { action: "addLines"; lines: Array<{ merchandiseId: string; quantity: number }> }
+  | { action: "updateLines"; lines: Array<{ id: string; quantity: number }> }
+  | { action: "removeLines"; lineIds: string[] }
   | { action: "associateCustomer"; customerAccessToken: string }
   | { action: "getCheckoutUrl" };
 
@@ -70,6 +74,22 @@ export async function POST(request: Request) {
       }
       case "addLines": {
         cart = await cartLinesAdd(cartId, body.lines);
+        const response = NextResponse.json({ cartId, cart });
+        if (cartId !== existingCartId) {
+          setCartCookie(cartId, response);
+        }
+        return response;
+      }
+      case "updateLines": {
+        cart = await cartLinesUpdate(cartId, body.lines);
+        const response = NextResponse.json({ cartId, cart });
+        if (cartId !== existingCartId) {
+          setCartCookie(cartId, response);
+        }
+        return response;
+      }
+      case "removeLines": {
+        cart = await cartLinesRemove(cartId, body.lineIds);
         const response = NextResponse.json({ cartId, cart });
         if (cartId !== existingCartId) {
           setCartCookie(cartId, response);
