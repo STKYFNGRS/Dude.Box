@@ -4,9 +4,9 @@ import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 
 export const metadata: Metadata = {
-  title: "Investors | dude.box",
+  title: "Partners | dude.box",
   description:
-    "Investor overview for dude.box. Recharge club model, recurring revenue, and disciplined operations in San Diego.",
+    "Partner with dude.box to showcase veteran-owned gear in a premium subscription box.",
 };
 
 export default function InvestorsPage() {
@@ -14,99 +14,94 @@ export default function InvestorsPage() {
     <Container className="py-12">
       <section className="pb-12 border-b border-border">
         <div className="flex flex-col gap-6 max-w-3xl">
-          <span className="text-xs uppercase tracking-[0.35em] muted">Investors</span>
+          <span className="text-xs uppercase tracking-[0.35em] muted">Partners</span>
           <h1 className="section-title text-4xl md:text-5xl">
-            Invest in dude.box — predictable revenue, disciplined model, veteran leadership
+            Partner with dude.box — veteran-made products, purpose-driven audiences
           </h1>
           <p className="text-lg muted">
-            A private men’s recharge club in San Diego with controlled capacity and repeatable
-            operations.
+            We spotlight veteran-owned small businesses through a premium subscription experience
+            built for daily carry.
           </p>
           <div className="flex flex-wrap gap-3">
             <a
               href="#contact"
               className="solid-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-full sm:w-auto text-center"
             >
-              Request Investor Information
+              Request Partner Info
             </a>
           </div>
         </div>
       </section>
 
       <Section
-        eyebrow="Investment Thesis"
-        title="Disciplined recurring revenue"
-        description="Clear membership economics with controlled capacity."
+        eyebrow="Why partner"
+        title="A focused, premium audience"
+        description="Reach subscribers who value craftsmanship and purpose."
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            dude.box operates a capped membership model that emphasizes stability, predictable
-            revenue, and focused operating costs. The club is designed for consistent utilization
-            without expansion pressure.
+            We curate gear for men who care about quality, craftsmanship, and story. Each drop is
+            positioned as a premium collection rather than a discount bundle.
           </p>
           <p>
-            The recharge club format keeps service delivery clear and repeatable. Veteran
-            leadership prioritizes accountability and operating discipline.
+            Our model provides recurring exposure for veteran-owned brands in a high-intent
+            subscription environment.
           </p>
         </div>
       </Section>
 
       <Section
-        eyebrow="Metrics"
-        title="Key snapshot"
-        description="Core numbers visible at a glance."
+        eyebrow="What we look for"
+        title="Maker standards"
+        description="Products should be functional, durable, and story-forward."
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card title="Member cap">
-            300 members maximum. Capacity is controlled and enforced.
+          <Card title="Veteran-owned">
+            Founder-led, veteran-owned, or veteran-operated brands.
           </Card>
-          <Card title="Monthly dues">
-            $200 per member. Predictable recurring revenue.
+          <Card title="EDC utility">
+            Practical products built for daily carry and repeated use.
           </Card>
-          <Card title="Base revenue">
-            $60,000 per month from base dues alone.
+          <Card title="Small batch">
+            Limited runs that maintain craftsmanship and quality control.
           </Card>
-          <Card title="Projected revenue">
-            $720,000 annually from base dues alone.
+          <Card title="Story-ready">
+            A strong maker story we can tell with the product.
           </Card>
         </div>
-        <p className="text-sm muted max-w-3xl pt-6">
-          Add-on revenue is modeled conservatively using modest adoption rates for the haircut
-          package and daily beverage add-on.
-        </p>
       </Section>
 
       <Section
-        eyebrow="Why this model works"
-        title="Conservative assumptions"
-        description="Grounded in recurring revenue and capacity control."
+        eyebrow="How it works"
+        title="Drop-ready collaboration"
+        description="We plan, validate, and spotlight each maker."
       >
         <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
           <li className="border-b border-border pb-3">
-            Recurring dues create predictable monthly revenue.
+            Product evaluation and sample testing.
           </li>
           <li className="border-b border-border pb-3">
-            Controlled capacity protects service quality and margins.
+            Collaborative story capture for the maker profile.
           </li>
           <li className="border-b border-border pb-3">
-            Conservative add-on assumptions reduce revenue risk.
+            Drop planning with volume forecasting.
           </li>
           <li className="border-b border-border pb-3">
-            Strong profit discipline through planned staffing and utilization.
+            Fulfillment alignment and quality review.
           </li>
           <li className="border-b border-border pb-3">
-            Capital efficiency supported by a focused service model.
+            Post-drop performance insights.
           </li>
           <li className="border-b border-border pb-3">
-            Add-on assumptions modeled at modest adoption rates for haircuts and daily beverages.
+            Ongoing maker feature support.
           </li>
         </ul>
       </Section>
 
       <Section
         eyebrow="Request Information"
-        title="Investor information request"
-        description="Submit a request for additional materials."
+        title="Partner inquiry"
+        description="Tell us about your brand and production capacity."
       >
         <form
           id="contact"
@@ -132,7 +127,7 @@ export default function InvestorsPage() {
             />
           </label>
           <label className="text-sm flex flex-col gap-2">
-            Organization
+            Brand name
             <input
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
               name="organization"
@@ -146,16 +141,16 @@ export default function InvestorsPage() {
             />
           </label>
           <label className="text-sm flex flex-col gap-2">
-            Inquiry type
+            Partnership type
             <select
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
               name="inquiryType"
               required
             >
               <option value="">Select an option</option>
-              <option value="lender">Bank or SBA lender</option>
-              <option value="private-capital">Private capital</option>
-              <option value="strategic-partner">Strategic partner</option>
+              <option value="maker">Maker / Brand</option>
+              <option value="supplier">Supplier / Distributor</option>
+              <option value="retail">Retail partner</option>
               <option value="other">Other</option>
             </select>
           </label>
@@ -171,7 +166,7 @@ export default function InvestorsPage() {
             type="submit"
             className="solid-button rounded px-4 py-3 text-sm uppercase tracking-[0.2em]"
           >
-            Request Investor Information
+            Submit Partner Request
           </button>
           <p className="text-xs muted">
             TODO: Wire to secure email or CRM. No information is sent yet.

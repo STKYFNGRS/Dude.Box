@@ -5,9 +5,9 @@ import { Section } from "@/components/Section";
 import { getShopifyProducts } from "@/lib/shopify";
 
 export const metadata: Metadata = {
-  title: "Shop | dude.box",
+  title: "The Store | dude.box",
   description:
-    "Shop dude.box merchandise. Clean product grid with neutral branding and understated descriptions.",
+    "Shop premium veteran-owned gear and accessories in the Dude.box store.",
 };
 
 export default async function ShopPage() {
@@ -15,15 +15,39 @@ export default async function ShopPage() {
 
   return (
     <Container className="py-12">
+      <section className="pb-12 border-b border-border">
+        <div className="flex flex-col gap-6 max-w-3xl">
+          <span className="text-xs uppercase tracking-[0.35em] muted">The Store</span>
+          <h1 className="section-title text-4xl md:text-5xl">Limited gear, ready to ship.</h1>
+          <p className="text-lg muted">
+            Shop individual items from veteran-owned makers or start the subscription for monthly
+            drops.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="/the-box"
+              className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
+            >
+              Subscribe Monthly
+            </Link>
+            <Link
+              href="/gift"
+              className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
+            >
+              Gift Options
+            </Link>
+          </div>
+        </div>
+      </section>
       <Section
         eyebrow="Shop"
-        title="Merchandise"
-        description="Functional gear and accessories aligned with a recovery-focused lifestyle."
+        title="Veteran-made essentials"
+        description="Functional gear, tools, and accessories with purpose."
       >
         <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
             <div key={product.id} className="card rounded-lg p-6 flex flex-col gap-4">
-              <div className="text-xs uppercase tracking-[0.3em] muted">Product</div>
+              <div className="text-xs uppercase tracking-[0.3em] muted">Limited drop</div>
               {product.image ? (
                 <div className="border border-border rounded overflow-hidden bg-background">
                   <img
@@ -42,11 +66,11 @@ export default async function ShopPage() {
                   href={product.url}
                   className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center"
                 >
-                  View Product
+                  View Details
                 </a>
               ) : (
                 <button className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]">
-                  View Product
+                  View Details
                 </button>
               )}
             </div>
@@ -54,16 +78,16 @@ export default async function ShopPage() {
         </div>
         <div className="pt-6 flex flex-col gap-3 text-xs muted">
           <span>
-            Built to support routine, recovery, and disciplined daily use.
+            Built for daily carry, small batch drops, and maker storytelling.
           </span>
           <span>
-            Prefer to stay on site? Review{" "}
-            <Link href="/membership" className="underline underline-offset-4">
-              membership details
+            Prefer a monthly drop? Review{" "}
+            <Link href="/the-box" className="underline underline-offset-4">
+              the subscription
             </Link>{" "}
             or{" "}
-            <Link href="/investors" className="underline underline-offset-4">
-              investor overview
+            <Link href="/gift" className="underline underline-offset-4">
+              gift options
             </Link>
             .
           </span>

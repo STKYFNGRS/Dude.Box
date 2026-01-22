@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-background: #000000;
-  --color-foreground: #f5f1ea;
-  --color-muted: #b3aea6;
-  --color-accent: #8a7562;
-  --color-border: #2a2521;
-  --color-panel: #0b0b0b;
+  --color-background: #0f1628;
+  --color-foreground: #ffffff;
+  --color-muted: #c7cdd8;
+  --color-accent: #c79d7a;
+  --color-accent-secondary: #4b5320;
+  --color-border: #23314b;
+  --color-panel: #141d33;
 }
 
 *,
@@ -24,6 +25,7 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   letter-spacing: 0.01em;
+  line-height: 1.6;
 }
 
 a {
@@ -38,6 +40,7 @@ main {
 .section-title {
   font-family: var(--font-serif), Georgia, serif;
   letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 .card {
@@ -57,5 +60,10 @@ main {
 
 .solid-button {
   background: var(--color-accent);
-  color: #0b0b0b;
+  color: #0f1628;
+}
+
+.accent-button {
+  background: var(--color-accent-secondary);
+  color: var(--color-foreground);
 }

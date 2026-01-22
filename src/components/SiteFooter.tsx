@@ -14,6 +14,7 @@ export function SiteFooter() {
           ))}
         </nav>
         <div className="flex flex-col gap-2">
+          <span>Veteran-owned. Small batch. Built for daily carry.</span>
           <span>
             Contact:{" "}
             <a href="mailto:dude@dude.box" className="underline underline-offset-4">

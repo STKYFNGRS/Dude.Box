@@ -6,61 +6,78 @@ import { Section } from "@/components/Section";
 export const metadata: Metadata = {
   title: "Home | dude.box",
   description:
-    "Private men’s recharge club in San Diego. Train, recover, relax and reset.",
+    "Premium EDC subscription box sourced from veteran-owned small businesses.",
 };
 
 export default function HomePage() {
   return (
     <Container className="py-12">
-      <section className="pb-12 border-b border-border">
-        <div className="flex flex-col gap-6 max-w-3xl">
-          <h1 className="section-title text-4xl md:text-5xl">
-            Private Men’s Recharge Club
-          </h1>
-          <p className="text-lg muted">
-            A place to train, recover, relax and reset.
-          </p>
+      <section className="pb-16 border-b border-border">
+        <div className="grid gap-12 md:grid-cols-[1.1fr_0.9fr] items-center">
+          <div className="flex flex-col gap-6">
+            <span className="text-xs uppercase tracking-[0.35em] muted">
+              Veteran-owned subscription
+            </span>
+            <h1 className="section-title text-4xl md:text-6xl">
+              Gear with Purpose. Stories with Soul.
+            </h1>
+            <p className="text-lg muted max-w-2xl">
+              The premier subscription box sourced from veteran-owned small businesses.
+              EDC-ready gear, tools, and grooming essentials curated monthly.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/the-box"
+                className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
+              >
+                Join the Club
+              </Link>
+              <Link
+                href="/gift"
+                className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
+              >
+                Give as a Gift
+              </Link>
+            </div>
+          </div>
+          <div className="card rounded-2xl p-6">
+            <div className="aspect-[4/5] rounded-xl border border-border bg-background/40 flex items-center justify-center">
+              <span className="text-xs uppercase tracking-[0.3em] muted">
+                Flat lay hero placeholder
+              </span>
+            </div>
+            <div className="pt-4 text-sm muted">
+              High-fidelity flat lay photography spotlights the month’s drop.
+            </div>
+          </div>
         </div>
       </section>
 
       <Section
-    
-        title="What’s Inside"
-        description="Overview of core spaces."
+        eyebrow="Sourcing"
+        title="Veteran circular economy"
+        description="Every box supports veterans building durable, daily-use products."
       >
-        <div id="inside" className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           {[
             {
-              title: "Training floor",
-              description: "Gym access for consistent, practical training.",
+              title: "Veteran Owned",
+              description: "Every partner brand is veteran-led or veteran-employed.",
             },
             {
-              title: "Recovery suite",
-              description: "Whirlpool, sauna, cold plunge, lockers, and showers.",
+              title: "Small Batch",
+              description: "Limited runs keep quality high and drops meaningful.",
             },
             {
-              title: "Lounge",
-              description: "Man-cave atmosphere with sports viewing, pool table, and limited gaming.",
-            },
-            {
-              title: "Barber services",
-              description: "On-site barber with appointment-based service.",
-            },
-            {
-              title: "Coffee, protein, and deli counter",
-              description: "Simple, functional fuel built into the routine.",
-            },
-            {
-              title: "Therapist room",
-              description: "Scheduled, preventative support in a private setting.",
-            },
-            {
-              title: "Masseuse room",
-              description: "Appointment-based massage in a dedicated room.",
+              title: "EDC Ready",
+              description: "Functional, carry-ready tools built for everyday use.",
             },
           ].map((item) => (
-            <div key={item.title} className="card rounded-lg p-6">
-              <h3 className="section-title text-xl mb-2">{item.title}</h3>
+            <div key={item.title} className="card rounded-lg p-6 flex flex-col gap-4">
+              <div className="h-12 w-12 rounded-full border border-border flex items-center justify-center text-xs uppercase tracking-[0.3em]">
+                {item.title.split(" ")[0]}
+              </div>
+              <h3 className="section-title text-xl">{item.title}</h3>
               <p className="text-sm muted">{item.description}</p>
             </div>
           ))}
@@ -68,49 +85,35 @@ export default function HomePage() {
       </Section>
 
       <Section
-        
-        title="Mental health & therapy"
-        description="Professional, confidential, and stigma-free."
+        eyebrow="Past Boxes"
+        title="Proof of value"
+        description="See the caliber of previous drops."
       >
-        <p className="text-sm muted max-w-3xl">
-          Members have access to scheduled sessions with an on-site licensed therapist as part of a broader
-          focus on preventative support and steady wellbeing. 
-        </p>
-      </Section>
-
-      <Section
-        
-        title="Built for men who want routine"
-        description="Inclusive, grounded, and consistent."
-      >
-        <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
-          <li className="border-b border-border pb-3">Men looking to improve and unwind</li>
-          <li className="border-b border-border pb-3">Men who value routine and consistency</li>
-          <li className="border-b border-border pb-3">Professionals, veterans, fathers, tradesmen</li>
-          <li className="border-b border-border pb-3">Men who want calm, not chaos</li>
-        </ul>
-      </Section>
-
-      <Section
-        eyebrow="Philosophy"
-        title="Routine over intensity"
-        description="Calm environments that support long-term improvement."
-      >
-        <div className="grid gap-6 md:grid-cols-2 text-sm muted">
-          <p>
-            The club is built around steady routines instead of intensity or speed. Progress comes
-            from consistency, not pressure.
-          </p>
-          <p>
-            The environment is calm by design so members can focus on training, recovery, and
-            long-term improvement without noise.
-          </p>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            {
+              title: "The Night Watch Box",
+              description: "Low-light EDC gear curated for late-shift carry.",
+            },
+            {
+              title: "The Fieldcraft Box",
+              description: "Rugged tools and grooming essentials for daily readiness.",
+            },
+            {
+              title: "The Ironclad Box",
+              description: "Hard-use items built for durability and grit.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="card rounded-lg p-6 flex flex-col gap-4">
+              <div className="aspect-[4/3] rounded-lg border border-border bg-background/40 flex items-center justify-center">
+                <span className="text-xs uppercase tracking-[0.3em] muted">Flat lay placeholder</span>
+              </div>
+              <h3 className="section-title text-xl">{item.title}</h3>
+              <p className="text-sm muted">{item.description}</p>
+            </div>
+          ))}
         </div>
       </Section>
-
-      
-
-     
     </Container>
   );
 }

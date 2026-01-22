@@ -10,23 +10,23 @@ export type ShopProduct = {
 const mockProducts: ShopProduct[] = [
   {
     id: "mock-1",
-    title: "dude.box Crewneck",
-    description: "Heavyweight cotton blend, understated branding.",
-    price: "$78",
+    title: "EDC Field Knife",
+    description: "Stonewashed blade, compact sheath, built for daily carry.",
+    price: "$84",
     url: undefined,
   },
   {
     id: "mock-2",
-    title: "Recovery Journal",
-    description: "Weekly structure, discipline tracking, and notes.",
-    price: "$24",
+    title: "Veteran Soap Co. Kit",
+    description: "Small-batch soap and balm set with cedar and leather notes.",
+    price: "$32",
     url: undefined,
   },
   {
     id: "mock-3",
-    title: "Membership Patch",
-    description: "Leather-backed patch for members and supporters.",
-    price: "$18",
+    title: "EDC Pocket Light",
+    description: "Rechargeable carry light with durable aluminum housing.",
+    price: "$48",
     url: undefined,
   },
 ];

@@ -7,29 +7,29 @@ export default function ConceptPage() {
     <Container className="py-12">
       <Section
         eyebrow="The Concept"
-        title="Recovery, routine, decompression"
-        description="A calm and disciplined setting built for men who want structure."
+        title="Elevated industrial"
+        description="Rugged, sophisticated, and built for daily carry."
       >
         <div className="grid gap-6 md:grid-cols-2">
-          <Card title="Philosophy">
-            The club focuses on consistent routine, physical recovery, and clear expectations.
-            Members use the space to reset and build forward momentum.
+          <Card title="Design direction">
+            Clean lines, deep contrast, and warm leather accents define the visual tone. It’s
+            premium without the cluttered tactical vibe.
           </Card>
-          <Card title="Why this exists">
-            Many men need a stable environment without noise or pressure. dude.box is designed
-            to be private, intentional, and grounded in veteran leadership.
+          <Card title="Dual-funnel focus">
+            The experience speaks to both the end user and the gift buyer, with clear paths for
+            subscriptions and gifting.
           </Card>
         </div>
       </Section>
 
       <Section
-        eyebrow="Discipline"
-        title="No hustle language"
-        description="This is not a performance brand. It is a place to recover."
+        eyebrow="Brand voice"
+        title="Rugged, confident, understated"
+        description="No hype. Just functional gear and honest storytelling."
       >
         <p className="muted max-w-3xl">
-          The tone is calm, direct, and credible. The experience is designed for steady habits
-          and long-term health, not attention or trends.
+          dude.box balances toughness with clarity. The message is direct, the details are
+          grounded, and the focus stays on quality and mission.
         </p>
       </Section>
     </Container>

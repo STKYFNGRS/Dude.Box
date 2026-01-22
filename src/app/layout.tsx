@@ -6,12 +6,16 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Providers } from "@/components/Providers";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const serif = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" });
+const serif = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["700", "900"],
+});
 
 export const metadata: Metadata = {
-  title: "dude.box | Private Men’s Recharge Club",
+  title: "dude.box | Veteran-Owned Subscription Box",
   description:
-    "Private men’s recharge club in San Diego for training, recovery, and routine.",
+    "Premium EDC gear, tools, and grooming supplies sourced from veteran-owned small businesses.",
 };
 
 export default function RootLayout({

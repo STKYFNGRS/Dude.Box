@@ -57,7 +57,7 @@ export function SiteHeader() {
   }, [isOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
       <Container className="py-3 flex items-center justify-between">
         <div className="md:hidden w-10" aria-hidden="true" />
         <div className="flex flex-1 justify-center md:flex-none md:justify-start">
@@ -83,10 +83,10 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              href="/portal/login"
-              className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+              href="/the-box"
+              className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             >
-              Member Login
+              Subscribe
             </Link>
           </nav>
           <button
@@ -144,8 +144,11 @@ export function SiteHeader() {
               </Link>
             ))}
             <div className="border-t border-border pt-6">
-              <Link href="/portal/login" className="py-2 inline-flex">
-                Member Login
+              <Link
+                href="/the-box"
+                className="solid-button rounded-full px-5 py-3 text-xs uppercase tracking-[0.25em] inline-flex justify-center"
+              >
+                Subscribe
               </Link>
             </div>
           </div>

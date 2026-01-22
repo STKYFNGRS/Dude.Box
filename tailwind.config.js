@@ -16,6 +16,7 @@ module.exports = {
           foreground: "var(--color-foreground)",
           muted: "var(--color-muted)",
           accent: "var(--color-accent)",
+          accentSecondary: "var(--color-accent-secondary)",
           border: "var(--color-border)",
           panel: "var(--color-panel)",
         },

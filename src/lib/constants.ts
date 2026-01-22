@@ -1,29 +1,31 @@
 export const headerNavigationLinks = [
-  { label: "Membership", href: "/membership" },
-  { label: "Investors", href: "/investors" },
-  { label: "Shop", href: "/shop" },
+  { label: "The Box", href: "/the-box" },
+  { label: "Gift", href: "/gift" },
+  { label: "The Store", href: "/shop" },
+  { label: "Our Mission", href: "/our-mission" },
+  { label: "Login", href: "/portal/login" },
 ];
 
 export const footerNavigationLinks = [
-  { label: "Membership", href: "/membership" },
-  { label: "Investors", href: "/investors" },
-  { label: "Shop", href: "/shop" },
+  { label: "The Box", href: "/the-box" },
+  { label: "Gift", href: "/gift" },
+  { label: "The Store", href: "/shop" },
+  { label: "Our Mission", href: "/our-mission" },
+  { label: "Login", href: "/portal/login" },
 ];
 
 export const amenities = [
-  "Training floor and gym access",
-  "Recovery suite (whirlpool, sauna, cold plunge, lockers, showers)",
-  "On-site barber",
-  "Therapist room (scheduled, preventative)",
-  "Masseuse room (appointment-based)",
-  "Lounge with sports viewing and pool table",
-  "Coffee, protein, and deli counter",
+  "Monthly EDC gear, tools, and grooming essentials",
+  "Veteran-owned small business sourcing",
+  "Limited-run, small batch product drops",
+  "Story-driven product cards for each maker",
+  "Field-tested, daily-use gear",
 ];
 
 export const membershipBenefits = [
-  "300-member cap with controlled access",
-  "$200/month base membership",
-  "Recharge-focused routine and consistency",
-  "Calm, private environment",
-  "Veteran-owned leadership",
+  "Subscription-first checkout with flexible gifting",
+  "Purpose-driven sourcing to support veterans",
+  "Premium, durable gear curated monthly",
+  "Exclusive member-only drops and restocks",
+  "Veteran circular economy storytelling",
 ];

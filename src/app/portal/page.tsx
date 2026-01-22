@@ -13,7 +13,7 @@ export default async function PortalPage() {
         <Section
           eyebrow="Member Portal"
           title="Secure access required"
-          description="Members must sign in to access bookings and announcements."
+          description="Members must sign in to access drop previews and order details."
         />
         <p className="text-xs muted">
           TODO: Keep portal hidden from public navigation until member operations go live.
@@ -33,12 +33,12 @@ export default async function PortalPage() {
       <Section
         eyebrow="Member Portal"
         title="Welcome back"
-        description="Account status and internal access."
+        description="Account status, upcoming drops, and delivery details."
       />
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card title="Membership status">
-          Active member. Billing status and renewals will appear here once payments are
+        <Card title="Subscription status">
+          Active subscriber. Billing status and renewals will appear here once payments are
           integrated.
         </Card>
         <Card title="Profile">
@@ -49,14 +49,14 @@ export default async function PortalPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card title="Barber booking">
-          Placeholder UI. TODO: integrate scheduling and member preferences.
+        <Card title="Drop preview">
+          Placeholder UI. TODO: show upcoming box contents and release dates.
         </Card>
-        <Card title="Therapist session request">
-          Placeholder UI. TODO: add request workflow and approvals.
+        <Card title="Shipping updates">
+          Placeholder UI. TODO: integrate tracking and delivery notifications.
         </Card>
-        <Card title="Event calendar">
-          Placeholder UI. TODO: integrate events, RSVP, and notifications.
+        <Card title="Gift notes">
+          Placeholder UI. TODO: display saved gift note preferences.
         </Card>
       </div>
 

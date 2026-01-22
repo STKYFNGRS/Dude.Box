@@ -4,103 +4,90 @@ import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 
 export const metadata: Metadata = {
-  title: "Membership | dude.box",
+  title: "Subscription | dude.box",
   description:
-    "Membership details for dude.box. Private recharge club access, routine, and shared commitment to the space.",
+    "Subscription details for the Dude.box monthly drop and premium veteran-owned gear.",
 };
 
 export default function MembershipPage() {
   return (
     <Container className="py-12">
       <Section
-        eyebrow="Membership"
-        title="Membership overview"
-        description="Ongoing access, consistency, and shared commitment to the space."
+        eyebrow="Subscription"
+        title="Subscription overview"
+        description="Monthly drops built around premium, veteran-owned gear."
       >
         <p className="text-sm muted max-w-3xl">
-          Membership provides ongoing access to the recharge club for men who value routine,
-          recovery, and calm. The membership is limited to preserve the experience and keep the
-          space consistent for those who rely on it.
+          Dude.box delivers curated EDC gear, tools, and grooming essentials on a monthly cadence.
+          Each box pairs premium products with the story of the veteran maker behind them.
         </p>
         <p className="text-sm muted max-w-3xl pt-4">
-          Membership is capped at 300 members. Dues are $200 per month.
+          Subscription is $59.99 per month with flexible pause or skip options.
         </p>
       </Section>
 
       <Section
-        eyebrow="What membership includes"
-        title="Included with every membership"
-        description="A straightforward inclusion list."
+        eyebrow="What’s included"
+        title="Every drop delivers"
+        description="Functional, purpose-driven gear in every box."
       >
         <ul className="grid gap-3 md:grid-cols-2 text-sm muted">
-          <li className="border-b border-border pb-3">Access to the training space</li>
-          <li className="border-b border-border pb-3">
-            Recovery suite (whirlpool, sauna, cold plunge, lockers, showers)
-          </li>
-          <li className="border-b border-border pb-3">
-            Lounge with sports viewing, pool table, and limited gaming stations
-          </li>
-          <li className="border-b border-border pb-3">Access to the barber (services optional)</li>
-          <li className="border-b border-border pb-3">
-            Access to the coffee, sandwich, and protein counter
-          </li>
-          <li className="border-b border-border pb-3">
-            Access to the therapist room (scheduled, preventative)
-          </li>
-          <li className="border-b border-border pb-3">
-            Access to the masseuse room (appointment-based)
-          </li>
+          <li className="border-b border-border pb-3">EDC-grade gear and daily-use tools</li>
+          <li className="border-b border-border pb-3">Small-batch grooming essentials</li>
+          <li className="border-b border-border pb-3">Story cards for every maker</li>
+          <li className="border-b border-border pb-3">Limited-run veteran-owned brands</li>
+          <li className="border-b border-border pb-3">Priority access to restocks</li>
+          <li className="border-b border-border pb-3">Member-only product drops</li>
         </ul>
       </Section>
 
       <Section
-        eyebrow="Optional add-ons"
-        title="Simple extensions"
-        description="Two optional additions to support routine."
+        eyebrow="Flexible options"
+        title="Gift-ready upgrades"
+        description="Simple options to tailor the experience."
       >
         <div className="grid gap-6 md:grid-cols-2">
           <div className="card rounded-lg p-6">
-            <h3 className="section-title text-xl mb-2">Haircut package</h3>
-            <p className="text-sm muted">Includes two haircuts per month.</p>
-            <p className="text-sm muted">Appointment-based scheduling.</p>
+            <h3 className="section-title text-xl mb-2">Gift note</h3>
+            <p className="text-sm muted">Add a personal message at checkout.</p>
+            <p className="text-sm muted">Included with order fulfillment.</p>
           </div>
           <div className="card rounded-lg p-6">
-            <h3 className="section-title text-xl mb-2">Daily beverage</h3>
-            <p className="text-sm muted">One daily drink from the coffee and protein counter.</p>
-            <p className="text-sm muted">Designed to support routine and convenience.</p>
+            <h3 className="section-title text-xl mb-2">Prepay option</h3>
+            <p className="text-sm muted">Lock in six months of drops at a preferred rate.</p>
+            <p className="text-sm muted">Priority access to limited releases.</p>
           </div>
         </div>
       </Section>
 
       <Section
-        eyebrow="Membership expectations"
-        title="Shared responsibility"
-        description="A steady environment depends on consistent use and respect."
+        eyebrow="Quality standard"
+        title="Field-tested product curation"
+        description="Gear selected for utility and daily carry."
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            Members respect the space, the staff, and each other. The environment stays calm and
-            consistent because everyone shares responsibility for it.
+            Each drop focuses on practical gear you can carry, wear, or use every day. We avoid
+            novelty items and prioritize functional tools.
           </p>
           <p>
-            Membership is designed for regular use, not occasional drop-ins. It works best when
-            members return and build routine over time.
+            Products are vetted for durability, materials, and real-world performance before
+            they earn a place in the box.
           </p>
         </div>
       </Section>
 
       <Section
-        eyebrow="Inquiry process"
-        title="Begin with an inquiry"
-        description="A calm, private first step."
+        eyebrow="Stay in the loop"
+        title="Get drop announcements"
+        description="Join the list for early access and previews."
       >
         <div className="grid gap-6 md:grid-cols-2 text-sm muted">
           <p>
-            Membership begins with an inquiry. This helps confirm mutual fit, availability, and
-            alignment with the culture of the space.
+            Subscribe to get drop previews, maker stories, and early access to limited-run gear.
           </p>
           <p>
-            If it looks like a good fit, the team will follow up with next steps and timing.
+            We only share the good stuff—no spam, no fluff.
           </p>
         </div>
         <div className="pt-6 max-w-xl">
@@ -133,10 +120,10 @@ export default function MembershipPage() {
               type="submit"
               className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] w-full text-center"
             >
-              Request Membership Information
+              Get Drop Updates
             </button>
             <p className="text-xs muted">
-              Inquiry form only. Submissions are not yet processed.
+              Form placeholder only. Submissions are not yet processed.
             </p>
           </form>
         </div>
