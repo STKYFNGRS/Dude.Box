@@ -38,6 +38,83 @@ const clampText = (value: string, maxLength = 140) => {
   return `${value.slice(0, maxLength - 1).trim()}…`;
 };
 
+const SHOPIFY_API_VERSION = "2024-07";
+
+type StorefrontResponse<T> = {
+  data?: T;
+  errors?: Array<{ message: string }>;
+};
+
+type StorefrontCartLineInput = {
+  merchandiseId: string;
+  quantity: number;
+  attributes?: Array<{ key: string; value: string }>;
+};
+
+type StorefrontCart = {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  buyerIdentity?: { email?: string };
+  cost?: {
+    subtotalAmount?: { amount: string; currencyCode: string };
+    totalAmount?: { amount: string; currencyCode: string };
+  };
+  lines?: {
+    nodes: Array<{
+      id: string;
+      quantity: number;
+      merchandise?: {
+        id: string;
+        title: string;
+        product?: { title: string; handle: string };
+        image?: { url: string; altText?: string | null };
+        price?: { amount: string; currencyCode: string };
+      };
+    }>;
+  };
+};
+
+const storefrontFetch = async <T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  options?: { cache?: RequestCache; revalidate?: number }
+): Promise<T> => {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN;
+  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
+  if (!domain || !token) {
+    throw new Error("Missing Shopify Storefront API configuration.");
+  }
+
+  const endpoint = `https://${domain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Storefront-Access-Token": token,
+    },
+    body: JSON.stringify({ query, variables }),
+    cache: options?.cache ?? "no-store",
+    next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Shopify Storefront API error: ${response.status}`);
+  }
+
+  const payload = (await response.json()) as StorefrontResponse<T>;
+  if (payload.errors?.length) {
+    throw new Error(payload.errors[0]?.message ?? "Shopify Storefront API error.");
+  }
+
+  if (!payload.data) {
+    throw new Error("Shopify Storefront API returned no data.");
+  }
+
+  return payload.data;
+};
+
 export async function getShopifyProducts(): Promise<ShopProduct[]> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
@@ -46,7 +123,6 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
     return mockProducts;
   }
 
-  const endpoint = `https://${domain}/api/2024-07/graphql.json`;
   const query = `
     query Products {
       products(first: 8, sortKey: UPDATED_AT, reverse: true) {
@@ -74,22 +150,10 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
   `;
 
   try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({ query }),
-      next: { revalidate: 300 },
+    const data = await storefrontFetch<{ products: { nodes: any[] } }>(query, undefined, {
+      revalidate: 300,
     });
-
-    if (!response.ok) {
-      return mockProducts;
-    }
-
-    const payload = await response.json();
-    const products = payload?.data?.products?.nodes ?? [];
+    const products = data?.products?.nodes ?? [];
 
     return products.map((product: any) => ({
       id: product.id,
@@ -104,4 +168,294 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
   } catch (error) {
     return mockProducts;
   }
+}
+
+export async function cartCreate(input?: {
+  lines?: StorefrontCartLineInput[];
+  attributes?: Array<{ key: string; value: string }>;
+}): Promise<StorefrontCart> {
+  const mutation = `
+    mutation CartCreate($input: CartInput) {
+      cartCreate(input: $input) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          buyerIdentity {
+            email
+          }
+          cost {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 50) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{
+    cartCreate: { cart: StorefrontCart | null; userErrors: Array<{ message: string }> };
+  }>(mutation, { input });
+
+  const errors = data.cartCreate.userErrors ?? [];
+  if (!data.cartCreate.cart || errors.length) {
+    throw new Error(errors[0]?.message ?? "Unable to create cart.");
+  }
+
+  return data.cartCreate.cart;
+}
+
+export async function cartLinesAdd(
+  cartId: string,
+  lines: StorefrontCartLineInput[]
+): Promise<StorefrontCart> {
+  const mutation = `
+    mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          buyerIdentity {
+            email
+          }
+          cost {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 50) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{
+    cartLinesAdd: { cart: StorefrontCart | null; userErrors: Array<{ message: string }> };
+  }>(mutation, { cartId, lines });
+
+  const errors = data.cartLinesAdd.userErrors ?? [];
+  if (!data.cartLinesAdd.cart || errors.length) {
+    throw new Error(errors[0]?.message ?? "Unable to add items to cart.");
+  }
+
+  return data.cartLinesAdd.cart;
+}
+
+export async function cartBuyerIdentityUpdate(
+  cartId: string,
+  customerAccessToken: string
+): Promise<StorefrontCart> {
+  const mutation = `
+    mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          buyerIdentity {
+            email
+          }
+          cost {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 50) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{
+    cartBuyerIdentityUpdate: {
+      cart: StorefrontCart | null;
+      userErrors: Array<{ message: string }>;
+    };
+  }>(mutation, {
+    cartId,
+    buyerIdentity: { customerAccessToken },
+  });
+
+  const errors = data.cartBuyerIdentityUpdate.userErrors ?? [];
+  if (!data.cartBuyerIdentityUpdate.cart || errors.length) {
+    throw new Error(errors[0]?.message ?? "Unable to associate customer with cart.");
+  }
+
+  return data.cartBuyerIdentityUpdate.cart;
+}
+
+export async function getCheckoutUrl(cartId: string): Promise<string> {
+  const query = `
+    query GetCheckoutUrl($cartId: ID!) {
+      cart(id: $cartId) {
+        checkoutUrl
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{ cart: { checkoutUrl: string | null } }>(query, {
+    cartId,
+  });
+
+  if (!data.cart?.checkoutUrl) {
+    throw new Error("Checkout URL not available.");
+  }
+
+  return data.cart.checkoutUrl;
+}
+
+export async function getCart(cartId: string): Promise<StorefrontCart> {
+  const query = `
+    query GetCart($cartId: ID!) {
+      cart(id: $cartId) {
+        id
+        checkoutUrl
+        totalQuantity
+        buyerIdentity {
+          email
+        }
+        cost {
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+          totalAmount {
+            amount
+            currencyCode
+          }
+        }
+        lines(first: 50) {
+          nodes {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                product {
+                  title
+                  handle
+                }
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await storefrontFetch<{ cart: StorefrontCart | null }>(query, { cartId });
+
+  if (!data.cart) {
+    throw new Error("Cart not available.");
+  }
+
+  return data.cart;
 }

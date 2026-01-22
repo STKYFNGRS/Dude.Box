@@ -1,32 +1,100 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { readCartAttributes, writeCartAttributes } from "@/lib/cart";
+import { useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 type CartDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+type CartLine = {
+  id: string;
+  quantity: number;
+  merchandise?: {
+    title: string;
+    product?: { title: string; handle: string };
+    price?: { amount: string; currencyCode: string };
+  };
+};
+
+type CartState = {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  cost?: {
+    subtotalAmount?: { amount: string; currencyCode: string };
+    totalAmount?: { amount: string; currencyCode: string };
+  };
+  lines?: { nodes: CartLine[] };
+};
+
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [isGift, setIsGift] = useState(false);
   const [giftNote, setGiftNote] = useState("");
+  const [cart, setCart] = useState<CartState | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasAssociatedCustomer, setHasAssociatedCustomer] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    const attributes = readCartAttributes();
-    setIsGift(Boolean(attributes.isGift));
-    setGiftNote(attributes.giftNote ?? "");
+    setErrorMessage(null);
+    setIsLoading(true);
+    fetch("/api/cart", { method: "GET" })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Unable to load cart.");
+        }
+        return response.json();
+      })
+      .then((payload) => {
+        setCart(payload.cart ?? null);
+      })
+      .catch(() => {
+        setErrorMessage("Unable to load cart.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    writeCartAttributes({ isGift, giftNote });
-  }, [giftNote, isGift, isOpen]);
+    const customerAccessToken = (session as { customerAccessToken?: string })
+      ?.customerAccessToken;
+    if (!customerAccessToken || hasAssociatedCustomer) {
+      return;
+    }
+
+    fetch("/api/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "associateCustomer", customerAccessToken }),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Unable to associate customer.");
+        }
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.cart) {
+          setCart(payload.cart);
+        }
+        setHasAssociatedCustomer(true);
+      })
+      .catch(() => {
+        setHasAssociatedCustomer(false);
+      });
+  }, [hasAssociatedCustomer, isOpen, session]);
+
+  const cartLines = useMemo(() => cart?.lines?.nodes ?? [], [cart]);
 
   if (!isOpen) {
     return null;
@@ -55,8 +123,36 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         <div className="flex-1 flex flex-col gap-6 pt-6">
           <div className="card rounded-lg p-4">
             <div className="text-xs uppercase tracking-[0.3em] muted">Your drop</div>
-            <div className="section-title text-lg pt-2">Monthly Subscription</div>
-            <div className="text-sm muted pt-1">$59.99 / month</div>
+            {isLoading ? (
+              <div className="text-sm muted pt-3">Loading cart…</div>
+            ) : errorMessage ? (
+              <div className="text-sm text-accent pt-3">{errorMessage}</div>
+            ) : cartLines.length ? (
+              <div className="pt-3 flex flex-col gap-3">
+                {cartLines.map((line) => (
+                  <div key={line.id} className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-sm">
+                        {line.merchandise?.product?.title ?? "Subscription"}
+                      </div>
+                      <div className="text-xs muted">
+                        {line.merchandise?.title ?? "Monthly Subscription"}
+                      </div>
+                      <div className="text-xs muted pt-1">Qty {line.quantity}</div>
+                    </div>
+                    <div className="text-sm text-foreground">
+                      {line.merchandise?.price
+                        ? `${Number(line.merchandise.price.amount).toFixed(2)} ${
+                            line.merchandise.price.currencyCode
+                          }`
+                        : ""}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm muted pt-3">Your cart is empty.</div>
+            )}
           </div>
 
           <div className="card rounded-lg p-4 flex flex-col gap-3">
@@ -84,7 +180,31 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         <div className="pt-6 border-t border-border">
-          <button className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full">
+          <button
+            className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full"
+            type="button"
+            onClick={async () => {
+              try {
+                setIsLoading(true);
+                const response = await fetch("/api/cart", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ action: "getCheckoutUrl" }),
+                });
+                if (!response.ok) {
+                  throw new Error("Unable to start checkout.");
+                }
+                const payload = await response.json();
+                if (payload.checkoutUrl) {
+                  window.location.href = payload.checkoutUrl;
+                }
+              } catch (error) {
+                setErrorMessage("Unable to start checkout.");
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+          >
             Checkout
           </button>
         </div>
