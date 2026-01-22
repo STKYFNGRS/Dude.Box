@@ -11,7 +11,14 @@
           >
         </a>
       {% else %}
-        <a href="https://dude.box/" class="logo-text">{{ shop.name }}</a>
+        <a href="https://dude.box/" aria-label="{{ shop.name }}">
+          <img
+            src="https://dude.box/Logo.png"
+            alt="{{ shop.name }}"
+            loading="lazy"
+            style="height: auto; max-width: 240px;"
+          >
+        </a>
       {% endif %}
     </div>
     <nav class="nav" aria-label="Primary">
