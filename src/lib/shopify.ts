@@ -5,6 +5,7 @@ export type ShopProduct = {
   price: string;
   image?: string;
   url?: string;
+  variantId?: string;
 };
 
 const mockProducts: ShopProduct[] = [
@@ -138,6 +139,11 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
               currencyCode
             }
           }
+          variants(first: 1) {
+            nodes {
+              id
+            }
+          }
           images(first: 1) {
             nodes {
               url
@@ -164,6 +170,7 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
       }`,
       image: product.images?.nodes?.[0]?.url,
       url: product.onlineStoreUrl ?? undefined,
+      variantId: product.variants?.nodes?.[0]?.id,
     }));
   } catch (error) {
     return mockProducts;

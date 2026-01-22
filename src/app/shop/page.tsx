@@ -1,8 +1,8 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { getShopifyProducts } from "@/lib/shopify";
+import { ShopProductCard } from "@/components/ShopProductCard";
 
 export const metadata: Metadata = {
   title: "The Store | dude.box",
@@ -46,34 +46,7 @@ export default async function ShopPage() {
       >
         <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
-            <div key={product.id} className="card rounded-lg p-6 flex flex-col gap-4">
-              <div className="text-xs uppercase tracking-[0.3em] muted">Limited drop</div>
-              {product.image ? (
-                <div className="border border-border rounded overflow-hidden bg-background">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-40 object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              ) : null}
-              <h3 className="section-title text-xl">{product.title}</h3>
-              <p className="text-sm muted">{product.description}</p>
-              <div className="text-sm">{product.price}</div>
-              {product.url ? (
-                <a
-                  href={product.url}
-                  className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center"
-                >
-                  View Details
-                </a>
-              ) : (
-                <button className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]">
-                  View Details
-                </button>
-              )}
-            </div>
+            <ShopProductCard key={product.id} product={product} />
           ))}
         </div>
         <div className="pt-6 flex flex-col gap-3 text-xs muted">
@@ -82,14 +55,7 @@ export default async function ShopPage() {
           </span>
           <span>
             Prefer a monthly drop? Review{" "}
-            <Link href="/shop" className="underline underline-offset-4">
-              the subscription
-            </Link>{" "}
-            or{" "}
-            <Link href="/shop" className="underline underline-offset-4">
-              gift options
-            </Link>
-            .
+            the subscription or gift options.
           </span>
           <span>
             TODO: Add internal product pages or add-to-cart behavior once Storefront handles are
