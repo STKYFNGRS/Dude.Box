@@ -7,7 +7,7 @@
             src="{{ section.settings.logo | image_url: width: 360 }}"
             alt="{{ shop.name }}"
             loading="lazy"
-            style="height: auto; max-width: 240px;"
+            style="height: auto; max-width: 288px; width: 100%;"
           >
         </a>
       {% else %}
@@ -16,7 +16,7 @@
             src="https://dude.box/Logo.png"
             alt="{{ shop.name }}"
             loading="lazy"
-            style="height: auto; max-width: 240px;"
+            style="height: auto; max-width: 288px; width: 100%;"
           >
         </a>
       {% endif %}
@@ -27,6 +27,9 @@
       <a href="https://shop.dude.box/account/login">Login</a>
       <a href="https://shop.dude.box/products/subscription-box" class="solid-button" style="padding: 0.5rem 1.5rem; border-radius: 999px;">
         Subscribe
+      </a>
+      <a href="https://shop.dude.box/cart" class="outline-button" style="padding: 0.5rem 1.5rem; border-radius: 999px;">
+        Cart
       </a>
     </nav>
   </div>
