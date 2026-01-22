@@ -113,7 +113,7 @@ export default function SubscriptionBoxPage() {
                   $59.99/mo. Skip, pause, or cancel anytime. Subscription widgets can plug in here.
                 </p>
                 <Link
-                  href="https://shop.dude.box/collections/all"
+                  href="/shop"
                   className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
                 >
                   Start Subscription
@@ -126,7 +126,7 @@ export default function SubscriptionBoxPage() {
                   Limited inventory available when drops open.
                 </p>
                 <Link
-                  href="https://shop.dude.box/collections/all"
+                  href="/shop"
                   className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
                 >
                   Buy Once
@@ -136,7 +136,7 @@ export default function SubscriptionBoxPage() {
 
             <div className="text-xs uppercase tracking-[0.3em] muted">
               Need help?{" "}
-              <Link href="https://shop.dude.box/account/login">Member support</Link>
+              <Link href="/portal/login">Member support</Link>
             </div>
           </div>
         </div>

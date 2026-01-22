@@ -19,7 +19,7 @@ export default async function PortalPage() {
           TODO: Keep portal hidden from public navigation until member operations go live.
         </p>
         <Link
-          href="https://shop.dude.box/account/login"
+          href="/portal/login"
           className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-fit"
         >
           Member Login
