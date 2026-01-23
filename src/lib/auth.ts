@@ -83,30 +83,14 @@ export const authOptions: NextAuthOptions = {
 
           if (shopifyAuth) {
             return {
-              id: "shopify-customer",
-              name: "Customer",
+              id: submittedEmail,
+              name: submittedEmail.split('@')[0],
               email: submittedEmail,
               customerAccessToken: shopifyAuth.accessToken,
             };
           }
         } catch (error) {
-          // Fall through to member login.
-        }
-
-        const allowedEmail = process.env.MEMBER_LOGIN_EMAIL?.toLowerCase().trim();
-        const allowedPassword = process.env.MEMBER_LOGIN_PASSWORD;
-
-        if (!allowedEmail || !allowedPassword) {
-          return null;
-        }
-
-        if (submittedEmail === allowedEmail && credentials.password === allowedPassword) {
-          return {
-            id: "member-1",
-            name: "Member",
-            email: allowedEmail,
-            isMember: true,
-          };
+          console.error("Shopify authentication error:", error);
         }
 
         return null;

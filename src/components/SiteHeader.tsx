@@ -58,14 +58,24 @@ export function SiteHeader() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+          {status === "authenticated" ? (
+            <Link
+              href="/portal"
+              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
+              aria-label="Account"
+            >
+              Account
+            </Link>
+          ) : (
             <button
               type="button"
               onClick={() => setIsLoginOpen(true)}
               className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-              aria-label={status === "authenticated" ? "Account" : "Login"}
+              aria-label="Login"
             >
-              {status === "authenticated" ? "Account" : "Login"}
+              Login
             </button>
+          )}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
