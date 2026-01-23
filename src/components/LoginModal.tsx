@@ -84,6 +84,14 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               />
             </label>
             {error ? <p className="text-sm text-red-400">{error}</p> : null}
+            <div className="flex items-center justify-between">
+              <a
+                href="/portal/forgot-password"
+                className="text-xs text-accent hover:text-foreground transition-colors"
+              >
+                Forgot password?
+              </a>
+            </div>
             <button
               type="submit"
               disabled={isSubmitting}

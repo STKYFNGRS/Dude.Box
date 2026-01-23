@@ -81,30 +81,44 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     }
   };
 
+  const loadCart = async () => {
+    setErrorMessage(null);
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/cart", { method: "GET" });
+      if (!response.ok) {
+        throw new Error("Unable to load cart.");
+      }
+      const payload = await response.json();
+      const nextCart = payload.cart ?? null;
+      setCart(nextCart);
+      emitCartUpdate(nextCart);
+    } catch {
+      setErrorMessage("Unable to load cart.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    setErrorMessage(null);
-    setIsLoading(true);
-    fetch("/api/cart", { method: "GET" })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Unable to load cart.");
-        }
-        return response.json();
-      })
-      .then((payload) => {
-        const nextCart = payload.cart ?? null;
-        setCart(nextCart);
-        emitCartUpdate(nextCart);
-      })
-      .catch(() => {
-        setErrorMessage("Unable to load cart.");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    loadCart();
+  }, [isOpen]);
+
+  // Listen for cart updates while drawer is open
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleCartUpdate = () => {
+      loadCart();
+    };
+
+    window.addEventListener("cart:updated", handleCartUpdate);
+    return () => window.removeEventListener("cart:updated", handleCartUpdate);
   }, [isOpen]);
 
   useEffect(() => {
@@ -147,14 +161,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60]">
+    <div className="fixed inset-0 z-[60] flex justify-end">
       <button
         type="button"
         aria-label="Close cart drawer"
         onClick={onClose}
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
       />
-      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel shadow-2xl p-6 flex flex-col z-10">
+      <aside className="relative w-full max-w-md border-l border-border bg-panel shadow-2xl p-6 flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <span className="text-xs uppercase tracking-[0.3em] muted">Cart</span>
           <button
