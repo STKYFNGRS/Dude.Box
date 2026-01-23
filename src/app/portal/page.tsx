@@ -5,6 +5,7 @@ import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 import { SignOutButton } from "@/components/SignOutButton";
 import { EditProfileForm } from "@/components/EditProfileForm";
+import { EditAddressForm } from "@/components/EditAddressForm";
 
 type ShopifyOrder = {
   id: string;
@@ -140,7 +141,7 @@ export default async function PortalPage() {
         description="Account status, orders, and delivery details."
       />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card title="Profile">
           {profile ? (
             <EditProfileForm
@@ -159,6 +160,15 @@ export default async function PortalPage() {
               <div className="pt-4">
                 <SignOutButton />
               </div>
+            </div>
+          )}
+        </Card>
+        <Card title="Shipping Address">
+          {customerAccessToken ? (
+            <EditAddressForm />
+          ) : (
+            <div className="text-sm muted">
+              No address saved
             </div>
           )}
         </Card>
