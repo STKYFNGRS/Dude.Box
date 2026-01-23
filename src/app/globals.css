@@ -12,6 +12,10 @@
   --color-panel: #141d33;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 *,
 *::before,
 *::after {

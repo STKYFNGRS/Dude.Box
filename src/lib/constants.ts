@@ -1,12 +1,9 @@
-export const headerNavigationLinks = [
-  { label: "About", href: "/about" },
-  { label: "Login", href: "/portal/login" },
-];
+// Header navigation links removed - header now uses utility-first navigation (icons only)
 
 export const footerNavigationLinks = [
-  { label: "About", href: "/about" },
+  { label: "About", href: "/#mission" },
+  { label: "Shop", href: "/#shop" },
   { label: "Login", href: "/portal/login" },
-  { label: "Shop", href: "/shop" },
 ];
 
 export const amenities = [
