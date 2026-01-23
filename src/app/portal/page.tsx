@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
-import { SignOutButton } from "@/components/SignOutButton";
 
 type ShopifyOrder = {
   id: string;
@@ -112,14 +111,11 @@ export default async function PortalPage() {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex items-start justify-between">
-        <Section
-          eyebrow="Member Portal"
-          title="Welcome back"
-          description="Account status, orders, and delivery details."
-        />
-        <SignOutButton />
-      </div>
+      <Section
+        eyebrow="Member Portal"
+        title="Welcome back"
+        description="Account status, orders, and delivery details."
+      />
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card title="Profile">
@@ -137,6 +133,14 @@ export default async function PortalPage() {
                 </span>
               </div>
             )}
+            <div className="pt-4">
+              <Link
+                href="/api/auth/signout"
+                className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
+              >
+                Sign Out
+              </Link>
+            </div>
           </div>
         </Card>
         <Card title="Subscription status">
