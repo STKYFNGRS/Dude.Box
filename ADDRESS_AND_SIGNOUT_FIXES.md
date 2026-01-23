@@ -22,14 +22,16 @@
 
 **Root Cause:**
 - NextAuth signout only clears your site's session
-- The Shopify cart maintains its own buyer identity with a `customerAccessToken`
+- Once a Shopify cart is associated with a customer, it **cannot be unassociated**
 - Cart cookie persists after logout, keeping customer associated
+- Shopify doesn't allow clearing buyer identity from an existing cart
 
 **Solution:**
 1. Created `/api/auth/signout-handler` endpoint
-2. When user signs out, clear the cart's buyer identity in Shopify
-3. Set `customerAccessToken: null` and `email: null` on cart
-4. This makes checkout appear as guest checkout
+2. When user signs out, **delete the cart cookie entirely**
+3. This abandons the customer-associated cart
+4. Next visit creates a fresh guest cart
+5. Old cart becomes an "abandoned cart" in Shopify (useful for marketing)
 
 ## Files Changed
 
@@ -78,11 +80,11 @@ graph TD
 
 ```mermaid
 graph TD
-    A[User Clicks Sign Out] --> B[Clear Cart Buyer Identity]
-    B --> C[Set customerAccessToken = null]
-    C --> D[Set email = null]
-    D --> E[Sign Out NextAuth Session]
-    E --> F[Redirect to Home]
+    A[User Clicks Sign Out] --> B[Delete Cart Cookie]
+    B --> C[Abandon Customer Cart]
+    C --> D[Sign Out NextAuth Session]
+    D --> E[Reload Page]
+    E --> F[Next Cart Action Creates New Guest Cart]
     F --> G[Checkout Shows Guest Mode]
 ```
 
@@ -126,25 +128,33 @@ Headless checkout creates a separation between:
 
 These are independent systems. Signing out of NextAuth doesn't automatically clear Shopify's cart data.
 
+**Additionally:** Shopify carts permanently retain their customer association once set. The only way to get a guest checkout is to use a completely new cart.
+
 ## API Details
 
-### Clear Cart Buyer Identity:
+### Important: Shopify Cart Limitation
+
+**You cannot unassociate a cart from a customer once it's linked.**
+
+Shopify's `cartBuyerIdentityUpdate` mutation can only:
+- ✅ Associate a cart with a customer
+- ✅ Update the email on an associated cart
+- ❌ Remove customer association from a cart
+
+**Solution: Create New Cart**
+
+Instead of trying to clear the buyer identity, we:
+1. Delete the cart cookie
+2. Abandon the customer-associated cart
+3. Let Shopify create a new guest cart on next visit
 
 ```typescript
-mutation cartBuyerIdentityUpdate($cartId: ID!) {
-  cartBuyerIdentityUpdate(
-    cartId: $cartId, 
-    buyerIdentity: {
-      email: null,
-      customerAccessToken: null
-    }
-  ) {
-    cart { id }
-  }
-}
-```
+// Delete cart cookie on signout
+response.cookies.delete("dudebox_cart");
 
-This tells Shopify: "This cart no longer belongs to a customer"
+// Next cart creation is automatically a guest cart
+const newCart = await cartCreate(); // Fresh, unassociated cart
+```
 
 ### Address Creation vs Update:
 

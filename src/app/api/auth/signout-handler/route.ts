@@ -1,53 +1,20 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function POST() {
   try {
-    // Clear the cart association when user signs out
-    const cartCookie = cookies().get("dudebox_cart");
+    // When user signs out, delete the cart cookie
+    // This forces a new guest cart to be created on next visit
+    // Note: We can't "unassociate" a Shopify cart from a customer once linked
+    // The only way to get a guest checkout is to use a new cart
     
-    if (cartCookie?.value) {
-      // Clear buyer identity from cart
-      const domain = process.env.SHOPIFY_STORE_DOMAIN;
-      const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-      if (domain && token) {
-        const mutation = `
-          mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
-            cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
-              cart {
-                id
-              }
-              userErrors {
-                field
-                message
-              }
-            }
-          }
-        `;
-
-        await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": token,
-          },
-          body: JSON.stringify({
-            query: mutation,
-            variables: {
-              cartId: cartCookie.value,
-              buyerIdentity: {
-                email: null,
-                customerAccessToken: null,
-              },
-            },
-          }),
-        });
-      }
-    }
-
-    return NextResponse.json({ success: true });
+    const response = NextResponse.json({ success: true });
+    
+    // Delete the cart cookie
+    response.cookies.delete("dudebox_cart");
+    
+    return response;
   } catch (error) {
+    console.error("Error clearing cart cookie:", error);
     // Don't fail signout if cart clear fails
     return NextResponse.json({ success: true });
   }
