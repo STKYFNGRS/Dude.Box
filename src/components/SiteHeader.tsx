@@ -60,40 +60,10 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setIsLoginOpen(true)}
-            className="outline-button rounded-full px-3 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+            className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
             aria-label={status === "authenticated" ? "Account" : "Login"}
           >
-            <span className="sr-only">{status === "authenticated" ? "Account" : "Login"}</span>
-            {status === "authenticated" ? (
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            ) : (
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                <polyline points="10 17 15 12 10 7" />
-                <line x1="15" y1="12" x2="3" y2="12" />
-              </svg>
-            )}
+            {status === "authenticated" ? "Account" : "Login"}
           </button>
           <button
             type="button"

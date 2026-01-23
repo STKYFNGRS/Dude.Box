@@ -147,14 +147,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[60]">
       <button
         type="button"
         aria-label="Close cart drawer"
         onClick={onClose}
-        className="absolute inset-0 bg-background/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
       />
-      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel/95 shadow-2xl p-6 flex flex-col">
+      <aside className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-panel shadow-2xl p-6 flex flex-col z-10">
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <span className="text-xs uppercase tracking-[0.3em] muted">Cart</span>
           <button
@@ -250,7 +250,18 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-border">
+        <div className="pt-6 border-t border-border flex flex-col gap-4">
+          {cart?.cost?.subtotalAmount ? (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="muted">Subtotal</span>
+                <span>
+                  {Number(cart.cost.subtotalAmount.amount).toFixed(2)} {cart.cost.subtotalAmount.currencyCode}
+                </span>
+              </div>
+              <p className="text-xs muted">Shipping and taxes calculated at checkout</p>
+            </div>
+          ) : null}
           <button
             className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full"
             type="button"

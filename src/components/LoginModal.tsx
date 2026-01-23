@@ -91,6 +91,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
             </button>
+            <div className="pt-4 border-t border-border text-center">
+              <p className="text-xs muted pb-2">Don't have an account?</p>
+              <a
+                href="/portal/register"
+                className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
+              >
+                Create Account
+              </a>
+            </div>
           </form>
         </div>
       </div>
