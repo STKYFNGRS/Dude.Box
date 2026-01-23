@@ -161,7 +161,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex justify-end">
+    <div className="fixed inset-0 z-[100] flex justify-end">
       <button
         type="button"
         aria-label="Close cart drawer"
