@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Providers } from "@/components/Providers";
+import { CartSync } from "@/components/CartSync";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Fraunces({
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="bg-background text-foreground">
         <Providers>
+          <CartSync />
           <div className="min-h-screen flex flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>

@@ -121,6 +121,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     return () => window.removeEventListener("cart:updated", handleCartUpdate);
   }, [isOpen]);
 
+  // Associate customer with cart when logged in
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -153,6 +154,17 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         setHasAssociatedCustomer(false);
       });
   }, [hasAssociatedCustomer, isOpen, session]);
+
+  // Also associate customer immediately when user logs in
+  useEffect(() => {
+    const handleUserLogin = () => {
+      setHasAssociatedCustomer(false); // Force re-association
+      loadCart(); // Reload cart to trigger association
+    };
+
+    window.addEventListener("user:login", handleUserLogin);
+    return () => window.removeEventListener("user:login", handleUserLogin);
+  }, []);
 
   const cartLines = useMemo(() => cart?.lines?.nodes ?? [], [cart]);
 

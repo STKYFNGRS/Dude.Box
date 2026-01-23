@@ -35,10 +35,14 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       return;
     }
 
-    // Success: close modal, header will update via useSession
+    // Success: Refresh session and trigger cart association
     setEmail("");
     setPassword("");
     setIsSubmitting(false);
+    
+    // Trigger cart update event to associate customer
+    window.dispatchEvent(new CustomEvent("user:login"));
+    
     onClose();
   };
 
