@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
+import { SignOutButton } from "@/components/SignOutButton";
+import { EditProfileForm } from "@/components/EditProfileForm";
 
 type ShopifyOrder = {
   id: string;
@@ -26,17 +28,29 @@ type ShopifyOrder = {
   };
 };
 
-async function getCustomerOrders(customerAccessToken: string): Promise<ShopifyOrder[]> {
+type CustomerProfile = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+async function getCustomerData(customerAccessToken: string): Promise<{
+  orders: ShopifyOrder[];
+  profile: CustomerProfile | null;
+}> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
   if (!domain || !token) {
-    return [];
+    return { orders: [], profile: null };
   }
 
   const query = `
     query getCustomer($customerAccessToken: String!) {
       customer(customerAccessToken: $customerAccessToken) {
+        firstName
+        lastName
+        email
         orders(first: 10, sortKey: PROCESSED_AT, reverse: true) {
           nodes {
             id
@@ -79,9 +93,18 @@ async function getCustomerOrders(customerAccessToken: string): Promise<ShopifyOr
     });
 
     const result = await response.json();
-    return result?.data?.customer?.orders?.nodes ?? [];
+    const customer = result?.data?.customer;
+    
+    return {
+      orders: customer?.orders?.nodes ?? [],
+      profile: customer ? {
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+      } : null,
+    };
   } catch {
-    return [];
+    return { orders: [], profile: null };
   }
 }
 
@@ -107,7 +130,7 @@ export default async function PortalPage() {
   }
 
   const customerAccessToken = (session as any)?.customerAccessToken;
-  const orders = customerAccessToken ? await getCustomerOrders(customerAccessToken) : [];
+  const { orders, profile } = customerAccessToken ? await getCustomerData(customerAccessToken) : { orders: [], profile: null };
 
   return (
     <div className="flex flex-col gap-10">
@@ -119,29 +142,25 @@ export default async function PortalPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card title="Profile">
-          <div className="text-sm space-y-2">
-            <div>
-              <span className="muted">Name:</span> {session.user?.name ?? "Member"}
-            </div>
-            <div>
-              <span className="muted">Email:</span> {session.user?.email ?? "On file"}
-            </div>
-            {(session as any)?.isMember && (
-              <div className="pt-2">
-                <span className="inline-block px-2 py-1 rounded text-xs bg-accent text-background uppercase tracking-wider">
-                  Verified Member
-                </span>
+          {profile ? (
+            <EditProfileForm
+              firstName={profile.firstName}
+              lastName={profile.lastName}
+              email={profile.email}
+            />
+          ) : (
+            <div className="text-sm space-y-2">
+              <div>
+                <span className="muted">Name:</span> {session.user?.name ?? "Member"}
               </div>
-            )}
-            <div className="pt-4">
-              <Link
-                href="/api/auth/signout"
-                className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
-              >
-                Sign Out
-              </Link>
+              <div>
+                <span className="muted">Email:</span> {session.user?.email ?? "On file"}
+              </div>
+              <div className="pt-4">
+                <SignOutButton />
+              </div>
             </div>
-          </div>
+          )}
         </Card>
         <Card title="Subscription status">
           <div className="text-sm">

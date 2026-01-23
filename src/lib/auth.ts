@@ -6,6 +6,12 @@ type ShopifyAuthResult = {
   expiresAt: string;
 };
 
+type CustomerData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 const createCustomerAccessToken = async (
   email: string,
   password: string
@@ -59,6 +65,47 @@ const createCustomerAccessToken = async (
   return { accessToken, expiresAt };
 };
 
+const getCustomerData = async (
+  customerAccessToken: string
+): Promise<CustomerData | null> => {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN;
+  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
+  if (!domain || !token) {
+    return null;
+  }
+
+  const query = `
+    query getCustomer($customerAccessToken: String!) {
+      customer(customerAccessToken: $customerAccessToken) {
+        firstName
+        lastName
+        email
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Storefront-Access-Token": token,
+      },
+      body: JSON.stringify({
+        query,
+        variables: { customerAccessToken },
+      }),
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+    return result?.data?.customer ?? null;
+  } catch {
+    return null;
+  }
+};
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   providers: [
@@ -82,9 +129,14 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (shopifyAuth) {
+            const customerData = await getCustomerData(shopifyAuth.accessToken);
+            const fullName = customerData
+              ? `${customerData.firstName} ${customerData.lastName}`.trim()
+              : submittedEmail.split('@')[0];
+
             return {
               id: submittedEmail,
-              name: submittedEmail.split('@')[0],
+              name: fullName || submittedEmail.split('@')[0],
               email: submittedEmail,
               customerAccessToken: shopifyAuth.accessToken,
             };
