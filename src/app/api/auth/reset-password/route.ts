@@ -40,8 +40,13 @@ export async function POST(request: Request) {
       }
     `;
 
+    // Extract numeric ID if full GID was passed
+    const numericId = customerId.includes('/') 
+      ? customerId.split('/').pop() 
+      : customerId;
+    
     // Construct the reset URL that Shopify expects
-    const resetUrl = `https://${domain}/account/reset/${customerId}/${resetToken}`;
+    const resetUrl = `https://${domain}/account/reset/${numericId}/${resetToken}`;
 
     const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
       method: "POST",
