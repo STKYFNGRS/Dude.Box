@@ -39,9 +39,16 @@ export function CartSync() {
   }, [session, status]);
 
   useEffect(() => {
-    // Reset on logout
-    if (status === "unauthenticated") {
+    // Reset on logout and clear cart association
+    if (status === "unauthenticated" && hasAssociated.current) {
       hasAssociated.current = false;
+      
+      // Clear cart buyer identity
+      fetch("/api/auth/signout-handler", {
+        method: "POST",
+      }).catch(() => {
+        // Ignore errors
+      });
     }
   }, [status]);
 

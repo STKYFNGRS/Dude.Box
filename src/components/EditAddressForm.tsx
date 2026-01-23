@@ -79,8 +79,12 @@ export function EditAddressForm() {
       }
 
       setSuccessMessage("Address updated successfully!");
-      setIsEditing(false);
+      
+      // Wait a moment for Shopify to process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       await fetchAddress();
+      setIsEditing(false);
       router.refresh();
     } catch (error) {
       setError("Unable to update address. Please try again.");
