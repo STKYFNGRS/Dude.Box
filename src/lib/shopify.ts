@@ -303,14 +303,40 @@ export async function cartLinesAdd(
     }
   `;
 
+  console.log('[cartLinesAdd] Adding lines to cart:', { cartId, lines });
+
   const data = await storefrontFetch<{
-    cartLinesAdd: { cart: StorefrontCart | null; userErrors: Array<{ message: string }> };
+    cartLinesAdd: { cart: StorefrontCart | null; userErrors: Array<{ message: string; field?: string[] }> };
   }>(mutation, { cartId, lines });
 
+  console.log('[cartLinesAdd] Shopify response:', {
+    totalQuantity: data.cartLinesAdd.cart?.totalQuantity,
+    lineCount: data.cartLinesAdd.cart?.lines?.nodes?.length,
+    userErrors: data.cartLinesAdd.userErrors
+  });
+
   const errors = data.cartLinesAdd.userErrors ?? [];
-  if (!data.cartLinesAdd.cart || errors.length) {
+  if (errors.length) {
+    console.error('[cartLinesAdd] Shopify returned errors:', errors);
     throw new Error(errors[0]?.message ?? "Unable to add items to cart.");
   }
+
+  if (!data.cartLinesAdd.cart) {
+    console.error('[cartLinesAdd] No cart returned from Shopify');
+    throw new Error("Unable to add items to cart.");
+  }
+
+  // Warn if quantity is 0
+  const addedLines = data.cartLinesAdd.cart.lines?.nodes || [];
+  addedLines.forEach((line, index) => {
+    if (line.quantity === 0) {
+      console.warn(`[cartLinesAdd] Warning: Line ${index} has quantity 0:`, {
+        lineId: line.id,
+        merchandiseId: line.merchandise?.id,
+        productTitle: line.merchandise?.product?.title
+      });
+    }
+  });
 
   return data.cartLinesAdd.cart;
 }
