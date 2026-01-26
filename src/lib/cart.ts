@@ -1,3 +1,7 @@
+// TODO: Gift note functionality planned for future implementation
+// This module will handle cart attributes like gift notes and gift wrapping options
+// when that feature is added to the checkout flow.
+
 export type CartAttributes = {
   isGift?: boolean;
   giftNote?: string;

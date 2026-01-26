@@ -3,54 +3,17 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ShopProduct } from "@/lib/shopify";
+import { ProductAddToCartButton } from "./ProductAddToCartButton";
 
 type ShopProductCardProps = {
   product: ShopProduct;
 };
 
 export function ShopProductCard({ product }: ShopProductCardProps) {
-  const [isAdding, setIsAdding] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const variants = useMemo(() => product.variants ?? [], [product.variants]);
   const [selectedVariantId, setSelectedVariantId] = useState(
     product.variantId ?? variants[0]?.id ?? ""
   );
-
-  const handleAddToCart = async () => {
-    if (!selectedVariantId) {
-      setMessage("Unavailable right now.");
-      return;
-    }
-
-    try {
-      setIsAdding(true);
-      setMessage(null);
-
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "addLines",
-          lines: [{ merchandiseId: selectedVariantId, quantity: 1 }],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Unable to add to cart.");
-      }
-
-      setMessage("Added to cart.");
-      window.dispatchEvent(
-        new CustomEvent("cart:updated", {
-          detail: { totalQuantity: undefined },
-        })
-      );
-    } catch (error) {
-      setMessage("Unable to add to cart.");
-    } finally {
-      setIsAdding(false);
-    }
-  };
 
   return (
     <div className="card rounded-lg p-6 flex flex-col gap-4 h-full">
@@ -93,16 +56,11 @@ export function ShopProductCard({ product }: ShopProductCardProps) {
             View Details
           </Link>
         ) : null}
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={isAdding}
+        <ProductAddToCartButton 
+          variantId={selectedVariantId}
           className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] text-center disabled:opacity-60"
-        >
-          {isAdding ? "Adding..." : "Add to Cart"}
-        </button>
+        />
       </div>
-      {message ? <div className="text-xs muted">{message}</div> : null}
     </div>
   );
 }

@@ -13,7 +13,6 @@ import {
 const CART_COOKIE_NAME = "dudebox_cart";
 
 type CartAction =
-  | { action: "getOrCreate" }
   | { action: "addLines"; lines: Array<{ merchandiseId: string; quantity: number }> }
   | { action: "updateLines"; lines: Array<{ id: string; quantity: number }> }
   | { action: "removeLines"; lineIds: string[] }
@@ -65,13 +64,6 @@ export async function POST(request: Request) {
     }
 
     switch (body.action) {
-      case "getOrCreate": {
-        const response = NextResponse.json({ cartId, cart });
-        if (cartId && cartId !== existingCartId) {
-          setCartCookie(cartId, response);
-        }
-        return response;
-      }
       case "addLines": {
         cart = await cartLinesAdd(cartId, body.lines);
         const response = NextResponse.json({ cartId, cart });

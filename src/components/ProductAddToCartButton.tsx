@@ -4,9 +4,15 @@ import { useState } from "react";
 
 type ProductAddToCartButtonProps = {
   variantId?: string;
+  className?: string;
+  showMessage?: boolean;
 };
 
-export function ProductAddToCartButton({ variantId }: ProductAddToCartButtonProps) {
+export function ProductAddToCartButton({ 
+  variantId, 
+  className = "solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full disabled:opacity-60",
+  showMessage = true 
+}: ProductAddToCartButtonProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -51,11 +57,11 @@ export function ProductAddToCartButton({ variantId }: ProductAddToCartButtonProp
         type="button"
         onClick={handleAddToCart}
         disabled={isAdding}
-        className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full disabled:opacity-60"
+        className={className}
       >
         {isAdding ? "Adding..." : "Add to Cart"}
       </button>
-      {message ? <div className="text-xs muted">{message}</div> : null}
+      {showMessage && message ? <div className="text-xs muted">{message}</div> : null}
     </div>
   );
 }

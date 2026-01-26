@@ -1,6 +1,6 @@
 # Dude.Box Architecture Documentation
 
-**Last Updated:** 2026-01-26
+**Last Updated:** 2026-01-26 (Cleaned up after initial deployment)
 
 ## Architecture Overview
 
@@ -38,14 +38,17 @@ graph TB
 - JWT-based sessions with customer access tokens
 
 **Key Pages:**
-- `/` - Homepage
-- `/shop` - Product listing
+- `/` - Homepage with mission and shop sections
 - `/products/[handle]` - Product detail pages
+- `/products/subscription-box` - Subscription product page
 - `/portal` - Customer dashboard (requires auth)
 - `/portal/login` - Customer login
 - `/portal/register` - Customer registration
+- `/portal/forgot-password` - Password recovery
 - `/portal/reset-password` - Password reset
-- Marketing pages: `/about`, `/membership`, `/investors`, `/our-mission`, `/the-concept`, `/the-box`, `/gift`
+- `/investors` - Partner inquiry page
+- `/gift` - Gift purchase page
+- `/thank-you` - Post-checkout confirmation
 
 ### Shopify Integration
 
@@ -76,7 +79,7 @@ graph TB
 ### Data Flow
 
 **Product Browsing Flow:**
-1. User visits www.dude.box/shop
+1. User visits homepage (www.dude.box) with embedded shop section
 2. Server Component fetches products via Storefront API
 3. Products cached for 300 seconds (5 minutes)
 4. React renders product grid with custom UI
@@ -112,37 +115,58 @@ graph TB
 ```
 src/
 ├── app/
-│   ├── layout.tsx                    # Root layout, includes header/footer
-│   ├── page.tsx                      # Homepage
-│   ├── globals.css                   # Global styles
-│   ├── shop/page.tsx                 # Product listing
-│   ├── products/[handle]/page.tsx    # Product detail (SSR)
-│   ├── portal/                       # Customer account pages
+│   ├── layout.tsx                       # Root layout, includes header/footer
+│   ├── page.tsx                         # Homepage with mission & shop sections
+│   ├── globals.css                      # Global styles with CSS variables
+│   ├── products/
+│   │   ├── [handle]/page.tsx            # Dynamic product detail (SSR)
+│   │   └── subscription-box/page.tsx    # Subscription product page
+│   ├── portal/                          # Customer account pages
 │   │   ├── layout.tsx
-│   │   ├── page.tsx                  # Dashboard
+│   │   ├── page.tsx                     # Dashboard
 │   │   ├── login/page.tsx
 │   │   ├── register/page.tsx
 │   │   ├── forgot-password/page.tsx
 │   │   └── reset-password/page.tsx
+│   ├── investors/page.tsx               # Partner inquiry page
+│   ├── gift/page.tsx                    # Gift purchase page
+│   ├── thank-you/page.tsx               # Post-checkout confirmation
 │   └── api/
-│       ├── cart/route.ts             # Cart operations proxy
-│       ├── auth/[...nextauth]/route.ts  # NextAuth handler
-│       └── customer/                 # Customer update operations
+│       ├── cart/route.ts                # Cart operations proxy
+│       ├── auth/
+│       │   ├── [...nextauth]/route.ts   # NextAuth handler
+│       │   ├── register/route.ts        # Customer registration
+│       │   ├── recover/route.ts         # Password recovery
+│       │   ├── reset-password/route.ts  # Password reset
+│       │   └── signout-handler/route.ts # Clear cart on signout
+│       ├── customer/
+│       │   ├── address/route.ts         # Address management
+│       │   └── update/route.ts          # Profile updates
+│       └── investor-request/route.ts    # Partner inquiry form (TODO: wire to email)
 │
 ├── components/
-│   ├── SiteHeader.tsx                # Global header with cart badge
-│   ├── SiteFooter.tsx                # Global footer
-│   ├── CartDrawer.tsx                # Slide-out cart UI
-│   ├── ProductPurchaseOptions.tsx    # Add to cart with variants
-│   ├── EditProfileForm.tsx           # Customer profile editing
-│   ├── EditAddressForm.tsx           # Address management
-│   └── ...
+│   ├── SiteHeader.tsx                   # Global header with cart badge
+│   ├── SiteFooter.tsx                   # Global footer
+│   ├── CartDrawer.tsx                   # Slide-out cart UI
+│   ├── CartSync.tsx                     # Sync cart with customer on login
+│   ├── ProductAddToCartButton.tsx       # Reusable add-to-cart button
+│   ├── ProductPurchaseOptions.tsx       # Variant selector + add to cart
+│   ├── ShopProductCard.tsx              # Product card for listings
+│   ├── EditProfileForm.tsx              # Customer profile editing
+│   ├── EditAddressForm.tsx              # Address management
+│   ├── LoginModal.tsx                   # Modal login/register form
+│   ├── MemberLoginForm.tsx              # Portal login form
+│   ├── SignOutButton.tsx                # Sign out functionality
+│   ├── Providers.tsx                    # NextAuth SessionProvider
+│   ├── Container.tsx                    # Layout container
+│   ├── Section.tsx                      # Section layout component
+│   └── Card.tsx                         # Card component
 │
 └── lib/
-    ├── shopify.ts                    # Storefront API client
-    ├── auth.ts                       # NextAuth configuration
-    ├── cart.ts                       # Cart utilities (localStorage)
-    └── constants.ts                  # App constants
+    ├── shopify.ts                       # Storefront API client & queries
+    ├── auth.ts                          # NextAuth configuration
+    ├── cart.ts                          # Cart utilities (future gift notes)
+    └── constants.ts                     # Navigation links
 ```
 
 ### Legacy Theme Files (To Be Removed)
@@ -233,20 +257,36 @@ NEXT_PUBLIC_APP_NAME=Dude.Box
 - Site navigation
 - Custom portal features
 
+## Recent Cleanup (2026-01-26)
+
+**Files Removed:**
+- Redundant page files with redirect conflicts (`/about`, `/our-mission`, `/shop`)
+- Duplicate subscription pages (kept `/products/subscription-box`)
+- Internal documentation page (`/the-concept`)
+- Placeholder admin page (`/portal/admin`)
+- Unused API route (`/api/member-interest`)
+
+**Code Improvements:**
+- Refactored `ShopProductCard` to use reusable `ProductAddToCartButton` component
+- Removed duplicate add-to-cart logic
+- Cleaned unused exports from `constants.ts`
+- Added documentation for future gift note functionality in `cart.ts`
+- Fixed Tailwind config (removed unused pages path and plugins)
+
 ## Known Issues & TODOs
 
-### Phase 1 Findings
+### Outstanding Items
 
-1. **Liquid Theme Files:** Legacy files exist but are not in use
-2. **Checkout Return URL:** Not configured to return to www.dude.box
-3. **shop.dude.box:** Redirect exists in theme.liquid but subdomain status unclear
-4. **Customer Account URLs:** Need to configure password reset to point to Next.js
-5. **API Optimization:** No webhooks for product updates (manual revalidation only)
-6. **Error Handling:** Limited error boundaries for API failures
+1. **Partner Form:** `/api/investor-request` needs email/CRM integration
+2. **Checkout Return URL:** Configure to return to www.dude.box after purchase
+3. **Customer Account URLs:** Configure Shopify password reset emails to point to Next.js
+4. **API Optimization:** No webhooks for product updates (manual revalidation only)
+5. **Error Handling:** Add error boundaries for Storefront API failures
+6. **Gift Notes:** Implement cart attributes functionality (code scaffolded in `cart.ts`)
 
 ### Recommended Next Steps
 
-See full refactor plan in `.cursor/plans/` for detailed implementation phases.
+See full deployment guide in `DEPLOYMENT_GUIDE.md` for configuration details.
 
 ## Performance Considerations
 
