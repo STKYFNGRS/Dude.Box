@@ -38,10 +38,13 @@ export function ProductAddToCartButton({
         throw new Error("Unable to add to cart.");
       }
 
+      const payload = await response.json();
+      const totalQuantity = payload?.cart?.totalQuantity ?? 0;
+      
       setMessage("Added to cart.");
       window.dispatchEvent(
         new CustomEvent("cart:updated", {
-          detail: { totalQuantity: undefined },
+          detail: { totalQuantity },
         })
       );
     } catch (error) {
