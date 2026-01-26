@@ -54,6 +54,80 @@ const clampText = (value: string, maxLength = 140) => {
 
 const SHOPIFY_API_VERSION = "2024-07";
 
+// GraphQL Fragments for reusable field definitions
+const PRODUCT_FRAGMENT = `
+  fragment ProductBasic on Product {
+    id
+    title
+    description
+    handle
+    onlineStoreUrl
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    variants(first: 10) {
+      nodes {
+        id
+        title
+      }
+    }
+    images(first: 1) {
+      nodes {
+        url
+        altText
+      }
+    }
+  }
+`;
+
+const CART_FRAGMENT = `
+  fragment CartDetails on Cart {
+    id
+    checkoutUrl
+    totalQuantity
+    buyerIdentity {
+      email
+    }
+    cost {
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+    }
+    lines(first: 50) {
+      nodes {
+        id
+        quantity
+        merchandise {
+          ... on ProductVariant {
+            id
+            title
+            price {
+              amount
+              currencyCode
+            }
+            product {
+              title
+              handle
+            }
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 type StorefrontResponse<T> = {
   data?: T;
   errors?: Array<{ message: string }>;
@@ -109,7 +183,8 @@ const storefrontFetch = async <T>(
       "X-Shopify-Storefront-Access-Token": token,
     },
     body: JSON.stringify({ query, variables }),
-    cache: options?.cache ?? "no-store",
+    // Fix: Don't use conflicting cache strategies
+    cache: options?.revalidate ? undefined : (options?.cache ?? "no-store"),
     next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
   });
 
@@ -138,32 +213,12 @@ export async function getShopifyProducts(): Promise<ShopProduct[]> {
   }
 
   const query = `
+    ${PRODUCT_FRAGMENT}
+    
     query Products {
       products(first: 8, sortKey: UPDATED_AT, reverse: true) {
         nodes {
-          id
-          title
-          description
-          handle
-          onlineStoreUrl
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-          variants(first: 10) {
-            nodes {
-              id
-              title
-            }
-          }
-          images(first: 1) {
-            nodes {
-              url
-              altText
-            }
-          }
+          ...ProductBasic
         }
       }
     }
@@ -201,49 +256,12 @@ export async function cartCreate(input?: {
   attributes?: Array<{ key: string; value: string }>;
 }): Promise<StorefrontCart> {
   const mutation = `
+    ${CART_FRAGMENT}
+    
     mutation CartCreate($input: CartInput) {
       cartCreate(input: $input) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          buyerIdentity {
-            email
-          }
-          cost {
-            subtotalAmount {
-              amount
-              currencyCode
-            }
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 50) {
-            nodes {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                  image {
-                    url
-                    altText
-                  }
-                }
-              }
-            }
-          }
+          ...CartDetails
         }
         userErrors {
           field
@@ -270,49 +288,12 @@ export async function cartLinesAdd(
   lines: StorefrontCartLineInput[]
 ): Promise<StorefrontCart> {
   const mutation = `
+    ${CART_FRAGMENT}
+    
     mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
       cartLinesAdd(cartId: $cartId, lines: $lines) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          buyerIdentity {
-            email
-          }
-          cost {
-            subtotalAmount {
-              amount
-              currencyCode
-            }
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 50) {
-            nodes {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                  image {
-                    url
-                    altText
-                  }
-                }
-              }
-            }
-          }
+          ...CartDetails
         }
         userErrors {
           field
@@ -339,49 +320,12 @@ export async function cartLinesUpdate(
   lines: Array<{ id: string; quantity: number }>
 ): Promise<StorefrontCart> {
   const mutation = `
+    ${CART_FRAGMENT}
+    
     mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
       cartLinesUpdate(cartId: $cartId, lines: $lines) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          buyerIdentity {
-            email
-          }
-          cost {
-            subtotalAmount {
-              amount
-              currencyCode
-            }
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 50) {
-            nodes {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                  image {
-                    url
-                    altText
-                  }
-                }
-              }
-            }
-          }
+          ...CartDetails
         }
         userErrors {
           field
@@ -405,49 +349,12 @@ export async function cartLinesUpdate(
 
 export async function cartLinesRemove(cartId: string, lineIds: string[]): Promise<StorefrontCart> {
   const mutation = `
+    ${CART_FRAGMENT}
+    
     mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
       cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          buyerIdentity {
-            email
-          }
-          cost {
-            subtotalAmount {
-              amount
-              currencyCode
-            }
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 50) {
-            nodes {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                  image {
-                    url
-                    altText
-                  }
-                }
-              }
-            }
-          }
+          ...CartDetails
         }
         userErrors {
           field
@@ -474,49 +381,12 @@ export async function cartBuyerIdentityUpdate(
   customerAccessToken: string
 ): Promise<StorefrontCart> {
   const mutation = `
+    ${CART_FRAGMENT}
+    
     mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
       cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          buyerIdentity {
-            email
-          }
-          cost {
-            subtotalAmount {
-              amount
-              currencyCode
-            }
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 50) {
-            nodes {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                  image {
-                    url
-                    altText
-                  }
-                }
-              }
-            }
-          }
+          ...CartDetails
         }
         userErrors {
           field
@@ -566,48 +436,11 @@ export async function getCheckoutUrl(cartId: string): Promise<string> {
 
 export async function getCart(cartId: string): Promise<StorefrontCart> {
   const query = `
+    ${CART_FRAGMENT}
+    
     query GetCart($cartId: ID!) {
       cart(id: $cartId) {
-        id
-        checkoutUrl
-        totalQuantity
-        buyerIdentity {
-          email
-        }
-        cost {
-          subtotalAmount {
-            amount
-            currencyCode
-          }
-          totalAmount {
-            amount
-            currencyCode
-          }
-        }
-        lines(first: 50) {
-          nodes {
-            id
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                title
-                price {
-                  amount
-                  currencyCode
-                }
-                product {
-                  title
-                  handle
-                }
-                image {
-                  url
-                  altText
-                }
-              }
-            }
-          }
-        }
+        ...CartDetails
       }
     }
   `;
@@ -625,30 +458,11 @@ export async function getShopifyProductByHandle(
   handle: string
 ): Promise<ShopProductDetail | null> {
   const query = `
+    ${PRODUCT_FRAGMENT}
+    
     query ProductByHandle($handle: String!) {
       productByHandle(handle: $handle) {
-        id
-        title
-        description
-        handle
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 10) {
-          nodes {
-            id
-            title
-          }
-        }
-        images(first: 1) {
-          nodes {
-            url
-            altText
-          }
-        }
+        ...ProductBasic
       }
     }
   `;
