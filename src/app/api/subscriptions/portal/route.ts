@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
-export async function POST(req: NextRequest) {
+async function createPortalSession() {
   try {
     // Get authenticated user session
     const session = await getServerSession(authOptions);
@@ -53,11 +54,32 @@ export async function POST(req: NextRequest) {
       return_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/portal`,
     });
 
-    return NextResponse.json({ 
-      url: portalSession.url 
-    });
+    return portalSession.url;
   } catch (error) {
     console.error("Error creating portal session:", error);
+    throw error;
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const portalUrl = await createPortalSession();
+    redirect(portalUrl);
+  } catch (error) {
+    console.error("Error in GET portal:", error);
+    return NextResponse.json(
+      { error: "Failed to create portal session" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const portalUrl = await createPortalSession();
+    return NextResponse.json({ url: portalUrl });
+  } catch (error) {
+    console.error("Error in POST portal:", error);
     return NextResponse.json(
       { error: "Failed to create portal session" },
       { status: 500 }
