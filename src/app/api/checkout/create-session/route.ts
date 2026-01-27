@@ -29,6 +29,15 @@ export async function POST(req: NextRequest) {
     // Get user from database to include user ID in metadata
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: {
+        subscriptions: {
+          where: {
+            status: {
+              in: ["active", "past_due", "trialing"],
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -36,6 +45,19 @@ export async function POST(req: NextRequest) {
         { error: "User not found" },
         { status: 404 }
       );
+    }
+
+    // Check if user already has an active subscription
+    if (user.subscriptions && user.subscriptions.length > 0) {
+      const activeSub = user.subscriptions[0];
+      
+      // If subscription is cancelled but still active, allow new subscription
+      if (!activeSub.cancel_at_period_end) {
+        return NextResponse.json(
+          { error: "You already have an active subscription. Please manage it from your portal.", redirectTo: "/portal" },
+          { status: 400 }
+        );
+      }
     }
 
     // Create Stripe Checkout Session

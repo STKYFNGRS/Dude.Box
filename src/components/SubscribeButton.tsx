@@ -39,6 +39,11 @@ export function SubscribeButton({ priceId, price, className }: SubscribeButtonPr
       const data = await response.json();
 
       if (!response.ok) {
+        // If user already has a subscription, redirect to portal
+        if (data.redirectTo) {
+          router.push(data.redirectTo);
+          return;
+        }
         throw new Error(data.error || "Failed to create checkout session");
       }
 
