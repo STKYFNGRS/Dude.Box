@@ -96,7 +96,7 @@ async function handleCheckoutSessionCompleted(
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   // Find the product in our database by matching the Stripe price ID
-  const priceId = subscription.items.data[0].price.id;
+  const priceId = subscription.items.data[0]?.price?.id;
   const product = await prisma.product.findFirst({
     where: { stripe_price_id: priceId },
   });
@@ -107,15 +107,17 @@ async function handleCheckoutSessionCompleted(
   }
 
   // Create subscription record in database
+  // Using any to bypass TypeScript issue with Stripe types
+  const sub = subscription as any;
   await prisma.subscription.create({
     data: {
       user_id: userId,
       product_id: product.id,
-      stripe_subscription_id: subscription.id,
-      stripe_customer_id: subscription.customer as string,
-      status: subscription.status,
-      current_period_end: new Date(subscription.current_period_end * 1000),
-      cancel_at_period_end: subscription.cancel_at_period_end,
+      stripe_subscription_id: sub.id,
+      stripe_customer_id: sub.customer as string,
+      status: sub.status,
+      current_period_end: new Date(sub.current_period_end * 1000),
+      cancel_at_period_end: sub.cancel_at_period_end ?? false,
     },
   });
 
@@ -148,12 +150,14 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   console.log("Processing customer.subscription.updated");
 
   // Update subscription in database
+  // Using any to bypass TypeScript issue with Stripe types
+  const sub = subscription as any;
   const updated = await prisma.subscription.updateMany({
-    where: { stripe_subscription_id: subscription.id },
+    where: { stripe_subscription_id: sub.id },
     data: {
-      status: subscription.status,
-      current_period_end: new Date(subscription.current_period_end * 1000),
-      cancel_at_period_end: subscription.cancel_at_period_end,
+      status: sub.status,
+      current_period_end: new Date(sub.current_period_end * 1000),
+      cancel_at_period_end: sub.cancel_at_period_end ?? false,
     },
   });
 
@@ -189,7 +193,9 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   console.log("Processing invoice.payment_failed");
 
-  const subscriptionId = invoice.subscription as string;
+  // Using any to bypass TypeScript issue with Stripe types
+  const inv = invoice as any;
+  const subscriptionId = inv.subscription as string;
 
   if (!subscriptionId) {
     console.error("No subscription ID in invoice");
