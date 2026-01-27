@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
@@ -59,7 +60,9 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/portal/login",
+    error: "/portal/login",
   },
+  debug: process.env.NODE_ENV === 'development',
   callbacks: {
     async jwt({ token, user }) {
       // Add user ID to token on sign in
