@@ -36,41 +36,49 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  console.log(`Received webhook event: ${event.type}`);
+  console.log(`✅ Received webhook event: ${event.type}`);
 
   try {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log(`📦 Processing checkout for session: ${session.id}`);
         await handleCheckoutSessionCompleted(session);
+        console.log(`✅ Successfully processed checkout.session.completed`);
         break;
       }
 
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
+        console.log(`🔄 Processing subscription update: ${subscription.id}`);
         await handleSubscriptionUpdated(subscription);
+        console.log(`✅ Successfully processed customer.subscription.updated`);
         break;
       }
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
+        console.log(`❌ Processing subscription deletion: ${subscription.id}`);
         await handleSubscriptionDeleted(subscription);
+        console.log(`✅ Successfully processed customer.subscription.deleted`);
         break;
       }
 
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
+        console.log(`⚠️  Processing payment failure for invoice: ${invoice.id}`);
         await handlePaymentFailed(invoice);
+        console.log(`✅ Successfully processed invoice.payment_failed`);
         break;
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        console.log(`ℹ️  Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error(`Error processing webhook event ${event.type}:`, error);
+    console.error(`❌ Error processing webhook event ${event.type}:`, error);
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }
@@ -106,18 +114,31 @@ async function handleCheckoutSessionCompleted(
     return;
   }
 
+  // Get Stripe customer ID
+  const stripeCustomerId = session.customer as string;
+
+  // Get current_period_end from the subscription item (not the subscription itself)
+  const subscriptionItem = subscription.items.data[0];
+  const currentPeriodEnd = (subscriptionItem as any).current_period_end;
+  const cancelAtPeriodEnd = subscription.cancel_at_period_end ?? false;
+
+  if (!currentPeriodEnd) {
+    console.error("No current_period_end in subscription item:", JSON.stringify(subscriptionItem, null, 2));
+    throw new Error("Invalid subscription data: missing current_period_end in subscription item");
+  }
+
+  console.log(`✅ Creating subscription with current_period_end: ${currentPeriodEnd}, date: ${new Date(currentPeriodEnd * 1000)}`);
+
   // Create subscription record in database
-  // Using any to bypass TypeScript issue with Stripe types
-  const sub = subscription as any;
   await prisma.subscription.create({
     data: {
       user_id: userId,
       product_id: product.id,
-      stripe_subscription_id: sub.id,
-      stripe_customer_id: sub.customer as string,
-      status: sub.status,
-      current_period_end: new Date(sub.current_period_end * 1000),
-      cancel_at_period_end: sub.cancel_at_period_end ?? false,
+      stripe_subscription_id: subscription.id,
+      stripe_customer_id: stripeCustomerId,
+      status: subscription.status,
+      current_period_end: new Date(currentPeriodEnd * 1000),
+      cancel_at_period_end: cancelAtPeriodEnd,
     },
   });
 

@@ -12,14 +12,15 @@ datasource db {
 
 // Customer accounts
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password_hash String
-  first_name    String?
-  last_name     String?
-  phone         String?
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  password_hash      String
+  first_name         String?
+  last_name          String?
+  phone              String?
+  stripe_customer_id String?   @unique
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
   
   subscriptions Subscription[]
   orders        Order[]

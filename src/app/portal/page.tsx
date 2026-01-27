@@ -4,134 +4,57 @@ import { authOptions } from "@/lib/auth";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 import { SignOutButton } from "@/components/SignOutButton";
-import { EditProfileForm } from "@/components/EditProfileForm";
-import { EditAddressForm } from "@/components/EditAddressForm";
-
-type ShopifyOrder = {
-  id: string;
-  name: string;
-  orderNumber: number;
-  processedAt: string;
-  fulfillmentStatus: string;
-  financialStatus: string;
-  totalPrice: {
-    amount: string;
-    currencyCode: string;
-  };
-  lineItems: {
-    nodes: Array<{
-      title: string;
-      quantity: number;
-      variant?: {
-        title: string;
-      };
-    }>;
-  };
-};
-
-type CustomerProfile = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
-async function getCustomerData(customerAccessToken: string): Promise<{
-  orders: ShopifyOrder[];
-  profile: CustomerProfile | null;
-}> {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-  if (!domain || !token) {
-    return { orders: [], profile: null };
-  }
-
-  const query = `
-    query getCustomer($customerAccessToken: String!) {
-      customer(customerAccessToken: $customerAccessToken) {
-        firstName
-        lastName
-        email
-        orders(first: 10, sortKey: PROCESSED_AT, reverse: true) {
-          nodes {
-            id
-            name
-            orderNumber
-            processedAt
-            fulfillmentStatus
-            financialStatus
-            totalPrice {
-              amount
-              currencyCode
-            }
-            lineItems(first: 10) {
-              nodes {
-                title
-                quantity
-                variant {
-                  title
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  try {
-    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query,
-        variables: { customerAccessToken },
-      }),
-      cache: "no-store",
-    });
-
-    const result = await response.json();
-    const customer = result?.data?.customer;
-    
-    return {
-      orders: customer?.orders?.nodes ?? [],
-      profile: customer ? {
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        email: customer.email,
-      } : null,
-    };
-  } catch {
-    return { orders: [], profile: null };
-  }
-}
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 export default async function PortalPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return (
-      <div className="flex flex-col gap-6">
-        <Section
-          eyebrow="Member Portal"
-          title="Secure access required"
-          description="Members must sign in to access drop previews and order details."
-        />
-        <Link
-          href="/portal/login"
-          className="outline-button rounded px-5 py-3 text-sm uppercase tracking-[0.2em] w-fit"
-        >
-          Member Login
-        </Link>
-      </div>
-    );
+  if (!session?.user?.email) {
+    redirect("/portal/login");
   }
 
-  const customerAccessToken = (session as any)?.customerAccessToken;
-  const { orders, profile } = customerAccessToken ? await getCustomerData(customerAccessToken) : { orders: [], profile: null };
+  // Get user from database
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: {
+      subscriptions: {
+        include: {
+          user: true,
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      },
+      orders: {
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      },
+      addresses: {
+        where: {
+          is_default: true,
+        },
+        take: 1,
+      },
+    },
+  });
+
+  if (!user) {
+    redirect("/portal/login");
+  }
+
+  const activeSubscription = user.subscriptions.find(
+    (sub) => sub.status === "active"
+  );
+  const defaultAddress = user.addresses[0];
 
   return (
     <div className="flex flex-col gap-10">
@@ -143,88 +66,118 @@ export default async function PortalPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card title="Profile">
-          {profile ? (
-            <EditProfileForm
-              firstName={profile.firstName}
-              lastName={profile.lastName}
-              email={profile.email}
-            />
-          ) : (
-            <div className="text-sm space-y-2">
-              <div>
-                <span className="muted">Name:</span> {session.user?.name ?? "Member"}
-              </div>
-              <div>
-                <span className="muted">Email:</span> {session.user?.email ?? "On file"}
-              </div>
-              <div className="pt-4">
-                <SignOutButton />
-              </div>
+          <div className="text-sm space-y-2">
+            <div>
+              <span className="muted">Name:</span>{" "}
+              {user.first_name && user.last_name
+                ? `${user.first_name} ${user.last_name}`
+                : session.user?.name ?? "Member"}
             </div>
-          )}
+            <div>
+              <span className="muted">Email:</span> {user.email}
+            </div>
+            <div className="pt-4">
+              <SignOutButton />
+            </div>
+          </div>
         </Card>
+
         <Card title="Shipping Address">
-          {customerAccessToken ? (
-            <EditAddressForm />
-          ) : (
-            <div className="text-sm muted">
-              No address saved
-            </div>
-          )}
+          <div className="text-sm">
+            {defaultAddress ? (
+              <div className="space-y-1">
+                <div>
+                  {defaultAddress.first_name} {defaultAddress.last_name}
+                </div>
+                <div>{defaultAddress.address1}</div>
+                {defaultAddress.address2 && <div>{defaultAddress.address2}</div>}
+                <div>
+                  {defaultAddress.city}, {defaultAddress.state}{" "}
+                  {defaultAddress.postal_code}
+                </div>
+                <div>{defaultAddress.country}</div>
+              </div>
+            ) : (
+              <div className="muted">No address saved</div>
+            )}
+          </div>
         </Card>
+
         <Card title="Subscription status">
           <div className="text-sm">
-            {orders.length > 0 ? (
+            {activeSubscription ? (
               <div className="space-y-2">
-                <div className="text-accent">Active Customer</div>
-                <div className="muted">{orders.length} order{orders.length !== 1 ? 's' : ''} placed</div>
+                <div className="text-accent">Active Subscription</div>
+                <div className="muted">
+                  Renews on{" "}
+                  {new Date(
+                    activeSubscription.current_period_end
+                  ).toLocaleDateString()}
+                </div>
+                {activeSubscription.cancel_at_period_end && (
+                  <div className="text-yellow-500">
+                    Cancels at period end
+                  </div>
+                )}
+                <div className="pt-2">
+                  <Link
+                    href="/api/subscriptions/portal"
+                    className="text-accent hover:underline text-xs"
+                  >
+                    Manage Subscription →
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="muted">
-                No orders yet. Start your subscription today!
+                No active subscription.{" "}
+                <Link
+                  href="/products/subscription-box"
+                  className="text-accent hover:underline"
+                >
+                  Start today!
+                </Link>
               </div>
             )}
           </div>
         </Card>
       </div>
 
-      {orders.length > 0 ? (
+      {user.orders.length > 0 ? (
         <div>
           <div className="pb-6">
-            <span className="text-xs uppercase tracking-[0.35em] muted">Order History</span>
-            <h3 className="section-title text-2xl md:text-3xl pt-2">Your Orders</h3>
+            <span className="text-xs uppercase tracking-[0.35em] muted">
+              Order History
+            </span>
+            <h3 className="section-title text-2xl md:text-3xl pt-2">
+              Your Orders
+            </h3>
           </div>
           <div className="flex flex-col gap-4">
-            {orders.map((order) => (
-              <Card key={order.id} title={`Order ${order.name}`}>
+            {user.orders.map((order) => (
+              <Card key={order.id} title={`Order #${order.id.slice(-8)}`}>
                 <div className="space-y-3 text-sm">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <span className="muted">Date:</span>{" "}
-                      {new Date(order.processedAt).toLocaleDateString()}
+                      {new Date(order.created_at).toLocaleDateString()}
                     </div>
                     <div>
-                      <span className="muted">Total:</span>{" "}
-                      {Number(order.totalPrice.amount).toFixed(2)} {order.totalPrice.currencyCode}
+                      <span className="muted">Total:</span> $
+                      {Number(order.total).toFixed(2)}
                     </div>
                     <div>
-                      <span className="muted">Payment:</span>{" "}
-                      <span className="capitalize">{order.financialStatus.toLowerCase().replace('_', ' ')}</span>
-                    </div>
-                    <div>
-                      <span className="muted">Fulfillment:</span>{" "}
-                      <span className="capitalize">{order.fulfillmentStatus.toLowerCase().replace('_', ' ')}</span>
+                      <span className="muted">Status:</span>{" "}
+                      <span className="capitalize">{order.status}</span>
                     </div>
                   </div>
                   <div className="pt-2 border-t border-border">
                     <div className="muted pb-2">Items:</div>
                     <ul className="space-y-1">
-                      {order.lineItems.nodes.map((item, idx) => (
-                        <li key={idx}>
-                          {item.quantity}x {item.title}
-                          {item.variant?.title && item.variant.title !== "Default Title" && (
-                            <span className="muted"> ({item.variant.title})</span>
-                          )}
+                      {order.items.map((item) => (
+                        <li key={item.id}>
+                          {item.quantity}x {item.product.name} - $
+                          {Number(item.price).toFixed(2)}
                         </li>
                       ))}
                     </ul>
