@@ -28,7 +28,12 @@ export function SiteHeader() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-          {status === "authenticated" ? (
+          {status === "loading" ? (
+            // Show loading state to prevent flash
+            <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-50">
+              ...
+            </div>
+          ) : status === "authenticated" ? (
             <Link
               href="/portal"
               className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
