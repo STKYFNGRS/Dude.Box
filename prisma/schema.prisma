@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Customer accounts
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password_hash String
+  first_name    String?
+  last_name     String?
+  phone         String?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  
+  subscriptions Subscription[]
+  orders        Order[]
+  addresses     Address[]
+}
+
+// Subscription box and other products
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  price           Decimal  @db.Decimal(10, 2)
+  interval        String   // "month" for subscription, "one_time" for products
+  stripe_price_id String?  // Stripe Price ID for subscriptions
+  active          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  
+  order_items OrderItem[]
+}
+
+// Active recurring subscriptions
+model Subscription {
+  id                     String   @id @default(cuid())
+  user_id                String
+  product_id             String
+  stripe_subscription_id String   @unique
+  stripe_customer_id     String
+  status                 String   // active, paused, cancelled, past_due
+  current_period_end     DateTime
+  cancel_at_period_end   Boolean  @default(false)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+  
+  user User @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id])
+  @@index([stripe_subscription_id])
+}
+
+// Order history
+model Order {
+  id                       String   @id @default(cuid())
+  user_id                  String
+  stripe_payment_intent_id String?
+  total                    Decimal  @db.Decimal(10, 2)
+  status                   String   // pending, paid, shipped, delivered, cancelled
+  shipping_address_id      String?
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+  
+  user             User        @relation(fields: [user_id], references: [id])
+  items            OrderItem[]
+  shipping_address Address?    @relation(fields: [shipping_address_id], references: [id])
+  
+  @@index([user_id])
+}
+
+// Line items for orders
+model OrderItem {
+  id         String  @id @default(cuid())
+  order_id   String
+  product_id String
+  quantity   Int     @default(1)
+  price      Decimal @db.Decimal(10, 2)
+  
+  order   Order   @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+  
+  @@index([order_id])
+}
+
+// Shipping and billing addresses
+model Address {
+  id          String   @id @default(cuid())
+  user_id     String
+  type        String   // "shipping" or "billing"
+  first_name  String
+  last_name   String
+  address1    String
+  address2    String?
+  city        String
+  state       String
+  postal_code String
+  country     String   @default("US")
+  phone       String?
+  is_default  Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  
+  user   User    @relation(fields: [user_id], references: [id])
+  orders Order[]
+  
+  @@index([user_id])
+}
+
+// Investor/partner inquiries
+model InvestorInquiry {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  company    String?
+  message    String
+  status     String   @default("new") // new, contacted, closed
+  created_at DateTime @default(now())
+}
