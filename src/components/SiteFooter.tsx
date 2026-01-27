@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Container } from "@/components/Container";
 import { footerNavigationLinks } from "@/lib/constants";
 
 export function SiteFooter() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
     <footer className="border-t border-border bg-background">
@@ -18,13 +15,6 @@ export function SiteFooter() {
               {item.label}
             </Link>
           ))}
-          <button
-            type="button"
-            onClick={() => setIsCartOpen(true)}
-            className="hover:text-accent transition-colors"
-          >
-            Cart
-          </button>
         </nav>
         <div className="flex flex-col gap-2">
           <span>Veteran-owned. Small batch. Built for daily carry.</span>
@@ -39,7 +29,6 @@ export function SiteFooter() {
           © {new Date().getFullYear()} dude.box LLC. All rights reserved.
         </span>
       </Container>
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </footer>
   );
 }
