@@ -197,26 +197,28 @@ async function handleCheckoutSessionCompleted(
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  console.log("Processing customer.subscription.updated");
+  console.log("🔄 Processing customer.subscription.updated");
+  console.log(`📋 Subscription ID: ${subscription.id}`);
+  console.log(`📊 Status: ${subscription.status}`);
+  console.log(`🚫 Cancel at period end: ${subscription.cancel_at_period_end}`);
+  console.log(`📅 Current period end: ${new Date(subscription.current_period_end * 1000)}`);
 
   // Update subscription in database
-  // Using any to bypass TypeScript issue with Stripe types
-  const sub = subscription as any;
   const updated = await prisma.subscription.updateMany({
-    where: { stripe_subscription_id: sub.id },
+    where: { stripe_subscription_id: subscription.id },
     data: {
-      status: sub.status,
-      current_period_end: new Date(sub.current_period_end * 1000),
-      cancel_at_period_end: sub.cancel_at_period_end ?? false,
+      status: subscription.status,
+      current_period_end: new Date(subscription.current_period_end * 1000),
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
     },
   });
 
   if (updated.count === 0) {
     console.error(
-      `No subscription found with stripe_subscription_id: ${subscription.id}`
+      `❌ No subscription found with stripe_subscription_id: ${subscription.id}`
     );
   } else {
-    console.log(`Updated subscription ${subscription.id}`);
+    console.log(`✅ Updated ${updated.count} subscription(s) - ID: ${subscription.id}`);
   }
 }
 
