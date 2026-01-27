@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -10,6 +10,12 @@ import { LoginModal } from "@/components/LoginModal";
 export function SiteHeader() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const { data: session, status } = useSession();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch and flash by waiting for client-side mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -24,14 +30,15 @@ export function SiteHeader() {
                 height={100}
                 className="w-72 h-auto"
                 priority
+                unoptimized
               />
             </Link>
           </div>
           <div className="flex items-center gap-3">
-          {status === "loading" ? (
-            // Show loading state to prevent flash
-            <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-50">
-              ...
+          {!mounted || status === "loading" ? (
+            // Show loading state to prevent flash - invisible but maintains layout
+            <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
+              Account
             </div>
           ) : status === "authenticated" ? (
             <Link
