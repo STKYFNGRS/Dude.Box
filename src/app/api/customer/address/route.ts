@@ -1,57 +1,51 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    const customerAccessToken = (session as any)?.customerAccessToken;
 
-    if (!customerAccessToken) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const domain = process.env.SHOPIFY_STORE_DOMAIN;
-    const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-    if (!domain || !token) {
-      return NextResponse.json(
-        { error: "Service temporarily unavailable." },
-        { status: 503 }
-      );
-    }
-
-    const query = `
-      query getCustomer($customerAccessToken: String!) {
-        customer(customerAccessToken: $customerAccessToken) {
-          defaultAddress {
-            id
-            address1
-            address2
-            city
-            province
-            zip
-            country
-          }
-        }
-      }
-    `;
-
-    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query,
-        variables: { customerAccessToken },
-      }),
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
     });
 
-    const result = await response.json();
-    return NextResponse.json({ address: result?.data?.customer?.defaultAddress ?? null });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Get default address
+    const address = await prisma.address.findFirst({
+      where: {
+        user_id: user.id,
+        is_default: true,
+      },
+    });
+
+    // Return address in format expected by EditAddressForm
+    if (address) {
+      return NextResponse.json({
+        address: {
+          id: address.id,
+          address1: address.address1,
+          address2: address.address2 || "",
+          city: address.city,
+          province: address.state, // Map state to province for form compatibility
+          zip: address.postal_code, // Map postal_code to zip for form compatibility
+          country: address.country,
+        },
+      });
+    }
+
+    return NextResponse.json({ address: null });
   } catch (error) {
+    console.error("Error fetching address:", error);
     return NextResponse.json(
       { error: "Unable to fetch address." },
       { status: 500 }
@@ -62,168 +56,73 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const customerAccessToken = (session as any)?.customerAccessToken;
 
-    if (!customerAccessToken) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { address1, address2, city, province, zip, country } = await request.json();
 
-    const domain = process.env.SHOPIFY_STORE_DOMAIN;
-    const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-    if (!domain || !token) {
+    // Validate required fields
+    if (!address1?.trim() || !city?.trim() || !province?.trim() || !zip?.trim() || !country?.trim()) {
       return NextResponse.json(
-        { error: "Service temporarily unavailable." },
-        { status: 503 }
+        { error: "Address, city, state, zip code, and country are required" },
+        { status: 400 }
       );
     }
 
-    // First, get customer's existing addresses to see if we need to create or update
-    const getCustomerQuery = `
-      query getCustomer($customerAccessToken: String!) {
-        customer(customerAccessToken: $customerAccessToken) {
-          id
-          defaultAddress {
-            id
-          }
-          addresses(first: 1) {
-            nodes {
-              id
-            }
-          }
-        }
-      }
-    `;
-
-    const customerResponse = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query: getCustomerQuery,
-        variables: { customerAccessToken },
-      }),
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
     });
 
-    const customerResult = await customerResponse.json();
-    const hasDefaultAddress = customerResult?.data?.customer?.defaultAddress?.id;
-
-    // Use appropriate mutation based on whether address exists
-    const mutation = hasDefaultAddress
-      ? `
-          mutation customerDefaultAddressUpdate($customerAccessToken: String!, $address: MailingAddressInput!) {
-            customerDefaultAddressUpdate(customerAccessToken: $customerAccessToken, address: $address) {
-              customer {
-                id
-                defaultAddress {
-                  id
-                  address1
-                  address2
-                  city
-                  province
-                  zip
-                  country
-                }
-              }
-              customerUserErrors {
-                field
-                message
-              }
-            }
-          }
-        `
-      : `
-          mutation customerAddressCreate($customerAccessToken: String!, $address: MailingAddressInput!) {
-            customerAddressCreate(customerAccessToken: $customerAccessToken, address: $address) {
-              customerAddress {
-                id
-                address1
-                address2
-                city
-                province
-                zip
-                country
-              }
-              customerUserErrors {
-                field
-                message
-              }
-            }
-          }
-        `;
-
-    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query: mutation,
-        variables: {
-          customerAccessToken,
-          address: {
-            address1,
-            address2: address2 || "",
-            city,
-            province,
-            zip,
-            country,
-          },
-        },
-      }),
-    });
-
-    const result = await response.json();
-    const mutationName = hasDefaultAddress ? "customerDefaultAddressUpdate" : "customerAddressCreate";
-    const errors = result?.data?.[mutationName]?.customerUserErrors ?? [];
-
-    if (errors.length > 0) {
-      return NextResponse.json({ error: errors[0].message }, { status: 400 });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // If we created a new address, set it as default
-    if (!hasDefaultAddress) {
-      const newAddressId = result?.data?.customerAddressCreate?.customerAddress?.id;
-      
-      if (newAddressId) {
-        const setDefaultMutation = `
-          mutation customerDefaultAddressUpdate($customerAccessToken: String!, $addressId: ID!) {
-            customerDefaultAddressUpdate(customerAccessToken: $customerAccessToken, addressId: $addressId) {
-              customer {
-                id
-              }
-              customerUserErrors {
-                field
-                message
-              }
-            }
-          }
-        `;
+    // Check if user has a default address
+    const existingAddress = await prisma.address.findFirst({
+      where: {
+        user_id: user.id,
+        is_default: true,
+      },
+    });
 
-        await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": token,
-          },
-          body: JSON.stringify({
-            query: setDefaultMutation,
-            variables: {
-              customerAccessToken,
-              addressId: newAddressId,
-            },
-          }),
-        });
-      }
+    if (existingAddress) {
+      // Update existing default address
+      await prisma.address.update({
+        where: { id: existingAddress.id },
+        data: {
+          address1: address1.trim(),
+          address2: address2?.trim() || null,
+          city: city.trim(),
+          state: province.trim(), // Map province to state
+          postal_code: zip.trim(), // Map zip to postal_code
+          country: country.trim(),
+        },
+      });
+    } else {
+      // Create new default address
+      await prisma.address.create({
+        data: {
+          user_id: user.id,
+          type: "shipping",
+          first_name: user.first_name || "",
+          last_name: user.last_name || "",
+          address1: address1.trim(),
+          address2: address2?.trim() || null,
+          city: city.trim(),
+          state: province.trim(), // Map province to state
+          postal_code: zip.trim(), // Map zip to postal_code
+          country: country.trim(),
+          is_default: true,
+        },
+      });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Error updating address:", error);
     return NextResponse.json(
       { error: "Unable to update address. Please try again." },
       { status: 500 }

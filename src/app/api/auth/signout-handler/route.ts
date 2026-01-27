@@ -2,14 +2,10 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    // When user signs out, delete the cart cookie
-    // This forces a new guest cart to be created on next visit
-    // Note: We can't "unassociate" a Shopify cart from a customer once linked
-    // The only way to get a guest checkout is to use a new cart
-    
+    // When user signs out, clear any session-related cookies
     const response = NextResponse.json({ success: true });
     
-    // Delete the cart cookie
+    // Delete the cart cookie if it exists (legacy)
     response.cookies.delete("dudebox_cart");
     
     return response;

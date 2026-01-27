@@ -1,72 +1,52 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const customerAccessToken = (session as any)?.customerAccessToken;
 
-    if (!customerAccessToken) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { firstName, lastName } = await request.json();
 
-    const domain = process.env.SHOPIFY_STORE_DOMAIN;
-    const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-    if (!domain || !token) {
+    // Validate input
+    if (!firstName?.trim() || !lastName?.trim()) {
       return NextResponse.json(
-        { error: "Service temporarily unavailable." },
-        { status: 503 }
+        { error: "First name and last name are required" },
+        { status: 400 }
       );
     }
 
-    const mutation = `
-      mutation customerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {
-        customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
-          customer {
-            id
-            firstName
-            lastName
-            email
-          }
-          customerUserErrors {
-            field
-            message
-          }
-        }
-      }
-    `;
-
-    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
+    // Update user in database
+    const user = await prisma.user.update({
+      where: { email: session.user.email },
+      data: {
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
       },
-      body: JSON.stringify({
-        query: mutation,
-        variables: {
-          customerAccessToken,
-          customer: {
-            firstName,
-            lastName,
-          },
-        },
-      }),
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+      },
     });
 
-    const result = await response.json();
-    const errors = result?.data?.customerUpdate?.customerUserErrors ?? [];
-
-    if (errors.length > 0) {
-      return NextResponse.json({ error: errors[0].message }, { status: 400 });
-    }
-
-    return NextResponse.json({ success: true, customer: result?.data?.customerUpdate?.customer });
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+      },
+    });
   } catch (error) {
+    console.error("Error updating profile:", error);
     return NextResponse.json(
       { error: "Unable to update profile. Please try again." },
       { status: 500 }

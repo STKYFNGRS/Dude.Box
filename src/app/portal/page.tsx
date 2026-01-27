@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
-import { SignOutButton } from "@/components/SignOutButton";
+import { EditProfileForm } from "@/components/EditProfileForm";
+import { EditAddressForm } from "@/components/EditAddressForm";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -66,41 +67,15 @@ export default async function PortalPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card title="Profile">
-          <div className="text-sm space-y-2">
-            <div>
-              <span className="muted">Name:</span>{" "}
-              {user.first_name && user.last_name
-                ? `${user.first_name} ${user.last_name}`
-                : session.user?.name ?? "Member"}
-            </div>
-            <div>
-              <span className="muted">Email:</span> {user.email}
-            </div>
-            <div className="pt-4">
-              <SignOutButton />
-            </div>
-          </div>
+          <EditProfileForm
+            firstName={user.first_name || ""}
+            lastName={user.last_name || ""}
+            email={user.email}
+          />
         </Card>
 
         <Card title="Shipping Address">
-          <div className="text-sm">
-            {defaultAddress ? (
-              <div className="space-y-1">
-                <div>
-                  {defaultAddress.first_name} {defaultAddress.last_name}
-                </div>
-                <div>{defaultAddress.address1}</div>
-                {defaultAddress.address2 && <div>{defaultAddress.address2}</div>}
-                <div>
-                  {defaultAddress.city}, {defaultAddress.state}{" "}
-                  {defaultAddress.postal_code}
-                </div>
-                <div>{defaultAddress.country}</div>
-              </div>
-            ) : (
-              <div className="muted">No address saved</div>
-            )}
-          </div>
+          <EditAddressForm />
         </Card>
 
         <Card title="Subscription status">
