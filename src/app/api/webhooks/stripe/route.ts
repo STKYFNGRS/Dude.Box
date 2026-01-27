@@ -201,14 +201,21 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   console.log(`📋 Subscription ID: ${subscription.id}`);
   console.log(`📊 Status: ${subscription.status}`);
   console.log(`🚫 Cancel at period end: ${subscription.cancel_at_period_end}`);
-  console.log(`📅 Current period end: ${new Date(subscription.current_period_end * 1000)}`);
+
+  // Get current_period_end from the subscription item (same pattern as checkout handler)
+  const subscriptionItem = subscription.items.data[0];
+  const currentPeriodEnd = (subscriptionItem as any).current_period_end;
+
+  if (currentPeriodEnd) {
+    console.log(`📅 Current period end: ${new Date(currentPeriodEnd * 1000)}`);
+  }
 
   // Update subscription in database
   const updated = await prisma.subscription.updateMany({
     where: { stripe_subscription_id: subscription.id },
     data: {
       status: subscription.status,
-      current_period_end: new Date(subscription.current_period_end * 1000),
+      ...(currentPeriodEnd && { current_period_end: new Date(currentPeriodEnd * 1000) }),
       cancel_at_period_end: subscription.cancel_at_period_end ?? false,
     },
   });
