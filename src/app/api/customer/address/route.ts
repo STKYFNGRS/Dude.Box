@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { stripe } from "@/lib/stripe";
 
 export async function GET() {
   try {
@@ -88,9 +89,11 @@ export async function POST(request: Request) {
       },
     });
 
+    let updatedAddress;
+    
     if (existingAddress) {
       // Update existing default address
-      await prisma.address.update({
+      updatedAddress = await prisma.address.update({
         where: { id: existingAddress.id },
         data: {
           address1: address1.trim(),
@@ -103,7 +106,7 @@ export async function POST(request: Request) {
       });
     } else {
       // Create new default address
-      await prisma.address.create({
+      updatedAddress = await prisma.address.create({
         data: {
           user_id: user.id,
           type: "shipping",
@@ -118,6 +121,37 @@ export async function POST(request: Request) {
           is_default: true,
         },
       });
+    }
+
+    // Sync address to Stripe customer (if user has a subscription)
+    const subscription = await prisma.subscription.findFirst({
+      where: {
+        user_id: user.id,
+        status: {
+          in: ["active", "past_due", "trialing"],
+        },
+      },
+    });
+
+    if (subscription?.stripe_customer_id) {
+      try {
+        await stripe.customers.update(subscription.stripe_customer_id, {
+          name: `${updatedAddress.first_name} ${updatedAddress.last_name}`,
+          phone: updatedAddress.phone || undefined,
+          address: {
+            line1: updatedAddress.address1,
+            line2: updatedAddress.address2 || undefined,
+            city: updatedAddress.city,
+            state: updatedAddress.state,
+            postal_code: updatedAddress.postal_code,
+            country: updatedAddress.country,
+          },
+        });
+        console.log(`✅ Synced address to Stripe customer ${subscription.stripe_customer_id}`);
+      } catch (error) {
+        console.error("Error syncing address to Stripe:", error);
+        // Don't fail the request if Stripe sync fails
+      }
     }
 
     return NextResponse.json({ success: true });

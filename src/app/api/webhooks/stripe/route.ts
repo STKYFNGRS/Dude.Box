@@ -162,6 +162,35 @@ async function handleCheckoutSessionCompleted(
     },
   });
 
+  // Sync shipping address to Stripe customer
+  const shippingAddress = await prisma.address.findFirst({
+    where: {
+      user_id: userId,
+      is_default: true,
+    },
+  });
+
+  if (shippingAddress) {
+    try {
+      await stripe.customers.update(stripeCustomerId, {
+        name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
+        phone: shippingAddress.phone || undefined,
+        address: {
+          line1: shippingAddress.address1,
+          line2: shippingAddress.address2 || undefined,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          postal_code: shippingAddress.postal_code,
+          country: shippingAddress.country,
+        },
+      });
+      console.log(`✅ Synced address to Stripe customer ${stripeCustomerId}`);
+    } catch (error) {
+      console.error("Error syncing address to Stripe:", error);
+      // Don't fail the webhook if address sync fails
+    }
+  }
+
   console.log(
     `Created subscription ${subscription.id} and order ${order.id} for user ${userId}`
   );
