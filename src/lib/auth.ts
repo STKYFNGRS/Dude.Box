@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
+            console.log("User not found:", submittedEmail);
             return null;
           }
 
@@ -37,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!isPasswordValid) {
+            console.log("Invalid password for user:", submittedEmail);
             return null;
           }
 
@@ -62,7 +64,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/portal/login",
     error: "/portal/login",
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: false,
   callbacks: {
     async jwt({ token, user }) {
       // Add user ID to token on sign in
