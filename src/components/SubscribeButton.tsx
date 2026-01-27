@@ -18,7 +18,16 @@ export function SubscribeButton({ priceId, price, className }: SubscribeButtonPr
   const handleSubscribe = async () => {
     // Check if user is logged in
     if (!session) {
-      router.push("/portal/login?redirect=/products/subscription-box");
+      // Show a friendly prompt before redirecting
+      const shouldRegister = confirm(
+        "You need an account to subscribe.\n\nClick OK to create an account, or Cancel to log in if you already have one."
+      );
+      
+      if (shouldRegister) {
+        router.push("/portal/register?redirect=/products/subscription-box");
+      } else {
+        router.push("/portal/login?redirect=/products/subscription-box");
+      }
       return;
     }
 

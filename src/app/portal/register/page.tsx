@@ -3,9 +3,13 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Section } from "@/components/Section";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/portal";
+  
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,7 +69,7 @@ export default function RegisterPage() {
           email: email.toLowerCase().trim(),
           password,
           redirect: true,
-          callbackUrl: "/portal",
+          callbackUrl: redirectTo,
         });
       }, 2000);
     } catch (err) {
@@ -80,7 +84,7 @@ export default function RegisterPage() {
         <Section
           eyebrow="Account Created"
           title="Welcome to Dude.Box"
-          description="Your account has been created successfully. Redirecting to your portal..."
+          description="Your account has been created successfully. Redirecting..."
         />
         <div className="card rounded-lg p-6 max-w-lg">
           <p className="text-sm text-accent">Logging you in...</p>
@@ -164,7 +168,7 @@ export default function RegisterPage() {
           <div className="pt-4 border-t border-border text-center">
             <p className="text-xs muted pb-2">Already have an account?</p>
             <Link
-              href="/portal/login"
+              href={`/portal/login${redirectTo !== "/portal" ? `?redirect=${redirectTo}` : ""}`}
               className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
             >
               Sign In

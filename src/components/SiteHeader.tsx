@@ -37,14 +37,23 @@ export function SiteHeader() {
               Account
             </Link>
           ) : (
-            <button
-              type="button"
-              onClick={() => setIsLoginOpen(true)}
-              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-              aria-label="Login"
-            >
-              Login
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setIsLoginOpen(true)}
+                className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+                aria-label="Login"
+              >
+                Login
+              </button>
+              <Link
+                href="/portal/register"
+                className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
+                aria-label="Sign Up"
+              >
+                Sign Up
+              </Link>
+            </>
           )}
           </div>
         </Container>

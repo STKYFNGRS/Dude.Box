@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
-export function MemberLoginForm() {
+interface MemberLoginFormProps {
+  redirectTo?: string;
+}
+
+export function MemberLoginForm({ redirectTo }: MemberLoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +23,7 @@ export function MemberLoginForm() {
       email,
       password,
       redirect: false,
-      callbackUrl: "/portal",
+      callbackUrl: redirectTo || "/portal",
     });
 
     if (result?.error) {
@@ -27,7 +32,7 @@ export function MemberLoginForm() {
       return;
     }
 
-    window.location.href = "/portal";
+    window.location.href = redirectTo || "/portal";
   };
 
   return (
@@ -53,16 +58,30 @@ export function MemberLoginForm() {
         />
       </label>
       {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/portal/forgot-password"
+          className="text-xs text-accent hover:text-foreground transition-colors"
+        >
+          Forgot password?
+        </Link>
+      </div>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="solid-button rounded px-4 py-2 text-sm uppercase tracking-[0.2em]"
+        className="solid-button rounded px-4 py-2 text-sm uppercase tracking-[0.2em] disabled:opacity-60"
       >
         {isSubmitting ? "Signing in..." : "Sign In"}
       </button>
-      <p className="text-xs muted">
-        TODO: Replace credentials auth with database-backed members and hashed passwords.
-      </p>
+      <div className="pt-4 border-t border-border text-center">
+        <p className="text-xs muted pb-2">Don't have an account?</p>
+        <Link
+          href={`/portal/register${redirectTo ? `?redirect=${redirectTo}` : ""}`}
+          className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
+        >
+          Create Account
+        </Link>
+      </div>
     </form>
   );
 }
