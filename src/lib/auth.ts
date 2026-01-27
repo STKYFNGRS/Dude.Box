@@ -62,7 +62,6 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/portal/login",
-    error: "/portal/login",
   },
   debug: false,
   callbacks: {
