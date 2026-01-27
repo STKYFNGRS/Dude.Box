@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
-import { getShopifyProducts } from "@/lib/shopify";
-import { ShopProductCard } from "@/components/ShopProductCard";
 
 export const metadata: Metadata = {
   title: "Dude.Box | Veteran-Owned Subscription Box",
@@ -12,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const products = await getShopifyProducts();
   return (
     <Container className="py-12">
       <section className="pb-16 border-b border-border">
@@ -132,13 +129,20 @@ export default async function HomePage() {
       <div id="shop">
         <Section
           eyebrow="Shop"
-          title="Veteran-made essentials"
-          description="Subscription boxes and individual items from veteran-owned makers."
+          title="Monthly Subscription Box"
+          description="Premium EDC gear from veteran-owned businesses, delivered monthly."
         >
-          <div className="grid gap-6 md:grid-cols-3">
-            {products.map((product) => (
-              <ShopProductCard key={product.id} product={product} />
-            ))}
+          <div className="card rounded-lg p-8 max-w-2xl mx-auto text-center">
+            <h3 className="section-title text-2xl mb-4">Start Your Subscription</h3>
+            <p className="text-sm muted mb-6">
+              Get a curated box of veteran-made essentials delivered every month.
+            </p>
+            <a
+              href="/products/subscription-box"
+              className="solid-button rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] inline-block"
+            >
+              View Subscription Details
+            </a>
           </div>
         </Section>
       </div>
