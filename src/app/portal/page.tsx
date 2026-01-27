@@ -5,6 +5,7 @@ import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 import { EditProfileForm } from "@/components/EditProfileForm";
 import { EditAddressForm } from "@/components/EditAddressForm";
+import { ManageSubscriptionButton } from "@/components/ManageSubscriptionButton";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -95,12 +96,7 @@ export default async function PortalPage() {
                   </div>
                 )}
                 <div className="pt-2">
-                  <Link
-                    href="/api/subscriptions/portal"
-                    className="text-accent hover:underline text-xs"
-                  >
-                    Manage Subscription →
-                  </Link>
+                  <ManageSubscriptionButton />
                 </div>
               </div>
             ) : (
