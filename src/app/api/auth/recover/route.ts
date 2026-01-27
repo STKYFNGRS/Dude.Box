@@ -1,54 +1,60 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
 
-    const domain = process.env.SHOPIFY_STORE_DOMAIN;
-    const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-    if (!domain || !token) {
+    if (!email) {
       return NextResponse.json(
-        { error: "Password recovery is temporarily unavailable." },
-        { status: 503 }
+        { error: "Email is required." },
+        { status: 400 }
       );
     }
 
-    const mutation = `
-      mutation customerRecover($email: String!) {
-        customerRecover(email: $email) {
-          customerUserErrors {
-            field
-            message
-          }
-        }
-      }
-    `;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    const response = await fetch(`https://${domain}/api/2024-07/graphql.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query: mutation,
-        variables: {
-          email: email.toLowerCase().trim(),
-        },
-      }),
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
     });
 
-    const result = await response.json();
-    const errors = result?.data?.customerRecover?.customerUserErrors ?? [];
-
-    if (errors.length > 0) {
-      return NextResponse.json({ error: errors[0].message }, { status: 400 });
+    // Always return success for security (don't reveal if email exists)
+    // This prevents user enumeration attacks
+    if (!user) {
+      return NextResponse.json({ success: true });
     }
 
-    // Always return success for security (don't reveal if email exists)
-    return NextResponse.json({ success: true });
+    // Generate secure reset token (32 bytes = 256 bits)
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    
+    // Token expires in 1 hour
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+    // TODO: Store reset token in database
+    // This requires adding reset_token and reset_token_expiry fields to User model
+    // For now, we're just generating the token
+    // In Phase 7 (Email Notifications), we'll:
+    // 1. Add reset_token fields to schema
+    // 2. Store the token in database
+    // 3. Send reset email with token link
+    
+    console.log(`Password reset requested for: ${user.email}`);
+    console.log(`Reset token (for testing): ${resetToken}`);
+    console.log(`Expires at: ${expiresAt.toISOString()}`);
+    console.log(`Reset URL would be: ${process.env.NEXTAUTH_URL}/portal/reset-password?token=${resetToken}`);
+
+    return NextResponse.json({ 
+      success: true,
+      // TODO: Remove this in production - only for testing without email
+      ...(process.env.NODE_ENV === 'development' && { 
+        _dev_token: resetToken,
+        _dev_reset_url: `/portal/reset-password?token=${resetToken}`
+      })
+    });
   } catch (error) {
+    console.error("Password recovery error:", error);
     return NextResponse.json(
       { error: "Unable to process request. Please try again." },
       { status: 500 }
