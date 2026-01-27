@@ -7,15 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@stripe/stripe-js": "^8.6.4",
     "bcryptjs": "^2.4.3",
     "next": "14.0.4",
     "next-auth": "^4.24.7",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "stripe": "^20.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

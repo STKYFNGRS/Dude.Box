@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
+import { SubscribeButton } from "@/components/SubscribeButton";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Subscribe | dude.box",
@@ -66,7 +68,15 @@ const pastBoxes = [
   },
 ];
 
-export default function SubscriptionBoxPage() {
+export default async function SubscriptionBoxPage() {
+  // Fetch the monthly subscription product from database
+  const product = await prisma.product.findFirst({
+    where: {
+      interval: "month",
+      active: true,
+    },
+  });
+
   return (
     <Container className="py-12">
       <section className="pb-16 border-b border-border">
@@ -110,27 +120,34 @@ export default function SubscriptionBoxPage() {
                 </div>
                 <div className="section-title text-2xl">Monthly Drop</div>
                 <p className="text-sm muted pt-2">
-                  $59.99/mo. Skip, pause, or cancel anytime. Subscription widgets can plug in here.
+                  {product ? (
+                    <>
+                      ${product.price.toString()}/mo. Skip, pause, or cancel anytime.
+                    </>
+                  ) : (
+                    "Loading pricing..."
+                  )}
                 </p>
-                <Link
-                  href="/shop"
-                  className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
-                >
-                  Start Subscription
-                </Link>
+                {product && product.stripe_price_id ? (
+                  <SubscribeButton
+                    priceId={product.stripe_price_id}
+                    price={product.price.toString()}
+                  />
+                ) : (
+                  <div className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center opacity-50">
+                    Product Setup Required
+                  </div>
+                )}
               </div>
               <div className="rounded-xl border border-border bg-background/40 p-4">
                 <div className="text-xs uppercase tracking-[0.3em] muted">One-time</div>
                 <div className="section-title text-xl">Single Box</div>
                 <p className="text-sm muted pt-2">
-                  Limited inventory available when drops open.
+                  Limited inventory available when drops open. Coming soon.
                 </p>
-                <Link
-                  href="/shop"
-                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"
-                >
-                  Buy Once
-                </Link>
+                <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center opacity-50">
+                  Coming Soon
+                </div>
               </div>
             </div>
 
