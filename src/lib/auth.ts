@@ -5,7 +5,22 @@ import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   providers: [
     CredentialsProvider({
       name: "Member Login",
@@ -65,11 +80,18 @@ export const authOptions: NextAuthOptions = {
   },
   debug: false,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       // Add user ID to token on sign in
       if (user) {
         token.id = user.id;
       }
+      
+      // Handle token refresh/update
+      if (trigger === "update") {
+        // Token refresh logic - could fetch fresh user data here if needed
+        return token;
+      }
+      
       return token;
     },
     async session({ session, token }) {

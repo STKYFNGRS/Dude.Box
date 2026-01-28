@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { getServerSession } from "next-auth";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Providers } from "@/components/Providers";
+import { authOptions } from "@/lib/auth";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Fraunces({
@@ -18,15 +20,21 @@ export const metadata: Metadata = {
     "Premium EDC gear, tools, and grooming supplies sourced from veteran-owned small businesses.",
 };
 
-export default function RootLayout({
+// Force dynamic rendering to prevent caching of auth state
+export const dynamic = 'force-dynamic';
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Fetch server session to pass to client
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="bg-background text-foreground">
-        <Providers>
+        <Providers session={session}>
           <div className="min-h-screen flex flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
