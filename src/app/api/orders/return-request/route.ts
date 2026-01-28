@@ -121,8 +121,8 @@ export async function POST(req: NextRequest) {
               <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h2 style="margin-top: 0; font-size: 20px; color: #818cf8; font-weight: 600;">Shipping Address</h2>
                 <p style="margin: 8px 0; color: #cbd5e1;">
-                  ${order.shipping_address.line1}<br>
-                  ${order.shipping_address.line2 ? order.shipping_address.line2 + "<br>" : ""}
+                  ${order.shipping_address.address1}<br>
+                  ${order.shipping_address.address2 ? order.shipping_address.address2 + "<br>" : ""}
                   ${order.shipping_address.city}, ${order.shipping_address.state} ${order.shipping_address.postal_code}<br>
                   ${order.shipping_address.country}
                 </p>
