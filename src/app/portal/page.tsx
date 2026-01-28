@@ -36,6 +36,12 @@ export default async function PortalPage() {
               product: true,
             },
           },
+          returns: {
+            orderBy: {
+              created_at: "desc",
+            },
+            take: 1, // Get most recent return for each order
+          },
         },
         orderBy: {
           created_at: "desc",
@@ -195,14 +201,82 @@ export default async function PortalPage() {
                     </ul>
                   </div>
                   
-                  {/* Return Request Button - Only show for paid/shipped orders */}
-                  {(order.status === "paid" || order.status === "shipped") && (
+                  {/* Return Status and Request Button */}
+                  {order.returns && order.returns.length > 0 ? (
                     <div className="pt-3 border-t border-border">
-                      <RequestReturnButton 
-                        orderId={order.id}
-                        orderNumber={order.id.slice(-8)}
-                      />
+                      <div className="space-y-2">
+                        <div className="text-xs uppercase tracking-[0.3em] muted">
+                          Return Status
+                        </div>
+                        {order.returns.map((returnItem) => {
+                          // Status badge color
+                          let statusColor = "bg-gray-500/20 text-gray-300";
+                          if (returnItem.status === "requested")
+                            statusColor = "bg-yellow-500/20 text-yellow-300";
+                          if (returnItem.status === "approved")
+                            statusColor = "bg-blue-500/20 text-blue-300";
+                          if (returnItem.status === "label_sent")
+                            statusColor = "bg-blue-500/20 text-blue-300";
+                          if (returnItem.status === "in_transit")
+                            statusColor = "bg-purple-500/20 text-purple-300";
+                          if (returnItem.status === "received")
+                            statusColor = "bg-indigo-500/20 text-indigo-300";
+                          if (returnItem.status === "refunded")
+                            statusColor = "bg-green-500/20 text-green-300";
+                          if (returnItem.status === "rejected")
+                            statusColor = "bg-red-500/20 text-red-300";
+
+                          return (
+                            <div key={returnItem.id} className="space-y-2">
+                              <span
+                                className={`inline-block px-3 py-1 rounded text-xs ${statusColor}`}
+                              >
+                                {returnItem.status.replace("_", " ")}
+                              </span>
+                              
+                              {returnItem.tracking_number && (
+                                <div className="text-xs">
+                                  <span className="muted">Tracking:</span>{" "}
+                                  <span className="font-mono">
+                                    {returnItem.tracking_number}
+                                  </span>
+                                </div>
+                              )}
+                              
+                              {returnItem.label_url && (
+                                <div>
+                                  <a
+                                    href={returnItem.label_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-accent hover:underline text-xs"
+                                  >
+                                    Download Shipping Label →
+                                  </a>
+                                </div>
+                              )}
+                              
+                              {returnItem.refund_amount && (
+                                <div className="text-xs text-green-400">
+                                  Refunded: $
+                                  {Number(returnItem.refund_amount).toFixed(2)}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
+                  ) : (
+                    /* Return Request Button - Only show for paid/shipped orders */
+                    (order.status === "paid" || order.status === "shipped") && (
+                      <div className="pt-3 border-t border-border">
+                        <RequestReturnButton
+                          orderId={order.id}
+                          orderNumber={order.id.slice(-8)}
+                        />
+                      </div>
+                    )
                   )}
                 </div>
               </Card>

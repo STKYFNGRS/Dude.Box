@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
+import { sendReturnRequestConfirmation } from "@/lib/email";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "dude@dude.box";
@@ -59,8 +60,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create return request record (optional - you could add a returns table later)
-    // For now, we'll just send an email notification
+    // Create return request record in database
+    const returnRecord = await prisma.return.create({
+      data: {
+        order_id: orderId,
+        user_id: user.id,
+        reason: reason,
+        status: "requested",
+      },
+    });
 
     const customerName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || "Customer";
     const orderNumber = order.id.slice(-8);
@@ -94,6 +102,7 @@ export async function POST(req: NextRequest) {
                 <h2 style="margin-top: 0; font-size: 20px; color: #818cf8; font-weight: 600;">Customer Details</h2>
                 <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Name:</strong> ${customerName}</p>
                 <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Email:</strong> ${user.email}</p>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Return ID:</strong> ${returnRecord.id}</p>
               </div>
               
               <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -132,9 +141,9 @@ export async function POST(req: NextRequest) {
               }
               
               <div style="text-align: center; margin-top: 30px;">
-                <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/admin/orders" 
+                <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/admin/returns/${returnRecord.id}" 
                    style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600;">
-                  View in Admin Dashboard
+                  View Return Request
                 </a>
               </div>
               
@@ -148,6 +157,14 @@ export async function POST(req: NextRequest) {
     });
 
     console.log(`✅ Return request email sent for order ${orderNumber}`);
+
+    // Send confirmation email to customer
+    await sendReturnRequestConfirmation({
+      to: user.email,
+      customerName,
+      returnId: returnRecord.id,
+      orderNumber,
+    });
 
     return NextResponse.json({
       success: true,
