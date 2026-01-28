@@ -56,7 +56,30 @@ export async function POST(
     // Check if shipping address exists
     if (!returnRecord.order.shipping_address) {
       return NextResponse.json(
-        { error: "No shipping address found for this order" },
+        { 
+          error: "No shipping address found for this order. The order may have been created before address linking was implemented. Please run the migration script: npm run migrate:link-addresses" 
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate required address fields for shipping label generation
+    const addr = returnRecord.order.shipping_address;
+    const missingFields: string[] = [];
+
+    if (!addr.first_name?.trim()) missingFields.push("first_name");
+    if (!addr.last_name?.trim()) missingFields.push("last_name");
+    if (!addr.address1?.trim()) missingFields.push("address1");
+    if (!addr.city?.trim()) missingFields.push("city");
+    if (!addr.state?.trim()) missingFields.push("state");
+    if (!addr.postal_code?.trim()) missingFields.push("postal_code");
+    if (!addr.country?.trim()) missingFields.push("country");
+
+    if (missingFields.length > 0) {
+      return NextResponse.json(
+        { 
+          error: `Shipping address is incomplete. Missing required fields: ${missingFields.join(", ")}. Please ask the customer to update their shipping address in the portal.` 
+        },
         { status: 400 }
       );
     }

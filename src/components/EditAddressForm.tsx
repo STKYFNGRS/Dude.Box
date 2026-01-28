@@ -4,12 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 type Address = {
+  first_name: string;
+  last_name: string;
   address1: string;
   address2: string;
   city: string;
   province: string;
   zip: string;
   country: string;
+  phone: string;
 };
 
 export function EditAddressForm() {
@@ -18,12 +21,15 @@ export function EditAddressForm() {
   const [isLoading, setIsLoading] = useState(true);
   const [address, setAddress] = useState<Address | null>(null);
   const [formData, setFormData] = useState<Address>({
+    first_name: "",
+    last_name: "",
     address1: "",
     address2: "",
     city: "",
     province: "",
     zip: "",
     country: "US",
+    phone: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,12 +47,15 @@ export function EditAddressForm() {
         if (data.address) {
           setAddress(data.address);
           setFormData({
+            first_name: data.address.first_name || "",
+            last_name: data.address.last_name || "",
             address1: data.address.address1 || "",
             address2: data.address.address2 || "",
             city: data.address.city || "",
             province: data.address.province || "",
             zip: data.address.zip || "",
             country: data.address.country || "US",
+            phone: data.address.phone || "",
           });
         }
       }
@@ -93,12 +102,15 @@ export function EditAddressForm() {
   const handleCancel = () => {
     if (address) {
       setFormData({
+        first_name: address.first_name || "",
+        last_name: address.last_name || "",
         address1: address.address1 || "",
         address2: address.address2 || "",
         city: address.city || "",
         province: address.province || "",
         zip: address.zip || "",
         country: address.country || "US",
+        phone: address.phone || "",
       });
     }
     setIsEditing(false);
@@ -113,8 +125,32 @@ export function EditAddressForm() {
   if (isEditing || !address) {
     return (
       <form onSubmit={handleSubmit} className="text-sm space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <label className="text-sm flex flex-col gap-2">
+            <span className="muted">First Name <span className="text-red-400">*</span></span>
+            <input
+              type="text"
+              value={formData.first_name}
+              onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+              placeholder="John"
+              required
+            />
+          </label>
+          <label className="text-sm flex flex-col gap-2">
+            <span className="muted">Last Name <span className="text-red-400">*</span></span>
+            <input
+              type="text"
+              value={formData.last_name}
+              onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+              placeholder="Doe"
+              required
+            />
+          </label>
+        </div>
         <label className="text-sm flex flex-col gap-2">
-          <span className="muted">Street Address</span>
+          <span className="muted">Street Address <span className="text-red-400">*</span></span>
           <input
             type="text"
             value={formData.address1}
@@ -134,9 +170,19 @@ export function EditAddressForm() {
             placeholder="Apt 4B"
           />
         </label>
+        <label className="text-sm flex flex-col gap-2">
+          <span className="muted">Phone (optional)</span>
+          <input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+            placeholder="(555) 123-4567"
+          />
+        </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="text-sm flex flex-col gap-2">
-            <span className="muted">City</span>
+            <span className="muted">City <span className="text-red-400">*</span></span>
             <input
               type="text"
               value={formData.city}
@@ -147,7 +193,7 @@ export function EditAddressForm() {
             />
           </label>
           <label className="text-sm flex flex-col gap-2">
-            <span className="muted">State</span>
+            <span className="muted">State <span className="text-red-400">*</span></span>
             <input
               type="text"
               value={formData.province}
@@ -160,7 +206,7 @@ export function EditAddressForm() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <label className="text-sm flex flex-col gap-2">
-            <span className="muted">ZIP Code</span>
+            <span className="muted">ZIP Code <span className="text-red-400">*</span></span>
             <input
               type="text"
               value={formData.zip}
@@ -171,7 +217,7 @@ export function EditAddressForm() {
             />
           </label>
           <label className="text-sm flex flex-col gap-2">
-            <span className="muted">Country</span>
+            <span className="muted">Country <span className="text-red-400">*</span></span>
             <select
               value={formData.country}
               onChange={(e) => setFormData({ ...formData, country: e.target.value })}
@@ -215,12 +261,14 @@ export function EditAddressForm() {
         </div>
       ) : null}
       <div>
+        <div className="font-medium">{address.first_name} {address.last_name}</div>
         <div>{address.address1}</div>
         {address.address2 && <div>{address.address2}</div>}
         <div>
           {address.city}, {address.province} {address.zip}
         </div>
         <div>{address.country}</div>
+        {address.phone && <div className="pt-1 text-xs muted">Phone: {address.phone}</div>}
       </div>
       <div className="pt-4">
         <button

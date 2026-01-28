@@ -34,12 +34,15 @@ export async function GET() {
       return NextResponse.json({
         address: {
           id: address.id,
+          first_name: address.first_name,
+          last_name: address.last_name,
           address1: address.address1,
           address2: address.address2 || "",
           city: address.city,
           province: address.state, // Map state to province for form compatibility
           zip: address.postal_code, // Map postal_code to zip for form compatibility
           country: address.country,
+          phone: address.phone || "",
         },
       });
     }
@@ -62,9 +65,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { address1, address2, city, province, zip, country } = await request.json();
+    const { first_name, last_name, address1, address2, city, province, zip, country, phone } = await request.json();
 
-    // Validate required fields
+    // Validate required fields (first_name and last_name are mandatory)
+    if (!first_name?.trim() || !last_name?.trim()) {
+      return NextResponse.json(
+        { error: "First name and last name are required" },
+        { status: 400 }
+      );
+    }
+
     if (!address1?.trim() || !city?.trim() || !province?.trim() || !zip?.trim() || !country?.trim()) {
       return NextResponse.json(
         { error: "Address, city, state, zip code, and country are required" },
@@ -96,12 +106,15 @@ export async function POST(request: Request) {
       updatedAddress = await prisma.address.update({
         where: { id: existingAddress.id },
         data: {
+          first_name: first_name.trim(),
+          last_name: last_name.trim(),
           address1: address1.trim(),
           address2: address2?.trim() || null,
           city: city.trim(),
           state: province.trim(), // Map province to state
           postal_code: zip.trim(), // Map zip to postal_code
           country: country.trim(),
+          phone: phone?.trim() || null,
         },
       });
     } else {
@@ -110,32 +123,66 @@ export async function POST(request: Request) {
         data: {
           user_id: user.id,
           type: "shipping",
-          first_name: user.first_name || "",
-          last_name: user.last_name || "",
+          first_name: first_name.trim(),
+          last_name: last_name.trim(),
           address1: address1.trim(),
           address2: address2?.trim() || null,
           city: city.trim(),
           state: province.trim(), // Map province to state
           postal_code: zip.trim(), // Map zip to postal_code
           country: country.trim(),
+          phone: phone?.trim() || null,
           is_default: true,
         },
       });
     }
 
-    // Sync address to Stripe customer (if user has a subscription)
+    // Sync address to Stripe customer - find customer ID from subscriptions or orders
+    let stripeCustomerId: string | null = null;
+
+    // Try to find Stripe customer ID from active subscriptions
     const subscription = await prisma.subscription.findFirst({
       where: {
         user_id: user.id,
-        status: {
-          in: ["active", "past_due", "trialing"],
-        },
+      },
+      orderBy: {
+        created_at: "desc",
       },
     });
 
     if (subscription?.stripe_customer_id) {
+      stripeCustomerId = subscription.stripe_customer_id;
+    } else {
+      // Try to find from orders
+      const order = await prisma.order.findFirst({
+        where: {
+          user_id: user.id,
+          stripe_payment_intent_id: {
+            not: null,
+          },
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+
+      // If we have a payment intent, we can get the customer ID from Stripe
+      if (order?.stripe_payment_intent_id) {
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(
+            order.stripe_payment_intent_id
+          );
+          stripeCustomerId = paymentIntent.customer as string;
+        } catch (error) {
+          console.warn("Could not retrieve payment intent for customer ID:", error);
+        }
+      }
+    }
+
+    // Sync to Stripe if we found a customer ID
+    if (stripeCustomerId) {
       try {
-        await stripe.customers.update(subscription.stripe_customer_id, {
+        await stripe.customers.update(stripeCustomerId, {
           name: `${updatedAddress.first_name} ${updatedAddress.last_name}`,
           phone: updatedAddress.phone || undefined,
           address: {
@@ -147,11 +194,13 @@ export async function POST(request: Request) {
             country: updatedAddress.country,
           },
         });
-        console.log(`✅ Synced address to Stripe customer ${subscription.stripe_customer_id}`);
+        console.log(`✅ Synced address to Stripe customer ${stripeCustomerId}`);
       } catch (error) {
         console.error("Error syncing address to Stripe:", error);
         // Don't fail the request if Stripe sync fails
       }
+    } else {
+      console.log("ℹ️ No Stripe customer found for user - skipping Stripe sync");
     }
 
     return NextResponse.json({ success: true });

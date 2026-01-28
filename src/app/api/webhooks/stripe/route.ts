@@ -143,36 +143,59 @@ async function handleCheckoutSessionCompleted(
     },
   });
 
-  // Create order record
-  const order = await prisma.order.create({
-    data: {
-      user_id: userId,
-      stripe_payment_intent_id: session.payment_intent as string,
-      total: product.price,
-      status: "paid",
-    },
+
+  // STEP 1: Update user profile if first_name/last_name are empty (use Stripe data)
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { first_name: true, last_name: true },
   });
 
-  // Create order item
-  await prisma.orderItem.create({
-    data: {
-      order_id: order.id,
-      product_id: product.id,
-      quantity: 1,
-      price: product.price,
-    },
-  });
-
-  // Save shipping address from Stripe Checkout to database
-  // Stripe uses 'shipping' or 'shipping_details' depending on version, fallback to customer_details
+  // Parse name from Stripe shipping details
   const shippingDetails = (session as any).shipping_details || (session as any).shipping || session.customer_details;
+  const name = shippingDetails?.name || session.customer_details?.name || "";
+  
+  // Better name parsing: handle single names, multiple names, etc.
+  let firstName = "";
+  let lastName = "";
+  
+  if (name) {
+    const nameParts = name.trim().split(/\s+/); // Split on any whitespace
+    if (nameParts.length === 1) {
+      // Single name: use as first name, placeholder for last name
+      firstName = nameParts[0];
+      lastName = ".";
+    } else if (nameParts.length === 2) {
+      // Two names: first and last
+      firstName = nameParts[0];
+      lastName = nameParts[1];
+    } else {
+      // Multiple names: first is first name, rest is last name
+      firstName = nameParts[0];
+      lastName = nameParts.slice(1).join(" ");
+    }
+  }
+
+  // Update user profile if names are empty
+  if (firstName && (!currentUser?.first_name || !currentUser?.last_name)) {
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          first_name: currentUser?.first_name || firstName,
+          last_name: currentUser?.last_name || lastName,
+        },
+      });
+      console.log(`✅ Updated user profile with name from Stripe: ${firstName} ${lastName}`);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+    }
+  }
+
+  // STEP 2: Save shipping address from Stripe Checkout to database (before creating order)
+  let addressId: string | null = null;
   
   if (shippingDetails?.address) {
     const addr = shippingDetails.address;
-    const name = shippingDetails.name || session.customer_details?.name || "";
-    const nameParts = name.split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
 
     try {
       // Check if user already has an address
@@ -185,29 +208,30 @@ async function handleCheckoutSessionCompleted(
 
       if (existingAddress) {
         // Update existing default address
-        await prisma.address.update({
+        const updatedAddress = await prisma.address.update({
           where: { id: existingAddress.id },
           data: {
-            first_name: firstName,
-            last_name: lastName,
+            first_name: firstName || existingAddress.first_name,
+            last_name: lastName || existingAddress.last_name,
             address1: addr.line1 || "",
             address2: addr.line2 || "",
             city: addr.city || "",
             state: addr.state || "",
             postal_code: addr.postal_code || "",
             country: addr.country || "US",
-            phone: shippingDetails.phone || "",
+            phone: shippingDetails.phone || existingAddress.phone || "",
           },
         });
+        addressId = updatedAddress.id;
         console.log(`✅ Updated existing address for user ${userId}`);
       } else {
-        // Create new default address
-        await prisma.address.create({
+        // Create new default address - use first/last name or fallback to "Customer"
+        const newAddress = await prisma.address.create({
           data: {
             user_id: userId,
             type: "shipping",
-            first_name: firstName,
-            last_name: lastName,
+            first_name: firstName || "Customer",
+            last_name: lastName || ".",
             address1: addr.line1 || "",
             address2: addr.line2 || "",
             city: addr.city || "",
@@ -218,12 +242,13 @@ async function handleCheckoutSessionCompleted(
             is_default: true,
           },
         });
+        addressId = newAddress.id;
         console.log(`✅ Created new address for user ${userId}`);
       }
 
-      // Also sync to Stripe customer for consistency
+      // Sync to Stripe customer for consistency (database is source of truth)
       await stripe.customers.update(stripeCustomerId, {
-        name: name,
+        name: firstName && lastName ? `${firstName} ${lastName}` : name,
         phone: shippingDetails.phone || undefined,
         address: {
           line1: addr.line1,
@@ -233,13 +258,42 @@ async function handleCheckoutSessionCompleted(
           postal_code: addr.postal_code,
           country: addr.country,
         },
+        metadata: {
+          user_id: userId,
+          first_name: firstName,
+          last_name: lastName,
+        },
       });
-      console.log(`✅ Synced address to Stripe customer ${stripeCustomerId}`);
+      console.log(`✅ Synced address and profile to Stripe customer ${stripeCustomerId}`);
     } catch (error) {
       console.error("Error saving/syncing address:", error);
       // Don't fail the webhook if address operations fail
     }
+  } else {
+    console.warn("No shipping address in session for order");
   }
+
+  // STEP 3: Create order record WITH shipping address link
+  const order = await prisma.order.create({
+    data: {
+      user_id: userId,
+      stripe_payment_intent_id: session.payment_intent as string,
+      total: product.price,
+      status: "paid",
+      shipping_address_id: addressId, // Link the address to the order
+    },
+  });
+  console.log(`✅ Created order ${order.id.slice(-8)} with address ${addressId ? addressId.slice(-8) : 'none'}`);
+
+  // Create order item
+  await prisma.orderItem.create({
+    data: {
+      order_id: order.id,
+      product_id: product.id,
+      quantity: 1,
+      price: product.price,
+    },
+  });
 
   // Send confirmation emails
   if (customerEmail) {
