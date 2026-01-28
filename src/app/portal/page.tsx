@@ -6,6 +6,7 @@ import { Card } from "@/components/Card";
 import { EditProfileForm } from "@/components/EditProfileForm";
 import { EditAddressForm } from "@/components/EditAddressForm";
 import { ManageSubscriptionButton } from "@/components/ManageSubscriptionButton";
+import { RequestReturnButton } from "@/components/RequestReturnButton";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -53,8 +54,8 @@ export default async function PortalPage() {
     redirect("/portal/login");
   }
 
-  const activeSubscription = user.subscriptions.find(
-    (sub) => sub.status === "active"
+  const activeSubscriptions = user.subscriptions.filter(
+    (sub) => sub.status === "active" || sub.status === "trialing"
   );
   const defaultAddress = user.addresses[0];
 
@@ -62,7 +63,7 @@ export default async function PortalPage() {
     <div className="flex flex-col gap-10">
       <Section
         eyebrow="Member Portal"
-        title="Welcome back"
+        title={user.first_name ? `Welcome, ${user.first_name}` : "Welcome"}
         description="Account status, orders, and delivery details."
       />
 
@@ -78,41 +79,81 @@ export default async function PortalPage() {
         <Card title="Shipping Address">
           <EditAddressForm />
         </Card>
+      </div>
 
-        <Card title="Subscription status">
-          <div className="text-sm">
-            {activeSubscription ? (
-              <div className="space-y-2">
-                <div className="text-accent">Active Subscription</div>
-                <div className="muted">
-                  Renews on{" "}
-                  {new Date(
-                    activeSubscription.current_period_end
-                  ).toLocaleDateString()}
-                </div>
-                {activeSubscription.cancel_at_period_end && (
-                  <div className="text-yellow-500">
-                    Cancels at period end
+      {/* Subscriptions Section - Show ALL subscriptions */}
+      {user.subscriptions.length > 0 ? (
+        <div>
+          <div className="pb-6">
+            <span className="text-xs uppercase tracking-[0.35em] muted">
+              Your Subscriptions
+            </span>
+            <h3 className="section-title text-2xl md:text-3xl pt-2">
+              Manage Subscriptions
+            </h3>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {user.subscriptions.map((subscription) => (
+              <Card key={subscription.id} title="Subscription">
+                <div className="text-sm space-y-3">
+                  <div>
+                    <div className={`font-medium ${
+                      subscription.status === "active" ? "text-green-400" : 
+                      subscription.status === "trialing" ? "text-blue-400" :
+                      subscription.cancel_at_period_end ? "text-yellow-400" :
+                      "text-gray-400"
+                    }`}>
+                      {subscription.status === "active" && !subscription.cancel_at_period_end ? "Active" :
+                       subscription.status === "active" && subscription.cancel_at_period_end ? "Cancelling" :
+                       subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
+                    </div>
                   </div>
-                )}
-                <div className="pt-2">
-                  <ManageSubscriptionButton />
+                  
+                  {(subscription.status === "active" || subscription.status === "trialing") && (
+                    <>
+                      <div className="muted">
+                        {subscription.cancel_at_period_end ? "Ends" : "Renews"} on{" "}
+                        {new Date(subscription.current_period_end).toLocaleDateString()}
+                      </div>
+                      {subscription.cancel_at_period_end && (
+                        <div className="text-yellow-400 text-xs">
+                          ⚠️ Cancels at period end
+                        </div>
+                      )}
+                    </>
+                  )}
+                  
+                  {subscription.status === "canceled" && (
+                    <div className="muted">
+                      Cancelled on{" "}
+                      {new Date(subscription.updated_at).toLocaleDateString()}
+                    </div>
+                  )}
+                  
+                  <div className="pt-2">
+                    <ManageSubscriptionButton 
+                      stripeCustomerId={subscription.stripe_customer_id}
+                      subscriptionId={subscription.stripe_subscription_id}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="muted">
-                No active subscription.{" "}
-                <Link
-                  href="/products/subscription-box"
-                  className="text-accent hover:underline"
-                >
-                  Start today!
-                </Link>
-              </div>
-            )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <Card title="No subscription yet">
+          <div className="text-sm muted">
+            Start your subscription to get premium veteran-owned gear delivered monthly.{" "}
+            <Link
+              href="/products/subscription-box"
+              className="text-accent hover:underline"
+            >
+              Subscribe now!
+            </Link>
           </div>
         </Card>
-      </div>
+      )}
 
       {user.orders.length > 0 ? (
         <div>
@@ -153,6 +194,16 @@ export default async function PortalPage() {
                       ))}
                     </ul>
                   </div>
+                  
+                  {/* Return Request Button - Only show for paid/shipped orders */}
+                  {(order.status === "paid" || order.status === "shipped") && (
+                    <div className="pt-3 border-t border-border">
+                      <RequestReturnButton 
+                        orderId={order.id}
+                        orderNumber={order.id.slice(-8)}
+                      />
+                    </div>
+                  )}
                 </div>
               </Card>
             ))}

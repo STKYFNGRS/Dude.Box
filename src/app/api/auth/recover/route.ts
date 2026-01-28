@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendPasswordResetEmail } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -32,25 +33,33 @@ export async function POST(request: Request) {
     // Token expires in 1 hour
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
-    // TODO: Store reset token in database
-    // This requires adding reset_token and reset_token_expiry fields to User model
-    // For now, we're just generating the token
-    // In Phase 7 (Email Notifications), we'll:
-    // 1. Add reset_token fields to schema
-    // 2. Store the token in database
-    // 3. Send reset email with token link
+    // NOTE: For production, you should store the reset token in the database
+    // and verify it on the reset password page. For now, we're sending the
+    // token directly in the email. Consider adding reset_token and
+    // reset_token_expiry fields to the User model for enhanced security.
     
     console.log(`Password reset requested for: ${user.email}`);
-    console.log(`Reset token (for testing): ${resetToken}`);
-    console.log(`Expires at: ${expiresAt.toISOString()}`);
-    console.log(`Reset URL would be: ${process.env.NEXTAUTH_URL}/portal/reset-password?token=${resetToken}`);
+    console.log(`Reset token generated, expires at: ${expiresAt.toISOString()}`);
+
+    // Send password reset email
+    try {
+      await sendPasswordResetEmail({
+        to: user.email,
+        resetToken,
+        customerId: user.id,
+      });
+      console.log(`✅ Password reset email sent to ${user.email}`);
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+      // Don't reveal email sending failures to prevent user enumeration
+    }
 
     return NextResponse.json({ 
       success: true,
-      // TODO: Remove this in production - only for testing without email
+      // For development only - helps with testing
       ...(process.env.NODE_ENV === 'development' && { 
         _dev_token: resetToken,
-        _dev_reset_url: `/portal/reset-password?token=${resetToken}`
+        _dev_reset_url: `/portal/reset-password?token=${resetToken}&id=${user.id}`
       })
     });
   } catch (error) {

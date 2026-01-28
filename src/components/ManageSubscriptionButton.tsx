@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 
-export function ManageSubscriptionButton() {
+interface ManageSubscriptionButtonProps {
+  stripeCustomerId: string;
+  subscriptionId: string;
+}
+
+export function ManageSubscriptionButton({ 
+  stripeCustomerId, 
+  subscriptionId 
+}: ManageSubscriptionButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
@@ -11,6 +19,13 @@ export function ManageSubscriptionButton() {
     try {
       const response = await fetch("/api/subscriptions/portal", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stripeCustomerId,
+          subscriptionId,
+        }),
       });
 
       const data = await response.json();

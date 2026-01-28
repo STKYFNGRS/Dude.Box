@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { sendOrderConfirmation, sendSubscriptionConfirmation } from "@/lib/email";
 import Stripe from "stripe";
 
 // Disable body parser for webhook signature verification
@@ -237,6 +238,62 @@ async function handleCheckoutSessionCompleted(
     } catch (error) {
       console.error("Error saving/syncing address:", error);
       // Don't fail the webhook if address operations fail
+    }
+  }
+
+  // Send confirmation emails
+  if (customerEmail) {
+    try {
+      // Get user info for personalized emails
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      });
+
+      const customerName = user?.first_name || user?.email?.split("@")[0] || "there";
+      const nextBillingDate = new Date(currentPeriodEnd * 1000).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      // Send subscription confirmation email
+      await sendSubscriptionConfirmation({
+        to: customerEmail,
+        customerName,
+        subscriptionId: subscription.id,
+        nextBillingDate,
+        amount: product.price.toString(),
+      });
+
+      // Send order confirmation email
+      await sendOrderConfirmation({
+        to: customerEmail,
+        customerName,
+        orderId: order.id,
+        orderTotal: product.price.toString(),
+        orderDate: new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        items: [
+          {
+            name: product.name,
+            quantity: 1,
+            price: product.price.toString(),
+          },
+        ],
+      });
+
+      console.log(`✅ Sent confirmation emails to ${customerEmail}`);
+    } catch (error) {
+      console.error("Error sending confirmation emails:", error);
+      // Don't fail the webhook if email sending fails
     }
   }
 
