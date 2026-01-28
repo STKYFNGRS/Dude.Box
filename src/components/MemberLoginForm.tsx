@@ -23,7 +23,7 @@ export function MemberLoginForm({ redirectTo }: MemberLoginFormProps) {
       email,
       password,
       redirect: false,
-      callbackUrl: redirectTo || "/portal",
+      callbackUrl: redirectTo || "/members",
     });
 
     if (result?.error) {
@@ -32,7 +32,7 @@ export function MemberLoginForm({ redirectTo }: MemberLoginFormProps) {
       return;
     }
 
-    window.location.href = redirectTo || "/portal";
+    window.location.href = redirectTo || "/members";
   };
 
   return (

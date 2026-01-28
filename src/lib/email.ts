@@ -601,3 +601,255 @@ export async function sendRefundConfirmationEmail({
     return { success: false, error };
   }
 }
+
+/**
+ * Send vendor new order notification
+ */
+export async function sendVendorOrderNotification({
+  to,
+  storeName,
+  storeSubdomain,
+  orderId,
+  customerName,
+  orderTotal,
+  vendorAmount,
+  items,
+}: {
+  to: string;
+  storeName: string;
+  storeSubdomain: string;
+  orderId: string;
+  customerName: string;
+  orderTotal: string;
+  vendorAmount: string;
+  items: Array<{ name: string; quantity: number; price: string }>;
+}) {
+  try {
+    const itemsList = items
+      .map(
+        (item) =>
+          `<li style="padding: 12px 0; border-bottom: 1px solid #334155; color: #cbd5e1;">
+            <strong style="color: #e5e7eb;">${item.name}</strong> × ${item.quantity} - $${item.price}
+          </li>`
+      )
+      .join("");
+
+    await resend.emails.send({
+      from: `${storeName} <${storeSubdomain}@dude.box>`,
+      to,
+      subject: `New Order - ${storeName}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #e5e7eb; max-width: 600px; margin: 0 auto; padding: 0; background: #0f172a;">
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">New Order Received!</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                Great news! You have a new order from ${customerName}.
+              </p>
+              
+              <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="margin-top: 0; font-size: 20px; color: #818cf8; font-weight: 600;">Order Details</h2>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Order ID:</strong> ${orderId}</p>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Customer:</strong> ${customerName}</p>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Order Total:</strong> $${orderTotal}</p>
+                <p style="margin: 8px 0; color: #10b981; font-weight: 600;"><strong style="color: #e5e7eb;">Your Amount:</strong> $${vendorAmount} (after platform fee)</p>
+              </div>
+              
+              <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="margin-top: 0; font-size: 20px; color: #818cf8; font-weight: 600;">Items Ordered</h2>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                  ${itemsList}
+                </ul>
+              </div>
+              
+              <p style="font-size: 14px; color: #94a3b8; margin-top: 30px;">
+                Please fulfill this order as soon as possible. Once shipped, mark it as shipped in your vendor dashboard.
+              </p>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "https://www.dude.box"}/vendor/orders" 
+                   style="display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                  View Order Details
+                </a>
+              </div>
+              
+              <p style="font-size: 12px; color: #64748b; margin-top: 30px; text-align: center; border-top: 1px solid #334155; padding-top: 20px;">
+                Questions? Contact support at dude@dude.box
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Vendor order notification sent to ${to}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send vendor order notification:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send store approval email
+ */
+export async function sendStoreApproved({
+  to,
+  vendorName,
+  storeName,
+  subdomain,
+}: {
+  to: string;
+  vendorName: string;
+  storeName: string;
+  subdomain: string;
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `${storeName} Approved - Welcome to Dude.Box!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #e5e7eb; max-width: 600px; margin: 0 auto; padding: 0; background: #0f172a;">
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Store Approved! 🎉</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                Hey ${vendorName},
+              </p>
+              
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                Great news! Your store "${storeName}" has been approved and is now live on Dude.Box!
+              </p>
+              
+              <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="margin-top: 0; font-size: 20px; color: #818cf8; font-weight: 600;">Your Store Details</h2>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Store Name:</strong> ${storeName}</p>
+                <p style="margin: 8px 0; color: #cbd5e1;"><strong style="color: #e5e7eb;">Store URL:</strong> <a href="https://${subdomain}.dude.box" style="color: #6366f1;">https://${subdomain}.dude.box</a></p>
+              </div>
+              
+              <div style="background: #10b981; background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="margin: 0 0 15px 0; font-size: 18px; color: white; font-weight: 600;">Next Steps:</h3>
+                <ol style="margin: 0; padding-left: 20px; color: white;">
+                  <li style="margin-bottom: 10px;">Connect your Stripe account to receive payments</li>
+                  <li style="margin-bottom: 10px;">Add your first products</li>
+                  <li style="margin-bottom: 10px;">Share your store with customers!</li>
+                </ol>
+              </div>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "https://www.dude.box"}/vendor" 
+                   style="display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-right: 10px;">
+                  Go to Vendor Dashboard
+                </a>
+                <a href="https://${subdomain}.dude.box" 
+                   style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                  View Your Store
+                </a>
+              </div>
+              
+              <p style="font-size: 12px; color: #64748b; margin-top: 30px; text-align: center; border-top: 1px solid #334155; padding-top: 20px;">
+                Questions? Contact us at dude@dude.box
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Store approval email sent to ${to}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send store approval email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send store rejection email
+ */
+export async function sendStoreRejected({
+  to,
+  vendorName,
+  storeName,
+  reason,
+}: {
+  to: string;
+  vendorName: string;
+  storeName: string;
+  reason: string;
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Store Application Update - ${storeName}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #e5e7eb; max-width: 600px; margin: 0 auto; padding: 0; background: #0f172a;">
+            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 30px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Store Application Update</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                Hey ${vendorName},
+              </p>
+              
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                Thank you for your interest in becoming a vendor on Dude.Box. After reviewing your store "${storeName}", we're unable to approve it at this time.
+              </p>
+              
+              <div style="background: #0f172a; border: 1px solid #ef4444; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="margin-top: 0; font-size: 20px; color: #ef4444; font-weight: 600;">Reason</h2>
+                <p style="color: #cbd5e1;">${reason}</p>
+              </div>
+              
+              <p style="font-size: 16px; margin-bottom: 20px; color: #e5e7eb;">
+                If you believe this was a mistake or would like to discuss further, please don't hesitate to reach out to us.
+              </p>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="mailto:dude@dude.box" 
+                   style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                  Contact Support
+                </a>
+              </div>
+              
+              <p style="font-size: 12px; color: #64748b; margin-top: 30px; text-align: center; border-top: 1px solid #334155; padding-top: 20px;">
+                Questions? Contact us at dude@dude.box
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Store rejection email sent to ${to}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send store rejection email:", error);
+    return { success: false, error };
+  }
+}

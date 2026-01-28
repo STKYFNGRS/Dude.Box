@@ -62,6 +62,30 @@ export default async function AdminLayout({
               >
                 Customers
               </Link>
+              <Link
+                href="/admin/announcements"
+                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
+              >
+                Announcements
+              </Link>
+              <Link
+                href="/admin/stores"
+                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
+              >
+                Stores
+              </Link>
+              <Link
+                href="/admin/products"
+                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
+              >
+                Products
+              </Link>
+              <Link
+                href="/admin/analytics"
+                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
+              >
+                Analytics
+              </Link>
             </nav>
 
             <div className="pt-4 border-t border-border">

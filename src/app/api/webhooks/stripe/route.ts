@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmation, sendSubscriptionConfirmation } from "@/lib/email";
+import { calculatePlatformFees } from "@/lib/marketplace";
 import Stripe from "stripe";
 
 // Disable body parser for webhook signature verification
@@ -294,6 +295,46 @@ async function handleCheckoutSessionCompleted(
       price: product.price,
     },
   });
+
+  // STEP 4: Handle marketplace order (if storeId present)
+  const storeId = session.metadata?.storeId;
+  if (storeId) {
+    console.log(`📦 Processing marketplace order for store: ${storeId}`);
+    
+    try {
+      const fees = calculatePlatformFees(parseFloat(product.price.toString()));
+      
+      // Update order with marketplace data
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          store_id: storeId,
+          platform_fee: fees.platform_fee,
+          vendor_amount: fees.vendor_amount,
+        },
+      });
+
+      // Create platform transaction record
+      await prisma.platformTransaction.create({
+        data: {
+          order_id: order.id,
+          store_id: storeId,
+          gross_amount: fees.gross_amount,
+          platform_fee: fees.platform_fee,
+          vendor_amount: fees.vendor_amount,
+          fee_percentage: fees.fee_percentage,
+          status: "completed",
+        },
+      });
+
+      console.log(`✅ Created platform transaction for order ${order.id.slice(-8)}`);
+      console.log(`   Platform fee: $${fees.platform_fee.toFixed(2)}`);
+      console.log(`   Vendor amount: $${fees.vendor_amount.toFixed(2)}`);
+    } catch (error) {
+      console.error("Error creating platform transaction:", error);
+      // Don't fail webhook if platform transaction fails
+    }
+  }
 
   // Send confirmation emails
   if (customerEmail) {

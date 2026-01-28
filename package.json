@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts",
     "migrate:link-addresses": "tsx scripts/link-orders-to-addresses.ts",
-    "setup:stripe": "tsx scripts/setup-stripe-product.ts"
+    "setup:stripe": "tsx scripts/setup-stripe-product.ts",
+    "seed:dudebox-store": "tsx scripts/seed-dudebox-store.ts"
   },
   "dependencies": {
     "@easypost/api": "^8.4.0",

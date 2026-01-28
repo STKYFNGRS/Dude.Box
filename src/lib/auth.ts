@@ -77,6 +77,7 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/portal/login",
+    // Default callback after sign-in is now /members (member dashboard)
   },
   debug: false,
   callbacks: {

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { calculatePlatformFees, dollarsToCents } from "@/lib/marketplace";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,13 +18,35 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { priceId } = body;
+    const { priceId, storeId } = body;
 
     if (!priceId) {
       return NextResponse.json(
         { error: "Price ID is required" },
         { status: 400 }
       );
+    }
+
+    // If storeId provided, fetch store for marketplace checkout
+    let store = null;
+    if (storeId) {
+      store = await prisma.store.findUnique({
+        where: { id: storeId, status: "approved" },
+      });
+
+      if (!store) {
+        return NextResponse.json(
+          { error: "Store not found or not approved" },
+          { status: 404 }
+        );
+      }
+
+      if (!store.stripe_onboarded || !store.stripe_account_id) {
+        return NextResponse.json(
+          { error: "Store has not connected Stripe yet" },
+          { status: 400 }
+        );
+      }
     }
 
     // Get user from database to include user ID in metadata
@@ -63,9 +86,12 @@ export async function POST(req: NextRequest) {
     // Log checkout attempt
     console.log(`Creating checkout session for user: ${user.email}`);
     console.log(`Using Stripe Price ID: ${priceId}`);
+    if (store) {
+      console.log(`Marketplace checkout for store: ${store.name} (${store.subdomain})`);
+    }
 
-    // Create Stripe Checkout Session
-    const checkoutSession = await stripe.checkout.sessions.create({
+    // Build checkout session config
+    const checkoutConfig: any = {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
@@ -80,15 +106,29 @@ export async function POST(req: NextRequest) {
       },
       metadata: {
         userId: user.id,
+        ...(storeId && { storeId }),
       },
       subscription_data: {
         metadata: {
           userId: user.id,
+          ...(storeId && { storeId }),
         },
       },
       success_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/products/subscription-box`,
-    });
+    };
+
+    // If marketplace checkout, add Stripe Connect payment_intent_data
+    // Note: For subscriptions, we handle the platform fee at the invoice level in webhooks
+    // For one-time payments, we would use payment_intent_data here
+    if (store && store.stripe_account_id) {
+      // For subscription-based marketplace, platform fee is handled via application_fee_percent
+      // or via invoice webhooks. We'll track this in the Order/PlatformTransaction models.
+      checkoutConfig.metadata.connectedAccountId = store.stripe_account_id;
+    }
+
+    // Create Stripe Checkout Session
+    const checkoutSession = await stripe.checkout.sessions.create(checkoutConfig);
 
     console.log(`✅ Checkout session created: ${checkoutSession.id}`);
 

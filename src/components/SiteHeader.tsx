@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Container } from "@/components/Container";
 import { LoginModal } from "@/components/LoginModal";
+import { CartDrawer } from "@/components/CartDrawer";
 
 export function SiteHeader() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
 
@@ -43,6 +45,13 @@ export function SiteHeader() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+            aria-label="Shopping cart"
+          >
+            Cart
+          </button>
           {!mounted || status === "loading" ? (
             // Show loading state to prevent flash - invisible but maintains layout
             <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
@@ -50,11 +59,11 @@ export function SiteHeader() {
             </div>
           ) : status === "authenticated" ? (
             <Link
-              href="/portal"
+              href="/members"
               className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
-              aria-label="Account"
+              aria-label="Dashboard"
             >
-              Account
+              Dashboard
             </Link>
           ) : (
             <>
@@ -79,6 +88,7 @@ export function SiteHeader() {
         </Container>
       </header>
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }

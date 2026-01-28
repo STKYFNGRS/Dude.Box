@@ -20,28 +20,41 @@ model User {
   phone              String?
   stripe_customer_id String?   @unique
   is_admin           Boolean   @default(false)
+  role               String    @default("customer") // customer, vendor, admin
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt
   
-  subscriptions Subscription[]
-  orders        Order[]
-  addresses     Address[]
-  returns       Return[]
+  subscriptions    Subscription[]
+  orders           Order[]
+  addresses        Address[]
+  returns          Return[]
+  announcements    Announcement[]
+  owned_stores     Store[]        @relation("StoreOwner")
+  approved_stores  Store[]        @relation("StoreApprover")
+  carts            Cart[]
 }
 
 // Subscription box and other products
 model Product {
-  id              String   @id @default(cuid())
-  name            String
-  description     String?
-  price           Decimal  @db.Decimal(10, 2)
-  interval        String   // "month" for subscription, "one_time" for products
-  stripe_price_id String?  // Stripe Price ID for subscriptions
-  active          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  price             Decimal  @db.Decimal(10, 2)
+  interval          String   // "month" for subscription, "one_time" for products
+  stripe_price_id   String?  // Stripe Price ID for subscriptions
+  active            Boolean  @default(true)
+  store_id          String?  // Nullable for legacy products
+  moderation_status String   @default("approved") // approved, flagged, hidden
+  flagged_reason    String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
   
+  store       Store?      @relation(fields: [store_id], references: [id])
   order_items OrderItem[]
+  cart_items  CartItem[]
+  
+  @@index([store_id])
+  @@index([store_id, active])
 }
 
 // Active recurring subscriptions
@@ -67,19 +80,26 @@ model Subscription {
 model Order {
   id                       String   @id @default(cuid())
   user_id                  String
+  store_id                 String?  // For marketplace orders
   stripe_payment_intent_id String?
   total                    Decimal  @db.Decimal(10, 2)
+  platform_fee             Decimal? @db.Decimal(10, 2)
+  vendor_amount            Decimal? @db.Decimal(10, 2)
   status                   String   // pending, paid, shipped, delivered, cancelled
   shipping_address_id      String?
   created_at               DateTime @default(now())
   updated_at               DateTime @updatedAt
   
-  user             User        @relation(fields: [user_id], references: [id])
-  items            OrderItem[]
-  shipping_address Address?    @relation(fields: [shipping_address_id], references: [id])
-  returns          Return[]
+  user                 User                  @relation(fields: [user_id], references: [id])
+  store                Store?                @relation(fields: [store_id], references: [id])
+  items                OrderItem[]
+  shipping_address     Address?              @relation(fields: [shipping_address_id], references: [id])
+  returns              Return[]
+  platform_transaction PlatformTransaction?
   
   @@index([user_id])
+  @@index([store_id])
+  @@index([store_id, created_at])
 }
 
 // Line items for orders
@@ -153,4 +173,113 @@ model Return {
   @@index([user_id])
   @@index([order_id])
   @@index([status])
+}
+
+// News and announcements for members
+model Announcement {
+  id         String   @id @default(cuid())
+  title      String
+  content    String   @db.Text
+  excerpt    String?
+  author_id  String
+  published  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  
+  author User @relation(fields: [author_id], references: [id])
+  
+  @@index([published, created_at])
+}
+
+// Vendor stores (marketplace)
+model Store {
+  id                    String    @id @default(cuid())
+  owner_id              String
+  subdomain             String    @unique  // "storename" in storename.dude.box
+  name                  String               // Display name
+  description           String?   @db.Text
+  logo_url              String?
+  banner_url            String?
+  
+  // Stripe Connect
+  stripe_account_id     String?   @unique  // Connected account ID
+  stripe_onboarded      Boolean   @default(false)
+  
+  // Approval workflow
+  status                String    @default("pending") // pending, approved, suspended
+  approved_at           DateTime?
+  approved_by           String?
+  
+  // Contact
+  contact_email         String
+  
+  // Settings
+  shipping_policy       String?   @db.Text
+  return_policy         String?   @db.Text
+  
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  
+  owner                 User      @relation("StoreOwner", fields: [owner_id], references: [id])
+  approver              User?     @relation("StoreApprover", fields: [approved_by], references: [id])
+  products              Product[]
+  orders                Order[]
+  cart_items            CartItem[]
+  
+  @@index([owner_id])
+  @@index([subdomain])
+  @@index([status])
+}
+
+// Platform fee tracking (marketplace)
+model PlatformTransaction {
+  id                    String   @id @default(cuid())
+  order_id              String   @unique
+  store_id              String
+  
+  gross_amount          Decimal  @db.Decimal(10, 2)  // Total order amount
+  platform_fee          Decimal  @db.Decimal(10, 2)  // Fee kept by platform
+  vendor_amount         Decimal  @db.Decimal(10, 2)  // Amount to vendor
+  fee_percentage        Decimal  @db.Decimal(5, 2)   // Fee % at time of transaction
+  
+  stripe_transfer_id    String?  @unique
+  status                String   @default("pending") // pending, completed, failed
+  
+  created_at            DateTime @default(now())
+  
+  order                 Order    @relation(fields: [order_id], references: [id])
+  
+  @@index([store_id])
+  @@index([order_id])
+}
+
+// Shopping cart (marketplace)
+model Cart {
+  id         String   @id @default(cuid())
+  user_id    String?  // Nullable for guest carts
+  session_id String?  @unique // For guest tracking
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  
+  user       User?    @relation(fields: [user_id], references: [id])
+  items      CartItem[]
+  
+  @@index([user_id])
+  @@index([session_id])
+}
+
+// Cart items (marketplace)
+model CartItem {
+  id         String  @id @default(cuid())
+  cart_id    String
+  product_id String
+  store_id   String
+  quantity   Int     @default(1)
+  
+  cart       Cart    @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  product    Product @relation(fields: [product_id], references: [id])
+  store      Store   @relation(fields: [store_id], references: [id])
+  
+  @@index([cart_id])
+  @@index([product_id])
 }

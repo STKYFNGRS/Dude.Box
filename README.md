@@ -1,651 +1,707 @@
-# Dude.Box - Custom E-Commerce Platform
+# Dude.Box - Marketplace Platform for Makers
 
-Premium subscription box of veteran-made EDC gear delivered monthly.
+A multi-vendor e-commerce marketplace where craftsmen and makers can create branded storefronts, connect their payment accounts, and sell products - all on the Dude.Box platform.
 
 **Live Site:** [www.dude.box](https://www.dude.box)  
-**Stack:** Next.js 14 + NeonDB + Stripe + Prisma  
-**Status:** 85% Complete - Production Ready  
+**Stack:** Next.js 14 + NeonDB + Stripe Connect + Prisma  
+**Status:** Marketplace Transformation Complete - Ready for Testing  
 **Deployment:** Vercel
 
 ---
 
-## 📚 COMPLETE DOCUMENTATION
+## 🎯 What is Dude.Box?
+
+Dude.Box is an **Etsy-style marketplace** for men who make quality products but don't want to manage the tech stack. Each vendor gets:
+
+- **Custom Subdomain:** `yourstore.dude.box`
+- **Branded Storefront:** Your own product catalog and pages
+- **Direct Payments:** Connect your Stripe account, receive 90% of sales
+- **Email Address:** Transactional emails from `yourstore@dude.box`
+- **Your Shipping:** Use your own shipping accounts and methods
+- **No Tech Hassle:** We handle hosting, payments, cart, checkout
+
+**Platform Fee:** 10% per sale (you keep 90%)
+
+---
+
+## 📚 Complete Documentation
 
 ### **→ [resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md) ←**
 
-**This is the single source of truth for the entire project.**
+The single source of truth for the original subscription box system.
 
-Contains:
-- ✅ Complete project status and progress (85% done)
-- ✅ All 8 completed phases detailed
-- ✅ Database schema and architecture
-- ✅ Environment setup guide for production
-- ✅ Troubleshooting guide for common issues
-- ✅ Testing checklists
-- ✅ Migration scripts documentation
-- ✅ Stripe integration details
-- ✅ Returns & refunds system guide
+### **→ [resources/MARKETPLACE_SETUP_GUIDE.md](resources/MARKETPLACE_SETUP_GUIDE.md) ←**
 
-**Quick Reference Guides:**
-- [resources/VERCEL_ENV_SETUP.md](resources/VERCEL_ENV_SETUP.md) - Production deployment variables
-- [resources/QUICK_FIX_GUIDE.txt](resources/QUICK_FIX_GUIDE.txt) - Emergency fixes
+Complete setup guide for marketplace features.
+
+### **→ [resources/MARKETPLACE_TESTING_GUIDE.md](resources/MARKETPLACE_TESTING_GUIDE.md) ←**
+
+Comprehensive testing procedures.
+
+### **→ [resources/MARKETPLACE_MIGRATION_GUIDE.md](resources/MARKETPLACE_MIGRATION_GUIDE.md) ←**
+
+Migration from single-vendor to marketplace.
 
 ---
 
-## 🎯 Current Status
+## 🏗️ Architecture
 
-**Phase 8 Complete (95%)** - Returns & Refunds Management System Live  
-**Next:** Phase 9 - Testing & Polish
-
-### What's Working:
-- ✅ Custom authentication (no Shopify dependencies)
-- ✅ NeonDB PostgreSQL database with 8 tables
-- ✅ Stripe subscriptions with checkout flow
-- ✅ Customer portal (subscriptions, orders, returns)
-- ✅ Admin dashboard (subscriptions, orders, customers, returns)
-- ✅ Complete returns system with shipping labels
-- ✅ Automated emails (orders, subscriptions, returns, refunds)
-- ✅ Bidirectional Stripe sync
-- ✅ Production deployment on Vercel
-
-### Migration from Shopify:
-- ✅ Removed all Shopify dependencies
-- ✅ Custom payment processing via Stripe
-- ✅ Database-driven product catalog
-- ✅ Cost reduced from $2,300/month (Shopify Plus) to ~$30/month
-
----
-
-## Architecture Overview
-
-Dude.Box is a **custom subscription platform** with Next.js frontend, PostgreSQL database, and Stripe payment processing.
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                       www.dude.box                          │
-│                    (Next.js on Vercel)                      │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   Homepage   │  │   Products   │  │   Portal     │     │
-│  │              │  │   Checkout   │  │   (Customer) │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-│                                                              │
-│  ┌──────────────┐                                           │
-│  │   Admin      │  (Subscriptions, Orders, Returns)        │
-│  │   Dashboard  │                                           │
-│  └──────────────┘                                           │
-└────┬──────────────────────┬──────────────────┬─────────────┘
-     │                      │                  │
-     ▼                      ▼                  ▼
-┌─────────┐         ┌──────────────┐    ┌─────────────┐
-│ NeonDB  │         │    Stripe    │    │   Resend    │
-│  (Data) │         │  (Payments)  │    │   (Email)   │
-└─────────┘         └──────────────┘    └─────────────┘
-```
-
-**Key Features:**
-- **Full Control:** Own your data, code, and customer experience
-- **Database-Driven:** PostgreSQL via NeonDB (Prisma ORM)
-- **Stripe Integration:** Subscriptions, checkout, webhooks, refunds
-- **Returns System:** Complete workflow with automatic shipping labels
-- **Admin Dashboard:** Manage subscriptions, orders, customers, returns
-- **No Shopify:** Zero dependencies on external platforms
-
----
-
-## Project Structure
-
-```
-dude.box/
-├── src/
-│   ├── app/                         # Next.js App Router
-│   │   ├── layout.tsx               # Root layout with header/footer
-│   │   ├── page.tsx                 # Homepage
-│   │   ├── shop/                    # Product listing
-│   │   ├── products/[handle]/       # Product detail pages
-│   │   ├── portal/                  # Customer account
-│   │   ├── thank-you/               # Post-checkout page
-│   │   └── api/                     # API routes
-│   │       ├── cart/                # Cart operations
-│   │       ├── auth/                # NextAuth
-│   │       └── customer/            # Profile/address updates
-│   │
-│   ├── components/                  # React components
-│   │   ├── SiteHeader.tsx           # Global nav with cart
-│   │   ├── SiteFooter.tsx           # Global footer
-│   │   ├── CartDrawer.tsx           # Slide-out cart
-│   │   ├── ProductPurchaseOptions   # Add to cart + variants
-│   │   └── ...
-│   │
-│   └── lib/                         # Core utilities
-│       ├── shopify.ts               # Storefront API client
-│       ├── auth.ts                  # NextAuth config
-│       └── cart.ts                  # Cart utilities
-│
-├── public/                          # Static assets
-│   └── Logo.png                     # Brand logo
-│
-├── backup-liquid-theme-2026-01-26/  # Archived Shopify theme files
-│
-├── .env                             # Environment variables
-├── next.config.js                   # Next.js configuration
-├── tailwind.config.js               # Tailwind CSS config
-├── tsconfig.json                    # TypeScript config
-│
-└── Documentation/
-    ├── YOUR_TODO_LIST.md            # Start here: Action checklist
-    ├── README.md                    # This file: Project overview
-    ├── ARCHITECTURE.md              # How the system works
-    └── DEPLOYMENT_GUIDE.md          # Detailed deployment reference
+```mermaid
+graph TB
+    Customer[Customer] --> MainSite[www.dude.box]
+    Customer --> StoreA[storeA.dude.box]
+    Customer --> StoreB[storeB.dude.box]
+    
+    MainSite --> Members[/members Dashboard]
+    MainSite --> Cart[Multi-Vendor Cart]
+    
+    StoreA --> Products[Store Products]
+    StoreB --> Products
+    
+    Cart --> Checkout[Sequential Checkout]
+    Checkout --> StripeConnect[Stripe Connect]
+    
+    VendorA[Vendor A] --> VendorDash[/vendor Dashboard]
+    VendorB[Vendor B] --> VendorDash
+    
+    VendorDash --> ManageProducts[Manage Products]
+    VendorDash --> ViewOrders[View Orders]
+    VendorDash --> StoreSettings[Store Settings]
+    
+    Admin[Admin] --> AdminDash[/admin Dashboard]
+    AdminDash --> ApproveStores[Approve Stores]
+    AdminDash --> Analytics[Platform Analytics]
+    AdminDash --> Moderate[Moderate Products]
+    
+    StripeConnect --> VendorPayout[90% to Vendor]
+    StripeConnect --> PlatformFee[10% Platform Fee]
+    
+    NeonDB[(NeonDB)] -.-> MainSite
+    NeonDB -.-> VendorDash
+    NeonDB -.-> AdminDash
 ```
 
 ---
 
-## Tech Stack
+## ✨ Features
+
+### For Customers
+
+- 🛒 **Multi-Vendor Shopping:** Browse products from multiple makers
+- 🛍️ **Smart Cart:** Items grouped by store, clear checkout flow
+- 📦 **Order Tracking:** Full order history across all stores
+- 👤 **Member Dashboard:** News, announcements, order management
+- 🔒 **Secure Checkout:** Stripe-powered payment processing
+- 📧 **Email Notifications:** Order confirmations, shipping updates
+
+### For Vendors
+
+- 🏪 **Branded Storefront:** `yourstore.dude.box` subdomain
+- 💳 **Direct Payments:** Connect Stripe, receive payouts in 2 days
+- 📊 **Dashboard:** Manage products, orders, settings
+- 📦 **Order Management:** View orders, mark as shipped
+- 💰 **Transparent Fees:** Keep 90% of each sale
+- 📧 **Branded Emails:** Orders sent from `yourstore@dude.box`
+
+### For Platform Admin
+
+- ✅ **Store Approval:** Review and approve vendor applications
+- 📈 **Analytics:** GMV, platform fees, top stores
+- 🛡️ **Moderation:** Flag or hide products violating policies
+- 👥 **User Management:** Customers, vendors, subscriptions
+- 💵 **Revenue Tracking:** Platform transaction history
+- 📧 **Announcements:** Post news to member community
+
+---
+
+## 🚀 Tech Stack
 
 ### Frontend
 - **Framework:** Next.js 14 (App Router, React Server Components)
 - **Language:** TypeScript 5.3
 - **Styling:** Tailwind CSS 3.3
 - **Authentication:** NextAuth 4.24 with bcryptjs
-- **UI:** Custom components (no external UI library)
+- **State Management:** React hooks, server components
 
-### Backend / Data
-- **Database:** NeonDB PostgreSQL (serverless)
-- **ORM:** Prisma 5.22.0
-- **Payments:** Stripe (subscriptions, checkout, webhooks, refunds)
-- **Email:** Resend (order confirmations, return notifications)
-- **Shipping:** EasyPost (return label generation)
+### Backend
+- **Database:** NeonDB PostgreSQL (serverless, pooled connections)
+- **ORM:** Prisma 5.22.0 (with 12 models)
+- **Payments:** Stripe Connect (marketplace split payments)
+- **Email:** Resend (transactional emails)
 - **Session:** JWT via NextAuth
+- **Webhooks:** Stripe event processing
 
-### Deployment
-- **Hosting:** Vercel (automatic deployments)
-- **Domain:** www.dude.box
-- **Database:** NeonDB (serverless PostgreSQL)
-- **CI/CD:** Git push → Vercel auto-deploy
-- **Cost:** ~$30/month (vs $2,300/month Shopify Plus)
+### Infrastructure
+- **Hosting:** Vercel (serverless, edge network)
+- **Domain:** www.dude.box + wildcard subdomains
+- **SSL:** Auto-provisioned by Vercel
+- **CDN:** Vercel Edge Network
+- **Cost:** ~$50-100/month (vs $2,300 Shopify Plus)
 
 ---
 
-## Getting Started
+## 📦 Database Schema
+
+**12 Models:**
+
+1. **User** - Customers, vendors, admins
+2. **Store** - Vendor storefronts
+3. **Product** - Product listings (per store)
+4. **Subscription** - Recurring subscriptions
+5. **Order** - Purchase history
+6. **OrderItem** - Line items
+7. **Address** - Shipping/billing addresses
+8. **Return** - Return requests and refunds
+9. **Cart** - Shopping carts
+10. **CartItem** - Cart line items
+11. **PlatformTransaction** - Fee tracking
+12. **Announcement** - Member news
+13. **InvestorInquiry** - Partner inquiries (legacy)
+
+**Key Relationships:**
+- User → Stores (one-to-many)
+- Store → Products (one-to-many)
+- Store → Orders (one-to-many)
+- Order → PlatformTransaction (one-to-one)
+- Cart → CartItems (one-to-many)
+
+---
+
+## 🛠️ Setup Instructions
 
 ### Prerequisites
 
-- Node.js 20+ and npm
-- Shopify store with Storefront API access
+- Node.js 20+
+- PostgreSQL database (NeonDB)
+- Stripe account with Connect enabled
+- Resend account (for emails)
 - Vercel account (for deployment)
-- Git
 
-### Installation
+### Quick Start
 
-1. **Clone the repository:**
+1. **Clone and install:**
    ```bash
-   git clone https://github.com/yourusername/dude-box.git
-   cd dude-box
-   ```
-
-2. **Install dependencies:**
-   ```bash
+   git clone <repo>
+   cd dude.box
    npm install
    ```
 
-3. **Set up environment variables:**
-   
-   Copy the `.env` file or create `.env.local`:
-   ```env
-   # Database (NeonDB)
-   DATABASE_URL=your_neondb_connection_string
-   
-   # NextAuth
-   NEXTAUTH_SECRET=your_secret_key
-   NEXTAUTH_URL=http://localhost:3000
-   
-   # Stripe (use test keys for development)
-   STRIPE_SECRET_KEY=sk_test_...
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-   STRIPE_WEBHOOK_SECRET=whsec_... # From stripe listen
-   
-   # Resend Email
-   RESEND_API_KEY=re_...
-   RESEND_FROM_EMAIL=noreply@dude.box
-   SUPPORT_EMAIL=dude@dude.box
-   
-   # EasyPost (optional - for return labels)
-   EASYPOST_API_KEY=EZTEST_...
-   RETURN_ADDRESS_NAME=Dude.Box Returns
-   RETURN_ADDRESS_STREET1=Your Address
-   RETURN_ADDRESS_CITY=Your City
-   RETURN_ADDRESS_STATE=CA
-   RETURN_ADDRESS_ZIP=12345
-   RETURN_ADDRESS_COUNTRY=US
-   
-   # App Config
-   NEXT_PUBLIC_APP_DOMAIN=http://localhost:3000
-   NEXT_PUBLIC_APP_NAME=Dude.Box
-   ```
-
-4. **Set up database:**
+2. **Configure environment:**
    ```bash
-   npx prisma generate
-   npx prisma db push
+   cp .env.example .env.local
+   # Add your database URL, Stripe keys, etc.
    ```
 
-5. **Run development server:**
+3. **Setup database:**
+   ```bash
+   npx prisma db push
+   npx prisma generate
+   npm run seed:dudebox-store
+   ```
+
+4. **Run development server:**
    ```bash
    npm run dev
    ```
 
-6. **Start Stripe webhook listener (separate terminal):**
-   ```bash
-   stripe listen --forward-to localhost:3000/api/webhooks/stripe
-   ```
+5. **Create admin account:**
+   - Visit `/portal/register`
+   - Login
+   - Visit `/api/auth/make-admin`
+   - Now access `/admin`
 
-7. **Open browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+6. **Test vendor flow:**
+   - Create second account
+   - Visit `/members/become-vendor`
+   - Apply for store
+   - Admin approves at `/admin/stores`
+
+### Environment Variables
+
+See `MARKETPLACE_SETUP_GUIDE.md` for complete list.
+
+**Critical for Marketplace:**
+```env
+# Stripe Connect
+STRIPE_CONNECT_CLIENT_ID=ca_...
+STRIPE_PLATFORM_FEE_PERCENT=10
+
+# Application
+NEXT_PUBLIC_APP_DOMAIN=http://localhost:3000
+```
 
 ---
 
-**See [resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md) for complete setup instructions.**
+## 🧪 Testing
 
-### Production Build
+### Run Tests
 
 ```bash
+# Build check
 npm run build
-npm start
+
+# Lint check
+npm run lint
+
+# Type check
+npx tsc --noEmit
 ```
 
----
+### Manual Testing
 
-## Environment Variables
+See `resources/MARKETPLACE_TESTING_GUIDE.md`
 
-### Required
-
-| Variable | Description | Where to Find |
-|----------|-------------|---------------|
-| `SHOPIFY_STORE_DOMAIN` | Your Shopify store domain | Shopify Admin → Settings → Domains |
-| `SHOPIFY_STOREFRONT_ACCESS_TOKEN` | Storefront API token | Shopify Admin → Apps → Develop apps |
-| `NEXTAUTH_SECRET` | Session encryption key | Generate with `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Site URL | `https://www.dude.box` in production |
-
-### Optional
-
-| Variable | Description |
-|----------|-------------|
-| `SHOPIFY_REVALIDATION_SECRET` | Webhook verification secret |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `NEXT_PUBLIC_APP_NAME` | Site name for metadata |
+**Quick Smoke Test:**
+1. Create vendor account → Apply for store
+2. Admin approves store
+3. Vendor adds products
+4. Customer adds to cart
+5. Verify cart shows items
 
 ---
 
-## Key Features
+## 🚀 Deployment
 
-### Customer Experience
+### Vercel Deployment
 
-- **Subscription Checkout:** Stripe-powered secure payment processing
-- **Customer Portal:** View and manage subscriptions, orders, and returns
-- **Order History:** Complete order tracking with status updates
-- **Returns System:** Request returns, receive shipping labels, track refunds
-- **Address Management:** Update shipping and billing addresses
-- **Profile Management:** Update account information
-- **Email Notifications:** Order confirmations, subscription updates, return status
+1. **Connect repository:**
+   ```bash
+   vercel
+   ```
 
-### Admin Experience
+2. **Configure domains:**
+   - Add `www.dude.box`
+   - Add `*.dude.box` (wildcard for vendor stores)
 
-- **Dashboard:** MRR, customer count, subscription metrics
-- **Subscription Management:** View all subscriptions, track cancellations
-- **Order Management:** Complete order history with fulfillment tracking
-- **Customer Management:** View all customers with subscription status
-- **Returns Dashboard:** Approve/reject returns, generate labels, issue refunds
-- **Refund Processing:** Full or partial refunds via Stripe API
+3. **Set environment variables:**
+   - Copy all from `.env.local`
+   - Update URLs to production
+   - Add Stripe Connect Client ID
 
-### Developer Experience
-
-- **Type Safety:** Full TypeScript with Prisma types
-- **Database ORM:** Prisma 5 with migrations
-- **Server Components:** Optimal performance with React Server Components
-- **API Routes:** Clean REST endpoints for all operations
-- **Webhook Handling:** Automated Stripe event processing
-- **Email Templates:** Beautiful HTML emails with dark theme
-
----
-
-## Shopify Configuration
-
-### Required Shopify Settings
-
-**Storefront API Permissions:**
-- `unauthenticated_read_product_listings` - Product catalog
-- `unauthenticated_read_product_inventory` - Stock levels
-- `unauthenticated_write_checkouts` - Create checkouts
-- `unauthenticated_write_customers` - Customer registration
-
-**Customer Accounts:**
-- Type: "New customer accounts" (not Classic)
-- Login: Optional (allows guest checkout)
-- Password reset URL: `https://www.dude.box/portal/reset-password`
-
-**Checkout:**
-- Return URL: `https://www.dude.box/thank-you`
-- Branding configured to match www.dude.box
-
-**Sales Channels:**
-- Online Store: Disabled (headless only)
-
-See `PHASE2_SHOPIFY_CONFIGURATION_GUIDE.md` for detailed setup.
-
----
-
-## API Reference
-
-### Storefront API Queries
-
-#### Get Products List
-```graphql
-query Products {
-  products(first: 8, sortKey: UPDATED_AT, reverse: true) {
-    nodes {
-      ...ProductBasic
-    }
-  }
-}
-```
-
-#### Get Product by Handle
-```graphql
-query ProductByHandle($handle: String!) {
-  productByHandle(handle: $handle) {
-    ...ProductBasic
-  }
-}
-```
-
-#### Get Cart
-```graphql
-query GetCart($cartId: ID!) {
-  cart(id: $cartId) {
-    ...CartDetails
-  }
-}
-```
-
-See `src/lib/shopify.ts` for complete API implementation.
-
----
-
-## Deployment
-
-### Vercel Deployment (Recommended)
-
-1. **Connect repository to Vercel:**
-   - Import project from GitHub
-   - Vercel auto-detects Next.js
-
-2. **Configure environment variables:**
-   - Add all required env vars in Vercel dashboard
-   - Settings → Environment Variables
-
-3. **Deploy:**
+4. **Deploy:**
    ```bash
    git push origin main
    ```
-   Vercel auto-deploys on push
+   Auto-deploys on push
 
-4. **Configure domain:**
-   - Settings → Domains
-   - Add `www.dude.box`
-   - Update DNS records
+### DNS Configuration
 
-### Environment-Specific Configs
+**Cloudflare:**
+- CNAME: `*` → `cname.vercel-dns.com`
+- CNAME: `www` → `cname.vercel-dns.com`
 
-**Production:**
-- `NEXTAUTH_URL=https://www.dude.box`
-- All Shopify URLs point to production store
-- Analytics enabled
-
-**Preview:**
-- Automatic preview deployments for PRs
-- Unique URL per deployment
-- Uses production Shopify store (test mode)
+**Vercel:**
+- Add domain: `*.dude.box`
+- SSL auto-configured
 
 ---
 
-## Development Workflow
+## 📋 Project Status
 
-### Local Development
+### ✅ Completed Features
+
+**Phase 1: Member Area**
+- Member dashboard with news/announcements
+- Authentication redirects to /members
+- Role-based access (customer/vendor/admin)
+
+**Phase 2: Database Schema**
+- Store model for vendor storefronts
+- PlatformTransaction for fee tracking
+- Cart models for shopping
+- Announcement model for news
+
+**Phase 3: Stripe Connect**
+- Vendor onboarding flow
+- Stripe Connect OAuth integration
+- Platform fee calculation
+- Admin approval workflow
+
+**Phase 4: Subdomain Routing**
+- Middleware for subdomain detection
+- Store pages at `storename.dude.box`
+- Custom branding per store
+- Product listings per store
+
+**Phase 5: Vendor Dashboard**
+- Product management (CRUD)
+- Order management
+- Store settings
+- Sales analytics
+
+**Phase 6: Multi-Vendor Cart**
+- Cart with items from multiple stores
+- Cart grouped by store
+- Add to cart functionality
+- Checkout flow
+
+**Phase 7: Admin Tools**
+- Store approval/rejection
+- Platform analytics (GMV, fees, top stores)
+- Product moderation (flag/hide)
+
+**Phase 8: Email Notifications**
+- Vendor order notifications
+- Store approved/rejected emails
+- Branded from `storename@dude.box`
+
+### ⏳ Pending
+
+**Phase 9: Testing & Polish**
+- Manual testing all flows
+- Security audit
+- Performance optimization
+- Documentation complete
+
+**Phase 10: Production Launch**
+- Stripe Connect production setup
+- Wildcard DNS configuration
+- Pilot vendor program
+- Public announcement
+
+---
+
+## 📊 Marketplace Metrics
+
+**Current Status:**
+- Stores: 1 (Dude.Box default)
+- Products: Migrated from original catalog
+- Vendors: Open for applications
+- Platform Fee: 10%
+
+**Growth Targets:**
+- Month 1: 5 vendors, $1K GMV
+- Month 3: 20 vendors, $10K GMV
+- Month 6: 50 vendors, $50K GMV
+
+---
+
+## 🔐 Security
+
+- ✅ Stripe Connect OAuth for secure account linking
+- ✅ Authorization checks (vendors can only access their data)
+- ✅ Subdomain isolation (no cross-store data leaks)
+- ✅ Platform fee validation
+- ✅ HTTPS enforced
+- ✅ Webhook signature verification
+- ✅ Session encryption (NextAuth)
+- ✅ Password hashing (bcryptjs)
+
+---
+
+## 💡 Key Concepts
+
+### Subdomain Multi-Tenancy
+
+Each vendor gets `storename.dude.box`:
+- Middleware rewrites to `/stores/[subdomain]`
+- Store-specific branding and products
+- SEO-friendly URLs
+- Custom navigation
+
+### Stripe Connect
+
+Split payments without holding funds:
+- Customer pays $100
+- Stripe sends $90 to vendor
+- Platform keeps $10 fee
+- Vendor gets payout in 2 days
+- Platform never holds customer funds
+
+### Sequential Checkout
+
+Multi-vendor cart splits into separate orders:
+- Cart groups items by store
+- Each store has own checkout
+- Separate orders created
+- Each vendor paid independently
+
+---
+
+## 🛣️ Routes
+
+### Public Routes
+
+- `/` - Platform homepage
+- `/stores/[subdomain]` - Vendor storefront
+- `/stores/[subdomain]/products` - Store product catalog
+- `/stores/[subdomain]/products/[id]` - Product detail
+- `/stores/[subdomain]/about` - Store about page
+
+### Member Routes (Auth Required)
+
+- `/members` - Member dashboard (news, stats)
+- `/members/news` - All announcements
+- `/members/become-vendor` - Vendor application
+- `/portal` - Account settings (profile, address, password)
+
+### Vendor Routes (Vendor Role Required)
+
+- `/vendor` - Vendor dashboard
+- `/vendor/products` - Product management
+- `/vendor/orders` - Order fulfillment
+- `/vendor/settings` - Store configuration
+
+### Admin Routes (Admin Role Required)
+
+- `/admin` - Admin overview
+- `/admin/stores` - Store approval
+- `/admin/products` - Product moderation
+- `/admin/analytics` - Platform metrics
+- `/admin/announcements` - News management
+- `/admin/customers` - Customer management
+- `/admin/orders` - All orders
+- `/admin/returns` - Return management
+- `/admin/subscriptions` - Subscription tracking
+
+### API Routes
+
+- `/api/cart` - Cart operations
+- `/api/stores/create` - Create vendor store
+- `/api/stores/connect-stripe` - Stripe Connect OAuth
+- `/api/vendor/*` - Vendor API endpoints
+- `/api/admin/*` - Admin API endpoints
+- `/api/announcements` - Announcement CRUD
+
+---
+
+## 🏃 Getting Started
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment
+
+Create `.env.local` with:
+
+```env
+# Database
+DATABASE_URL="postgres://..."
+
+# Auth
+NEXTAUTH_SECRET="your-secret"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Stripe Connect
+STRIPE_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_CONNECT_CLIENT_ID="ca_..."
+STRIPE_PLATFORM_FEE_PERCENT="10"
+
+# Email
+RESEND_API_KEY="re_..."
+RESEND_FROM_EMAIL="noreply@dude.box"
+
+# App
+NEXT_PUBLIC_APP_DOMAIN="http://localhost:3000"
+```
+
+### 3. Setup Database
+
+```bash
+npx prisma db push
+npx prisma generate
+npm run seed:dudebox-store
+```
+
+### 4. Create Admin Account
 
 ```bash
 # Start dev server
 npm run dev
 
-# Run linter
-npm run lint
-
-# Type check
-npx tsc --noEmit
-
-# Build production
-npm run build
+# Register at http://localhost:3000/portal/register
+# Then visit http://localhost:3000/api/auth/make-admin
 ```
 
-### Code Organization
+### 5. Test Vendor Flow
 
-**Server Components:** Use for data fetching, SEO  
-**Client Components:** Use for interactivity, state  
-**API Routes:** Use for Shopify API proxy, webhooks  
-**Lib/Utils:** Shared logic, type definitions
-
-### Caching Strategy
-
-| Resource | Strategy | Revalidate |
-|----------|----------|------------|
-| Product List | ISR | 5 minutes |
-| Product Detail | SSR | On request |
-| Cart | No cache | Real-time |
-| Customer Data | No cache | Real-time |
+1. Create second account
+2. Visit `/members/become-vendor`
+3. Fill out store application
+4. Admin approves at `/admin/stores`
+5. Vendor connects Stripe (if configured)
+6. Vendor adds products
+7. Browse at `http://storename.localhost:3000` (requires hosts file)
 
 ---
 
-## Testing
+## 📖 User Guides
 
-### Manual Testing Checklist
+### For Customers
 
-**Product Browsing:**
-- [ ] Products load at /shop
-- [ ] Product detail pages load
-- [ ] Images display correctly
-- [ ] Prices display correctly
+**Shopping:**
+1. Browse stores at vendor subdomains
+2. Add products to cart
+3. Review cart (grouped by store)
+4. Complete checkout for each store
+5. Track orders in `/members`
 
-**Cart Operations:**
-- [ ] Add to cart works
-- [ ] Update quantity works
-- [ ] Remove items works
-- [ ] Cart persists across sessions
+**Member Benefits:**
+- Dashboard with news and announcements
+- Order history across all vendors
+- Account management
+- Returns and refunds
 
-**Checkout:**
-- [ ] Guest checkout works
-- [ ] Logged-in checkout pre-fills email
-- [ ] Payment processing works (test mode)
-- [ ] Redirects to thank you page
+### For Vendors
 
-**Customer Accounts:**
-- [ ] Registration creates Shopify customer
-- [ ] Login works
-- [ ] Order history displays
-- [ ] Profile editing saves
+**Getting Started:**
+1. Create account at `/portal/register`
+2. Apply at `/members/become-vendor`
+3. Wait for admin approval (email notification)
+4. Connect Stripe account
+5. Add products at `/vendor/products`
+6. Share your store: `yourstore.dude.box`
 
-### End-to-End Test Flow
+**Managing Your Store:**
+- Add/edit products
+- View orders and customer info
+- Mark orders as shipped
+- Update store settings and policies
+- Track your sales
 
-1. Browse products as guest
-2. Add items to cart
-3. Register new account
-4. Complete checkout
-5. Verify order in portal
-6. Test password reset
-7. Edit profile information
+**Payments:**
+- Stripe pays you directly (2-day payout)
+- You receive 90% of each sale
+- Platform keeps 10% fee
+- No upfront costs
 
----
+### For Admins
 
-## Common Issues & Solutions
+**Daily Tasks:**
+- Review vendor applications at `/admin/stores`
+- Approve/reject stores
+- Check for flagged products
 
-### Issue: Products not loading
-
-**Check:**
-- Storefront API token valid
-- SHOPIFY_STORE_DOMAIN correct
-- Products published in Shopify
-- Network tab for API errors
-
-### Issue: Cart not persisting
-
-**Check:**
-- Cookies enabled in browser
-- `dudebox_cart` cookie set
-- Cart API route working
-- Shopify cart not expired (10-day limit)
-
-### Issue: Checkout redirect fails
-
-**Check:**
-- Cart has items
-- Cart ID valid
-- Shopify checkout accessible
-- Network connectivity
-
-### Issue: Customer can't log in
-
-**Check:**
-- Shopify customer exists
-- Password correct
-- Customer account enabled (not disabled in Shopify)
-- NEXTAUTH_SECRET configured
+**Weekly Tasks:**
+- Review analytics at `/admin/analytics`
+- Post announcements at `/admin/announcements`
+- Monitor top-performing stores
 
 ---
 
-## Performance
+## 🔧 Development
 
-### Lighthouse Scores (Target)
+### Available Scripts
 
-- **Performance:** 90+
-- **Accessibility:** 100
-- **Best Practices:** 95+
-- **SEO:** 100
-
-### Optimization Techniques
-
-- Server-side rendering for initial load
-- Image optimization with Next.js Image
-- Code splitting (automatic)
-- Font optimization (Google Fonts with display=swap)
-- CSS purging (Tailwind)
-
-### Monitoring
-
-- Vercel Analytics (built-in)
-- Core Web Vitals tracking
-- Error logging (Vercel dashboard)
-
----
-
-## Security
-
-### Best Practices Implemented
-
-- ✅ HTTPS enforced (Vercel)
-- ✅ Environment variables server-side only
-- ✅ httpOnly cookies for cart ID
-- ✅ JWT session encryption
-- ✅ Storefront API token scoped (no admin access)
-- ✅ Input validation on forms
-- ✅ NextAuth CSRF protection
-
-### What Shopify Handles
-
-- PCI compliance (checkout/payments)
-- Credit card processing
-- Fraud detection
-- SSL certificates
-- Customer password hashing
-
----
-
-## Contributing
-
-### Development Guidelines
-
-1. **Branch Strategy:**
-   - `main` → production
-   - `develop` → staging
-   - Feature branches → `feature/name`
-
-2. **Commit Convention:**
-   - `feat:` New features
-   - `fix:` Bug fixes
-   - `docs:` Documentation
-   - `refactor:` Code refactoring
-   - `test:` Tests
-
-3. **Pull Request Process:**
-   - Create feature branch
-   - Make changes
-   - Test locally
-   - Submit PR to `develop`
-   - Code review
-   - Merge after approval
-
----
-
-## Documentation
-
-**Primary Documentation:**
-- **[resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md)** - Complete project guide (single source of truth)
-
-**Quick References:**
-- **[resources/VERCEL_ENV_SETUP.md](resources/VERCEL_ENV_SETUP.md)** - Production environment variables
-- **[resources/QUICK_FIX_GUIDE.txt](resources/QUICK_FIX_GUIDE.txt)** - Emergency troubleshooting
-
-**Archived Documentation:**
-- **[resources/archive/](resources/archive/)** - Historical implementation documents
-
----
-
-## Migration Scripts
-
-### Link Orders to Addresses
 ```bash
-npm run migrate:link-addresses
+npm run dev                    # Start dev server
+npm run build                  # Production build
+npm run start                  # Start production server
+npm run lint                   # Run ESLint
+npm run seed:dudebox-store     # Seed default store
 ```
-Links existing orders to user shipping addresses (required for return label generation).
+
+### Database Management
+
+```bash
+npx prisma studio              # Visual database editor
+npx prisma db push             # Push schema changes
+npx prisma generate            # Regenerate Prisma Client
+```
+
+### Code Structure
+
+```
+src/
+├── app/                       # Next.js App Router
+│   ├── members/              # Member area
+│   ├── vendor/               # Vendor dashboard
+│   ├── stores/               # Store pages (subdomain)
+│   ├── admin/                # Admin dashboard
+│   ├── portal/               # Account settings
+│   └── api/                  # API routes
+├── components/               # React components
+│   ├── admin/               # Admin-specific components
+│   └── vendor/              # Vendor-specific components
+└── lib/                      # Utilities
+    ├── prisma.ts            # Database client
+    ├── stripe.ts            # Stripe client
+    ├── auth.ts              # NextAuth config
+    ├── email.ts             # Email templates
+    ├── marketplace.ts       # Fee calculations
+    └── vendor.ts            # Vendor auth
+```
 
 ---
 
-## Support & Contact
+## 🌐 Production Setup
 
-**Technical Issues:** Open GitHub issue  
-**Business Owner:** Alex Moore  
-**Support Email:** dude@dude.box
+### Prerequisites
+
+1. **Stripe Connect:** Enable in Stripe Dashboard
+2. **Wildcard DNS:** `*.dude.box` pointing to Vercel
+3. **Email Domain:** Verify `dude.box` in Resend
+
+### Deployment Steps
+
+1. Deploy to Vercel
+2. Add `*.dude.box` domain
+3. Configure environment variables
+4. Set up Stripe webhook endpoint
+5. Test with pilot vendor
+6. Open for applications
+
+**Detailed guide:** `resources/MARKETPLACE_SETUP_GUIDE.md`
 
 ---
 
-## License
+## 💰 Cost Breakdown
+
+**Monthly Costs:**
+- Vercel Pro: $20/month
+- NeonDB: $0-25/month (based on usage)
+- Resend: $0-20/month (based on emails)
+- EasyPost: Pay per label ($3-5 each)
+- **Total: ~$50-100/month**
+
+**vs Shopify Plus:** $2,300/month  
+**Savings:** $2,200+/month
+
+---
+
+## 🤝 Support
+
+**For Vendors:**
+- Email: dude@dude.box
+- Dashboard: `/vendor` (after approval)
+- Help docs: (coming soon)
+
+**For Customers:**
+- Email: dude@dude.box
+- Member dashboard: `/members`
+- Order tracking: `/portal`
+
+**For Development:**
+- Technical docs: `resources/` folder
+- Issues: GitHub Issues
+- Contact: alex_moore19@yahoo.com
+
+---
+
+## 📄 License
 
 Proprietary - All rights reserved
 
 ---
 
-## Acknowledgments
+## 🎉 Acknowledgments
 
-- Next.js team at Vercel
-- Stripe payment processing
-- NeonDB serverless PostgreSQL
+Built with:
+- Next.js & Vercel
+- Stripe Connect
+- NeonDB
 - Prisma ORM
-- Resend email service
-- EasyPost shipping API
+- Resend
 - TailwindCSS
 - NextAuth.js
 
 ---
 
-**Version:** 5.0  
+**Version:** 6.0 (Marketplace)  
 **Last Updated:** January 28, 2026  
-**Status:** 85% Complete - Phase 8 Functional ✅  
-**Next:** Phase 9 - Testing & Polish
+**Status:** Core Features Complete - Testing Phase  
+**Next:** Pilot Vendor Program

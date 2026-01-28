@@ -8,7 +8,7 @@ import { Section } from "@/components/Section";
 
 export default function RegisterPage() {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/portal";
+  const redirectTo = searchParams.get("redirect") || "/members";
   
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -168,7 +168,7 @@ export default function RegisterPage() {
           <div className="pt-4 border-t border-border text-center">
             <p className="text-xs muted pb-2">Already have an account?</p>
             <Link
-              href={`/portal/login${redirectTo !== "/portal" ? `?redirect=${redirectTo}` : ""}`}
+              href={`/portal/login${redirectTo !== "/members" ? `?redirect=${redirectTo}` : ""}`}
               className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
             >
               Sign In
