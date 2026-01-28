@@ -4,12 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { email, password, token } = await request.json();
+    const { resetToken, customerId, password } = await request.json();
 
     // Validate required fields
-    if (!email || !password) {
+    if (!customerId || !password) {
       return NextResponse.json(
-        { error: "Email and password are required." },
+        { error: "Invalid reset request." },
         { status: 400 }
       );
     }
@@ -22,11 +22,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    // Validate reset token is provided
+    if (!resetToken) {
+      return NextResponse.json(
+        { error: "Invalid reset link." },
+        { status: 400 }
+      );
+    }
 
-    // Find user by email
+    // Find user by ID
     const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+      where: { id: customerId },
     });
 
     if (!user) {
@@ -38,18 +44,20 @@ export async function POST(request: Request) {
 
     // TODO: Verify reset token from database
     // This requires adding reset_token and reset_token_expiry fields to User model
-    // For now, we're accepting any token in development mode for testing
-    // In Phase 7 (Email Notifications), we'll:
-    // 1. Add reset_token fields to schema
+    // For now, we're accepting the token from the email link
+    // In a future phase, we should:
+    // 1. Add reset_token and reset_token_expiry fields to User schema
     // 2. Verify token matches and hasn't expired
     // 3. Invalidate token after successful reset
-    
-    if (process.env.NODE_ENV === 'production' && !token) {
-      return NextResponse.json(
-        { error: "Reset token is required." },
-        { status: 400 }
-      );
-    }
+    // 
+    // Current flow:
+    // 1. User requests password reset (sends email with token)
+    // 2. Token is generated and sent via email link
+    // 3. User clicks link with token in URL
+    // 4. This endpoint accepts the token and resets password
+    //
+    // Security note: In production, this should verify the token against
+    // a stored hash in the database and check expiration time
 
     // Hash new password
     const passwordHash = await bcrypt.hash(password, 10);
@@ -63,11 +71,11 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log(`Password reset successful for: ${user.email}`);
+    console.log(`✅ Password reset successful for: ${user.email}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Password reset error:", error);
+    console.error("❌ Password reset error:", error);
     return NextResponse.json(
       { error: "Unable to reset password. Please try again." },
       { status: 500 }
