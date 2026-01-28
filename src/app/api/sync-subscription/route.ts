@@ -38,14 +38,21 @@ export async function POST() {
     console.log(`\n📋 Stripe subscription: ${stripeSubscription.id}`);
     console.log(`   - status: ${stripeSubscription.status}`);
     console.log(`   - cancel_at_period_end: ${stripeSubscription.cancel_at_period_end}`);
+    console.log(`   - cancel_at: ${stripeSubscription.cancel_at ? new Date(stripeSubscription.cancel_at * 1000) : 'null'}`);
     console.log(`   - current_period_end: ${new Date(currentPeriodEnd * 1000)}`);
+
+    // Determine if subscription is set to cancel
+    // Stripe uses either cancel_at_period_end (boolean) OR cancel_at (timestamp)
+    const willCancelAtPeriodEnd = stripeSubscription.cancel_at_period_end || (stripeSubscription.cancel_at !== null);
+
+    console.log(`   - will cancel: ${willCancelAtPeriodEnd}`);
 
     // Update database to match Stripe
     const updated = await prisma.subscription.update({
       where: { id: dbSubscription.id },
       data: {
         status: stripeSubscription.status,
-        cancel_at_period_end: stripeSubscription.cancel_at_period_end,
+        cancel_at_period_end: willCancelAtPeriodEnd,
         current_period_end: new Date(currentPeriodEnd * 1000),
       },
     });
