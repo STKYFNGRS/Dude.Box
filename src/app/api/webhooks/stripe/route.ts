@@ -162,32 +162,80 @@ async function handleCheckoutSessionCompleted(
     },
   });
 
-  // Sync shipping address to Stripe customer
-  const shippingAddress = await prisma.address.findFirst({
-    where: {
-      user_id: userId,
-      is_default: true,
-    },
-  });
+  // Save shipping address from Stripe Checkout to database
+  const shippingDetails = session.shipping_details || session.customer_details;
+  
+  if (shippingDetails?.address) {
+    const addr = shippingDetails.address;
+    const name = shippingDetails.name || session.customer_details?.name || "";
+    const nameParts = name.split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
 
-  if (shippingAddress) {
     try {
+      // Check if user already has an address
+      const existingAddress = await prisma.address.findFirst({
+        where: {
+          user_id: userId,
+          is_default: true,
+        },
+      });
+
+      if (existingAddress) {
+        // Update existing default address
+        await prisma.address.update({
+          where: { id: existingAddress.id },
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            address1: addr.line1 || "",
+            address2: addr.line2 || "",
+            city: addr.city || "",
+            state: addr.state || "",
+            postal_code: addr.postal_code || "",
+            country: addr.country || "US",
+            phone: shippingDetails.phone || "",
+          },
+        });
+        console.log(`✅ Updated existing address for user ${userId}`);
+      } else {
+        // Create new default address
+        await prisma.address.create({
+          data: {
+            user_id: userId,
+            type: "shipping",
+            first_name: firstName,
+            last_name: lastName,
+            address1: addr.line1 || "",
+            address2: addr.line2 || "",
+            city: addr.city || "",
+            state: addr.state || "",
+            postal_code: addr.postal_code || "",
+            country: addr.country || "US",
+            phone: shippingDetails.phone || "",
+            is_default: true,
+          },
+        });
+        console.log(`✅ Created new address for user ${userId}`);
+      }
+
+      // Also sync to Stripe customer for consistency
       await stripe.customers.update(stripeCustomerId, {
-        name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
-        phone: shippingAddress.phone || undefined,
+        name: name,
+        phone: shippingDetails.phone || undefined,
         address: {
-          line1: shippingAddress.address1,
-          line2: shippingAddress.address2 || undefined,
-          city: shippingAddress.city,
-          state: shippingAddress.state,
-          postal_code: shippingAddress.postal_code,
-          country: shippingAddress.country,
+          line1: addr.line1,
+          line2: addr.line2 || undefined,
+          city: addr.city,
+          state: addr.state,
+          postal_code: addr.postal_code,
+          country: addr.country,
         },
       });
       console.log(`✅ Synced address to Stripe customer ${stripeCustomerId}`);
     } catch (error) {
-      console.error("Error syncing address to Stripe:", error);
-      // Don't fail the webhook if address sync fails
+      console.error("Error saving/syncing address:", error);
+      // Don't fail the webhook if address operations fail
     }
   }
 
