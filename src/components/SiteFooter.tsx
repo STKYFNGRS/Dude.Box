@@ -11,9 +11,20 @@ export function SiteFooter() {
       <Container className="py-8 flex flex-col gap-6 text-sm muted">
         <nav aria-label="Footer" className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.2em]">
           {footerNavigationLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
-              {item.label}
-            </Link>
+            item.label === "Login" ? (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => window.dispatchEvent(new Event("open:login-modal"))}
+                className="hover:text-accent transition-colors"
+              >
+                {item.label}
+              </button>
+            ) : (
+              <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
+                {item.label}
+              </Link>
+            )
           ))}
         </nav>
         <div className="flex flex-col gap-2">
