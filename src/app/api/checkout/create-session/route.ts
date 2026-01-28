@@ -60,6 +60,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Log checkout attempt
+    console.log(`Creating checkout session for user: ${user.email}`);
+    console.log(`Using Stripe Price ID: ${priceId}`);
+
     // Create Stripe Checkout Session
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -86,14 +90,30 @@ export async function POST(req: NextRequest) {
       cancel_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/products/subscription-box`,
     });
 
+    console.log(`✅ Checkout session created: ${checkoutSession.id}`);
+
     return NextResponse.json({ 
       url: checkoutSession.url,
       sessionId: checkoutSession.id 
     });
-  } catch (error) {
-    console.error("Error creating checkout session:", error);
+  } catch (error: any) {
+    console.error("❌ Error creating checkout session:", error);
+    
+    // Provide more helpful error messages
+    let errorMessage = "Failed to create checkout session";
+    
+    if (error?.type === 'StripeInvalidRequestError') {
+      if (error.message?.includes('price')) {
+        errorMessage = "Invalid Stripe Price ID. Please run: npm run setup:stripe";
+      } else if (error.message?.includes('key')) {
+        errorMessage = "Stripe API key not configured. Check your .env file";
+      } else {
+        errorMessage = error.message || errorMessage;
+      }
+    }
+    
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -5,6 +5,7 @@ import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 import { EditProfileForm } from "@/components/EditProfileForm";
 import { EditAddressForm } from "@/components/EditAddressForm";
+import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 import { ManageSubscriptionButton } from "@/components/ManageSubscriptionButton";
 import { RequestReturnButton } from "@/components/RequestReturnButton";
 import { prisma } from "@/lib/prisma";
@@ -84,6 +85,10 @@ export default async function PortalPage() {
 
         <Card title="Shipping Address">
           <EditAddressForm />
+        </Card>
+
+        <Card title="Password">
+          <ChangePasswordForm />
         </Card>
       </div>
 

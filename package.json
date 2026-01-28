@@ -9,7 +9,8 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts",
-    "migrate:link-addresses": "tsx scripts/link-orders-to-addresses.ts"
+    "migrate:link-addresses": "tsx scripts/link-orders-to-addresses.ts",
+    "setup:stripe": "tsx scripts/setup-stripe-product.ts"
   },
   "dependencies": {
     "@easypost/api": "^8.4.0",
