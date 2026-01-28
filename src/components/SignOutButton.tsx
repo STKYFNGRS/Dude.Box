@@ -26,6 +26,7 @@ export function SignOutButton() {
     <button
       type="button"
       onClick={handleSignOut}
+      aria-label="Sign out of your account"
       className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]"
     >
       Sign Out

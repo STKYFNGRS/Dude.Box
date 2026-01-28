@@ -274,6 +274,7 @@ export function EditAddressForm() {
         <button
           type="button"
           onClick={() => setIsEditing(true)}
+          aria-label="Edit your shipping address"
           className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
         >
           Edit Address

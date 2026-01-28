@@ -1,33 +1,64 @@
-# Dude.Box - Headless E-Commerce Platform
+# Dude.Box - Custom E-Commerce Platform
 
-Premium EDC gear, tools, and grooming supplies from veteran-owned small businesses.
+Premium subscription box of veteran-made EDC gear delivered monthly.
 
 **Live Site:** [www.dude.box](https://www.dude.box)  
-**Stack:** Next.js 14 + Shopify Storefront API  
+**Stack:** Next.js 14 + NeonDB + Stripe + Prisma  
+**Status:** 85% Complete - Production Ready  
 **Deployment:** Vercel
 
 ---
 
-## 🚀 Quick Start
+## 📚 COMPLETE DOCUMENTATION
 
-**Ready to launch?** Follow the step-by-step action list:
+### **→ [resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md) ←**
 
-### **→ [YOUR_TODO_LIST.md](YOUR_TODO_LIST.md) ←**
+**This is the single source of truth for the entire project.**
 
-This consolidated guide walks you through:
-1. Local setup (5 min)
-2. Shopify configuration (30 min)
-3. Testing (15 min)
-4. Deployment to Vercel (30 min)
-5. Production verification (15 min)
+Contains:
+- ✅ Complete project status and progress (85% done)
+- ✅ All 8 completed phases detailed
+- ✅ Database schema and architecture
+- ✅ Environment setup guide for production
+- ✅ Troubleshooting guide for common issues
+- ✅ Testing checklists
+- ✅ Migration scripts documentation
+- ✅ Stripe integration details
+- ✅ Returns & refunds system guide
 
-**Total time:** ~2 hours to go live
+**Quick Reference Guides:**
+- [resources/VERCEL_ENV_SETUP.md](resources/VERCEL_ENV_SETUP.md) - Production deployment variables
+- [resources/QUICK_FIX_GUIDE.txt](resources/QUICK_FIX_GUIDE.txt) - Emergency fixes
+
+---
+
+## 🎯 Current Status
+
+**Phase 8 Complete (95%)** - Returns & Refunds Management System Live  
+**Next:** Phase 9 - Testing & Polish
+
+### What's Working:
+- ✅ Custom authentication (no Shopify dependencies)
+- ✅ NeonDB PostgreSQL database with 8 tables
+- ✅ Stripe subscriptions with checkout flow
+- ✅ Customer portal (subscriptions, orders, returns)
+- ✅ Admin dashboard (subscriptions, orders, customers, returns)
+- ✅ Complete returns system with shipping labels
+- ✅ Automated emails (orders, subscriptions, returns, refunds)
+- ✅ Bidirectional Stripe sync
+- ✅ Production deployment on Vercel
+
+### Migration from Shopify:
+- ✅ Removed all Shopify dependencies
+- ✅ Custom payment processing via Stripe
+- ✅ Database-driven product catalog
+- ✅ Cost reduced from $2,300/month (Shopify Plus) to ~$30/month
 
 ---
 
 ## Architecture Overview
 
-Dude.Box is a **fully headless commerce application** where Next.js owns all UI/UX and Shopify provides product catalog, cart management, checkout, and order fulfillment.
+Dude.Box is a **custom subscription platform** with Next.js frontend, PostgreSQL database, and Stripe payment processing.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -35,28 +66,30 @@ Dude.Box is a **fully headless commerce application** where Next.js owns all UI/
 │                    (Next.js on Vercel)                      │
 │                                                              │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   Marketing  │  │   Shop       │  │   Portal     │     │
-│  │   Pages      │  │   (Products) │  │   (Account)  │     │
+│  │   Homepage   │  │   Products   │  │   Portal     │     │
+│  │              │  │   Checkout   │  │   (Customer) │     │
 │  └──────────────┘  └──────────────┘  └──────────────┘     │
 │                                                              │
-│                     Custom Header/Footer                    │
-└────────────┬────────────────────────────────────────────────┘
-             │ Storefront API
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                          Shopify                             │
-│                    (Headless Backend)                        │
-│                                                              │
-│  Products  │  Cart    │  Checkout   │  Orders  │  Customers│
-└─────────────────────────────────────────────────────────────┘
+│  ┌──────────────┐                                           │
+│  │   Admin      │  (Subscriptions, Orders, Returns)        │
+│  │   Dashboard  │                                           │
+│  └──────────────┘                                           │
+└────┬──────────────────────┬──────────────────┬─────────────┘
+     │                      │                  │
+     ▼                      ▼                  ▼
+┌─────────┐         ┌──────────────┐    ┌─────────────┐
+│ NeonDB  │         │    Stripe    │    │   Resend    │
+│  (Data) │         │  (Payments)  │    │   (Email)   │
+└─────────┘         └──────────────┘    └─────────────┘
 ```
 
-**Key Principles:**
-- **Single Domain:** All customer traffic goes through www.dude.box
-- **No Liquid Themes:** Shopify Online Store disabled, no theme files
-- **API-First:** All data accessed via Shopify Storefront API
-- **Custom UI:** Complete design control with Tailwind CSS
-- **Hosted Checkout:** Shopify handles payment processing (PCI compliance included)
+**Key Features:**
+- **Full Control:** Own your data, code, and customer experience
+- **Database-Driven:** PostgreSQL via NeonDB (Prisma ORM)
+- **Stripe Integration:** Subscriptions, checkout, webhooks, refunds
+- **Returns System:** Complete workflow with automatic shipping labels
+- **Admin Dashboard:** Manage subscriptions, orders, customers, returns
+- **No Shopify:** Zero dependencies on external platforms
 
 ---
 
@@ -114,20 +147,23 @@ dude.box/
 - **Framework:** Next.js 14 (App Router, React Server Components)
 - **Language:** TypeScript 5.3
 - **Styling:** Tailwind CSS 3.3
-- **Authentication:** NextAuth 4.24
-- **Fonts:** Inter (sans), Fraunces (serif) via Google Fonts
+- **Authentication:** NextAuth 4.24 with bcryptjs
+- **UI:** Custom components (no external UI library)
 
 ### Backend / Data
-- **Commerce Platform:** Shopify (Storefront API 2024-07)
-- **Database:** Neon PostgreSQL (via Supabase)
-- **Session Storage:** JWT (NextAuth)
-- **Cart Storage:** Shopify (cart ID in httpOnly cookie)
+- **Database:** NeonDB PostgreSQL (serverless)
+- **ORM:** Prisma 5.22.0
+- **Payments:** Stripe (subscriptions, checkout, webhooks, refunds)
+- **Email:** Resend (order confirmations, return notifications)
+- **Shipping:** EasyPost (return label generation)
+- **Session:** JWT via NextAuth
 
 ### Deployment
 - **Hosting:** Vercel (automatic deployments)
-- **Domain:** www.dude.box (Vercel DNS)
-- **Environment:** Production + Preview environments
+- **Domain:** www.dude.box
+- **Database:** NeonDB (serverless PostgreSQL)
 - **CI/CD:** Git push → Vercel auto-deploy
+- **Cost:** ~$30/month (vs $2,300/month Shopify Plus)
 
 ---
 
@@ -155,32 +191,61 @@ dude.box/
 
 3. **Set up environment variables:**
    
-   Create `.env.local` file:
+   Copy the `.env` file or create `.env.local`:
    ```env
-   # Shopify Configuration
-   SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
-   SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_storefront_token
-   SHOPIFY_REVALIDATION_SECRET=your_secret
+   # Database (NeonDB)
+   DATABASE_URL=your_neondb_connection_string
    
    # NextAuth
-   NEXTAUTH_SECRET=generate_random_secret
+   NEXTAUTH_SECRET=your_secret_key
    NEXTAUTH_URL=http://localhost:3000
    
-   # Database
-   DATABASE_URL=your_postgres_connection_string
+   # Stripe (use test keys for development)
+   STRIPE_SECRET_KEY=sk_test_...
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+   STRIPE_WEBHOOK_SECRET=whsec_... # From stripe listen
+   
+   # Resend Email
+   RESEND_API_KEY=re_...
+   RESEND_FROM_EMAIL=noreply@dude.box
+   SUPPORT_EMAIL=dude@dude.box
+   
+   # EasyPost (optional - for return labels)
+   EASYPOST_API_KEY=EZTEST_...
+   RETURN_ADDRESS_NAME=Dude.Box Returns
+   RETURN_ADDRESS_STREET1=Your Address
+   RETURN_ADDRESS_CITY=Your City
+   RETURN_ADDRESS_STATE=CA
+   RETURN_ADDRESS_ZIP=12345
+   RETURN_ADDRESS_COUNTRY=US
    
    # App Config
-   NEXT_PUBLIC_APP_DOMAIN=localhost:3000
+   NEXT_PUBLIC_APP_DOMAIN=http://localhost:3000
    NEXT_PUBLIC_APP_NAME=Dude.Box
    ```
 
-4. **Run development server:**
+4. **Set up database:**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Run development server:**
    ```bash
    npm run dev
    ```
 
-5. **Open browser:**
+6. **Start Stripe webhook listener (separate terminal):**
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhooks/stripe
+   ```
+
+7. **Open browser:**
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+---
+
+**See [resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md) for complete setup instructions.**
 
 ### Production Build
 
@@ -216,22 +281,31 @@ npm start
 
 ### Customer Experience
 
-- **Product Browsing:** Server-rendered product catalog with 5-minute cache
-- **Product Search:** Filter and sort products
-- **Shopping Cart:** Real-time cart managed by Shopify
-- **Checkout:** Hosted by Shopify (secure, PCI-compliant)
-- **Customer Accounts:** Custom login/register UI with Shopify backend
-- **Order History:** View past orders in customer portal
-- **Responsive Design:** Mobile-first, works on all devices
+- **Subscription Checkout:** Stripe-powered secure payment processing
+- **Customer Portal:** View and manage subscriptions, orders, and returns
+- **Order History:** Complete order tracking with status updates
+- **Returns System:** Request returns, receive shipping labels, track refunds
+- **Address Management:** Update shipping and billing addresses
+- **Profile Management:** Update account information
+- **Email Notifications:** Order confirmations, subscription updates, return status
+
+### Admin Experience
+
+- **Dashboard:** MRR, customer count, subscription metrics
+- **Subscription Management:** View all subscriptions, track cancellations
+- **Order Management:** Complete order history with fulfillment tracking
+- **Customer Management:** View all customers with subscription status
+- **Returns Dashboard:** Approve/reject returns, generate labels, issue refunds
+- **Refund Processing:** Full or partial refunds via Stripe API
 
 ### Developer Experience
 
-- **Type Safety:** Full TypeScript coverage
-- **GraphQL Fragments:** DRY API queries
-- **Server Components:** Optimal performance
-- **API Routes:** Clean separation of concerns
-- **Error Handling:** Graceful fallbacks
-- **Caching Strategy:** Balanced freshness and performance
+- **Type Safety:** Full TypeScript with Prisma types
+- **Database ORM:** Prisma 5 with migrations
+- **Server Components:** Optimal performance with React Server Components
+- **API Routes:** Clean REST endpoints for all operations
+- **Webhook Handling:** Automated Stripe event processing
+- **Email Templates:** Beautiful HTML emails with dark theme
 
 ---
 
@@ -522,15 +596,33 @@ npm run build
 
 ## Documentation
 
-- **[YOUR_TODO_LIST.md](YOUR_TODO_LIST.md)** - Action checklist to launch your site
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and data flow
-- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Detailed Vercel deployment guide
+**Primary Documentation:**
+- **[resources/MASTER_PROJECT_GUIDE.md](resources/MASTER_PROJECT_GUIDE.md)** - Complete project guide (single source of truth)
+
+**Quick References:**
+- **[resources/VERCEL_ENV_SETUP.md](resources/VERCEL_ENV_SETUP.md)** - Production environment variables
+- **[resources/QUICK_FIX_GUIDE.txt](resources/QUICK_FIX_GUIDE.txt)** - Emergency troubleshooting
+
+**Archived Documentation:**
+- **[resources/archive/](resources/archive/)** - Historical implementation documents
+
+---
+
+## Migration Scripts
+
+### Link Orders to Addresses
+```bash
+npm run migrate:link-addresses
+```
+Links existing orders to user shipping addresses (required for return label generation).
+
+---
 
 ## Support & Contact
 
 **Technical Issues:** Open GitHub issue  
-**Business Inquiries:** support@dude.box  
-**General Questions:** Use GitHub Discussions
+**Business Owner:** Alex Moore  
+**Support Email:** dude@dude.box
 
 ---
 
@@ -542,13 +634,18 @@ Proprietary - All rights reserved
 
 ## Acknowledgments
 
-- Shopify Storefront API
 - Next.js team at Vercel
-- TailwindCSS contributors
-- NextAuth.js maintainers
+- Stripe payment processing
+- NeonDB serverless PostgreSQL
+- Prisma ORM
+- Resend email service
+- EasyPost shipping API
+- TailwindCSS
+- NextAuth.js
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** January 26, 2026  
-**Status:** Production-ready ✅
+**Version:** 5.0  
+**Last Updated:** January 28, 2026  
+**Status:** 85% Complete - Phase 8 Functional ✅  
+**Next:** Phase 9 - Testing & Polish

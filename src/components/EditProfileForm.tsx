@@ -128,6 +128,7 @@ export function EditProfileForm({ firstName, lastName, email }: EditProfileFormP
         <button
           type="button"
           onClick={() => setIsEditing(true)}
+          aria-label="Edit your profile information"
           className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
         >
           Edit Profile

@@ -71,6 +71,7 @@ export function SubscribeButton({ priceId, price, className }: SubscribeButtonPr
     <button
       onClick={handleSubscribe}
       disabled={isLoading}
+      aria-label={`Subscribe for ${price} per month`}
       className={className || "solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] mt-4 w-full text-center"}
     >
       {isLoading ? "Loading..." : "Start Subscription"}

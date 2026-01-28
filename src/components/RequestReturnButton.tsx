@@ -96,6 +96,7 @@ export function RequestReturnButton({
   return (
     <button
       onClick={() => setShowForm(true)}
+      aria-label={`Request return for order ${orderNumber}`}
       className="text-accent hover:underline text-xs"
     >
       Request Return →
