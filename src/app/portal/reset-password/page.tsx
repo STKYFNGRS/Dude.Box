@@ -90,12 +90,13 @@ export default function ResetPasswordPage() {
         />
         <div className="card rounded-lg p-6 max-w-lg">
           <p className="text-sm text-accent pb-4">Redirecting to login page...</p>
-          <Link
-            href="/portal/login"
-            className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] inline-block text-center"
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open:login-modal"))}
+            className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]"
           >
             Go to Login
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -113,12 +114,13 @@ export default function ResetPasswordPage() {
           <p className="text-sm muted pb-4">
             Please request a new password reset link.
           </p>
-          <Link
-            href="/portal/forgot-password"
-            className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] inline-block text-center"
+          <button
+            type="button"
+            onClick={() => window.location.href = '/portal/forgot-password'}
+            className="solid-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]"
           >
             Request New Link
-          </Link>
+          </button>
         </div>
       </div>
     );

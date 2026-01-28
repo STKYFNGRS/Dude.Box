@@ -27,13 +27,13 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href="#shop"
+                href="/products/subscription-box"
                 className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center"
               >
                 Start Your Subscription
               </a>
               <a
-                href="#shop"
+                href="/gift"
                 className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
               >
                 Give as a Gift

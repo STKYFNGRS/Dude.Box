@@ -54,12 +54,13 @@ export default function ForgotPasswordPage() {
           <p className="text-sm muted pb-4">
             Please check your inbox and follow the instructions to reset your password.
           </p>
-          <Link
-            href="/portal/login"
-            className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em] inline-block text-center"
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open:login-modal"))}
+            className="outline-button rounded px-4 py-2 text-xs uppercase tracking-[0.2em]"
           >
             Back to Login
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -93,12 +94,13 @@ export default function ForgotPasswordPage() {
             {isSubmitting ? "Sending..." : "Send Reset Link"}
           </button>
           <div className="pt-4 border-t border-border text-center">
-            <Link
-              href="/portal/login"
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("open:login-modal"))}
               className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
             >
               Back to Login
-            </Link>
+            </button>
           </div>
         </form>
       </div>

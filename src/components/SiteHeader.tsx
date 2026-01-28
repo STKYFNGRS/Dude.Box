@@ -15,6 +15,14 @@ export function SiteHeader() {
   // Prevent hydration mismatch and flash by waiting for client-side mount
   useEffect(() => {
     setMounted(true);
+
+    // Listen for custom event to open login modal from anywhere in the app
+    const handleOpenLogin = () => setIsLoginOpen(true);
+    window.addEventListener("open:login-modal", handleOpenLogin);
+
+    return () => {
+      window.removeEventListener("open:login-modal", handleOpenLogin);
+    };
   }, []);
 
   return (

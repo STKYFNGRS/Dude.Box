@@ -153,7 +153,7 @@ export default async function SubscriptionBoxPage() {
 
             <div className="text-xs uppercase tracking-[0.3em] muted">
               Need help?{" "}
-              <Link href="/portal/login">Member support</Link>
+              <Link href="/portal">Member support</Link>
             </div>
           </div>
         </div>

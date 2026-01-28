@@ -18,7 +18,7 @@ export function SubscribeButton({ priceId, price, className }: SubscribeButtonPr
   const handleSubscribe = async () => {
     // Check if user is logged in
     if (!session) {
-      // Show a friendly prompt before redirecting
+      // Show a friendly prompt before opening login/register modal
       const shouldRegister = confirm(
         "You need an account to subscribe.\n\nClick OK to create an account, or Cancel to log in if you already have one."
       );
@@ -26,7 +26,8 @@ export function SubscribeButton({ priceId, price, className }: SubscribeButtonPr
       if (shouldRegister) {
         router.push("/portal/register?redirect=/products/subscription-box");
       } else {
-        router.push("/portal/login?redirect=/products/subscription-box");
+        // Dispatch event to open login modal instead of navigating
+        window.dispatchEvent(new Event("open:login-modal"));
       }
       return;
     }
