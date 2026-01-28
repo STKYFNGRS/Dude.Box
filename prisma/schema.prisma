@@ -19,6 +19,7 @@ model User {
   last_name          String?
   phone              String?
   stripe_customer_id String?   @unique
+  is_admin           Boolean   @default(false)
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt
   

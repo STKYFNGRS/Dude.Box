@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // Get reset token from URL (Shopify sends this)
+  // Get reset token from URL (sent via password recovery email)
   const resetToken = searchParams.get("token");
   const customerId = searchParams.get("id");
 
