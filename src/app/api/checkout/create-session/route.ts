@@ -71,6 +71,9 @@ export async function POST(req: NextRequest) {
         },
       ],
       customer_email: session.user.email,
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA'], // US and Canada
+      },
       metadata: {
         userId: user.id,
       },
