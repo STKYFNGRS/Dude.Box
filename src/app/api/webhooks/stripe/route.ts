@@ -163,7 +163,8 @@ async function handleCheckoutSessionCompleted(
   });
 
   // Save shipping address from Stripe Checkout to database
-  const shippingDetails = session.shipping_details || session.customer_details;
+  // Stripe uses 'shipping' or 'shipping_details' depending on version, fallback to customer_details
+  const shippingDetails = (session as any).shipping_details || (session as any).shipping || session.customer_details;
   
   if (shippingDetails?.address) {
     const addr = shippingDetails.address;
