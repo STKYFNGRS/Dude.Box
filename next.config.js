@@ -21,6 +21,12 @@ const nextConfig = {
         hostname: '**.public.blob.vercel-storage.com',
         pathname: '/**',
       },
+      // UploadThing CDN
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+        pathname: '/**',
+      },
       // Add any other image hosting services vendors might use
       {
         protocol: 'https',
