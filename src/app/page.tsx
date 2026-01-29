@@ -265,6 +265,26 @@ export default async function HomePage() {
         </Section>
       </div>
 
+      {/* Marketplace CTA */}
+      <section className="py-16">
+        <div className="card-hover rounded-2xl p-12 max-w-4xl mx-auto text-center border-2 border-primary/20 shadow-card animate-fade-in">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
+            <span className="text-3xl">🛍️</span>
+          </div>
+          <h3 className="section-title text-3xl mb-4">Browse All Products</h3>
+          <p className="text-muted mb-8 max-w-lg mx-auto leading-relaxed">
+            Search across all stores, filter by price, type, and maker. 
+            Find unique handcrafted products from independent creators.
+          </p>
+          <a
+            href="/marketplace"
+            className="solid-button rounded-full px-8 py-4 text-sm uppercase tracking-[0.25em] inline-block font-bold shadow-button"
+          >
+            Explore Marketplace →
+          </a>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="flex flex-col gap-4 mb-8 text-center animate-fade-in">
           <span className="text-xs uppercase tracking-[0.35em] text-accent font-semibold">For Makers</span>

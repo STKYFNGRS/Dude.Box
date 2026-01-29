@@ -90,7 +90,6 @@ export function SiteFooter() {
           
           <div className="flex gap-4 text-sm text-muted">
             <span>Made for makers</span>
-            <span>•</span>
             
           </div>
         </div>

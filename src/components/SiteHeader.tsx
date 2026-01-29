@@ -11,6 +11,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 export function SiteHeader() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
 
@@ -27,68 +28,183 @@ export function SiteHeader() {
     };
   }, []);
 
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobileMenuOpen]);
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
         <Container className="py-3 flex items-center justify-between">
-          <div className="flex flex-1 justify-start">
+          <div className="flex flex-1 items-center gap-8">
             <Link href="https://www.dude.box" aria-label="dude.box home" className="inline-flex items-center">
               <Image
                 src="/Logo.png"
                 alt="dude.box logo"
                 width={400}
                 height={100}
-                className="w-72 h-auto"
+                className="w-72 h-auto max-w-[180px] md:max-w-none"
                 priority
                 unoptimized
               />
             </Link>
-          </div>
-          <div className="flex items-center gap-3">
-          {/* Only show cart for authenticated users */}
-          {mounted && status === "authenticated" && (
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-              aria-label="Shopping cart"
-            >
-              Cart
-            </button>
-          )}
-          {!mounted || status === "loading" ? (
-            // Show loading state to prevent flash - invisible but maintains layout
-            <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
-              Account
-            </div>
-          ) : status === "authenticated" ? (
-            <Link
-              href="https://www.dude.box/members"
-              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
-              aria-label="Dashboard"
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => setIsLoginOpen(true)}
-                className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-                aria-label="Login"
-              >
-                Login
-              </button>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-6">
               <Link
-                href="/portal/register"
-                className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
-                aria-label="Sign Up"
+                href="/marketplace"
+                className="text-sm hover:text-primary transition-colors font-medium"
               >
-                Sign Up
+                Marketplace
               </Link>
-            </>
-          )}
+              <Link
+                href="/stores"
+                className="text-sm hover:text-primary transition-colors font-medium"
+              >
+                Browse Stores
+              </Link>
+            </nav>
           </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* Only show cart for authenticated users */}
+            {mounted && status === "authenticated" && (
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+                aria-label="Shopping cart"
+              >
+                Cart
+              </button>
+            )}
+            {!mounted || status === "loading" ? (
+              // Show loading state to prevent flash - invisible but maintains layout
+              <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
+                Account
+              </div>
+            ) : status === "authenticated" ? (
+              <Link
+                href="https://www.dude.box/members"
+                className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
+                aria-label="Dashboard"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsLoginOpen(true)}
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+                  aria-label="Login"
+                >
+                  Login
+                </button>
+                <Link
+                  href="/portal/register"
+                  className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
+                  aria-label="Sign Up"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </Container>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-background">
+            <Container className="py-4">
+              <nav className="flex flex-col gap-4 mb-4 pb-4 border-b border-border">
+                <Link
+                  href="/marketplace"
+                  className="text-sm hover:text-primary transition-colors py-2 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/stores"
+                  className="text-sm hover:text-primary transition-colors py-2 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Browse Stores
+                </Link>
+              </nav>
+              <div className="flex flex-col gap-3">
+                {mounted && status === "authenticated" && (
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                  >
+                    Cart
+                  </button>
+                )}
+                {!mounted || status === "loading" ? (
+                  <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
+                    Account
+                  </div>
+                ) : status === "authenticated" ? (
+                  <Link
+                    href="https://www.dude.box/members"
+                    className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsLoginOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                    >
+                      Login
+                    </button>
+                    <Link
+                      href="/portal/register"
+                      className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </Container>
+          </div>
+        )}
       </header>
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
