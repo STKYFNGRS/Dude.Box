@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Dude.Box | Marketplace for Makers",
@@ -14,6 +16,31 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
+  
+  // Fetch top 3 stores by order count (most sales)
+  const featuredStores = await prisma.store.findMany({
+    where: { 
+      status: 'approved'
+    },
+    select: {
+      id: true,
+      name: true,
+      subdomain: true,
+      description: true,
+      logo_url: true,
+      _count: {
+        select: { 
+          orders: true 
+        }
+      }
+    },
+    orderBy: {
+      orders: {
+        _count: 'desc'
+      }
+    },
+    take: 3
+  });
 
   return (
     <Container className="py-12">
@@ -185,20 +212,55 @@ export default async function HomePage() {
           description="Browse products from independent craftsmen and makers."
         >
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="card rounded-lg p-6 flex flex-col gap-4">
-              <div className="aspect-[4/3] rounded-lg border border-border bg-background/40 flex items-center justify-center">
-                <span className="text-xs uppercase tracking-[0.3em] muted">Store Preview</span>
+            {featuredStores.length > 0 ? (
+              featuredStores.map((store) => (
+                <div key={store.id} className="card rounded-lg p-6 flex flex-col gap-4">
+                  <div className="aspect-[4/3] rounded-lg border border-border bg-background/40 flex items-center justify-center overflow-hidden">
+                    {store.logo_url ? (
+                      <Image
+                        src={store.logo_url}
+                        alt={store.name}
+                        width={200}
+                        height={150}
+                        className="object-contain w-full h-full p-4"
+                      />
+                    ) : (
+                      <span className="text-4xl">🏪</span>
+                    )}
+                  </div>
+                  <h3 className="section-title text-xl">{store.name}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {store.description || "Handcrafted products made with care"}
+                  </p>
+                  {store._count.orders > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {store._count.orders} {store._count.orders === 1 ? 'order' : 'orders'}
+                    </p>
+                  )}
+                  <a
+                    href={`https://${store.subdomain}.dude.box`}
+                    className="outline-button rounded-full px-4 py-2 text-xs uppercase tracking-[0.25em] text-center"
+                  >
+                    Visit Store
+                  </a>
+                </div>
+              ))
+            ) : (
+              // Show placeholder if no stores yet
+              <div className="col-span-3 text-center py-12">
+                <div className="text-4xl mb-4">🏪</div>
+                <h3 className="text-xl font-bold mb-2">Featured Stores Coming Soon</h3>
+                <p className="text-muted-foreground mb-6">
+                  Be one of the first makers to join our marketplace
+                </p>
+                <a
+                  href="/members/become-vendor"
+                  className="solid-button rounded-full px-8 py-3 text-xs uppercase tracking-[0.25em] inline-block"
+                >
+                  Become a Vendor
+                </a>
               </div>
-              <h3 className="section-title text-xl">Dude.Box</h3>
-              <p className="text-sm muted">Premium EDC subscription box curated monthly.</p>
-              <a
-                href="/stores/dudebox"
-                className="outline-button rounded-full px-4 py-2 text-xs uppercase tracking-[0.25em] text-center"
-              >
-                Visit Store
-              </a>
-            </div>
-            {/* Add more featured stores as they join */}
+            )}
           </div>
         </Section>
       </div>

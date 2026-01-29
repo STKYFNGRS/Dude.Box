@@ -67,7 +67,8 @@ export default async function RootLayout({
               <SiteHeader />
             </div>
             <main className="flex-1">{children}</main>
-            <SiteFooter />
+            {/* Hide SiteFooter on vendor subdomains (store layout has its own footer) */}
+            {!isVendorSubdomain && <SiteFooter />}
           </div>
         </Providers>
       </body>

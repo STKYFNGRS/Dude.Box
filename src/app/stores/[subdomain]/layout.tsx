@@ -2,8 +2,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Container } from "@/components/Container";
+import { StoreFooter } from "@/components/StoreFooter";
 import Image from "next/image";
 import { headers } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +70,9 @@ export default async function StoreLayout({
   // Use root paths for subdomain access, full paths for www.dude.box/stores/subdomain
   const basePath = isSubdomainAccess ? "" : `/stores/${subdomain}`;
   
+  // Check if current user is the store owner
+  const session = await getServerSession(authOptions);
+  
   // Fetch store by subdomain
   const store = await prisma.store.findUnique({
     where: {
@@ -76,6 +82,7 @@ export default async function StoreLayout({
     include: {
       owner: {
         select: {
+          id: true,
           first_name: true,
           last_name: true,
         },
@@ -86,6 +93,9 @@ export default async function StoreLayout({
   if (!store) {
     notFound();
   }
+  
+  // Check if authenticated user is the store owner
+  const isOwner = session?.user?.email && store.owner.id === session.user.id;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -104,12 +114,22 @@ export default async function StoreLayout({
             ) : (
               <h1 className="text-2xl font-bold">{store.name}</h1>
             )}
-            <Link
-              href="https://www.dude.box"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              ← Back to Dude.Box
-            </Link>
+            <div className="flex items-center gap-4">
+              {isOwner && (
+                <Link
+                  href="https://www.dude.box/members"
+                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  Dashboard →
+                </Link>
+              )}
+              <Link
+                href="https://www.dude.box"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                ← Back to Dude.Box
+              </Link>
+            </div>
           </div>
           
           {/* Store Navigation */}
@@ -154,33 +174,16 @@ export default async function StoreLayout({
       </main>
 
       {/* Store Footer */}
-      <footer className="border-t border-border bg-background/95">
-        <Container className="py-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-            <div>
-              <h3 className="font-medium mb-2">{store.name}</h3>
-              <p className="text-muted-foreground">
-                {store.description || "Handcrafted products by makers who care"}
-              </p>
-            </div>
-            <div>
-              <h3 className="font-medium mb-2">Contact</h3>
-              <p className="text-muted-foreground">
-                Email: <a href={`mailto:${store.contact_email}`} className="hover:text-primary">{store.contact_email}</a>
-              </p>
-            </div>
-          </div>
-          <div className="mt-6 pt-6 border-t border-border text-xs text-muted-foreground text-center">
-            <p>
-              Powered by{" "}
-              <Link href="https://www.dude.box" className="hover:text-primary">
-                Dude.Box
-              </Link>{" "}
-              - A marketplace for makers
-            </p>
-          </div>
-        </Container>
-      </footer>
+      <StoreFooter 
+        store={{
+          name: store.name,
+          description: store.description,
+          contact_email: store.contact_email,
+          shipping_policy: store.shipping_policy,
+          return_policy: store.return_policy,
+        }}
+        basePath={basePath}
+      />
     </div>
   );
 }
