@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UploadButton, UploadDropzone } from "@uploadthing/react";
+import { UploadDropzone } from "@uploadthing/react";
 import Image from "next/image";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
@@ -53,64 +53,34 @@ export function ImageUpload({
 
       {/* Upload zone - only show if no image */}
       {!value && (
-        <div className="space-y-4">
-          {/* Dropzone */}
-          <UploadDropzone<OurFileRouter, typeof endpoint>
-            endpoint={endpoint}
-            onClientUploadComplete={(res) => {
-              if (res && res[0]) {
-                onChange(res[0].url);
-                setUploadError(null);
-                setIsUploading(false);
-              }
-            }}
-            onUploadError={(error: Error) => {
-              setUploadError(error.message);
-              setIsUploading(false);
-            }}
-            onUploadBegin={() => {
-              setIsUploading(true);
+        <UploadDropzone<OurFileRouter, typeof endpoint>
+          endpoint={endpoint}
+          onClientUploadComplete={(res) => {
+            if (res && res[0]) {
+              onChange(res[0].url);
               setUploadError(null);
-            }}
-            config={{
-              mode: "auto"
-            }}
-            appearance={{
-              container: "border-2 border-dashed border-border rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer",
-              uploadIcon: "text-muted-foreground",
-              label: "text-sm text-foreground",
-              allowedContent: "text-xs text-muted-foreground",
-              button: "solid-button rounded-full px-4 py-2 text-xs uppercase tracking-wider"
-            }}
-          />
-
-          {/* Alternative: Upload Button */}
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-2">Or use the button:</p>
-            <UploadButton<OurFileRouter, typeof endpoint>
-              endpoint={endpoint}
-              onClientUploadComplete={(res) => {
-                if (res && res[0]) {
-                  onChange(res[0].url);
-                  setUploadError(null);
-                  setIsUploading(false);
-                }
-              }}
-              onUploadError={(error: Error) => {
-                setUploadError(error.message);
-                setIsUploading(false);
-              }}
-              onUploadBegin={() => {
-                setIsUploading(true);
-                setUploadError(null);
-              }}
-              appearance={{
-                button: "solid-button rounded-full px-6 py-2 text-xs uppercase tracking-wider",
-                allowedContent: "text-xs text-muted-foreground mt-2"
-              }}
-            />
-          </div>
-        </div>
+              setIsUploading(false);
+            }
+          }}
+          onUploadError={(error: Error) => {
+            setUploadError(error.message);
+            setIsUploading(false);
+          }}
+          onUploadBegin={() => {
+            setIsUploading(true);
+            setUploadError(null);
+          }}
+          config={{
+            mode: "auto"
+          }}
+          appearance={{
+            container: "border-2 border-dashed border-border rounded-lg p-8 hover:border-primary/50 transition-colors cursor-pointer",
+            uploadIcon: "text-muted-foreground",
+            label: "text-sm text-foreground font-medium",
+            allowedContent: "text-xs text-muted-foreground mt-2",
+            button: "solid-button rounded-full px-6 py-2.5 text-sm font-medium mt-4 hover:opacity-90 transition-opacity"
+          }}
+        />
       )}
 
       {/* Upload status */}
