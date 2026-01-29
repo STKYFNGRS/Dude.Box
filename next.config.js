@@ -2,6 +2,34 @@
 const nextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
+  
+  // Image configuration for external image sources
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.vercel-storage.app',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+      // Add any other image hosting services vendors might use
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
+  },
+  
   // Redirects for consolidated single-page architecture
   async redirects() {
     return [
