@@ -56,6 +56,15 @@ IMPORTANT RULES:
 
 export async function POST(request: Request) {
   try {
+    // Check if API key is configured
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not configured");
+      return NextResponse.json(
+        { error: "Chat service is not configured. Please contact support at dude@dude.box" },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { messages } = body;
 
@@ -66,6 +75,8 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log("Processing chat request with", messages.length, "messages");
+
     // Use Brave Search for real-time info if question seems to need it
     let searchContext = "";
     const lastMessage = messages[messages.length - 1].content.toLowerCase();
@@ -75,26 +86,30 @@ export async function POST(request: Request) {
       lastMessage.includes("recent")
     ) {
       try {
-        const braveResponse = await fetch(
-          `https://api.search.brave.com/res/v1/web/search?q=dude.box ${lastMessage.substring(0, 100)}`,
-          {
-            headers: {
-              "X-Subscription-Token": process.env.BRAVE_API_KEY || "",
-            },
+        if (process.env.BRAVE_API_KEY) {
+          const braveResponse = await fetch(
+            `https://api.search.brave.com/res/v1/web/search?q=dude.box ${lastMessage.substring(0, 100)}`,
+            {
+              headers: {
+                "X-Subscription-Token": process.env.BRAVE_API_KEY,
+              },
+            }
+          );
+          const braveData = await braveResponse.json();
+          if (braveData.web?.results?.length > 0) {
+            searchContext = `\n\nRECENT SEARCH RESULTS:\n${braveData.web.results
+              .slice(0, 2)
+              .map((r: any) => `- ${r.title}: ${r.description}`)
+              .join("\n")}`;
           }
-        );
-        const braveData = await braveResponse.json();
-        if (braveData.web?.results?.length > 0) {
-          searchContext = `\n\nRECENT SEARCH RESULTS:\n${braveData.web.results
-            .slice(0, 2)
-            .map((r: any) => `- ${r.title}: ${r.description}`)
-            .join("\n")}`;
         }
       } catch (error) {
         console.error("Brave search error:", error);
+        // Continue without search results
       }
     }
 
+    console.log("Calling Anthropic API...");
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
@@ -105,14 +120,22 @@ export async function POST(request: Request) {
       })),
     });
 
+    console.log("Anthropic API response received");
     const messageContent =
       response.content[0].type === "text" ? response.content[0].text : "";
 
     return NextResponse.json({ message: messageContent });
-  } catch (error) {
-    console.error("Chat API error:", error);
+  } catch (error: any) {
+    console.error("Chat API error details:", {
+      message: error?.message,
+      status: error?.status,
+      type: error?.type,
+      error: error
+    });
+    
+    // Provide user-friendly error message
     return NextResponse.json(
-      { error: "Failed to process chat message" },
+      { error: "I'm having trouble connecting right now. Please try again or email dude@dude.box for assistance." },
       { status: 500 }
     );
   }
