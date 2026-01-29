@@ -96,7 +96,7 @@ export default async function StoreLayout({
   }
   
   // Check if authenticated user is the store owner by comparing emails
-  const isOwner = session?.user?.email && store.owner.email === session.user.email;
+  const isOwner = !!(session?.user?.email && store.owner.email === session.user.email);
 
   return (
     <div className="min-h-screen flex flex-col">
