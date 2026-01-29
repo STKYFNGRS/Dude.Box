@@ -7,6 +7,8 @@ import { RejectReturnButton } from "@/components/admin/RejectReturnButton";
 import { RefundButton } from "@/components/admin/RefundButton";
 import { UpdateReturnStatusButton } from "@/components/admin/UpdateReturnStatusButton";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Return Details | Admin",
   description: "View and manage return request details",

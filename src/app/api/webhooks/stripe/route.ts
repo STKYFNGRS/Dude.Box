@@ -8,6 +8,7 @@ import Stripe from "stripe";
 
 // Disable body parser for webhook signature verification
 export const runtime = "nodejs";
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();

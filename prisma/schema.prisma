@@ -34,7 +34,24 @@ model User {
   carts            Cart[]
 }
 
-// Subscription box and other products
+// Platform products (Dude.Box's own revenue items)
+model PlatformProduct {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  price           Decimal  @db.Decimal(10, 2)
+  stripe_price_id String   @unique
+  type            String   // "application_fee", "monthly_subscription", "platform_fee"
+  interval        String?  // "month", "year", "one_time"
+  active          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  
+  @@index([type])
+  @@index([active])
+}
+
+// Vendor products (store inventory)
 model Product {
   id                String   @id @default(cuid())
   name              String

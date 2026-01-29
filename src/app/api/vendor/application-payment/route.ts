@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -52,19 +54,37 @@ export async function POST(request: Request) {
       );
     }
 
+    // Query platform products from database
+    const [monthlySubscription, applicationFee] = await Promise.all([
+      prisma.platformProduct.findFirst({
+        where: { type: "monthly_subscription", active: true },
+      }),
+      prisma.platformProduct.findFirst({
+        where: { type: "application_fee", active: true },
+      }),
+    ]);
+
+    if (!monthlySubscription || !applicationFee) {
+      console.error("Platform products not found in database");
+      return NextResponse.json(
+        { error: "Platform products not configured. Please contact support." },
+        { status: 500 }
+      );
+    }
+
     // Create Stripe Checkout Session with BOTH subscription and one-time application fee
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: user.email,
       line_items: [
         {
-          // Monthly subscription ($5/month) - Membership product
-          price: "price_1Sum02In9SFgOJXcOYdXRk9D",
+          // Monthly subscription - from database
+          price: monthlySubscription.stripe_price_id,
           quantity: 1,
         },
         {
-          // One-time application fee ($5) - Application product
-          price: "price_1Suxg9In9SFgOJXcePBKNyNz",
+          // One-time application fee - from database
+          price: applicationFee.stripe_price_id,
           quantity: 1,
         },
       ],

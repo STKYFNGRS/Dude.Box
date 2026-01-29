@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireVendor } from "@/lib/vendor";
 
+export const dynamic = 'force-dynamic';
+
 // GET - List vendor's products
 export async function GET() {
   try {

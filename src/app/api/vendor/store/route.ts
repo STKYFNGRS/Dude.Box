@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireVendor } from "@/lib/vendor";
 
+export const dynamic = 'force-dynamic';
+
 // PATCH - Update store settings
 export async function PATCH(request: Request) {
   try {

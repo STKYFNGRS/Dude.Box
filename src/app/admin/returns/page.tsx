@@ -3,6 +3,8 @@ import Link from "next/link";
 import { isAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Returns Management | Admin",
   description: "Manage customer return requests and refunds",

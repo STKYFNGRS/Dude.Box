@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin";
 
+export const dynamic = 'force-dynamic';
+
 // GET - List all announcements (admin only)
 export async function GET() {
   try {

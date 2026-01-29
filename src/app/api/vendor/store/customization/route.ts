@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getVendorStore } from "@/lib/vendor";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(request: Request) {
   try {
     const store = await getVendorStore();

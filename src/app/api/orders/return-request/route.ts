@@ -8,6 +8,8 @@ import { sendReturnRequestConfirmation } from "@/lib/email";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "dude@dude.box";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

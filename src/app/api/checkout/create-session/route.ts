@@ -5,6 +5,8 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { calculatePlatformFees, dollarsToCents } from "@/lib/marketplace";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Get authenticated user session

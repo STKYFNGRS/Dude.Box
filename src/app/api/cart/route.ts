@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
 
+export const dynamic = 'force-dynamic';
+
 // GET - Get current cart
 export async function GET() {
   try {

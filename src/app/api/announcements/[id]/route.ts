@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin";
 
+export const dynamic = 'force-dynamic';
+
 // PATCH - Update announcement (admin only)
 export async function PATCH(
   request: Request,
