@@ -20,7 +20,7 @@ Dude.Box is an **Etsy-style marketplace** for men who make quality products but 
 - **Your Shipping:** Use your own shipping accounts and methods
 - **No Tech Hassle:** We handle hosting, payments, cart, checkout
 
-**Platform Fee:** 10% per sale (you keep 90%)
+**Platform Fee:** 1% per sale (you keep 99%)
 
 ---
 
@@ -74,7 +74,7 @@ graph TB
     AdminDash --> Moderate[Moderate Products]
     
     StripeConnect --> VendorPayout[90% to Vendor]
-    StripeConnect --> PlatformFee[10% Platform Fee]
+    StripeConnect --> PlatformFee[1% Platform Fee]
     
     NeonDB[(NeonDB)] -.-> MainSite
     NeonDB -.-> VendorDash
@@ -224,7 +224,7 @@ See `MARKETPLACE_SETUP_GUIDE.md` for complete list.
 ```env
 # Stripe Connect
 STRIPE_CONNECT_CLIENT_ID=ca_...
-STRIPE_PLATFORM_FEE_PERCENT=10
+STRIPE_PLATFORM_FEE_PERCENT=1
 
 # Application
 NEXT_PUBLIC_APP_DOMAIN=http://localhost:3000
@@ -367,7 +367,7 @@ See `resources/MARKETPLACE_TESTING_GUIDE.md`
 - Stores: 1 (Dude.Box default)
 - Products: Migrated from original catalog
 - Vendors: Open for applications
-- Platform Fee: 10%
+- Platform Fee: 1%
 
 **Growth Targets:**
 - Month 1: 5 vendors, $1K GMV
@@ -489,7 +489,7 @@ NEXTAUTH_URL="http://localhost:3000"
 STRIPE_SECRET_KEY="sk_test_..."
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 STRIPE_CONNECT_CLIENT_ID="ca_..."
-STRIPE_PLATFORM_FEE_PERCENT="10"
+STRIPE_PLATFORM_FEE_PERCENT="1"
 
 # Email
 RESEND_API_KEY="re_..."
@@ -566,7 +566,7 @@ npm run dev
 **Payments:**
 - Stripe pays you directly (2-day payout)
 - You receive 90% of each sale
-- Platform keeps 10% fee
+- Platform keeps 1% fee
 - No upfront costs
 
 ### For Admins

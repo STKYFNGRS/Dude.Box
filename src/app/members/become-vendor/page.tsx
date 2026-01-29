@@ -136,7 +136,7 @@ export default async function BecomeVendorPage() {
               <div className="font-medium">Direct Payments</div>
               <div className="text-sm text-muted-foreground">
                 Connect your Stripe account and receive payments directly
-                (minus our 10% platform fee)
+                (minus our 1% platform fee)
               </div>
             </div>
           </li>

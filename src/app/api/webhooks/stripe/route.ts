@@ -101,6 +101,13 @@ async function handleCheckoutSessionCompleted(
     return;
   }
 
+  // Check if this is a vendor application payment
+  if (session.metadata?.type === "vendor_application") {
+    console.log("🏪 Processing vendor application payment");
+    await handleVendorApplicationPayment(session);
+    return;
+  }
+
   // Get the subscription object to access subscription details
   const subscriptionId = session.subscription as string;
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -486,4 +493,85 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   }
 
   // TODO: Send email notification to customer about payment failure
+}
+
+async function handleVendorApplicationPayment(
+  session: Stripe.Checkout.Session
+) {
+  console.log("Processing vendor application payment");
+
+  const userId = session.metadata?.userId;
+  const subdomain = session.metadata?.subdomain;
+  const name = session.metadata?.name;
+  const description = session.metadata?.description;
+  const contact_email = session.metadata?.contact_email;
+
+  if (!userId || !subdomain || !name || !contact_email) {
+    console.error("Missing required metadata for vendor application");
+    return;
+  }
+
+  try {
+    // Check if user already has a store
+    const existingStore = await prisma.store.findFirst({
+      where: { owner_id: userId },
+    });
+
+    if (existingStore) {
+      console.log(`User ${userId} already has a store, skipping creation`);
+      return;
+    }
+
+    // Check if subdomain is already taken
+    const subdomainTaken = await prisma.store.findUnique({
+      where: { subdomain },
+    });
+
+    if (subdomainTaken) {
+      console.error(`Subdomain ${subdomain} is already taken`);
+      // TODO: Send email to user about subdomain conflict
+      return;
+    }
+
+    // Get subscription ID and payment intent ID
+    const subscriptionId = session.subscription as string;
+    const paymentIntentId = session.payment_intent as string;
+
+    // Create the store with status "pending" for admin approval
+    const store = await prisma.store.create({
+      data: {
+        owner_id: userId,
+        subdomain,
+        name,
+        description: description || null,
+        contact_email,
+        status: "pending", // Requires admin approval
+        application_paid: true,
+        application_payment_id: paymentIntentId,
+        monthly_subscription_id: subscriptionId,
+        subscription_status: "active",
+        setup_fee_paid: true,
+        setup_fee_date: new Date(),
+        terms_accepted_at: new Date(),
+      },
+    });
+
+    console.log(`✅ Created vendor store: ${store.name} (${store.subdomain})`);
+
+    // Update user role to vendor
+    await prisma.user.update({
+      where: { id: userId },
+      data: { role: "vendor" },
+    });
+
+    console.log(`✅ Updated user ${userId} role to vendor`);
+
+    // TODO: Send confirmation email to vendor
+    // TODO: Send notification to admins for review
+
+    console.log(`✅ Successfully processed vendor application for ${store.name}`);
+  } catch (error) {
+    console.error("Error processing vendor application:", error);
+    throw error;
+  }
 }

@@ -82,7 +82,7 @@ export function CartDrawer({
     grossTotal += parseFloat(item.product.price.toString()) * item.quantity;
   });
   
-  const platformFee = grossTotal * 0.1; // 10% fee
+  const platformFee = grossTotal * 0.01; // 1% fee
   const grandTotal = grossTotal;
 
   return (
@@ -180,7 +180,7 @@ export function CartDrawer({
                 <span>${grossTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Platform Fee (10%)</span>
+                <span className="text-muted-foreground">Platform Fee (1%)</span>
                 <span>${platformFee.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg pt-2 border-t border-border">

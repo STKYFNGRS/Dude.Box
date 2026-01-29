@@ -168,7 +168,7 @@ export default async function VendorOrdersPage() {
               <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div>
                   <div className="text-sm text-muted-foreground">
-                    Your Amount (after 10% fee)
+                    Your Amount (after 1% fee)
                   </div>
                   <div className="text-xl font-bold">
                     ${(order.vendor_amount || order.total).toString()}

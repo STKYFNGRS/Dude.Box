@@ -92,7 +92,7 @@ export default async function HomePage() {
           <h2 className="section-title text-4xl md:text-5xl leading-tight">Built for makers who want to focus on making.</h2>
           <p className="text-xl text-muted leading-relaxed">
             You create quality products. We provide the storefront, payment processing, 
-            hosting, and customer support. Keep 97% of every sale.
+            hosting, and customer support. Keep 99% of every sale.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -113,7 +113,7 @@ export default async function HomePage() {
             <h3 className="section-title text-xl mb-3 group-hover:text-accent transition-colors">Direct Payments</h3>
             <p className="text-sm text-muted leading-relaxed">
               Connect your Stripe account and receive payouts in 2 days. 
-              We never hold your funds. You keep 97% of each sale.
+              We never hold your funds. You keep 99% of each sale.
             </p>
           </div>
           <div className="card-hover rounded-lg p-8 group">
@@ -159,8 +159,8 @@ export default async function HomePage() {
             },
             {
               icon: "💰",
-              title: "3% Platform Fee",
-              description: "$5 setup + $5/month subscription. Plus 3% per sale. Simple and transparent.",
+              title: "1% Platform Fee",
+              description: "$5 application + $5/month subscription. Plus 1% per sale. Simple and transparent.",
             },
           ].map((item, index) => (
             <div 

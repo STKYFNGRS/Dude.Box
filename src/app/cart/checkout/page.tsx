@@ -121,7 +121,7 @@ export default async function CheckoutPage() {
             <span>${grandTotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Platform Fee (10%)</span>
+            <span className="text-muted-foreground">Platform Fee (1%)</span>
             <span>${platformFee.toFixed(2)}</span>
           </div>
           <div className="flex justify-between font-bold text-lg pt-2 border-t border-border">

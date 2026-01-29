@@ -1,83 +1,99 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { Container } from "@/components/Container";
-import { footerNavigationLinks } from "@/lib/constants";
 
 export function SiteFooter() {
-  const { data: session, status } = useSession();
-  const [mounted, setMounted] = useState(false);
-
-  // Prevent hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-background">
-      <Container className="py-8 flex flex-col gap-6 text-sm muted">
-        <nav aria-label="Footer" className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.2em]">
-          {footerNavigationLinks.map((item) => {
-            // Handle login/account link dynamically based on session
-            if (item.label === "Login") {
-              if (!mounted || status === "loading") {
-                // Show placeholder during loading to prevent layout shift
-                return (
-                  <span key="auth-placeholder" className="opacity-50">
-                    Login
-                  </span>
-                );
-              }
-              
-              if (status === "authenticated") {
-                // User is logged in - show Account link
-                return (
-                  <Link
-                    key="account"
-                    href="/portal"
-                    className="hover:text-accent transition-colors"
-                  >
-                    Account
-                  </Link>
-                );
-              }
-              
-              // User is not logged in - show Login button that opens modal
-              return (
-                <button
-                  key="login"
-                  type="button"
-                  onClick={() => window.dispatchEvent(new Event("open:login-modal"))}
-                  className="hover:text-accent transition-colors"
-                >
-                  Login
-                </button>
-              );
-            }
-            
-            // Regular navigation links
-            return (
-              <Link key={item.href} href={item.href} className="hover:text-accent transition-colors">
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="flex flex-col gap-2">
-          <span>Veteran-owned. Small batch. Built for daily carry.</span>
-          <span>
-            Contact:{" "}
-            <a href="mailto:dude@dude.box" className="underline underline-offset-4">
-              dude@dude.box
-            </a>
-          </span>
+    <footer className="border-t border-border bg-panel mt-auto">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* About */}
+          <div>
+            <h3 className="font-bold text-foreground mb-4">Dude.Box</h3>
+            <p className="text-sm text-muted leading-relaxed">
+              A marketplace connecting skilled makers with customers who value quality craftsmanship.
+            </p>
+          </div>
+
+          {/* For Vendors */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">For Vendors</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/members/become-vendor" className="text-muted hover:text-accent transition-colors">
+                  Become a Vendor
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal/vendor-terms" className="text-muted hover:text-accent transition-colors">
+                  Vendor Terms
+                </Link>
+              </li>
+              <li>
+                <Link href="/stores" className="text-muted hover:text-accent transition-colors">
+                  Browse Stores
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Support</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="mailto:support@dude.box" className="text-muted hover:text-accent transition-colors">
+                  Contact Us
+                </a>
+              </li>
+              <li>
+                <a href="mailto:vendors@dude.box" className="text-muted hover:text-accent transition-colors">
+                  Vendor Support
+                </a>
+              </li>
+              <li>
+                <Link href="/investors" className="text-muted hover:text-accent transition-colors">
+                  Investors
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Legal</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/legal/terms" className="text-muted hover:text-accent transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal/privacy" className="text-muted hover:text-accent transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal/vendor-terms" className="text-muted hover:text-accent transition-colors">
+                  Vendor Agreement
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
-        <span className="text-xs">
-          © {new Date().getFullYear()} dude.box LLC. All rights reserved.
-        </span>
-      </Container>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-muted">
+            © {currentYear} Dude.Box. All rights reserved.
+          </p>
+          <div className="flex gap-4 text-sm text-muted">
+            <span>Made for makers</span>
+            <span>•</span>
+            <span>1% platform fee</span>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }

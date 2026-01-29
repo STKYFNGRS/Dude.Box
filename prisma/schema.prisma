@@ -220,9 +220,14 @@ model Store {
   // Subscription tracking
   setup_fee_paid        Boolean   @default(false)
   setup_fee_date        DateTime?
+  application_paid       Boolean   @default(false) // Vendor paid $5 application fee
+  application_payment_id String?   @unique // Stripe payment intent ID for application
   monthly_subscription_id String?  @unique // Stripe subscription ID for monthly fee
   subscription_status   String    @default("inactive") // inactive, active, past_due, cancelled
   next_billing_date     DateTime?
+  
+  // Legal acceptance
+  terms_accepted_at     DateTime? // When vendor accepted terms
   
   // Customization
   custom_colors_enabled Boolean  @default(false)

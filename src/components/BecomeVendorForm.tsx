@@ -9,6 +9,7 @@ export function BecomeVendorForm() {
   const [error, setError] = useState("");
   const [checkingSubdomain, setCheckingSubdomain] = useState(false);
   const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
     subdomain: "",
     name: "",
@@ -46,7 +47,8 @@ export function BecomeVendorForm() {
     setError("");
 
     try {
-      const response = await fetch("/api/stores/create", {
+      // Redirect to payment instead of creating store directly
+      const response = await fetch("/api/vendor/application-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -55,13 +57,17 @@ export function BecomeVendorForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create store");
+        throw new Error(data.error || "Failed to initiate payment");
       }
 
-      router.refresh();
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
       setLoading(false);
     }
   };
@@ -206,6 +212,7 @@ export function BecomeVendorForm() {
           <div className="text-sm text-foreground">
             <p className="font-semibold mb-2">What happens next:</p>
             <ol className="space-y-1 text-muted list-decimal list-inside">
+              <li>You'll pay the $5 application fee + $5/month subscription</li>
               <li>Your application will be reviewed by our team</li>
               <li>Once approved, you'll connect your Stripe account</li>
               <li>You can then add products and customize your storefront</li>
@@ -215,18 +222,78 @@ export function BecomeVendorForm() {
         </div>
       </div>
 
+      {/* Terms Acceptance */}
+      <div className="border-t border-border pt-6">
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="w-5 h-5 mt-1 rounded border-2 border-border checked:bg-accent checked:border-accent transition-all flex-shrink-0"
+            required
+            disabled={loading}
+          />
+          <div className="text-sm">
+            <span className="text-foreground font-medium">
+              I accept the{" "}
+              <a 
+                href="/legal/vendor-terms" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-accent hover:underline font-semibold"
+              >
+                Vendor Terms of Service
+              </a>
+            </span>
+            <p className="text-muted text-xs mt-2 mb-2">
+              By checking this box, I understand and agree that:
+            </p>
+            <ul className="text-muted text-xs space-y-1.5 list-none">
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>The <strong>$5 application fee</strong> is non-refundable</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>The <strong>$5 monthly subscription</strong> is non-refundable</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>Dude.Box reserves the right to approve or reject applications without providing a reason</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>I am responsible for all product fulfillment and shipping to customers</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>The platform charges a <strong>1% fee per sale</strong></span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-0.5">•</span>
+                <span>Dude.Box provides the storefront technology only - not fulfillment services</span>
+              </li>
+            </ul>
+          </div>
+        </label>
+      </div>
+
       <button
         type="submit"
         className="solid-button rounded-full px-8 py-3 text-sm w-full sm:w-auto font-semibold"
-        disabled={loading || (formData.subdomain.length >= 3 && subdomainAvailable === false)}
+        disabled={
+          loading || 
+          !termsAccepted || 
+          (formData.subdomain.length >= 3 && subdomainAvailable === false)
+        }
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
             <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-            Creating Store...
+            Processing...
           </span>
         ) : (
-          "Submit Application"
+          "Proceed to Payment →"
         )}
       </button>
     </form>
