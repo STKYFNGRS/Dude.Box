@@ -20,6 +20,9 @@ export async function getVendorStore() {
         where: {
           status: "approved",
         },
+        include: {
+          owner: true, // Include owner relation for moderation emails
+        },
       },
     },
   });
