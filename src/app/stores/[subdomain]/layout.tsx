@@ -85,6 +85,7 @@ export default async function StoreLayout({
           id: true,
           first_name: true,
           last_name: true,
+          email: true,
         },
       },
     },
@@ -94,8 +95,8 @@ export default async function StoreLayout({
     notFound();
   }
   
-  // Check if authenticated user is the store owner
-  const isOwner = session?.user?.email && store.owner.id === session.user.id;
+  // Check if authenticated user is the store owner by comparing emails
+  const isOwner = session?.user?.email && store.owner.email === session.user.email;
 
   return (
     <div className="min-h-screen flex flex-col">
