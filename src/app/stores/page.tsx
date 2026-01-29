@@ -38,9 +38,9 @@ export default async function StoresPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {stores.map((store) => (
-          <Link
+          <a
             key={store.id}
-            href={`/stores/${store.subdomain}`}
+            href={`https://${store.subdomain}.dude.box`}
             className="card rounded-lg p-6 hover:border-accent transition-colors"
           >
             <div className="aspect-[4/3] rounded-lg border border-border bg-background/40 mb-4 flex items-center justify-center overflow-hidden">
@@ -71,7 +71,7 @@ export default async function StoresPage() {
                 Visit Store →
               </span>
             </div>
-          </Link>
+          </a>
         ))}
       </div>
 
