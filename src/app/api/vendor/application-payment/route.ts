@@ -52,14 +52,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create Stripe Checkout Session for subscription + one-time fee
+    // Create Stripe Checkout Session with BOTH subscription and one-time application fee
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: user.email,
       line_items: [
         {
-          // Monthly subscription ($5/month) - using Membership product
+          // Monthly subscription ($5/month) - Membership product
           price: "price_1Sum02In9SFgOJXcOYdXRk9D",
+          quantity: 1,
+        },
+        {
+          // One-time application fee ($5) - Application product
+          price: "price_1Suxg9In9SFgOJXcePBKNyNz",
           quantity: 1,
         },
       ],
@@ -80,21 +85,6 @@ export async function POST(request: Request) {
       success_url: `${process.env.NEXTAUTH_URL}/members/become-vendor/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/members/become-vendor?payment=cancelled`,
     });
-
-    // Add the $5 application fee as an invoice item to the first invoice
-    if (checkoutSession.subscription) {
-      await stripe.invoiceItems.create({
-        customer: checkoutSession.customer as string,
-        amount: 500, // $5.00 in cents
-        currency: "usd",
-        description: "Vendor Application Fee (One-time)",
-        subscription: checkoutSession.subscription as string,
-        metadata: {
-          type: "application_fee",
-          user_id: user.id,
-        },
-      });
-    }
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {
