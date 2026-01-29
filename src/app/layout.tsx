@@ -15,9 +15,21 @@ const serif = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "dude.box | Veteran-Owned Subscription Box",
+  title: "dude.box | Marketplace for Makers",
   description:
-    "Premium EDC gear, tools, and grooming supplies sourced from veteran-owned small businesses.",
+    "A marketplace where skilled craftsmen sell quality products. Get your own storefront, connect your payment account, and reach customers who value craftsmanship.",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  themeColor: '#0f1628',
 };
 
 // Force dynamic rendering to prevent caching of auth state

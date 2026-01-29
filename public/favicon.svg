@@ -1,10 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    <!-- Subtle gradient for depth -->
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#141d33;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f1628;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Accent gradient for tools -->
+    <linearGradient id="toolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c79d7a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b88a67;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Animated shimmer effect -->
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c79d7a;stop-opacity:0">
+        <animate attributeName="stop-opacity" values="0;0.3;0" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" style="stop-color:#c79d7a;stop-opacity:0">
+        <animate attributeName="stop-opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" style="stop-color:#c79d7a;stop-opacity:0">
+        <animate attributeName="stop-opacity" values="0;0.3;0" dur="3s" repeatCount="indefinite" />
+      </stop>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="20" fill="url(#grad)"/>
-  <text x="50" y="72" font-size="60" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold">D</text>
+  
+  <!-- Background rounded square -->
+  <rect width="100" height="100" rx="18" fill="url(#boxGrad)"/>
+  
+  <!-- Toolbox body (hexagonal badge shape) -->
+  <path d="M 50 15 L 75 28 L 75 58 L 50 71 L 25 58 L 25 28 Z" 
+        fill="#23314b" 
+        stroke="#c79d7a" 
+        stroke-width="2.5"
+        opacity="0.9">
+    <!-- Subtle pulse animation -->
+    <animate attributeName="opacity" values="0.9;1;0.9" dur="4s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Inner geometric design - crossed tools effect -->
+  <!-- Hammer handle -->
+  <rect x="43" y="35" width="4" height="22" fill="url(#toolGrad)" rx="2" transform="rotate(-20 50 50)"/>
+  
+  <!-- Hammer head -->
+  <rect x="36" y="30" width="12" height="6" fill="url(#toolGrad)" rx="1" transform="rotate(-20 50 50)"/>
+  
+  <!-- Wrench -->
+  <rect x="53" y="35" width="4" height="22" fill="url(#toolGrad)" rx="2" transform="rotate(20 50 50)"/>
+  
+  <!-- Wrench head (simplified) -->
+  <circle cx="62" cy="35" r="4" fill="none" stroke="url(#toolGrad)" stroke-width="2" transform="rotate(20 50 50)"/>
+  
+  <!-- Center rivet/badge -->
+  <circle cx="50" cy="50" r="5" fill="#4b5320" stroke="#c79d7a" stroke-width="1.5">
+    <animate attributeName="r" values="5;5.5;5" dur="2s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Initials in center -->
+  <text x="50" y="53" font-size="6" text-anchor="middle" fill="#c79d7a" font-family="Arial, sans-serif" font-weight="bold">D.B</text>
+  
+  <!-- Accent lines (toolbox details) -->
+  <line x1="25" y1="43" x2="75" y2="43" stroke="#c79d7a" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Shimmer overlay for subtle animation -->
+  <rect width="100" height="100" rx="18" fill="url(#shimmer)" opacity="0.3"/>
+  
+  <!-- Border accent -->
+  <rect width="100" height="100" rx="18" fill="none" stroke="#23314b" stroke-width="2"/>
 </svg>
