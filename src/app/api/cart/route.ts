@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     let sessionId = cookieStore.get("cart_session_id")?.value;
 
     let cart;
@@ -64,7 +64,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     let sessionId = cookieStore.get("cart_session_id")?.value;
 
     const body = await request.json();
