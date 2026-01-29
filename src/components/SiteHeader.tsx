@@ -32,7 +32,7 @@ export function SiteHeader() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
         <Container className="py-3 flex items-center justify-between">
           <div className="flex flex-1 justify-start">
-            <Link href="/" aria-label="dude.box home" className="inline-flex items-center">
+            <Link href="https://www.dude.box" aria-label="dude.box home" className="inline-flex items-center">
               <Image
                 src="/Logo.png"
                 alt="dude.box logo"
@@ -62,7 +62,7 @@ export function SiteHeader() {
             </div>
           ) : status === "authenticated" ? (
             <Link
-              href="/members"
+              href="https://www.dude.box/members"
               className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
               aria-label="Dashboard"
             >

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
+import { headers } from "next/headers";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -42,13 +43,29 @@ export default async function RootLayout({
 }) {
   // Fetch server session to pass to client
   const session = await getServerSession(authOptions);
+  
+  // Detect if we're on a vendor subdomain
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  
+  // Check if this is a vendor subdomain (not www, not bare domain, not localhost)
+  const isVendorSubdomain = 
+    hostname.includes(".dude.box") && 
+    !hostname.startsWith("www.") && 
+    hostname !== "dude.box" &&
+    !hostname.includes("localhost") &&
+    !hostname.includes("127.0.0.1") &&
+    !hostname.includes("vercel.app");
 
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="bg-background text-foreground">
         <Providers session={session}>
           <div className="min-h-screen flex flex-col">
-            <SiteHeader />
+            {/* Hide SiteHeader on vendor subdomains, but keep it mounted for client functionality */}
+            <div style={{ display: isVendorSubdomain ? 'none' : 'block' }}>
+              <SiteHeader />
+            </div>
             <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>

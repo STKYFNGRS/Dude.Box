@@ -15,6 +15,8 @@ export async function PATCH(request: Request) {
       contact_email,
       shipping_policy,
       return_policy,
+      logo_url,
+      banner_url,
     } = body;
 
     const updatedStore = await prisma.store.update({
@@ -25,6 +27,8 @@ export async function PATCH(request: Request) {
         ...(contact_email !== undefined && { contact_email }),
         ...(shipping_policy !== undefined && { shipping_policy }),
         ...(return_policy !== undefined && { return_policy }),
+        ...(logo_url !== undefined && { logo_url }),
+        ...(banner_url !== undefined && { banner_url }),
       },
     });
 

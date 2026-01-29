@@ -4,8 +4,51 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import Image from "next/image";
 import { headers } from "next/headers";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+// Generate metadata for store pages including favicon
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ subdomain: string }>;
+}): Promise<Metadata> {
+  const { subdomain } = await params;
+  
+  const store = await prisma.store.findUnique({
+    where: {
+      subdomain,
+      status: "approved",
+    },
+    select: {
+      name: true,
+      description: true,
+    },
+  });
+
+  if (!store) {
+    return {
+      title: "Store Not Found | Dude.Box",
+    };
+  }
+
+  return {
+    title: `${store.name} | Dude.Box`,
+    description: store.description || `Shop handcrafted products from ${store.name} on Dude.Box marketplace`,
+    icons: {
+      icon: [
+        { url: 'https://www.dude.box/favicon.svg', type: 'image/svg+xml' },
+        { url: 'https://www.dude.box/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: 'https://www.dude.box/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      ],
+      apple: [
+        { url: 'https://www.dude.box/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
+    },
+    manifest: 'https://www.dude.box/site.webmanifest',
+  };
+}
 
 export default async function StoreLayout({
   children,
@@ -62,7 +105,7 @@ export default async function StoreLayout({
               <h1 className="text-2xl font-bold">{store.name}</h1>
             )}
             <Link
-              href="/"
+              href="https://www.dude.box"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
               ← Back to Dude.Box
@@ -130,7 +173,7 @@ export default async function StoreLayout({
           <div className="mt-6 pt-6 border-t border-border text-xs text-muted-foreground text-center">
             <p>
               Powered by{" "}
-              <Link href="/" className="hover:text-primary">
+              <Link href="https://www.dude.box" className="hover:text-primary">
                 Dude.Box
               </Link>{" "}
               - A marketplace for makers
