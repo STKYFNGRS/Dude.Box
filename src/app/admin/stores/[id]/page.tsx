@@ -12,12 +12,13 @@ export const dynamic = "force-dynamic";
 export default async function AdminStoreDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   await requireAdmin();
 
+  const { id } = await params;
   const store = await prisma.store.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       owner: {
         select: {

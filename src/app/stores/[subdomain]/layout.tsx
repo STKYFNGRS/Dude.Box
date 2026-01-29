@@ -11,12 +11,14 @@ export default async function StoreLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { subdomain: string };
+  params: Promise<{ subdomain: string }>;
 }) {
+  const { subdomain } = await params;
+  
   // Fetch store by subdomain
   const store = await prisma.store.findUnique({
     where: {
-      subdomain: params.subdomain,
+      subdomain,
       status: "approved", // Only show approved stores
     },
     include: {
@@ -61,19 +63,19 @@ export default async function StoreLayout({
           {/* Store Navigation */}
           <nav className="flex gap-6">
             <Link
-              href={`/stores/${params.subdomain}`}
+              href={`/stores/${subdomain}`}
               className="text-sm hover:text-primary transition-colors"
             >
               Home
             </Link>
             <Link
-              href={`/stores/${params.subdomain}/products`}
+              href={`/stores/${subdomain}/products`}
               className="text-sm hover:text-primary transition-colors"
             >
               Products
             </Link>
             <Link
-              href={`/stores/${params.subdomain}/about`}
+              href={`/stores/${subdomain}/about`}
               className="text-sm hover:text-primary transition-colors"
             >
               About

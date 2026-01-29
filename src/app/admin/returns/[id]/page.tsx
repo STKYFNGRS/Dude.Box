@@ -17,15 +17,16 @@ export const metadata = {
 export default async function ReturnDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const admin = await isAdmin();
   if (!admin) {
     redirect("/portal/login");
   }
 
+  const { id } = await params;
   const returnItem = await prisma.return.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       user: {
         select: {

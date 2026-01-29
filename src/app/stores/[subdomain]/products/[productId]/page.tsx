@@ -8,11 +8,13 @@ export const dynamic = "force-dynamic";
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { subdomain: string; productId: string };
+  params: Promise<{ subdomain: string; productId: string }>;
 }) {
+  const { subdomain, productId } = await params;
+  
   const store = await prisma.store.findUnique({
     where: {
-      subdomain: params.subdomain,
+      subdomain,
       status: "approved",
     },
   });
@@ -23,7 +25,7 @@ export default async function ProductDetailPage({
 
   const product = await prisma.product.findUnique({
     where: {
-      id: params.productId,
+      id: productId,
       active: true,
       store_id: store.id,
     },
@@ -36,7 +38,7 @@ export default async function ProductDetailPage({
   return (
     <div className="space-y-8">
       <Link
-        href={`/stores/${params.subdomain}/products`}
+        href={`/stores/${subdomain}/products`}
         className="text-sm text-primary hover:underline inline-block"
       >
         ← Back to Products
@@ -79,7 +81,7 @@ export default async function ProductDetailPage({
           <div className="pt-6 border-t border-border">
             <h3 className="font-semibold mb-2">Sold by</h3>
             <Link
-              href={`/stores/${params.subdomain}`}
+              href={`/stores/${subdomain}`}
               className="text-primary hover:underline"
             >
               {store.name}

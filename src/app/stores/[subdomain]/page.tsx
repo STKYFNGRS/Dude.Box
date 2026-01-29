@@ -7,11 +7,13 @@ export const dynamic = "force-dynamic";
 export default async function StorePage({
   params,
 }: {
-  params: { subdomain: string };
+  params: Promise<{ subdomain: string }>;
 }) {
+  const { subdomain } = await params;
+  
   const store = await prisma.store.findUnique({
     where: {
-      subdomain: params.subdomain,
+      subdomain,
       status: "approved",
     },
     include: {
@@ -49,7 +51,7 @@ export default async function StorePage({
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Featured Products</h2>
             <Link
-              href={`/stores/${params.subdomain}/products`}
+              href={`/stores/${subdomain}/products`}
               className="text-sm text-primary hover:underline"
             >
               View All Products →
@@ -59,7 +61,7 @@ export default async function StorePage({
             {store.products.map((product) => (
               <Link
                 key={product.id}
-                href={`/stores/${params.subdomain}/products/${product.id}`}
+                href={`/stores/${subdomain}/products/${product.id}`}
                 className="card rounded-lg overflow-hidden hover:border-primary/50 transition-colors group"
               >
                 <div className="aspect-square bg-border/50 flex items-center justify-center">
@@ -103,7 +105,7 @@ export default async function StorePage({
           </p>
         </div>
         <Link
-          href={`/stores/${params.subdomain}/about`}
+          href={`/stores/${subdomain}/about`}
           className="inline-block mt-4 text-sm text-primary hover:underline"
         >
           Learn More →
