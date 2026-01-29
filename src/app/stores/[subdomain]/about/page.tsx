@@ -6,11 +6,13 @@ export const dynamic = "force-dynamic";
 export default async function StoreAboutPage({
   params,
 }: {
-  params: { subdomain: string };
+  params: Promise<{ subdomain: string }>;
 }) {
+  const { subdomain } = await params;
+  
   const store = await prisma.store.findUnique({
     where: {
-      subdomain: params.subdomain,
+      subdomain,
       status: "approved",
     },
     include: {
