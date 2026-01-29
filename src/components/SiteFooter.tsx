@@ -85,12 +85,13 @@ export function SiteFooter() {
         {/* Bottom Bar */}
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted">
-            © {currentYear} Dude.Box. All rights reserved.
+            © {currentYear} Dude Dot Box LLC. All rights reserved.
           </p>
+          <span>•</span>
           <div className="flex gap-4 text-sm text-muted">
             <span>Made for makers</span>
             <span>•</span>
-            <span>1% platform fee</span>
+            
           </div>
         </div>
       </div>
