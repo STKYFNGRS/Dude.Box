@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   // Extract subdomain
   const subdomain = hostname.split(".")[0];
 
-  // Skip if main domain, localhost, or special subdomains
+  // Skip main domain, localhost, and Vercel preview URLs
   if (
     subdomain === "www" ||
     subdomain === "dude" ||
@@ -19,7 +19,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If it's a subdomain, rewrite to /stores/[subdomain]
+  // Security: This rewrite is safe because:
+  // 1. Store pages validate subdomain exists in database
+  // 2. Only approved stores (status="approved") are accessible
+  // 3. Reserved subdomains are blocked during store creation
+  // 4. No user input is executed - only database queries
+  
+  // Rewrite subdomain requests to /stores/[subdomain]
   // This allows subdomain.dude.box to load /stores/subdomain pages
   url.pathname = `/stores/${subdomain}${url.pathname}`;
   return NextResponse.rewrite(url);

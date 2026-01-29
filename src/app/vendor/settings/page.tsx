@@ -1,5 +1,6 @@
 import { requireVendor } from "@/lib/vendor";
 import { EditStoreForm } from "@/components/vendor/EditStoreForm";
+import { StoreCustomizationForm } from "@/components/vendor/StoreCustomizationForm";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,15 @@ export default async function VendorSettingsPage() {
 
       <div className="card rounded-lg p-6">
         <EditStoreForm store={store} />
+      </div>
+
+      {/* Storefront Customization */}
+      <div className="card rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-4">Storefront Customization</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Customize your store's appearance with your own colors and welcome message.
+        </p>
+        <StoreCustomizationForm store={store} />
       </div>
 
       {/* Stripe Connect Status */}

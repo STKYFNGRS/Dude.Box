@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { Card } from "@/components/Card";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Dude.Box | Marketplace for Makers",
@@ -13,14 +13,31 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Redirect logged-in users to dashboard
   const session = await getServerSession(authOptions);
-  if (session?.user?.email) {
-    redirect("/members");
-  }
 
   return (
     <Container className="py-12">
+      {/* Show banner for logged-in users */}
+      {session?.user?.email && (
+        <div className="mb-8 card rounded-lg p-6 border-accent">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold mb-1">
+                Welcome back, {session.user.name || "there"}!
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Ready to check your dashboard?
+              </p>
+            </div>
+            <Link
+              href="/members"
+              className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em]"
+            >
+              Go to Dashboard →
+            </Link>
+          </div>
+        </div>
+      )}
       <section className="pb-16 border-b border-border">
         <div className="grid gap-12 md:grid-cols-[1.1fr_0.9fr] items-center">
           <div className="flex flex-col gap-6">
@@ -42,7 +59,7 @@ export default async function HomePage() {
                 Become a Vendor
               </a>
               <a
-                href="/stores/dudebox"
+                href="/stores"
                 className="outline-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em] w-full sm:w-auto text-center border border-accent text-accent hover:text-foreground hover:bg-accent/20 transition"
               >
                 Browse Stores
@@ -68,7 +85,7 @@ export default async function HomePage() {
           <h2 className="section-title text-4xl md:text-5xl">Built for makers who want to focus on making.</h2>
           <p className="text-lg muted">
             You create quality products. We provide the storefront, payment processing, 
-            hosting, and customer support. Keep 90% of every sale.
+            hosting, and customer support. Keep 97% of every sale.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -78,7 +95,7 @@ export default async function HomePage() {
           </Card>
           <Card title="Direct Payments">
             Connect your Stripe account and receive payouts in 2 days. 
-            We never hold your funds. You keep 90% of each sale.
+            We never hold your funds. You keep 97% of each sale.
           </Card>
           <Card title="No Tech Hassle">
             We handle hosting, SSL certificates, payment processing, shopping cart, and checkout. 
@@ -107,8 +124,8 @@ export default async function HomePage() {
               description: "Stripe-powered checkout. Customers trust it. You receive payouts directly.",
             },
             {
-              title: "10% Platform Fee",
-              description: "Only charged on sales. No upfront costs, no monthly fees. Simple and fair.",
+              title: "3% Platform Fee",
+              description: "$5 setup + $5/month subscription. Plus 3% per sale. Simple and transparent.",
             },
           ].map((item) => (
             <div key={item.title} className="card rounded-lg p-6 flex flex-col gap-4">

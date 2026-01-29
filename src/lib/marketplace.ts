@@ -3,9 +3,12 @@
  * and multi-vendor logic
  */
 
-// Platform fee percentage (10% default)
+// Platform fee percentage (3% default)
 export const PLATFORM_FEE_PERCENT =
-  parseFloat(process.env.STRIPE_PLATFORM_FEE_PERCENT || "10");
+  parseFloat(process.env.STRIPE_PLATFORM_FEE_PERCENT || "3");
+
+export const SETUP_FEE = 5.00; // $5 one-time
+export const MONTHLY_FEE = 5.00; // $5/month
 
 /**
  * Calculate platform fee and vendor amount from gross amount

@@ -45,13 +45,16 @@ export function SiteHeader() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-            aria-label="Shopping cart"
-          >
-            Cart
-          </button>
+          {/* Only show cart for authenticated users */}
+          {mounted && status === "authenticated" && (
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+              aria-label="Shopping cart"
+            >
+              Cart
+            </button>
+          )}
           {!mounted || status === "loading" ? (
             // Show loading state to prevent flash - invisible but maintains layout
             <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">

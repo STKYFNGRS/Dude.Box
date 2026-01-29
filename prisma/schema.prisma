@@ -217,6 +217,21 @@ model Store {
   shipping_policy       String?   @db.Text
   return_policy         String?   @db.Text
   
+  // Subscription tracking
+  setup_fee_paid        Boolean   @default(false)
+  setup_fee_date        DateTime?
+  monthly_subscription_id String?  @unique // Stripe subscription ID for monthly fee
+  subscription_status   String    @default("inactive") // inactive, active, past_due, cancelled
+  next_billing_date     DateTime?
+  
+  // Customization
+  custom_colors_enabled Boolean  @default(false)
+  primary_color         String?  // Hex color for buttons
+  secondary_color       String?  // Hex color for accents
+  background_color      String?  // Hex color for background
+  text_color            String?  // Hex color for text
+  custom_text           String?  @db.Text // Custom welcome message
+  
   created_at            DateTime  @default(now())
   updated_at            DateTime  @updatedAt
   
