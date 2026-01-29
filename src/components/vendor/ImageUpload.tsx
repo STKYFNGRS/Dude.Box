@@ -56,6 +56,7 @@ export function ImageUpload({
         <UploadDropzone<OurFileRouter, typeof endpoint>
           endpoint={endpoint}
           onClientUploadComplete={(res) => {
+            console.log("Upload complete:", res);
             if (res && res[0]) {
               onChange(res[0].url);
               setUploadError(null);
@@ -63,10 +64,12 @@ export function ImageUpload({
             }
           }}
           onUploadError={(error: Error) => {
+            console.error("Upload error:", error);
             setUploadError(error.message);
             setIsUploading(false);
           }}
           onUploadBegin={() => {
+            console.log("Upload started");
             setIsUploading(true);
             setUploadError(null);
           }}
@@ -78,7 +81,7 @@ export function ImageUpload({
             uploadIcon: "text-muted-foreground",
             label: "text-sm text-foreground font-medium",
             allowedContent: "text-xs text-muted-foreground mt-2",
-            button: "solid-button rounded-full px-6 py-2.5 text-sm font-medium mt-4 hover:opacity-90 transition-opacity"
+            button: "ut-button:bg-primary ut-button:text-primary-foreground ut-button:font-medium ut-button:px-6 ut-button:py-2.5 ut-button:rounded-full ut-button:text-sm ut-button:mt-4 ut-button:cursor-pointer ut-button:hover:opacity-90 ut-button:transition-opacity"
           }}
         />
       )}
