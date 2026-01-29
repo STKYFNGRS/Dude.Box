@@ -5,26 +5,37 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function AdminStoresPage() {
-  await requireAdmin();
+  try {
+    await requireAdmin();
+  } catch (error) {
+    console.error("Admin auth failed:", error);
+    throw error;
+  }
 
-  const stores = await prisma.store.findMany({
-    orderBy: { created_at: "desc" },
-    include: {
-      owner: {
-        select: {
-          first_name: true,
-          last_name: true,
-          email: true,
+  let stores;
+  try {
+    stores = await prisma.store.findMany({
+      orderBy: { created_at: "desc" },
+      include: {
+        owner: {
+          select: {
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
+        },
+        _count: {
+          select: {
+            products: true,
+            orders: true,
+          },
         },
       },
-      _count: {
-        select: {
-          products: true,
-          orders: true,
-        },
-      },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to fetch stores:", error);
+    throw new Error(`Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 
   const pendingCount = stores.filter((s) => s.status === "pending").length;
   const approvedCount = stores.filter((s) => s.status === "approved").length;
