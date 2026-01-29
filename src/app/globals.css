@@ -1,8 +1,8 @@
+@import "@uploadthing/react/styles.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "@uploadthing/react/styles.css";
 
 :root {
   --color-background: #0f1628;
