@@ -58,8 +58,8 @@ export async function POST(request: Request) {
       customer_email: user.email,
       line_items: [
         {
-          // Monthly subscription ($5/month)
-          price: "price_1Suxg9In9SFgOJXcePBKNyNz",
+          // Monthly subscription ($5/month) - using Membership product
+          price: "price_1Sum02In9SFgOJXcOYdXRk9D",
           quantity: 1,
         },
       ],
