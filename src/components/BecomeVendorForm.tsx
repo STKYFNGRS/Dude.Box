@@ -95,7 +95,7 @@ export function BecomeVendorForm() {
               className="input w-full text-base font-medium"
               placeholder="yourstore"
               required
-              pattern="[a-z0-9-]{3,63}"
+              pattern="[a-z0-9\-]{3,63}"
               minLength={3}
               maxLength={63}
               disabled={loading}

@@ -52,15 +52,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create Stripe Checkout Session
-    // Line item 1: $5 application fee (one-time)
-    // Line item 2: $5/month subscription
+    // Create Stripe Checkout Session for subscription + one-time fee
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: user.email,
       line_items: [
         {
-          // Monthly subscription using the price ID provided by user
+          // Monthly subscription ($5/month)
           price: "price_1Suxg9In9SFgOJXcePBKNyNz",
           quantity: 1,
         },
@@ -69,21 +67,6 @@ export async function POST(request: Request) {
         metadata: {
           type: "vendor_subscription",
           user_id: user.id,
-        },
-      },
-      payment_intent_data: {
-        metadata: {
-          type: "vendor_application",
-          user_id: user.id,
-        },
-        setup_future_usage: "off_session",
-      },
-      invoice_creation: {
-        enabled: true,
-        invoice_data: {
-          metadata: {
-            type: "vendor_application",
-          },
         },
       },
       metadata: {
