@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import { Container } from "@/components/Container";
 import { StoreFooter } from "@/components/StoreFooter";
+import { StoreHeader } from "@/components/StoreHeader";
 import Image from "next/image";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
@@ -101,61 +101,14 @@ export default async function StoreLayout({
   return (
     <div className="min-h-screen flex flex-col">
       {/* Store Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur-xl">
-        <Container className="py-4">
-          <div className="flex items-center justify-between mb-4">
-            {store.logo_url ? (
-              <Image
-                src={store.logo_url}
-                alt={store.name}
-                width={150}
-                height={50}
-                className="h-12 w-auto"
-              />
-            ) : (
-              <h1 className="text-2xl font-bold">{store.name}</h1>
-            )}
-            <div className="flex items-center gap-4">
-              {isOwner && (
-                <Link
-                  href="https://www.dude.box/members"
-                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                >
-                  Dashboard →
-                </Link>
-              )}
-              <Link
-                href="https://www.dude.box"
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
-                ← Back to Dude.Box
-              </Link>
-            </div>
-          </div>
-          
-          {/* Store Navigation */}
-          <nav className="flex gap-6">
-            <Link
-              href={`${basePath}/`}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href={`${basePath}/products`}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Products
-            </Link>
-            <Link
-              href={`${basePath}/about`}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-          </nav>
-        </Container>
-      </header>
+      <StoreHeader 
+        store={{
+          name: store.name,
+          logo_url: store.logo_url
+        }}
+        basePath={basePath}
+        isOwner={isOwner}
+      />
 
       {/* Banner (if configured) */}
       {store.banner_url && (

@@ -50,9 +50,9 @@ export default async function StoresPage() {
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className="aspect-[4/3] rounded-lg border-2 border-border bg-background/40 mb-4 flex items-center justify-center overflow-hidden group-hover:border-accent transition-all duration-300">
-              {store.banner_url || store.logo_url ? (
+              {store.logo_url || store.banner_url ? (
                 <img
-                  src={store.banner_url || store.logo_url || ""}
+                  src={store.logo_url || store.banner_url || ""}
                   alt={store.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
