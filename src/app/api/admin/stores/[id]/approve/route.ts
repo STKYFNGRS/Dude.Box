@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin";
 import { sendStoreApproved } from "@/lib/email";
+import { provisionStoreSubdomain } from "@/lib/dns-provisioning";
 
 export const dynamic = 'force-dynamic';
 
@@ -40,6 +41,20 @@ export async function POST(
       console.error("Failed to send approval email:", error);
       // Don't fail the approval if email fails
     }
+
+    // Automatically provision subdomain DNS and Vercel domain
+    // This runs asynchronously and doesn't block the approval response
+    provisionStoreSubdomain(store.subdomain)
+      .then((result) => {
+        if (result.success) {
+          console.log(`✅ Subdomain provisioned for ${store.subdomain}`);
+        } else {
+          console.error(`⚠️ Subdomain provisioning failed for ${store.subdomain}:`, result);
+        }
+      })
+      .catch((error) => {
+        console.error(`❌ Error provisioning subdomain for ${store.subdomain}:`, error);
+      });
 
     return NextResponse.json({ store });
   } catch (error) {
