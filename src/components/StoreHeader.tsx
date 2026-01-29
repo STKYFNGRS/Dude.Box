@@ -173,7 +173,6 @@ export function StoreHeader({ store, basePath, isOwner }: StoreHeaderProps) {
                     Back to Dude.Box
                   </Link>
                 </div>
-              </nav>
             </Container>
           </div>
         )}
