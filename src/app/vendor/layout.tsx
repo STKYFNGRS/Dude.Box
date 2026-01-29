@@ -64,7 +64,7 @@ export default async function VendorLayout({
 
             <div className="pt-4 border-t border-border">
               <Link
-                href={`/stores/${store.subdomain}`}
+                href={`https://${store.subdomain}.dude.box`}
                 className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors flex items-center gap-2"
                 target="_blank"
               >
