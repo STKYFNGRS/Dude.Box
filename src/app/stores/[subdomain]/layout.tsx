@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import Image from "next/image";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,14 @@ export default async function StoreLayout({
   params: Promise<{ subdomain: string }>;
 }) {
   const { subdomain } = await params;
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  
+  // Determine if accessed via subdomain or main domain path
+  const isSubdomainAccess = hostname.startsWith(`${subdomain}.`) && !hostname.startsWith("www.");
+  
+  // Use root paths for subdomain access, full paths for www.dude.box/stores/subdomain
+  const basePath = isSubdomainAccess ? "" : `/stores/${subdomain}`;
   
   // Fetch store by subdomain
   const store = await prisma.store.findUnique({
@@ -63,19 +72,19 @@ export default async function StoreLayout({
           {/* Store Navigation */}
           <nav className="flex gap-6">
             <Link
-              href={`/stores/${subdomain}`}
+              href={`${basePath}/`}
               className="text-sm hover:text-primary transition-colors"
             >
               Home
             </Link>
             <Link
-              href={`/stores/${subdomain}/products`}
+              href={`${basePath}/products`}
               className="text-sm hover:text-primary transition-colors"
             >
               Products
             </Link>
             <Link
-              href={`/stores/${subdomain}/about`}
+              href={`${basePath}/about`}
               className="text-sm hover:text-primary transition-colors"
             >
               About

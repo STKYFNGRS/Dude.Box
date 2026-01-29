@@ -1,17 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
 export default async function StoreProductsPage({
   params,
 }: {
-  params: { subdomain: string };
+  params: Promise<{ subdomain: string }>;
 }) {
+  const { subdomain } = await params;
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  
+  const isSubdomainAccess = hostname.startsWith(`${subdomain}.`) && !hostname.startsWith("www.");
+  const basePath = isSubdomainAccess ? "" : `/stores/${subdomain}`;
+  
   const store = await prisma.store.findUnique({
     where: {
-      subdomain: params.subdomain,
+      subdomain,
       status: "approved",
     },
     include: {
@@ -48,7 +56,7 @@ export default async function StoreProductsPage({
           {store.products.map((product) => (
             <Link
               key={product.id}
-              href={`/stores/${params.subdomain}/products/${product.id}`}
+              href={`${basePath}/products/${product.id}`}
               className="card rounded-lg overflow-hidden hover:border-primary/50 transition-colors group"
             >
               <div className="aspect-square bg-border/50 flex items-center justify-center">

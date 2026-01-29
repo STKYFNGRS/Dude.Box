@@ -38,8 +38,8 @@ export const config = {
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - favicon and public assets (png, svg, ico, webmanifest)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|favicon|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$).*)",
   ],
 };

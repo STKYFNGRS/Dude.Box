@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,11 @@ export default async function ProductDetailPage({
   params: Promise<{ subdomain: string; productId: string }>;
 }) {
   const { subdomain, productId } = await params;
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  
+  const isSubdomainAccess = hostname.startsWith(`${subdomain}.`) && !hostname.startsWith("www.");
+  const basePath = isSubdomainAccess ? "" : `/stores/${subdomain}`;
   
   const store = await prisma.store.findUnique({
     where: {
@@ -38,7 +44,7 @@ export default async function ProductDetailPage({
   return (
     <div className="space-y-8">
       <Link
-        href={`/stores/${subdomain}/products`}
+        href={`${basePath}/products`}
         className="text-sm text-primary hover:underline inline-block"
       >
         ← Back to Products
@@ -81,7 +87,7 @@ export default async function ProductDetailPage({
           <div className="pt-6 border-t border-border">
             <h3 className="font-semibold mb-2">Sold by</h3>
             <Link
-              href={`/stores/${subdomain}`}
+              href={`${basePath}/`}
               className="text-primary hover:underline"
             >
               {store.name}

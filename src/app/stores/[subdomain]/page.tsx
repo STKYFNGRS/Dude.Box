@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,11 @@ export default async function StorePage({
   params: Promise<{ subdomain: string }>;
 }) {
   const { subdomain } = await params;
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  
+  const isSubdomainAccess = hostname.startsWith(`${subdomain}.`) && !hostname.startsWith("www.");
+  const basePath = isSubdomainAccess ? "" : `/stores/${subdomain}`;
   
   const store = await prisma.store.findUnique({
     where: {
@@ -51,7 +57,7 @@ export default async function StorePage({
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Featured Products</h2>
             <Link
-              href={`/stores/${subdomain}/products`}
+              href={`${basePath}/products`}
               className="text-sm text-primary hover:underline"
             >
               View All Products →
@@ -61,7 +67,7 @@ export default async function StorePage({
             {store.products.map((product) => (
               <Link
                 key={product.id}
-                href={`/stores/${subdomain}/products/${product.id}`}
+                href={`${basePath}/products/${product.id}`}
                 className="card rounded-lg overflow-hidden hover:border-primary/50 transition-colors group"
               >
                 <div className="aspect-square bg-border/50 flex items-center justify-center">
@@ -105,7 +111,7 @@ export default async function StorePage({
           </p>
         </div>
         <Link
-          href={`/stores/${subdomain}/about`}
+          href={`${basePath}/about`}
           className="inline-block mt-4 text-sm text-primary hover:underline"
         >
           Learn More →
