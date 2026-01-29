@@ -43,7 +43,7 @@ export function SiteHeader() {
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
         <Container className="py-3 flex items-center justify-between">
-          <div className="flex flex-1 items-center gap-8">
+          <div className="flex items-center gap-8">
             <Link href="https://www.dude.box" aria-label="dude.box home" className="inline-flex items-center">
               <Image
                 src="/Logo.png"
@@ -56,16 +56,16 @@ export function SiteHeader() {
               />
             </Link>
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-6">
+            <nav className="hidden lg:flex items-center gap-8">
               <Link
                 href="/marketplace"
-                className="text-sm hover:text-primary transition-colors font-medium"
+                className="text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 Marketplace
               </Link>
               <Link
                 href="/stores"
-                className="text-sm hover:text-primary transition-colors font-medium"
+                className="text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 Browse Stores
               </Link>
@@ -73,7 +73,7 @@ export function SiteHeader() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 ml-12">
             {/* Only show cart for authenticated users */}
             {mounted && status === "authenticated" && (
               <button
@@ -143,14 +143,14 @@ export function SiteHeader() {
               <nav className="flex flex-col gap-4 mb-4 pb-4 border-b border-border">
                 <Link
                   href="/marketplace"
-                  className="text-sm hover:text-primary transition-colors py-2 font-medium"
+                  className="text-base font-medium text-foreground hover:text-primary transition-colors py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Marketplace
                 </Link>
                 <Link
                   href="/stores"
-                  className="text-sm hover:text-primary transition-colors py-2 font-medium"
+                  className="text-base font-medium text-foreground hover:text-primary transition-colors py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Browse Stores
