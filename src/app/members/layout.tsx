@@ -16,7 +16,7 @@ export default async function MembersLayout({
     redirect("/portal/login?redirect=/members");
   }
 
-  // Fetch user role to show conditional links
+  // Fetch user role and store status to show conditional links
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     select: {
@@ -24,6 +24,21 @@ export default async function MembersLayout({
       is_admin: true,
     },
   });
+
+  // Check if user has a store (regardless of role field)
+  const userStore = await prisma.store.findFirst({
+    where: {
+      owner: { email: session.user.email },
+    },
+    select: {
+      id: true,
+      status: true,
+      subdomain: true,
+    },
+  });
+
+  const hasStore = !!userStore;
+  const isApprovedVendor = userStore?.status === "approved";
 
   return (
     <Container className="py-10">
@@ -44,38 +59,60 @@ export default async function MembersLayout({
               News & Announcements
             </Link>
             
-            {/* Vendor Dashboard Link */}
-            {user?.role === "vendor" && (
+            {/* Vendor Section - Show if user has a store */}
+            {hasStore ? (
               <>
                 <div className="pt-4 mt-4 border-t border-border">
                   <div className="px-4 py-1 text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                     Vendor
                   </div>
                 </div>
-                <Link
-                  href="/vendor"
-                  className="block px-4 py-2 rounded hover:bg-emerald-500/10 transition-colors text-sm font-medium text-emerald-500"
-                >
-                  📦 My Store
-                </Link>
-                <Link
-                  href="/vendor/products"
-                  className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
-                >
-                  Products
-                </Link>
-                <Link
-                  href="/vendor/orders"
-                  className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
-                >
-                  Orders
-                </Link>
-                <Link
-                  href="/vendor/settings"
-                  className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
-                >
-                  Store Settings
-                </Link>
+                {isApprovedVendor ? (
+                  <>
+                    <Link
+                      href="/vendor"
+                      className="block px-4 py-2 rounded hover:bg-emerald-500/10 transition-colors text-sm font-medium text-emerald-500"
+                    >
+                      📦 My Store
+                    </Link>
+                    <Link
+                      href="/vendor/products"
+                      className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
+                    >
+                      Products
+                    </Link>
+                    <Link
+                      href="/vendor/orders"
+                      className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
+                    >
+                      Orders
+                    </Link>
+                    <Link
+                      href="/vendor/settings"
+                      className="block px-4 py-2 rounded hover:bg-border/50 transition-colors text-sm text-muted-foreground"
+                    >
+                      Store Settings
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/members/become-vendor"
+                    className="block px-4 py-2 rounded hover:bg-amber-500/10 transition-colors text-sm font-medium text-amber-500"
+                  >
+                    ⏳ Store Pending Approval
+                  </Link>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="pt-4 mt-4 border-t border-border">
+                  <Link
+                    href="/members/become-vendor"
+                    className="block px-4 py-2 rounded hover:bg-blue-500/10 transition-colors text-sm font-medium text-blue-500"
+                  >
+                    🚀 Become a Vendor
+                  </Link>
+                </div>
               </>
             )}
 
