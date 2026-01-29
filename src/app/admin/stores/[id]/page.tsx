@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ApproveStoreButton } from "@/components/admin/ApproveStoreButton";
 import { RejectStoreButton } from "@/components/admin/RejectStoreButton";
 import { SuspendStoreButton } from "@/components/admin/SuspendStoreButton";
+import { DeleteStoreButton } from "@/components/admin/DeleteStoreButton";
 
 export const dynamic = "force-dynamic";
 
@@ -93,6 +94,7 @@ export default async function AdminStoreDetailPage({
             {store.status === "suspended" && (
               <ApproveStoreButton storeId={store.id} storeName={store.name} />
             )}
+            <DeleteStoreButton storeId={store.id} storeName={store.name} />
           </div>
         </div>
 

@@ -38,19 +38,19 @@ export default async function BecomeVendorPage() {
 
       {existingStore ? (
         <div className="card rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-4">Your Store</h2>
+          <h2 className="text-xl font-bold mb-4 text-foreground">Your Store</h2>
           <div className="space-y-4">
             <div>
               <div className="text-sm text-muted-foreground mb-1">
                 Store Name
               </div>
-              <div className="font-medium">{existingStore.name}</div>
+              <div className="font-medium text-foreground">{existingStore.name}</div>
             </div>
             <div>
               <div className="text-sm text-muted-foreground mb-1">
                 Subdomain
               </div>
-              <div className="font-medium">
+              <div className="font-medium text-foreground">
                 {existingStore.subdomain}.dude.box
               </div>
             </div>
