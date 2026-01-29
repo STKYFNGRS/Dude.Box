@@ -34,6 +34,35 @@ export function EditStoreForm({ store }: { store: Store }) {
   const [selectedShippingTemplate, setSelectedShippingTemplate] = useState("");
   const [selectedReturnTemplate, setSelectedReturnTemplate] = useState("");
 
+  // Auto-save images when they're uploaded
+  const handleImageUpload = async (field: "logo_url" | "banner_url", url: string) => {
+    console.log(`${field} uploaded:`, url);
+    
+    // Update form data
+    setFormData(prev => ({ ...prev, [field]: url }));
+    
+    // Auto-save to database
+    if (url) {
+      try {
+        const response = await fetch("/api/vendor/store", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ [field]: url }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save image");
+        }
+        
+        console.log(`${field} saved to database`);
+        router.refresh();
+      } catch (err) {
+        console.error(`Error saving ${field}:`, err);
+        setError(err instanceof Error ? err.message : "Failed to save image");
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -137,9 +166,9 @@ export function EditStoreForm({ store }: { store: Store }) {
       <ImageUpload
         endpoint="storeLogo"
         value={formData.logo_url}
-        onChange={(url) => setFormData({ ...formData, logo_url: url })}
+        onChange={(url) => handleImageUpload("logo_url", url)}
         label="Store Logo"
-        description="Recommended: 400x100px PNG or JPG. Appears in store header. Max 4MB."
+        description="Recommended: 400x100px PNG or JPG. Appears in store header. Max 4MB. Saves automatically."
         previewHeight="h-32"
       />
 
@@ -147,9 +176,9 @@ export function EditStoreForm({ store }: { store: Store }) {
       <ImageUpload
         endpoint="storeBanner"
         value={formData.banner_url}
-        onChange={(url) => setFormData({ ...formData, banner_url: url })}
+        onChange={(url) => handleImageUpload("banner_url", url)}
         label="Store Banner"
-        description="Recommended: 1200x400px JPG or PNG. Appears at top of store page. Max 8MB."
+        description="Recommended: 1200x400px JPG or PNG. Appears at top of store page. Max 8MB. Saves automatically."
         previewHeight="h-48"
       />
 
