@@ -93,7 +93,8 @@ async function handleCheckoutSessionCompleted(
 ) {
   console.log("Processing checkout.session.completed");
 
-  const userId = session.metadata?.userId;
+  // Support both userId and user_id for backwards compatibility
+  const userId = session.metadata?.userId || session.metadata?.user_id;
   const customerEmail = session.customer_email || session.customer_details?.email;
 
   if (!userId) {
@@ -500,7 +501,8 @@ async function handleVendorApplicationPayment(
 ) {
   console.log("Processing vendor application payment");
 
-  const userId = session.metadata?.userId;
+  // Support both userId and user_id for backwards compatibility
+  const userId = session.metadata?.userId || session.metadata?.user_id;
   const subdomain = session.metadata?.subdomain;
   const name = session.metadata?.name;
   const description = session.metadata?.description;
