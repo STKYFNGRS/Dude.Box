@@ -853,3 +853,206 @@ export async function sendStoreRejected({
     return { success: false, error };
   }
 }
+
+/**
+ * Send moderation alert to admin
+ */
+export async function sendModerationAlertEmail({
+  type,
+  severity,
+  vendorEmail,
+  storeName,
+  contentName,
+  reason,
+  categories,
+}: {
+  type: "product" | "store";
+  severity: "severe" | "moderate";
+  vendorEmail: string;
+  storeName: string;
+  contentName: string;
+  reason: string;
+  categories: string[];
+}) {
+  const adminEmail = process.env.SUPPORT_EMAIL || "dude@dude.box";
+  const severityColor = severity === "severe" ? "#ef4444" : "#f59e0b";
+  const actionTaken = severity === "severe" ? "AUTOMATICALLY HIDDEN" : "FLAGGED FOR REVIEW";
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: adminEmail,
+      subject: `🚨 ${severity.toUpperCase()} Policy Violation Detected`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: #e5e7eb;">
+            <div style="background: ${severityColor}; padding: 20px; text-align: center;">
+              <h1 style="color: white; margin: 0;">Policy Violation Detected</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <div style="background: #0f172a; border: 2px solid ${severityColor}; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h2 style="color: ${severityColor}; margin-top: 0;">Action Taken: ${actionTaken}</h2>
+                <p style="color: #cbd5e1;"><strong>Type:</strong> ${type}</p>
+                <p style="color: #cbd5e1;"><strong>Severity:</strong> ${severity}</p>
+                <p style="color: #cbd5e1;"><strong>Store:</strong> ${storeName}</p>
+                <p style="color: #cbd5e1;"><strong>Vendor:</strong> ${vendorEmail}</p>
+                <p style="color: #cbd5e1;"><strong>Content:</strong> ${contentName}</p>
+              </div>
+              
+              <div style="background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #818cf8;">Violation Details</h3>
+                <p style="color: #cbd5e1;"><strong>Reason:</strong> ${reason}</p>
+                <p style="color: #cbd5e1;"><strong>Categories:</strong> ${categories.join(", ")}</p>
+              </div>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "https://www.dude.box"}/admin/products" 
+                   style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px;">
+                  Review in Admin Panel
+                </a>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    console.log(`✅ Moderation alert sent to admin`);
+  } catch (error) {
+    console.error("Failed to send moderation alert:", error);
+  }
+}
+
+/**
+ * Send content hidden notification to vendor
+ */
+export async function sendVendorContentHiddenEmail({
+  to,
+  vendorName,
+  contentType,
+  contentName,
+  reason,
+}: {
+  to: string;
+  vendorName: string;
+  contentType: "product" | "store";
+  contentName: string;
+  reason: string;
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Important: ${contentType === "product" ? "Product" : "Store Content"} Removed`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: #e5e7eb;">
+            <div style="background: #ef4444; padding: 20px; text-align: center;">
+              <h1 style="color: white; margin: 0;">Policy Violation Notice</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <p>Hello ${vendorName},</p>
+              
+              <p>Your ${contentType} "${contentName}" has been automatically hidden due to a policy violation.</p>
+              
+              <div style="background: #0f172a; border: 2px solid #ef4444; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #ef4444; margin-top: 0;">Reason for Removal</h3>
+                <p style="color: #cbd5e1;">${reason}</p>
+              </div>
+              
+              <p>This content violates our <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "https://www.dude.box"}/legal/vendor-terms" style="color: #6366f1;">Vendor Terms of Service</a>, specifically Section 6: Prohibited Products and Conduct.</p>
+              
+              <p style="color: #94a3b8; font-size: 14px;"><strong>What happens now?</strong></p>
+              <ul style="color: #cbd5e1;">
+                <li>This ${contentType} is hidden from public view</li>
+                <li>You cannot reactivate it</li>
+                <li>Repeated violations may result in store suspension</li>
+              </ul>
+              
+              <p>If you believe this was a mistake, please contact our support team.</p>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="mailto:dude@dude.box" 
+                   style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px;">
+                  Contact Support
+                </a>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    console.log(`✅ Content hidden email sent to ${to}`);
+  } catch (error) {
+    console.error("Failed to send content hidden email:", error);
+  }
+}
+
+/**
+ * Send content flagged notification to vendor (moderate violations)
+ */
+export async function sendVendorContentFlaggedEmail({
+  to,
+  vendorName,
+  contentType,
+  contentName,
+  reason,
+}: {
+  to: string;
+  vendorName: string;
+  contentType: "product" | "store";
+  contentName: string;
+  reason: string;
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Action Required: ${contentType === "product" ? "Product" : "Content"} Flagged for Review`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: #e5e7eb;">
+            <div style="background: #f59e0b; padding: 20px; text-align: center;">
+              <h1 style="color: white; margin: 0;">Content Flagged for Review</h1>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px;">
+              <p>Hello ${vendorName},</p>
+              
+              <p>Your ${contentType} "${contentName}" has been flagged for potential policy concerns.</p>
+              
+              <div style="background: #0f172a; border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #f59e0b; margin-top: 0;">Reason for Flag</h3>
+                <p style="color: #cbd5e1;">${reason}</p>
+              </div>
+              
+              <p><strong>What this means:</strong></p>
+              <ul style="color: #cbd5e1;">
+                <li>Your ${contentType} is still visible for now</li>
+                <li>Our team will review it within 24-48 hours</li>
+                <li>You may be asked to make changes</li>
+                <li>If unresolved, it may be hidden</li>
+              </ul>
+              
+              <p>We recommend reviewing our <a href="${process.env.NEXT_PUBLIC_APP_DOMAIN || "https://www.dude.box"}/legal/vendor-terms" style="color: #6366f1;">Vendor Terms</a> to ensure compliance.</p>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="mailto:dude@dude.box" 
+                   style="display: inline-block; background: #6366f1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px;">
+                  Contact Support
+                </a>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    console.log(`✅ Content flagged email sent to ${to}`);
+  } catch (error) {
+    console.error("Failed to send content flagged email:", error);
+  }
+}

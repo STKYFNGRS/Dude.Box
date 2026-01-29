@@ -320,3 +320,21 @@ model CartItem {
   @@index([cart_id])
   @@index([product_id])
 }
+
+// Moderation logs (AI content monitoring)
+model ModerationLog {
+  id            String   @id @default(cuid())
+  product_id    String?
+  store_id      String?
+  content_type  String   // "product" or "store"
+  is_violation  Boolean
+  severity      String   // "severe", "moderate", "clean"
+  categories    String?  // Comma-separated violation categories
+  reason        String   @db.Text
+  confidence    Float    // 0.0 to 1.0
+  checked_at    DateTime @default(now())
+  
+  @@index([product_id])
+  @@index([store_id])
+  @@index([is_violation, severity])
+}

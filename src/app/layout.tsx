@@ -6,6 +6,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Providers } from "@/components/Providers";
+import { SupportChatWidget } from "@/components/SupportChatWidget";
 import { authOptions } from "@/lib/auth";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -70,6 +71,7 @@ export default async function RootLayout({
             {/* Hide SiteFooter on vendor subdomains (store layout has its own footer) */}
             {!isVendorSubdomain && <SiteFooter />}
           </div>
+          <SupportChatWidget />
         </Providers>
       </body>
     </html>
