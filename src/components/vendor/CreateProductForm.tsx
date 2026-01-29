@@ -47,33 +47,36 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="bg-red-500/10 text-red-500 p-3 rounded text-sm">
-          {error}
+        <div className="bg-error/10 text-error border border-error/20 p-4 rounded-lg text-sm animate-fade-in flex items-start gap-3">
+          <span className="text-xl flex-shrink-0">✗</span>
+          <span>{error}</span>
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-2">
-          Product Name <span className="text-red-500">*</span>
+        <label htmlFor="name" className="block text-sm font-semibold mb-2 text-foreground">
+          Product Name <span className="text-error">*</span>
         </label>
         <input
           id="name"
           type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="input w-full"
+          className="input w-full text-base"
+          placeholder="Enter product name"
           required
           maxLength={200}
           disabled={loading}
         />
+        <p className="text-xs text-muted mt-2">{formData.name.length}/200 characters</p>
       </div>
 
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium mb-2"
+          className="block text-sm font-semibold mb-2 text-foreground"
         >
           Description
         </label>
@@ -83,20 +86,22 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
-          className="input w-full"
-          rows={5}
+          className="input w-full text-base"
+          rows={6}
+          placeholder="Describe your product, its features, materials, dimensions, etc."
           maxLength={2000}
           disabled={loading}
         />
+        <p className="text-xs text-muted mt-2">{formData.description.length}/2000 characters</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="price" className="block text-sm font-medium mb-2">
-            Price <span className="text-red-500">*</span>
+          <label htmlFor="price" className="block text-sm font-semibold mb-2 text-foreground">
+            Price <span className="text-error">*</span>
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-sm">$</span>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-accent font-bold text-base">$</span>
             <input
               id="price"
               type="number"
@@ -106,7 +111,8 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
               onChange={(e) =>
                 setFormData({ ...formData, price: e.target.value })
               }
-              className="input flex-1"
+              className="input w-full pl-8 text-base font-medium"
+              placeholder="0.00"
               required
               disabled={loading}
             />
@@ -114,7 +120,7 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
         </div>
 
         <div>
-          <label htmlFor="interval" className="block text-sm font-medium mb-2">
+          <label htmlFor="interval" className="block text-sm font-semibold mb-2 text-foreground">
             Product Type
           </label>
           <select
@@ -123,43 +129,57 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
             onChange={(e) =>
               setFormData({ ...formData, interval: e.target.value })
             }
-            className="input w-full"
+            className="input w-full text-base"
             disabled={loading}
           >
-            <option value="one_time">One-time Purchase</option>
-            <option value="month">Monthly Subscription</option>
+            <option value="one_time">🛒 One-time Purchase</option>
+            <option value="month">📅 Monthly Subscription</option>
           </select>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <input
-          id="active"
-          type="checkbox"
-          checked={formData.active}
-          onChange={(e) =>
-            setFormData({ ...formData, active: e.target.checked })
-          }
-          className="rounded"
-          disabled={loading}
-        />
-        <label htmlFor="active" className="text-sm font-medium">
-          Active (visible to customers)
+      <div className="card rounded-lg p-4 bg-background/50">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            id="active"
+            type="checkbox"
+            checked={formData.active}
+            onChange={(e) =>
+              setFormData({ ...formData, active: e.target.checked })
+            }
+            className="w-5 h-5 rounded border-2 border-border checked:bg-success checked:border-success transition-all"
+            disabled={loading}
+          />
+          <div>
+            <div className="text-sm font-semibold text-foreground">
+              Make product active immediately
+            </div>
+            <div className="text-xs text-muted">
+              Active products are visible to customers on your storefront
+            </div>
+          </div>
         </label>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 pt-4 border-t border-border">
         <button
           type="submit"
-          className="solid-button rounded-full px-8 py-3 text-sm"
+          className="solid-button rounded-full px-8 py-3 text-sm font-bold shadow-button"
           disabled={loading}
         >
-          {loading ? "Creating..." : "Create Product"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+              Creating Product...
+            </span>
+          ) : (
+            "Create Product →"
+          )}
         </button>
         <button
           type="button"
           onClick={() => router.push("/vendor/products")}
-          className="outline-button rounded-full px-8 py-3 text-sm"
+          className="outline-button rounded-full px-8 py-3 text-sm font-semibold"
           disabled={loading}
         >
           Cancel

@@ -35,35 +35,37 @@ export default async function VendorProductsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1">{products.length}</div>
-          <div className="text-sm text-muted-foreground">Total Products</div>
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-accent">
+          <div className="text-3xl font-bold mb-1 text-foreground">{products.length}</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Total Products</div>
         </div>
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1 text-emerald-500">
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-success">
+          <div className="text-3xl font-bold mb-1 text-success">
             {activeCount}
           </div>
-          <div className="text-sm text-muted-foreground">Active</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Active</div>
         </div>
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1">{inactiveCount}</div>
-          <div className="text-sm text-muted-foreground">Inactive</div>
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-border">
+          <div className="text-3xl font-bold mb-1 text-muted">{inactiveCount}</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Inactive</div>
         </div>
       </div>
 
       {/* Products List */}
       {products.length === 0 ? (
-        <div className="card rounded-lg p-12 text-center">
-          <div className="text-4xl mb-4">📦</div>
-          <h2 className="text-xl font-bold mb-2">No Products Yet</h2>
-          <p className="text-muted-foreground mb-6">
-            Start by adding your first product to your store
+        <div className="card rounded-lg p-16 text-center animate-fade-in">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-accent/10 border-2 border-accent/30 flex items-center justify-center">
+            <span className="text-4xl">📦</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-3 text-foreground">No Products Yet</h2>
+          <p className="text-muted mb-8 max-w-md mx-auto leading-relaxed">
+            Start selling by adding your first product. It only takes a minute to create a listing.
           </p>
           <Link
             href="/vendor/products/new"
-            className="solid-button rounded-full px-6 py-2 text-sm inline-block"
+            className="solid-button rounded-full px-8 py-3 text-sm inline-block font-semibold shadow-button"
           >
-            Add Your First Product
+            Add Your First Product →
           </Link>
         </div>
       ) : (
@@ -94,40 +96,49 @@ export default async function VendorProductsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {products.map((product) => (
-                  <tr key={product.id}>
+                  <tr 
+                    key={product.id}
+                    className="group hover:bg-hover/50 transition-colors"
+                  >
                     <td className="px-6 py-4">
-                      <div className="font-medium">{product.name}</div>
+                      <div className="font-semibold text-foreground group-hover:text-accent transition-colors">{product.name}</div>
                       {product.description && (
-                        <div className="text-sm text-muted-foreground mt-1">
+                        <div className="text-sm text-muted mt-1 leading-relaxed">
                           {product.description.substring(0, 60)}
                           {product.description.length > 60 ? "..." : ""}
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium">
-                      ${product.price.toString()}
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-bold text-accent">
+                        ${product.price.toString()}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-sm">
-                      {product.interval === "month" ? "Subscription" : "One-time"}
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-foreground">
+                        {product.interval === "month" ? "📅 Subscription" : "🛒 One-time"}
+                      </span>
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full ${
                           product.active
-                            ? "bg-emerald-500/20 text-emerald-500"
-                            : "bg-gray-500/20 text-gray-500"
+                            ? "bg-success/20 text-success"
+                            : "bg-muted/20 text-muted"
                         }`}
                       >
-                        {product.active ? "Active" : "Inactive"}
+                        {product.active && "✓"}
+                        {!product.active && "○"}
+                        <span className="ml-1">{product.active ? "Active" : "Inactive"}</span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-6 py-4 text-sm text-muted">
                       {new Date(product.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-right space-x-2">
+                    <td className="px-6 py-4 text-right space-x-3">
                       <Link
                         href={`/vendor/products/${product.id}/edit`}
-                        className="text-sm text-primary hover:underline"
+                        className="text-sm text-accent hover:text-foreground transition-colors font-medium"
                       >
                         Edit
                       </Link>

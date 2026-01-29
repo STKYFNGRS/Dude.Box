@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { subdomain, name, description, contact_email, shipping_policy, return_policy } = body;
+    const { subdomain, name, description, contact_email } = body;
 
     // Validate required fields
     if (!subdomain || !name || !contact_email) {
@@ -73,15 +73,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create the store
+    // Create the store (shipping/return policies set later in vendor settings)
     const store = await prisma.store.create({
       data: {
         subdomain,
         name,
         description: description || null,
         contact_email,
-        shipping_policy: shipping_policy || null,
-        return_policy: return_policy || null,
+        shipping_policy: null, // Set later in /vendor/settings
+        return_policy: null,    // Set later in /vendor/settings
         owner_id: user.id,
         status: "pending", // Requires admin approval
       },

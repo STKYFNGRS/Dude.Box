@@ -7,19 +7,37 @@ export function BecomeVendorForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [checkingSubdomain, setCheckingSubdomain] = useState(false);
+  const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
     subdomain: "",
     name: "",
     description: "",
     contact_email: "",
-    shipping_policy: "",
-    return_policy: "",
   });
 
-  const handleSubdomainChange = (value: string) => {
+  const handleSubdomainChange = async (value: string) => {
     // Convert to lowercase, remove spaces and special chars
     const cleaned = value.toLowerCase().replace(/[^a-z0-9-]/g, "");
     setFormData({ ...formData, subdomain: cleaned });
+    
+    // Check availability if valid length
+    if (cleaned.length >= 3) {
+      setCheckingSubdomain(true);
+      setSubdomainAvailable(null);
+      
+      try {
+        const response = await fetch(`/api/stores/check-subdomain?subdomain=${cleaned}`);
+        const data = await response.json();
+        setSubdomainAvailable(data.available);
+      } catch (err) {
+        setSubdomainAvailable(null);
+      } finally {
+        setCheckingSubdomain(false);
+      }
+    } else {
+      setSubdomainAvailable(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,61 +67,96 @@ export function BecomeVendorForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="bg-red-500/10 text-red-500 p-3 rounded text-sm">
+        <div className="bg-error/10 text-error border border-error/20 p-4 rounded-lg text-sm animate-fade-in">
           {error}
         </div>
       )}
 
-      <div>
-        <label htmlFor="subdomain" className="block text-sm font-medium mb-2">
-          Store Subdomain <span className="text-red-500">*</span>
+      {/* Subdomain Field with Availability Check */}
+      <div className="card rounded-lg p-6 border-accent/20">
+        <label htmlFor="subdomain" className="block text-sm font-semibold mb-3 text-foreground">
+          Your Store Subdomain <span className="text-error">*</span>
         </label>
-        <div className="flex items-center gap-2">
-          <input
-            id="subdomain"
-            type="text"
-            value={formData.subdomain}
-            onChange={(e) => handleSubdomainChange(e.target.value)}
-            className="input flex-1"
-            placeholder="yourstore"
-            required
-            pattern="[a-z0-9-]{3,63}"
-            minLength={3}
-            maxLength={63}
-            disabled={loading}
-          />
-          <span className="text-sm text-muted-foreground">.dude.box</span>
+        <div className="flex items-stretch gap-2">
+          <div className="flex-1 relative">
+            <input
+              id="subdomain"
+              type="text"
+              value={formData.subdomain}
+              onChange={(e) => handleSubdomainChange(e.target.value)}
+              className="input w-full text-base font-medium"
+              placeholder="yourstore"
+              required
+              pattern="[a-z0-9-]{3,63}"
+              minLength={3}
+              maxLength={63}
+              disabled={loading}
+            />
+            {checkingSubdomain && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+            {!checkingSubdomain && subdomainAvailable !== null && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                {subdomainAvailable ? (
+                  <span className="text-success text-lg">✓</span>
+                ) : (
+                  <span className="text-error text-lg">✗</span>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center px-4 bg-panel border border-border rounded-lg text-sm text-muted">
+            .dude.box
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          3-63 characters, lowercase letters, numbers, and hyphens only
+        {formData.subdomain && (
+          <div className="mt-3 p-3 bg-background/50 border border-border/50 rounded-lg">
+            <p className="text-xs text-muted mb-1">Your store will be available at:</p>
+            <p className="text-sm font-medium text-accent">https://{formData.subdomain || "yourstore"}.dude.box</p>
+          </div>
+        )}
+        {subdomainAvailable === false && (
+          <p className="text-xs text-error mt-2">This subdomain is already taken. Please choose another.</p>
+        )}
+        {subdomainAvailable === true && (
+          <p className="text-xs text-success mt-2">Great! This subdomain is available.</p>
+        )}
+        <p className="text-xs text-muted mt-2">
+          3-63 characters • lowercase letters, numbers, and hyphens only • {formData.subdomain.length}/63
         </p>
       </div>
 
+      {/* Store Information */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-2">
-          Store Name <span className="text-red-500">*</span>
+        <label htmlFor="name" className="block text-sm font-semibold mb-2 text-foreground">
+          Store Name <span className="text-error">*</span>
         </label>
         <input
           id="name"
           type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="input w-full"
-          placeholder="Your Store Name"
+          className="input w-full text-base"
+          placeholder="My Awesome Store"
           required
           maxLength={100}
           disabled={loading}
         />
+        <p className="text-xs text-muted mt-2">
+          This is how your store will appear to customers
+        </p>
       </div>
 
       <div>
         <label
           htmlFor="contact_email"
-          className="block text-sm font-medium mb-2"
+          className="block text-sm font-semibold mb-2 text-foreground"
         >
-          Contact Email <span className="text-red-500">*</span>
+          Contact Email <span className="text-error">*</span>
         </label>
         <input
           id="contact_email"
@@ -112,20 +165,20 @@ export function BecomeVendorForm() {
           onChange={(e) =>
             setFormData({ ...formData, contact_email: e.target.value })
           }
-          className="input w-full"
-          placeholder="store@example.com"
+          className="input w-full text-base"
+          placeholder="contact@example.com"
           required
           disabled={loading}
         />
-        <p className="text-xs text-muted-foreground mt-1">
-          Customers will see this email for order inquiries
+        <p className="text-xs text-muted mt-2">
+          Customers will use this email for order inquiries and support
         </p>
       </div>
 
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium mb-2"
+          className="block text-sm font-semibold mb-2 text-foreground"
         >
           Store Description
         </label>
@@ -135,70 +188,46 @@ export function BecomeVendorForm() {
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
-          className="input w-full"
-          rows={4}
-          placeholder="Tell customers about your store and products..."
+          className="input w-full text-base"
+          rows={5}
+          placeholder="Tell customers about your store, your craft, and what makes your products special..."
           maxLength={1000}
           disabled={loading}
         />
+        <p className="text-xs text-muted mt-2">
+          {formData.description.length}/1000 characters
+        </p>
       </div>
 
-      <div>
-        <label
-          htmlFor="shipping_policy"
-          className="block text-sm font-medium mb-2"
-        >
-          Shipping Policy
-        </label>
-        <textarea
-          id="shipping_policy"
-          value={formData.shipping_policy}
-          onChange={(e) =>
-            setFormData({ ...formData, shipping_policy: e.target.value })
-          }
-          className="input w-full"
-          rows={3}
-          placeholder="Describe your shipping methods, timeframes, and costs..."
-          maxLength={1000}
-          disabled={loading}
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="return_policy"
-          className="block text-sm font-medium mb-2"
-        >
-          Return Policy
-        </label>
-        <textarea
-          id="return_policy"
-          value={formData.return_policy}
-          onChange={(e) =>
-            setFormData({ ...formData, return_policy: e.target.value })
-          }
-          className="input w-full"
-          rows={3}
-          placeholder="Describe your return policy..."
-          maxLength={1000}
-          disabled={loading}
-        />
-      </div>
-
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-        <div className="text-sm">
-          <strong>Next Steps:</strong> After submitting, your store will be
-          reviewed by our team. Once approved, you'll be able to connect your
-          Stripe account and start adding products.
+      {/* Info Card */}
+      <div className="bg-info/10 border border-info/20 rounded-lg p-5">
+        <div className="flex gap-3">
+          <div className="text-info text-xl flex-shrink-0">ℹ️</div>
+          <div className="text-sm text-foreground">
+            <p className="font-semibold mb-2">What happens next:</p>
+            <ol className="space-y-1 text-muted list-decimal list-inside">
+              <li>Your application will be reviewed by our team</li>
+              <li>Once approved, you'll connect your Stripe account</li>
+              <li>You can then add products and customize your storefront</li>
+              <li>Set your shipping and return policies in store settings</li>
+            </ol>
+          </div>
         </div>
       </div>
 
       <button
         type="submit"
-        className="solid-button rounded-full px-8 py-3 text-sm w-full sm:w-auto"
-        disabled={loading}
+        className="solid-button rounded-full px-8 py-3 text-sm w-full sm:w-auto font-semibold"
+        disabled={loading || (formData.subdomain.length >= 3 && subdomainAvailable === false)}
       >
-        {loading ? "Creating Store..." : "Submit for Approval"}
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+            Creating Store...
+          </span>
+        ) : (
+          "Submit Application"
+        )}
       </button>
     </form>
   );

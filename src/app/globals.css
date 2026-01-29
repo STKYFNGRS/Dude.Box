@@ -10,6 +10,16 @@
   --color-accent-secondary: #4b5320;
   --color-border: #23314b;
   --color-panel: #141d33;
+  
+  /* Semantic colors */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  
+  /* Interactive states */
+  --color-hover: #1a2847;
+  --color-active: #253a5e;
 }
 
 html {
@@ -47,9 +57,29 @@ main {
   font-weight: 800;
 }
 
+/* Card Styles */
 .card {
   border: 1px solid var(--color-border);
   background: var(--color-panel);
+  transition: all 0.3s ease;
+}
+
+.card-hover {
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card-hover:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.card-hover:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .muted {
@@ -62,12 +92,210 @@ main {
   color: var(--color-foreground);
 }
 
+/* Form Input Styles */
+.input {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+  transition: all 0.2s ease;
+  line-height: 1.5;
+}
+
+.input::placeholder {
+  color: var(--color-muted);
+  opacity: 0.6;
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(199, 157, 122, 0.1);
+  background: var(--color-panel);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-panel);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+select.input {
+  cursor: pointer;
+}
+
+/* Button Enhancements */
 .solid-button {
   background: var(--color-accent);
   color: #0f1628;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+}
+
+.solid-button:hover:not(:disabled) {
+  background: #d4a985;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(199, 157, 122, 0.3);
+}
+
+.solid-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(199, 157, 122, 0.2);
+}
+
+.solid-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.outline-button {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-foreground);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.outline-button:hover:not(:disabled) {
+  background: var(--color-hover);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.outline-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .accent-button {
   background: var(--color-accent-secondary);
   color: var(--color-foreground);
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.accent-button:hover:not(:disabled) {
+  background: #5a6428;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(75, 83, 32, 0.3);
+}
+
+.accent-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(199, 157, 122, 0.1),
+    transparent
+  );
+  background-size: 1000px 100%;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Link Styles */
+a {
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent);
 }

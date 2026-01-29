@@ -45,27 +45,27 @@ export default async function AdminStoresPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1">{stores.length}</div>
-          <div className="text-sm text-muted-foreground">Total Stores</div>
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-accent">
+          <div className="text-3xl font-bold mb-1 text-foreground">{stores.length}</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Total Stores</div>
         </div>
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1 text-amber-500">
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-warning">
+          <div className="text-3xl font-bold mb-1 text-warning">
             {pendingCount}
           </div>
-          <div className="text-sm text-muted-foreground">Pending Approval</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Pending Approval</div>
         </div>
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1 text-emerald-500">
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-success">
+          <div className="text-3xl font-bold mb-1 text-success">
             {approvedCount}
           </div>
-          <div className="text-sm text-muted-foreground">Approved</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Approved</div>
         </div>
-        <div className="card rounded-lg p-4">
-          <div className="text-2xl font-bold mb-1 text-red-500">
+        <div className="card rounded-lg p-5 card-hover border-l-4 border-l-error">
+          <div className="text-3xl font-bold mb-1 text-error">
             {suspendedCount}
           </div>
-          <div className="text-sm text-muted-foreground">Suspended</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">Suspended</div>
         </div>
       </div>
 
@@ -108,15 +108,19 @@ export default async function AdminStoresPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {stores.map((store) => (
-                  <tr key={store.id}>
+                  <tr 
+                    key={store.id}
+                    className="group hover:bg-hover/50 transition-colors cursor-pointer"
+                    onClick={() => window.location.href = `/admin/stores/${store.id}`}
+                  >
                     <td className="px-6 py-4">
-                      <div className="font-medium">{store.name}</div>
+                      <div className="font-medium text-foreground group-hover:text-accent transition-colors">{store.name}</div>
                       <div className="text-sm text-muted-foreground">
                         {store.subdomain}.dude.box
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm">
+                      <div className="text-sm text-foreground">
                         {store.owner.first_name || "Unknown"}
                       </div>
                       <div className="text-xs text-muted-foreground">
@@ -125,25 +129,35 @@ export default async function AdminStoresPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full transition-all ${
                           store.status === "approved"
-                            ? "bg-emerald-500/20 text-emerald-500"
+                            ? "bg-success/20 text-success"
                             : store.status === "pending"
-                            ? "bg-amber-500/20 text-amber-500"
-                            : "bg-red-500/20 text-red-500"
+                            ? "bg-warning/20 text-warning animate-pulse"
+                            : "bg-error/20 text-error"
                         }`}
                       >
-                        {store.status.charAt(0).toUpperCase() +
-                          store.status.slice(1)}
+                        {store.status === "approved" && "✓"}
+                        {store.status === "pending" && "⏳"}
+                        {store.status === "suspended" && "⊘"}
+                        <span className="ml-1">
+                          {store.status.charAt(0).toUpperCase() +
+                            store.status.slice(1)}
+                        </span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm">
-                      {store._count.products}
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-foreground">{store._count.products}</div>
                     </td>
-                    <td className="px-6 py-4 text-sm">{store._count.orders}</td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-foreground">{store._count.orders}</div>
+                    </td>
                     <td className="px-6 py-4">
                       {store.stripe_onboarded ? (
-                        <span className="text-xs text-emerald-500">✓ Connected</span>
+                        <span className="inline-flex items-center gap-1 text-xs text-success font-medium">
+                          <span>✓</span>
+                          <span>Connected</span>
+                        </span>
                       ) : (
                         <span className="text-xs text-muted-foreground">
                           Not connected
@@ -153,9 +167,10 @@ export default async function AdminStoresPage() {
                     <td className="px-6 py-4 text-right">
                       <Link
                         href={`/admin/stores/${store.id}`}
-                        className="text-sm text-primary hover:underline"
+                        className="text-sm text-accent hover:text-foreground transition-colors font-medium"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        View Details
+                        View Details →
                       </Link>
                     </td>
                   </tr>

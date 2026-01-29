@@ -10,7 +10,7 @@ export default async function BecomeVendorPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
-    redirect("/portal/login?redirect=/members/become-vendor");
+    redirect("/portal/register?redirect=/members/become-vendor");
   }
 
   // Check if user already has a store

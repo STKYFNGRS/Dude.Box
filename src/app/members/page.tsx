@@ -53,9 +53,11 @@ export default async function MembersDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="card rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-2">Welcome, {firstName}</h1>
-        <p className="text-muted-foreground">
+      <div className="card rounded-lg p-8 border-l-4 border-l-accent shadow-card animate-fade-in">
+        <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-foreground to-muted bg-clip-text text-transparent">
+          Welcome, {firstName}
+        </h1>
+        <p className="text-lg text-muted leading-relaxed">
           {user.role === "admin"
             ? "You have admin access to the platform."
             : user.role === "vendor"
@@ -66,24 +68,24 @@ export default async function MembersDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card rounded-lg p-6">
-          <div className="text-2xl font-bold mb-1">
+        <div className="card-hover rounded-lg p-6 border-l-4 border-l-accent">
+          <div className="text-3xl font-bold mb-1 text-accent">
             {user.subscriptions.length}
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">
             Active Subscription{user.subscriptions.length !== 1 ? "s" : ""}
           </div>
         </div>
-        <div className="card rounded-lg p-6">
-          <div className="text-2xl font-bold mb-1">{user.orders.length}</div>
-          <div className="text-sm text-muted-foreground">
+        <div className="card-hover rounded-lg p-6 border-l-4 border-l-info">
+          <div className="text-3xl font-bold mb-1 text-info">{user.orders.length}</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">
             Total Orders
           </div>
         </div>
-        <div className="card rounded-lg p-6">
-          <div className="text-2xl font-bold mb-1">Member</div>
-          <div className="text-sm text-muted-foreground capitalize">
-            {user.role} Account
+        <div className="card-hover rounded-lg p-6 border-l-4 border-l-success">
+          <div className="text-3xl font-bold mb-1 text-success capitalize">{user.role}</div>
+          <div className="text-sm text-muted-foreground uppercase tracking-wider">
+            Account Type
           </div>
         </div>
       </div>
@@ -130,7 +132,7 @@ export default async function MembersDashboard() {
       {/* Call to Action based on role */}
       {user.role === "customer" && user.subscriptions.length === 0 && (
         <div className="card rounded-lg p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
-          <h2 className="text-xl font-bold mb-2">Start Your Subscription</h2>
+          <h2 className="text-xl font-bold mb-2">Become a Member</h2>
           <p className="text-muted-foreground mb-4">
             Join our monthly subscription box and receive curated products
             delivered to your door.
@@ -139,38 +141,52 @@ export default async function MembersDashboard() {
             href="/products/subscription-box"
             className="solid-button rounded-full px-6 py-2 text-sm inline-block"
           >
-            View Subscription
+            Become a Member
           </Link>
         </div>
       )}
 
       {user.role === "vendor" && (
-        <div className="card rounded-lg p-6 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border-emerald-500/20">
-          <h2 className="text-xl font-bold mb-2">Manage Your Store</h2>
-          <p className="text-muted-foreground mb-4">
-            Add products, manage orders, and grow your business.
-          </p>
-          <Link
-            href="/vendor"
-            className="solid-button rounded-full px-6 py-2 text-sm inline-block"
-          >
-            Go to Vendor Dashboard
-          </Link>
+        <div className="card-hover rounded-lg p-8 bg-gradient-to-r from-success/10 to-info/10 border-2 border-success/20 shadow-card">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-full bg-success/20 border-2 border-success/40 flex items-center justify-center text-2xl flex-shrink-0">
+              📦
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-2 text-foreground">Manage Your Store</h2>
+              <p className="text-muted mb-6 leading-relaxed">
+                Add products, manage orders, and grow your business.
+              </p>
+              <Link
+                href="/vendor"
+                className="solid-button rounded-full px-8 py-3 text-sm inline-block font-bold shadow-button"
+              >
+                Go to Vendor Dashboard →
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 
       {user.is_admin && (
-        <div className="card rounded-lg p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20">
-          <h2 className="text-xl font-bold mb-2">Admin Access</h2>
-          <p className="text-muted-foreground mb-4">
-            Manage the platform, approve vendors, and view analytics.
-          </p>
-          <Link
-            href="/admin"
-            className="solid-button rounded-full px-6 py-2 text-sm inline-block"
-          >
-            Go to Admin Dashboard
-          </Link>
+        <div className="card-hover rounded-lg p-8 bg-gradient-to-r from-warning/10 to-error/10 border-2 border-warning/20 shadow-card">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-full bg-warning/20 border-2 border-warning/40 flex items-center justify-center text-2xl flex-shrink-0">
+              ⚡
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-2 text-foreground">Admin Access</h2>
+              <p className="text-muted mb-6 leading-relaxed">
+                Manage the platform, approve vendors, and view analytics.
+              </p>
+              <Link
+                href="/admin"
+                className="solid-button rounded-full px-8 py-3 text-sm inline-block font-bold shadow-button"
+              >
+                Go to Admin Dashboard →
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -100,15 +100,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in">
       <button
         type="button"
         aria-label="Close login modal"
         onClick={onClose}
         className="absolute inset-0 bg-background/70 backdrop-blur-sm"
       />
-      <div className="relative w-full max-w-md max-w-[calc(100vw-2rem)] mx-4">
-        <div className="card rounded-lg p-6 bg-panel">
+      <div className="relative w-full max-w-md max-w-[calc(100vw-2rem)] mx-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+        <div className="card rounded-lg p-6 bg-panel shadow-card-hover">
           <div className="flex items-center justify-between pb-4 border-b border-border">
             <span className="text-xs uppercase tracking-[0.3em] muted">
               {mode === "login" ? "Member Login" : "Create Account"}
@@ -131,9 +131,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           {mode === "login" ? (
             <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4 pt-6">
               <label className="text-sm flex flex-col gap-2">
-                Email
+                <span className="font-semibold text-foreground">Email</span>
                 <input
-                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                  className="input"
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -141,9 +141,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 />
               </label>
               <label className="text-sm flex flex-col gap-2">
-                Password
+                <span className="font-semibold text-foreground">Password</span>
                 <input
-                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                  className="input"
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
@@ -185,9 +185,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-4 pt-6">
               <div className="grid grid-cols-2 gap-3">
                 <label className="text-sm flex flex-col gap-2">
-                  First Name
+                  <span className="font-semibold text-foreground">First Name</span>
                   <input
-                    className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                    className="input"
                     type="text"
                     value={firstName}
                     onChange={(event) => setFirstName(event.target.value)}
@@ -195,9 +195,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   />
                 </label>
                 <label className="text-sm flex flex-col gap-2">
-                  Last Name
+                  <span className="font-semibold text-foreground">Last Name</span>
                   <input
-                    className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                    className="input"
                     type="text"
                     value={lastName}
                     onChange={(event) => setLastName(event.target.value)}
@@ -206,9 +206,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </label>
               </div>
               <label className="text-sm flex flex-col gap-2">
-                Email
+                <span className="font-semibold text-foreground">Email</span>
                 <input
-                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                  className="input"
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -216,9 +216,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 />
               </label>
               <label className="text-sm flex flex-col gap-2">
-                Password
+                <span className="font-semibold text-foreground">Password</span>
                 <input
-                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground"
+                  className="input"
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
