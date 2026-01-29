@@ -6,16 +6,17 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const store = await requireVendor();
+    const { id } = await params;
     const body = await request.json();
     const { tracking_number } = body;
 
     // Verify order belongs to vendor's store
     const existingOrder = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingOrder || existingOrder.store_id !== store.id) {
@@ -26,7 +27,7 @@ export async function POST(
     }
 
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: "shipped",
       },

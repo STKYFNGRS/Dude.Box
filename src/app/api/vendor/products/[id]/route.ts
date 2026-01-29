@@ -7,16 +7,17 @@ export const dynamic = 'force-dynamic';
 // PATCH - Update product
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const store = await requireVendor();
+    const { id } = await params;
     const body = await request.json();
     const { name, description, price, interval, active } = body;
 
     // Verify product belongs to vendor's store
     const existingProduct = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingProduct || existingProduct.store_id !== store.id) {
@@ -27,7 +28,7 @@ export async function PATCH(
     }
 
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(name !== undefined && { name }),
         ...(description !== undefined && { description }),
@@ -50,14 +51,15 @@ export async function PATCH(
 // DELETE - Delete product
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const store = await requireVendor();
+    const { id } = await params;
 
     // Verify product belongs to vendor's store
     const existingProduct = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingProduct || existingProduct.store_id !== store.id) {
@@ -68,7 +70,7 @@ export async function DELETE(
     }
 
     await prisma.product.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

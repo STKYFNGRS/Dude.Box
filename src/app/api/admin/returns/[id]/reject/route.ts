@@ -7,12 +7,13 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin authorization
     await requireAdmin();
 
+    const { id } = await params;
     const body = await req.json();
     const { reason } = body;
 
@@ -25,7 +26,7 @@ export async function POST(
 
     // Get return request with user and order info
     const returnRecord = await prisma.return.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         order: true,
         user: {
@@ -55,7 +56,7 @@ export async function POST(
 
     // Update return status to rejected
     const updatedReturn = await prisma.return.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: "rejected",
         admin_notes: reason,
@@ -76,7 +77,7 @@ export async function POST(
       reason,
     });
 
-    console.log(`✅ Return rejected: ${params.id}`);
+    console.log(`✅ Return rejected: ${id}`);
 
     return NextResponse.json({
       success: true,

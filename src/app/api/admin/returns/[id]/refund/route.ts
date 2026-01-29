@@ -8,12 +8,13 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin authorization
     await requireAdmin();
 
+    const { id } = await params;
     const body = await req.json();
     const { amount } = body;
 
@@ -26,7 +27,7 @@ export async function POST(
 
     // Get return request with order and user info
     const returnRecord = await prisma.return.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         order: true,
         user: {
@@ -83,7 +84,7 @@ export async function POST(
 
     // Update return record with refund information
     const updatedReturn = await prisma.return.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: "refunded",
         refund_amount: amount,
@@ -107,7 +108,7 @@ export async function POST(
     });
 
     console.log(
-      `✅ Refund processed: ${refund.id} for return ${params.id} ($${amount})`
+      `✅ Refund processed: ${refund.id} for return ${id} ($${amount})`
     );
 
     return NextResponse.json({

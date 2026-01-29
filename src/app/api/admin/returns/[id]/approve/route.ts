@@ -8,15 +8,17 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin authorization
     await requireAdmin();
 
+    const { id } = await params;
+
     // Get return request with user and order info
     const returnRecord = await prisma.return.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         order: {
           include: {
@@ -136,18 +138,18 @@ export async function POST(
           });
         }
 
-        console.log(`✅ Return approved with label: ${params.id}`);
+        console.log(`✅ Return approved with label: ${id}`);
       } else {
         // Label generation failed, but still approve
         console.warn(
-          `⚠️ Label generation failed for return ${params.id}: ${labelResult.error}`
+          `⚠️ Label generation failed for return ${id}: ${labelResult.error}`
         );
         updateData.admin_notes = `Label generation failed: ${labelResult.error}`;
       }
     } else {
       // Shipping not configured
       console.warn(
-        `⚠️ Shipping not configured. Return ${params.id} approved without label.`
+        `⚠️ Shipping not configured. Return ${id} approved without label.`
       );
       updateData.admin_notes =
         "Shipping label generation not configured. Please generate label manually or set up EasyPost.";
@@ -155,7 +157,7 @@ export async function POST(
 
     // Update return record
     const updatedReturn = await prisma.return.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
 

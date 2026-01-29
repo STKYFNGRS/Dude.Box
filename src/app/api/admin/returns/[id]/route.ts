@@ -6,14 +6,15 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin authorization
     await requireAdmin();
 
+    const { id } = await params;
     const returnRecord = await prisma.return.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
           select: {
@@ -56,12 +57,13 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin authorization
     await requireAdmin();
 
+    const { id } = await params;
     const body = await req.json();
     const { status, admin_notes } = body;
 
@@ -86,7 +88,7 @@ export async function PATCH(
 
     // Get current return
     const currentReturn = await prisma.return.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!currentReturn) {
@@ -103,11 +105,11 @@ export async function PATCH(
 
     // Update return
     const updatedReturn = await prisma.return.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
 
-    console.log(`✅ Return updated: ${params.id}`);
+    console.log(`✅ Return updated: ${id}`);
 
     return NextResponse.json({
       success: true,

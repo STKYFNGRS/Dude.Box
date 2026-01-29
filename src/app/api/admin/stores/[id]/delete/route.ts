@@ -6,13 +6,14 @@ export const dynamic = 'force-dynamic';
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireAdmin();
 
+    const { id } = await params;
     const store = await prisma.store.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         products: true,
         orders: true,
@@ -25,16 +26,16 @@ export async function DELETE(
 
     // Delete related records first
     await prisma.product.deleteMany({
-      where: { store_id: params.id },
+      where: { store_id: id },
     });
 
     await prisma.order.deleteMany({
-      where: { store_id: params.id },
+      where: { store_id: id },
     });
 
     // Delete the store
     await prisma.store.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     // Optionally update user role back to customer
