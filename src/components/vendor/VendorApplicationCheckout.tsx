@@ -42,6 +42,8 @@ function CheckoutForm({
     setIsProcessing(true);
 
     try {
+      console.log("🔵 Starting payment confirmation...");
+      
       // Confirm the SetupIntent
       const { error: submitError, setupIntent } = await stripe.confirmSetup({
         elements,
@@ -52,16 +54,21 @@ function CheckoutForm({
       });
 
       if (submitError) {
+        console.error("❌ Setup confirmation error:", submitError);
         onError(submitError.message || "Payment failed");
         setIsProcessing(false);
         return;
       }
 
       if (!setupIntent || setupIntent.status !== "succeeded") {
+        console.error("❌ SetupIntent not succeeded:", setupIntent);
         onError("Payment method confirmation failed");
         setIsProcessing(false);
         return;
       }
+
+      console.log("✅ SetupIntent confirmed:", setupIntent.id);
+      console.log("🔵 Calling confirm-application API...");
 
       // Call our API to process the application (charge fee + create subscription + create store)
       const response = await fetch("/api/vendor/confirm-application", {
@@ -72,14 +79,19 @@ function CheckoutForm({
         }),
       });
 
+      console.log("🔵 API Response status:", response.status);
       const data = await response.json();
+      console.log("🔵 API Response data:", data);
 
       if (!response.ok) {
+        console.error("❌ API Error:", data);
         throw new Error(data.error || "Failed to process application");
       }
 
+      console.log("✅ Application processed successfully!");
       onSuccess();
     } catch (err) {
+      console.error("❌ Exception in handleSubmit:", err);
       onError(err instanceof Error ? err.message : "An error occurred");
       setIsProcessing(false);
     }
@@ -117,6 +129,13 @@ function CheckoutForm({
         <PaymentElement
           options={{
             layout: "tabs",
+            fields: {
+              billingDetails: {
+                address: {
+                  country: "auto",
+                },
+              },
+            },
           }}
         />
       </div>

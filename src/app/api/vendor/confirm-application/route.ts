@@ -13,16 +13,24 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(request: Request) {
   try {
+    console.log("🔵 confirm-application: Starting...");
+    
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.email) {
+      console.error("❌ confirm-application: No session");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    console.log("✅ confirm-application: Session found for", session.user.email);
 
     const body = await request.json();
     const { setupIntentId } = body;
 
+    console.log("🔵 confirm-application: SetupIntent ID:", setupIntentId);
+
     if (!setupIntentId) {
+      console.error("❌ confirm-application: No setupIntentId provided");
       return NextResponse.json(
         { error: "Setup intent ID required" },
         { status: 400 }
@@ -30,7 +38,9 @@ export async function POST(request: Request) {
     }
 
     // Retrieve the SetupIntent to get metadata and payment method
+    console.log("🔵 confirm-application: Retrieving SetupIntent from Stripe...");
     const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
+    console.log("✅ confirm-application: SetupIntent retrieved, status:", setupIntent.status);
 
     if (setupIntent.status !== "succeeded") {
       return NextResponse.json(
@@ -70,6 +80,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Charge the one-time application fee
+    console.log("🔵 confirm-application: Charging application fee...");
     const applicationFeeCharge = await stripe.paymentIntents.create({
       amount: Math.round(parseFloat(metadata.application_fee_price) * 100),
       currency: "usd",
@@ -85,14 +96,17 @@ export async function POST(request: Request) {
     });
 
     if (applicationFeeCharge.status !== "succeeded") {
-      console.error("Application fee charge failed:", applicationFeeCharge);
+      console.error("❌ confirm-application: Application fee charge failed:", applicationFeeCharge);
       return NextResponse.json(
         { error: "Payment failed. Please try again." },
         { status: 400 }
       );
     }
 
+    console.log("✅ confirm-application: Application fee charged successfully");
+
     // 2. Create the monthly subscription
+    console.log("🔵 confirm-application: Creating subscription...");
     const subscription: Stripe.Subscription = await stripe.subscriptions.create({
       customer: setupIntent.customer as string,
       items: [
@@ -107,7 +121,10 @@ export async function POST(request: Request) {
       },
     });
 
+    console.log("✅ confirm-application: Subscription created:", subscription.id);
+
     // 3. Create the store in pending status
+    console.log("🔵 confirm-application: Creating store in database...");
     const store = await prisma.store.create({
       data: {
         name: metadata.name,
@@ -143,7 +160,9 @@ export async function POST(request: Request) {
       data: { role: "vendor" },
     });
 
-    console.log(`✅ Vendor application completed for user ${user.email}`);
+    console.log("✅ confirm-application: Store created:", store.id);
+    console.log("🔵 confirm-application: Updating user role to vendor...");
+    console.log(`✅✅✅ Vendor application completed for user ${user.email}`);
     console.log(`   Store: ${store.name} (${store.subdomain})`);
     console.log(`   Application fee: $${metadata.application_fee_price}`);
     console.log(`   Subscription: ${subscription.id}`);
