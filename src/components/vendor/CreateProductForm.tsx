@@ -59,18 +59,14 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
       )}
 
       <div>
-        <label className="block text-sm font-semibold mb-2 text-foreground">
-          Product Image
-        </label>
         <ImageUpload
+          endpoint="productImage"
           value={imageUrl}
           onChange={setImageUrl}
-          maxSize={8 * 1024 * 1024}
           label="Product Image"
+          description="Upload a clear image of your product. Max 8MB. JPG, PNG, or WebP."
+          previewHeight="h-64"
         />
-        <p className="text-xs text-muted mt-2">
-          Upload a clear image of your product. Max 8MB. JPG, PNG, or WebP.
-        </p>
       </div>
 
       <div>

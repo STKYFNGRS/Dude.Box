@@ -6,7 +6,7 @@ import Image from "next/image";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
 interface ImageUploadProps {
-  endpoint: "storeLogo" | "storeBanner";
+  endpoint: "storeLogo" | "storeBanner" | "productImage";
   value?: string;
   onChange: (url: string) => void;
   label: string;
