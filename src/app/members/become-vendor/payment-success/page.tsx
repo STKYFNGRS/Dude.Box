@@ -6,18 +6,12 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function PaymentSuccessPage({
-  searchParams,
-}: {
-  searchParams: { session_id?: string };
-}) {
+export default async function PaymentSuccessPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     redirect("/portal/login");
   }
-
-  const sessionId = searchParams.session_id;
 
   return (
     <Container className="py-12">
@@ -75,16 +69,14 @@ export default async function PaymentSuccessPage({
             </ol>
           </div>
 
-          {/* Payment Details */}
-          {sessionId && (
-            <div className="bg-panel border border-border rounded-lg p-4 mb-8 text-sm">
-              <p className="text-muted">
-                <strong className="text-foreground">Payment Confirmation:</strong>
-                <br />
-                Session ID: <span className="font-mono text-xs">{sessionId}</span>
-              </p>
-            </div>
-          )}
+          {/* Payment Confirmed */}
+          <div className="bg-success/10 border border-success/20 rounded-lg p-4 mb-8 text-sm">
+            <p className="text-foreground">
+              <strong>✓ Payment Confirmed</strong>
+              <br />
+              <span className="text-muted">Your application fee and first month's subscription have been processed.</span>
+            </p>
+          </div>
 
           {/* Important Info */}
           <div className="bg-warning/10 border border-warning/20 rounded-lg p-6 mb-8 text-left">

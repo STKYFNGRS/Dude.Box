@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { VendorApplicationCheckout } from "./vendor/VendorApplicationCheckout";
 
 export function BecomeVendorForm() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export function BecomeVendorForm() {
   const [checkingSubdomain, setCheckingSubdomain] = useState(false);
   const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [formData, setFormData] = useState({
     subdomain: "",
     name: "",
@@ -43,33 +45,20 @@ export function BecomeVendorForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    
+    // Show embedded checkout
+    setShowCheckout(true);
+  };
 
-    try {
-      // Redirect to payment instead of creating store directly
-      const response = await fetch("/api/vendor/application-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  const handleCheckoutSuccess = () => {
+    // Redirect to success page
+    router.push("/members/become-vendor/payment-success");
+  };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to initiate payment");
-      }
-
-      // Redirect to Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL received");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setLoading(false);
-    }
+  const handleCheckoutError = (errorMessage: string) => {
+    setError(errorMessage);
+    setShowCheckout(false);
   };
 
   return (
@@ -287,15 +276,67 @@ export function BecomeVendorForm() {
           (formData.subdomain.length >= 3 && subdomainAvailable === false)
         }
       >
-        {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-            Processing...
-          </span>
-        ) : (
-          "Proceed to Payment →"
-        )}
+        Proceed to Payment →
       </button>
+
+      {/* Embedded Checkout Modal */}
+      {showCheckout && (
+        <div className="fixed inset-0 bg-black/80 flex items-start justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-background border border-border rounded-xl shadow-2xl w-full max-w-3xl my-8">
+            {/* Header */}
+            <div className="border-b border-border p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">Complete Your Application</h2>
+                  <p className="text-sm text-muted mt-1">
+                    Secure payment powered by Stripe
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowCheckout(false)}
+                  className="text-muted hover:text-foreground text-2xl leading-none transition-colors"
+                  aria-label="Close checkout"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Application Summary */}
+            <div className="p-6 border-b border-border bg-accent/5">
+              <h3 className="font-semibold text-foreground mb-4">Application Details</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted block mb-1">Store Name:</span>
+                  <span className="font-medium text-foreground">{formData.name}</span>
+                </div>
+                <div>
+                  <span className="text-muted block mb-1">Subdomain:</span>
+                  <span className="font-medium text-accent">{formData.subdomain}.dude.box</span>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-muted block mb-1">Contact Email:</span>
+                  <span className="font-medium text-foreground">{formData.contact_email}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Checkout Content */}
+            <div className="p-6">
+              {error && (
+                <div className="bg-error/10 text-error border border-error/20 p-4 rounded-lg text-sm mb-6 animate-fade-in">
+                  {error}
+                </div>
+              )}
+              <VendorApplicationCheckout
+                applicationData={formData}
+                onSuccess={handleCheckoutSuccess}
+                onError={handleCheckoutError}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
