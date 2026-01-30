@@ -82,7 +82,7 @@ Respond ONLY with valid JSON in this exact format:
 
     console.log("🔍 Running AI moderation check...");
     const message = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-latest",
+      model: "claude-sonnet-4-5",
       max_tokens: 500,
       messages: [
         {
