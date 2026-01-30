@@ -731,14 +731,14 @@ async function handlePaymentIntentSucceeded(
       await sendOrderConfirmation({
         to: userEmail,
         customerName: order.user.first_name || "Customer",
-        orderNumber: order.id.slice(-8).toUpperCase(),
+        orderId: order.id.slice(-8).toUpperCase(),
+        orderTotal: subtotal.toFixed(2),
+        orderDate: new Date(order.created_at).toLocaleDateString(),
         items: order.items.map((item) => ({
           name: item.product.name,
           quantity: item.quantity,
-          price: parseFloat(item.product.price.toString()),
+          price: parseFloat(item.product.price.toString()).toFixed(2),
         })),
-        total: subtotal,
-        storeName: order.store.name,
       });
 
       console.log(`✅ Sent order confirmation email to ${userEmail}`);
