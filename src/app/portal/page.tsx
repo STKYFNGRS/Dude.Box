@@ -92,80 +92,7 @@ export default async function PortalPage() {
         </Card>
       </div>
 
-      {/* Subscriptions Section - Show ALL subscriptions */}
-      {user.subscriptions.length > 0 ? (
-        <div>
-          <div className="pb-6">
-            <span className="text-xs uppercase tracking-[0.35em] muted">
-              Your Subscriptions
-            </span>
-            <h3 className="section-title text-2xl md:text-3xl pt-2">
-              Manage Subscriptions
-            </h3>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {user.subscriptions.map((subscription) => (
-              <Card key={subscription.id} title="Subscription">
-                <div className="text-sm space-y-3">
-                  <div>
-                    <div className={`font-medium ${
-                      subscription.status === "active" ? "text-green-400" : 
-                      subscription.status === "trialing" ? "text-blue-400" :
-                      subscription.cancel_at_period_end ? "text-yellow-400" :
-                      "text-gray-400"
-                    }`}>
-                      {subscription.status === "active" && !subscription.cancel_at_period_end ? "Active" :
-                       subscription.status === "active" && subscription.cancel_at_period_end ? "Cancelling" :
-                       subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-                    </div>
-                  </div>
-                  
-                  {(subscription.status === "active" || subscription.status === "trialing") && (
-                    <>
-                      <div className="muted">
-                        {subscription.cancel_at_period_end ? "Ends" : "Renews"} on{" "}
-                        {new Date(subscription.current_period_end).toLocaleDateString()}
-                      </div>
-                      {subscription.cancel_at_period_end && (
-                        <div className="text-yellow-400 text-xs">
-                          ⚠️ Cancels at period end
-                        </div>
-                      )}
-                    </>
-                  )}
-                  
-                  {subscription.status === "canceled" && (
-                    <div className="muted">
-                      Cancelled on{" "}
-                      {new Date(subscription.updated_at).toLocaleDateString()}
-                    </div>
-                  )}
-                  
-                  <div className="pt-2">
-                    <ManageSubscriptionButton 
-                      stripeCustomerId={subscription.stripe_customer_id}
-                      subscriptionId={subscription.stripe_subscription_id}
-                    />
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <Card title="No subscription yet">
-          <div className="text-sm muted">
-            Start your subscription to get premium veteran-owned gear delivered monthly.{" "}
-            <Link
-              href="/products/subscription-box"
-              className="text-accent hover:underline"
-            >
-              Subscribe now!
-            </Link>
-          </div>
-        </Card>
-      )}
-
+      {/* Order History */}
       {user.orders.length > 0 ? (
         <div>
           <div className="pb-6">
@@ -293,11 +220,11 @@ export default async function PortalPage() {
           <Card title="No orders yet">
             Start shopping to see your order history here.
           </Card>
-          <Card title="Upcoming drops">
-            Check back for new product releases and subscription box previews.
+          <Card title="Browse Stores">
+            Discover products from veteran-owned stores in our marketplace.
           </Card>
-          <Card title="Member benefits">
-            Exclusive access to limited drops and veteran-made gear.
+          <Card title="Become a Vendor">
+            Want to sell your products? Join our marketplace and reach more customers.
           </Card>
         </div>
       )}

@@ -62,20 +62,12 @@ export default async function MembersDashboard() {
             ? "You have admin access to the platform."
             : user.role === "vendor"
             ? "Manage your store and products from the vendor dashboard."
-            : "Access your subscriptions, orders, and member benefits."}
+            : "Access your orders and marketplace purchases."}
         </p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card-hover rounded-lg p-6 border-l-4 border-l-accent">
-          <div className="text-3xl font-bold mb-1 text-accent">
-            {user.subscriptions.length}
-          </div>
-          <div className="text-sm text-muted-foreground uppercase tracking-wider">
-            Active Subscription{user.subscriptions.length !== 1 ? "s" : ""}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card-hover rounded-lg p-6 border-l-4 border-l-info">
           <div className="text-3xl font-bold mb-1 text-info">{user.orders.length}</div>
           <div className="text-sm text-muted-foreground uppercase tracking-wider">
@@ -130,22 +122,6 @@ export default async function MembersDashboard() {
       )}
 
       {/* Call to Action based on role */}
-      {user.role === "customer" && user.subscriptions.length === 0 && (
-        <div className="card rounded-lg p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
-          <h2 className="text-xl font-bold mb-2">Become a Member</h2>
-          <p className="text-muted-foreground mb-4">
-            Join our monthly subscription box and receive curated products
-            delivered to your door.
-          </p>
-          <Link
-            href="/products/subscription-box"
-            className="solid-button rounded-full px-6 py-2 text-sm inline-block"
-          >
-            Become a Member
-          </Link>
-        </div>
-      )}
-
       {user.role === "vendor" && (
         <div className="card-hover rounded-lg p-8 bg-gradient-to-r from-success/10 to-info/10 border-2 border-success/20 shadow-card">
           <div className="flex items-start gap-4">
