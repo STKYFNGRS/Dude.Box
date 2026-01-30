@@ -86,13 +86,13 @@ export async function POST(req: NextRequest) {
     const fees = calculatePlatformFees(subtotal);
 
     console.log(`Creating PaymentIntent for store: ${store.name}`);
-    console.log(`Amount: $${subtotal.toFixed(2)}, Platform Fee: $${fees.platformFee.toFixed(2)}, Vendor: $${fees.vendorAmount.toFixed(2)}`);
+    console.log(`Amount: $${subtotal.toFixed(2)}, Platform Fee: $${fees.platform_fee.toFixed(2)}, Vendor: $${fees.vendor_amount.toFixed(2)}`);
 
     // Create PaymentIntent with Stripe Connect
     const paymentIntent = await stripe.paymentIntents.create({
       amount: dollarsToCents(subtotal),
       currency: "usd",
-      application_fee_amount: dollarsToCents(fees.platformFee),
+      application_fee_amount: dollarsToCents(fees.platform_fee),
       transfer_data: {
         destination: store.stripe_account_id,
       },
@@ -103,8 +103,8 @@ export async function POST(req: NextRequest) {
         userEmail: user.email,
         items: JSON.stringify(items),
         subtotal: subtotal.toFixed(2),
-        platformFee: fees.platformFee.toFixed(2),
-        vendorAmount: fees.vendorAmount.toFixed(2),
+        platformFee: fees.platform_fee.toFixed(2),
+        vendorAmount: fees.vendor_amount.toFixed(2),
       },
       automatic_payment_methods: {
         enabled: true,
