@@ -17,9 +17,8 @@ export function SignOutButton() {
       console.error("Failed to clear cart:", error);
     }
     
-    // Sign out of NextAuth and reload page to clear client state
-    await signOut({ redirect: false });
-    window.location.href = "/";
+    // Sign out of NextAuth with proper redirect to clear all cookies
+    await signOut({ callbackUrl: "/" });
   };
 
   return (

@@ -78,9 +78,16 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/portal/login",
+    signOut: "/",
     // Default callback after sign-in is now /members (member dashboard)
   },
   debug: false,
+  events: {
+    async signOut() {
+      // Log sign-out event for debugging
+      console.log("User signed out successfully");
+    },
+  },
   callbacks: {
     async jwt({ token, user, trigger }) {
       // Add user ID to token on sign in

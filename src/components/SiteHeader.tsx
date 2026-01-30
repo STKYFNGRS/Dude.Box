@@ -115,8 +115,7 @@ export function SiteHeader() {
                     } catch (error) {
                       console.error("Failed to clear cart:", error);
                     }
-                    await signOut({ redirect: false });
-                    window.location.href = "/";
+                    await signOut({ callbackUrl: "/" });
                   }}
                   className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
                   aria-label="Sign out"
@@ -228,8 +227,7 @@ export function SiteHeader() {
                         } catch (error) {
                           console.error("Failed to clear cart:", error);
                         }
-                        await signOut({ redirect: false });
-                        window.location.href = "/";
+                        await signOut({ callbackUrl: "/" });
                       }}
                       className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
                     >
