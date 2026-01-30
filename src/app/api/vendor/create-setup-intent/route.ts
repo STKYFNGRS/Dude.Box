@@ -119,11 +119,11 @@ export async function POST(request: Request) {
       clientSecret: setupIntent.client_secret,
       customerId,
       applicationFee: {
-        amount: applicationFee.price,
+        amount: parseFloat(applicationFee.price.toString()),
         name: applicationFee.name,
       },
       monthlySubscription: {
-        amount: monthlySubscription.price,
+        amount: parseFloat(monthlySubscription.price.toString()),
         name: monthlySubscription.name,
       },
     });
