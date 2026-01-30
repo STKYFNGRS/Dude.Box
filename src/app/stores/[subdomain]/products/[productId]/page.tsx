@@ -30,11 +30,12 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const product = await prisma.product.findUnique({
+  const product = await prisma.product.findFirst({
     where: {
       id: productId,
       active: true,
       store_id: store.id,
+      has_pending_changes: false, // Only show if no pending changes
     },
   });
 

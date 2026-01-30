@@ -8,7 +8,7 @@ export default async function VendorDashboard() {
   const store = await requireVendor();
 
   // Fetch vendor stats
-  const [products, orders, totalRevenue] = await Promise.all([
+  const [products, orders, totalRevenue, pendingChangesCount] = await Promise.all([
     prisma.product.count({
       where: { store_id: store.id },
     }),
@@ -35,6 +35,12 @@ export default async function VendorDashboard() {
         vendor_amount: true,
       },
     }),
+    prisma.storeChangeRequest.count({
+      where: {
+        store_id: store.id,
+        status: "pending",
+      },
+    }),
   ]);
 
   const pendingOrders = orders.filter((o) => o.status === "pending" || o.status === "paid").length;
@@ -48,6 +54,31 @@ export default async function VendorDashboard() {
           Overview of your store performance
         </p>
       </div>
+
+      {/* Pending Changes Banner */}
+      {pendingChangesCount > 0 && (
+        <div className="card rounded-lg p-6 bg-yellow-500/10 border-yellow-500/20">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h2 className="text-xl font-bold mb-2 text-yellow-300">
+                Changes Pending Review
+              </h2>
+              <p className="text-sm text-foreground mb-4">
+                You have <strong>{pendingChangesCount}</strong> {pendingChangesCount === 1 ? "change" : "changes"} awaiting admin approval. 
+                Your store remains live with your previous content while we review your updates.
+              </p>
+              <ul className="text-sm text-muted list-disc list-inside space-y-1">
+                <li>Clean content is auto-approved instantly</li>
+                <li>Flagged content is reviewed within 24-48 hours</li>
+                <li>Your storefront stays online during review</li>
+              </ul>
+            </div>
+            <div className="bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-full text-lg font-bold">
+              {pendingChangesCount}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

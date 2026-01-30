@@ -25,14 +25,15 @@ model User {
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt
   
-  subscriptions    Subscription[]
-  orders           Order[]
-  addresses        Address[]
-  returns          Return[]
-  announcements    Announcement[]
-  owned_stores     Store[]        @relation("StoreOwner")
-  approved_stores  Store[]        @relation("StoreApprover")
-  carts            Cart[]
+  subscriptions       Subscription[]
+  orders              Order[]
+  addresses           Address[]
+  returns             Return[]
+  announcements       Announcement[]
+  owned_stores        Store[]              @relation("StoreOwner")
+  approved_stores     Store[]              @relation("StoreApprover")
+  carts               Cart[]
+  reviewed_changes    StoreChangeRequest[] @relation("ChangeReviewer")
 }
 
 // Platform products (Dude.Box's own revenue items)
@@ -67,6 +68,14 @@ model Product {
   store_id          String?  // Nullable for legacy products
   moderation_status String   @default("approved") // approved, flagged, hidden
   flagged_reason    String?
+  
+  // Draft fields for pending changes
+  has_pending_changes Boolean  @default(false)
+  draft_name          String?
+  draft_description   String?
+  draft_price         Decimal? @db.Decimal(10, 2)
+  draft_image_url     String?
+  
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   
@@ -263,11 +272,12 @@ model Store {
   created_at            DateTime  @default(now())
   updated_at            DateTime  @updatedAt
   
-  owner                 User      @relation("StoreOwner", fields: [owner_id], references: [id])
-  approver              User?     @relation("StoreApprover", fields: [approved_by], references: [id])
+  owner                 User                 @relation("StoreOwner", fields: [owner_id], references: [id])
+  approver              User?                @relation("StoreApprover", fields: [approved_by], references: [id])
   products              Product[]
   orders                Order[]
   cart_items            CartItem[]
+  change_requests       StoreChangeRequest[]
   
   @@index([owner_id])
   @@index([subdomain])
@@ -343,6 +353,43 @@ model ModerationLog {
   @@index([product_id])
   @@index([store_id])
   @@index([is_violation, severity])
+}
+
+// Store change requests (queue for admin review)
+model StoreChangeRequest {
+  id                  String   @id @default(cuid())
+  store_id            String
+  
+  // What's being changed
+  change_type         String   // "store_info", "product_create", "product_update", "product_delete"
+  
+  // Change data (JSON)
+  previous_data       Json?    // Original values (null for creates)
+  new_data            Json     // Proposed changes
+  
+  // Product-specific fields
+  product_id          String?  // For product updates/deletes
+  
+  // Review workflow
+  status              String   @default("pending") // pending, approved, rejected
+  reviewed_by         String?
+  reviewed_at         DateTime?
+  rejection_reason    String?  @db.Text
+  
+  // AI Moderation
+  moderation_severity String?  // clean, moderate, severe
+  moderation_reason   String?  @db.Text
+  auto_approved       Boolean  @default(false)
+  
+  created_at          DateTime @default(now())
+  
+  store               Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  reviewer            User?    @relation("ChangeReviewer", fields: [reviewed_by], references: [id])
+  
+  @@index([store_id])
+  @@index([status])
+  @@index([change_type])
+  @@index([store_id, status])
 }
 
 // Password reset tokens (security)

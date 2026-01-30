@@ -25,7 +25,10 @@ export default async function StoreProductsPage({
     },
     include: {
       products: {
-        where: { active: true },
+        where: { 
+          active: true,
+          has_pending_changes: false, // Only show products without pending changes
+        },
         orderBy: { created_at: "desc" },
       },
     },

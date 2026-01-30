@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireVendor } from "@/lib/vendor";
 import { moderateContent } from "@/lib/ai-moderation";
-import { sendModerationAlertEmail, sendVendorContentHiddenEmail, sendVendorContentFlaggedEmail } from "@/lib/email";
+import { sendModerationAlertEmail, sendVendorContentFlaggedEmail } from "@/lib/email";
 import { productSchema, validateData } from "@/lib/validation";
+import { applyProductCreateChanges } from "@/lib/change-requests";
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,7 @@ export async function GET() {
   }
 }
 
-// POST - Create new product
+// POST - Create new product (now uses change request system)
 export async function POST(request: Request) {
   try {
     const store = await requireVendor();
@@ -44,22 +45,26 @@ export async function POST(request: Request) {
     
     const { name, description, price, interval, active, image_url } = validation.data;
 
+    // Run AI moderation check BEFORE creating product
+    const moderationResult = await moderateContent({
+      productName: name,
+      productDescription: description || undefined,
+    });
+
+    // Create product as inactive initially (pending approval)
     const product = await prisma.product.create({
       data: {
         name,
         description: description || null,
         price,
         interval: interval || "one_time",
-        active: active !== undefined ? active : true,
+        active: false, // Inactive until approved
+        has_pending_changes: true, // Mark as pending
         image_url: image_url || null,
         store_id: store.id,
+        moderation_status: moderationResult.severity === "clean" ? "approved" : "flagged",
+        flagged_reason: moderationResult.isViolation ? moderationResult.reason : null,
       },
-    });
-
-    // Run AI moderation check
-    const moderationResult = await moderateContent({
-      productName: name,
-      productDescription: description || undefined,
     });
 
     // Log moderation
@@ -77,56 +82,43 @@ export async function POST(request: Request) {
       },
     });
 
-    // Take action based on severity
-    if (moderationResult.isViolation && moderationResult.severity === "severe") {
-      // AUTO-HIDE severe violations
-      await prisma.product.update({
+    // Create change request
+    const changeRequest = await prisma.storeChangeRequest.create({
+      data: {
+        store_id: store.id,
+        product_id: product.id,
+        change_type: "product_create",
+        previous_data: null,
+        new_data: {
+          name,
+          description,
+          price: price.toString(),
+          interval,
+          image_url,
+        },
+        moderation_severity: moderationResult.severity,
+        moderation_reason: moderationResult.reason,
+        status: moderationResult.severity === "clean" ? "approved" : "pending",
+        auto_approved: moderationResult.severity === "clean",
+      },
+    });
+
+    // Handle based on moderation severity
+    if (moderationResult.severity === "clean") {
+      // Auto-approve clean content
+      await applyProductCreateChanges(changeRequest.id);
+      
+      // Get updated product
+      const updatedProduct = await prisma.product.findUnique({
         where: { id: product.id },
-        data: {
-          moderation_status: "hidden",
-          flagged_reason: moderationResult.reason,
-          active: false, // Also deactivate
-        },
       });
 
-      // Notify admin
-      await sendModerationAlertEmail({
-        type: "product",
-        severity: "severe",
-        vendorEmail: store.contact_email,
-        storeName: store.name,
-        contentName: name,
-        reason: moderationResult.reason,
-        categories: moderationResult.categories,
-      });
-
-      // Notify vendor
-      await sendVendorContentHiddenEmail({
-        to: store.contact_email,
-        vendorName: store.owner.first_name || "Vendor",
-        contentType: "product",
-        contentName: name,
-        reason: moderationResult.reason,
-      });
-
-      return NextResponse.json(
-        { 
-          product, 
-          warning: "Product hidden due to policy violation. Check your email for details." 
-        },
-        { status: 201 }
-      );
-    } else if (moderationResult.isViolation && moderationResult.severity === "moderate") {
-      // FLAG moderate violations
-      await prisma.product.update({
-        where: { id: product.id },
-        data: {
-          moderation_status: "flagged",
-          flagged_reason: moderationResult.reason,
-        },
-      });
-
-      // Notify admin
+      return NextResponse.json({ 
+        product: updatedProduct,
+        message: "Product created and published"
+      }, { status: 201 });
+    } else if (moderationResult.severity === "moderate") {
+      // Queue for review
       await sendModerationAlertEmail({
         type: "product",
         severity: "moderate",
@@ -137,7 +129,6 @@ export async function POST(request: Request) {
         categories: moderationResult.categories,
       });
 
-      // Notify vendor
       await sendVendorContentFlaggedEmail({
         to: store.contact_email,
         vendorName: store.owner.first_name || "Vendor",
@@ -145,9 +136,46 @@ export async function POST(request: Request) {
         contentName: name,
         reason: moderationResult.reason,
       });
-    }
 
-    return NextResponse.json({ product }, { status: 201 });
+      return NextResponse.json({ 
+        product,
+        message: "Product created and queued for review. It will be visible once approved.",
+        pending: true
+      }, { status: 201 });
+    } else {
+      // Severe violation - block completely
+      await sendModerationAlertEmail({
+        type: "product",
+        severity: "severe",
+        vendorEmail: store.contact_email,
+        storeName: store.name,
+        contentName: name,
+        reason: moderationResult.reason,
+        categories: moderationResult.categories,
+      });
+
+      await sendVendorContentFlaggedEmail({
+        to: store.contact_email,
+        vendorName: store.owner.first_name || "Vendor",
+        contentType: "product",
+        contentName: name,
+        reason: moderationResult.reason,
+      });
+
+      // Delete the blocked product
+      await prisma.product.delete({
+        where: { id: product.id },
+      });
+
+      await prisma.storeChangeRequest.delete({
+        where: { id: changeRequest.id },
+      });
+
+      return NextResponse.json({ 
+        error: "Product blocked due to policy violation. Check your email for details.",
+        reason: moderationResult.reason
+      }, { status: 400 });
+    }
   } catch (error) {
     console.error("Error creating product:", error);
     return NextResponse.json(

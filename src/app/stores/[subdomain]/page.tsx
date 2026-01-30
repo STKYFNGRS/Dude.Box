@@ -31,7 +31,10 @@ export default async function StorePage({
       maker_bio: true,
       custom_text: true,
       products: {
-        where: { active: true },
+        where: { 
+          active: true,
+          has_pending_changes: false, // Only show products without pending changes
+        },
         take: 6,
         orderBy: { created_at: "desc" },
         select: {
