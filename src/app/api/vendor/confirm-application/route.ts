@@ -121,9 +121,9 @@ export async function POST(request: Request) {
     });
 
     // 4. Create subscription record in database
-    const currentPeriodEnd = subscription.current_period_end 
-      ? new Date(subscription.current_period_end * 1000)
-      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Default to 30 days from now
+    // Access current_period_end safely
+    const periodEnd = (subscription as any).current_period_end || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
+    const currentPeriodEnd = new Date(periodEnd * 1000);
 
     await prisma.subscription.create({
       data: {
