@@ -18,6 +18,7 @@ model User {
   first_name         String?
   last_name          String?
   phone              String?
+  profile_image_url  String?   // User profile picture
   stripe_customer_id String?   @unique
   is_admin           Boolean   @default(false)
   role               String    @default("customer") // customer, vendor, admin
@@ -234,6 +235,7 @@ model Store {
   // Settings
   shipping_policy       String?   @db.Text
   return_policy         String?   @db.Text
+  maker_bio             String?   @db.Text // About the maker/vendor
   
   // Subscription tracking
   setup_fee_paid        Boolean   @default(false)

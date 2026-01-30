@@ -94,6 +94,39 @@ export const ourFileRouter = {
       
       return { uploadedBy: metadata.userId, url: file.url };
     }),
+    
+  // Endpoint for user profile picture uploads
+  userProfilePicture: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+    .middleware(async () => {
+      const session = await getServerSession(authOptions);
+      
+      if (!session?.user?.email) {
+        throw new Error("Unauthorized");
+      }
+      
+      // Look up user ID from email
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true }
+      });
+      
+      if (!user) {
+        throw new Error("User not found");
+      }
+      
+      return { userId: user.id, userEmail: session.user.email };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Profile picture upload complete for user:", metadata.userEmail);
+      
+      // Auto-save profile picture to user account
+      await prisma.user.update({
+        where: { id: metadata.userId },
+        data: { profile_image_url: file.url },
+      });
+      
+      return { uploadedBy: metadata.userId, url: file.url };
+    }),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;

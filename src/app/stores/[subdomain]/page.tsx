@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,7 @@ export default async function StorePage({
         select: {
           first_name: true,
           last_name: true,
+          profile_image_url: true,
         },
       },
     },
@@ -49,6 +51,44 @@ export default async function StorePage({
         {store.description && (
           <p className="text-lg text-muted-foreground">{store.description}</p>
         )}
+      </div>
+
+      {/* About the Maker - Moved Above Products */}
+      <div className="card rounded-lg p-8">
+        <h2 className="text-2xl font-bold mb-6">About the Maker</h2>
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Profile Picture */}
+          {store.owner.profile_image_url && (
+            <div className="flex-shrink-0 mx-auto md:mx-0">
+              <Image
+                src={store.owner.profile_image_url}
+                alt={store.owner.first_name || "Maker"}
+                width={128}
+                height={128}
+                className="rounded-full object-cover w-24 h-24 md:w-32 md:h-32"
+              />
+            </div>
+          )}
+          
+          {/* Bio Content */}
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold mb-3">
+              {store.owner.first_name} {store.owner.last_name}
+            </h3>
+            <div className="prose prose-invert max-w-none">
+              <p className="text-muted-foreground whitespace-pre-wrap">
+                {store.maker_bio || 
+                  `${store.owner.first_name || "A maker"} crafts unique products with care and attention to detail. Each item is made to order and ships directly from their workshop.`}
+              </p>
+            </div>
+            <Link
+              href={`${basePath}/about`}
+              className="inline-block mt-4 text-sm text-primary hover:underline"
+            >
+              Learn More →
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Featured Products */}
@@ -99,24 +139,6 @@ export default async function StorePage({
           </p>
         </div>
       )}
-
-      {/* About Section */}
-      <div className="card rounded-lg p-8">
-        <h2 className="text-2xl font-bold mb-4">About the Maker</h2>
-        <div className="prose prose-invert max-w-none">
-          <p className="text-muted-foreground">
-            {store.owner.first_name || "A maker"} crafts unique products with
-            care and attention to detail. Each item is made to order and ships
-            directly from their workshop.
-          </p>
-        </div>
-        <Link
-          href={`${basePath}/about`}
-          className="inline-block mt-4 text-sm text-primary hover:underline"
-        >
-          Learn More →
-        </Link>
-      </div>
     </div>
   );
 }

@@ -14,12 +14,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { firstName, lastName } = await request.json();
+    const { firstName, lastName, phone, profile_image_url } = await request.json();
 
-    // Validate input
-    if (!firstName?.trim() || !lastName?.trim()) {
+    // Validate input - at least first name and last name if provided
+    if (firstName !== undefined && !firstName?.trim()) {
       return NextResponse.json(
-        { error: "First name and last name are required" },
+        { error: "First name cannot be empty" },
+        { status: 400 }
+      );
+    }
+    
+    if (lastName !== undefined && !lastName?.trim()) {
+      return NextResponse.json(
+        { error: "Last name cannot be empty" },
         { status: 400 }
       );
     }
@@ -28,8 +35,10 @@ export async function POST(request: Request) {
     const user = await prisma.user.update({
       where: { email: session.user.email },
       data: {
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
+        ...(firstName !== undefined && { first_name: firstName.trim() }),
+        ...(lastName !== undefined && { last_name: lastName.trim() }),
+        ...(phone !== undefined && { phone }),
+        ...(profile_image_url !== undefined && { profile_image_url }),
       },
       select: {
         id: true,
@@ -37,6 +46,7 @@ export async function POST(request: Request) {
         first_name: true,
         last_name: true,
         phone: true,
+        profile_image_url: true,
       },
     });
 

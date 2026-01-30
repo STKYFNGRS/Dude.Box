@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { SHIPPING_TEMPLATES, RETURN_TEMPLATES } from "@/lib/policy-templates";
 import { ImageUpload } from "./ImageUpload";
 
@@ -14,17 +15,21 @@ interface Store {
   return_policy: string | null;
   logo_url: string | null;
   banner_url: string | null;
+  maker_bio: string | null;
 }
 
-export function EditStoreForm({ store }: { store: Store }) {
+export function EditStoreForm({ store, userProfilePicture }: { store: Store; userProfilePicture: string | null }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(userProfilePicture || "");
   const [formData, setFormData] = useState({
     name: store.name,
     description: store.description || "",
     contact_email: store.contact_email,
+    maker_bio: store.maker_bio || "",
     shipping_policy: store.shipping_policy || "",
     return_policy: store.return_policy || "",
     logo_url: store.logo_url || "",
@@ -33,6 +38,13 @@ export function EditStoreForm({ store }: { store: Store }) {
   
   const [selectedShippingTemplate, setSelectedShippingTemplate] = useState("");
   const [selectedReturnTemplate, setSelectedReturnTemplate] = useState("");
+  
+  // Update profile picture state when session changes
+  useEffect(() => {
+    if (userProfilePicture) {
+      setProfilePicture(userProfilePicture);
+    }
+  }, [userProfilePicture]);
 
   // Auto-save images when they're uploaded
   const handleImageUpload = async (field: "logo_url" | "banner_url", url: string) => {
@@ -159,8 +171,42 @@ export function EditStoreForm({ store }: { store: Store }) {
           rows={4}
           maxLength={1000}
           disabled={loading}
+          placeholder="Describe what your store sells and what makes it special..."
         />
+        <p className="text-xs text-muted mt-1">{formData.description.length}/1000 characters</p>
       </div>
+
+      <div>
+        <label
+          htmlFor="maker_bio"
+          className="block text-sm font-medium mb-2"
+        >
+          About the Maker
+        </label>
+        <textarea
+          id="maker_bio"
+          value={formData.maker_bio}
+          onChange={(e) =>
+            setFormData({ ...formData, maker_bio: e.target.value })
+          }
+          className="input w-full"
+          rows={6}
+          maxLength={1000}
+          disabled={loading}
+          placeholder="Tell customers about yourself, your craft, your story..."
+        />
+        <p className="text-xs text-muted mt-1">{formData.maker_bio.length}/1000 characters</p>
+      </div>
+
+      {/* Profile Picture Upload */}
+      <ImageUpload
+        endpoint="userProfilePicture"
+        value={profilePicture}
+        onChange={setProfilePicture}
+        label="Your Profile Picture"
+        description="Upload your photo. This will appear next to your maker bio on your store page. Max 4MB. Saves automatically."
+        previewHeight="h-48"
+      />
 
       {/* Logo Upload */}
       <ImageUpload

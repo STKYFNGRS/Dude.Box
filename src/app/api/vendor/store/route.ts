@@ -15,6 +15,7 @@ export async function PATCH(request: Request) {
       name,
       description,
       contact_email,
+      maker_bio,
       shipping_policy,
       return_policy,
       logo_url,
@@ -28,6 +29,7 @@ export async function PATCH(request: Request) {
         ...(name !== undefined && { name }),
         ...(description !== undefined && { description }),
         ...(contact_email !== undefined && { contact_email }),
+        ...(maker_bio !== undefined && { maker_bio }),
         ...(shipping_policy !== undefined && { shipping_policy }),
         ...(return_policy !== undefined && { return_policy }),
         ...(logo_url !== undefined && { logo_url }),
@@ -36,12 +38,15 @@ export async function PATCH(request: Request) {
       },
     });
 
-    // Run AI moderation check if name, description, or custom_text changed
-    if (name !== undefined || description !== undefined || custom_text !== undefined) {
+    // Run AI moderation check if name, description, maker_bio, or custom_text changed
+    if (name !== undefined || description !== undefined || maker_bio !== undefined || custom_text !== undefined) {
       const moderationResult = await moderateContent({
         storeName: name || updatedStore.name,
         storeDescription: description !== undefined ? description : updatedStore.description || undefined,
-        customText: custom_text !== undefined ? custom_text : updatedStore.custom_text || undefined,
+        customText: [
+          maker_bio !== undefined ? maker_bio : updatedStore.maker_bio || "",
+          custom_text !== undefined ? custom_text : updatedStore.custom_text || ""
+        ].filter(Boolean).join("\n"),
       });
 
       // Log moderation

@@ -1,11 +1,15 @@
 import { requireVendor } from "@/lib/vendor";
 import { EditStoreForm } from "@/components/vendor/EditStoreForm";
 import { StoreCustomizationForm } from "@/components/vendor/StoreCustomizationForm";
+import { DeleteStoreButton } from "@/components/vendor/DeleteStoreButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function VendorSettingsPage() {
   const store = await requireVendor();
+  
+  // Get user profile picture from store owner
+  const userProfilePicture = store.owner?.profile_image_url || null;
 
   return (
     <div className="space-y-6">
@@ -17,7 +21,7 @@ export default async function VendorSettingsPage() {
       </div>
 
       <div className="card rounded-lg p-6">
-        <EditStoreForm store={store} />
+        <EditStoreForm store={store} userProfilePicture={userProfilePicture} />
       </div>
 
       {/* Storefront Customization */}
@@ -75,12 +79,7 @@ export default async function VendorSettingsPage() {
         <p className="text-sm text-muted-foreground mb-4">
           These actions cannot be undone. Please be careful.
         </p>
-        <button
-          disabled
-          className="text-sm px-4 py-2 rounded bg-red-500/20 text-red-500 opacity-50 cursor-not-allowed"
-        >
-          Delete Store (Contact Support)
-        </button>
+        <DeleteStoreButton storeName={store.name} />
       </div>
     </div>
   );
