@@ -85,7 +85,10 @@ function CheckoutForm({
 
       if (!response.ok) {
         console.error("❌ API Error:", data);
-        throw new Error(data.error || "Failed to process application");
+        const errorMessage = data.details 
+          ? `${data.error}: ${data.details}` 
+          : data.error || "Failed to process application";
+        throw new Error(errorMessage);
       }
 
       console.log("✅ Application processed successfully!");

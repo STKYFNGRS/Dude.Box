@@ -219,7 +219,10 @@ export async function POST(request: Request) {
       subdomain: store.subdomain,
     });
   } catch (error: any) {
-    console.error("Error confirming vendor application:", error);
+    console.error("❌❌❌ Error confirming vendor application:", error);
+    console.error("Error type:", error.type);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
     
     // Handle specific Stripe errors
     if (error.type === "StripeCardError") {
@@ -229,8 +232,13 @@ export async function POST(request: Request) {
       );
     }
     
+    // Return detailed error for debugging
     return NextResponse.json(
-      { error: "Failed to process application. Please contact support." },
+      { 
+        error: "Failed to process application. Please contact support.",
+        details: error.message,
+        type: error.type || "Unknown"
+      },
       { status: 500 }
     );
   }
