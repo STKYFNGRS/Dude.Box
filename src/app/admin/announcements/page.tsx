@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CreateAnnouncementForm } from "@/components/admin/CreateAnnouncementForm";
 import { TogglePublishButton } from "@/components/admin/TogglePublishButton";
@@ -8,7 +9,11 @@ import { DeleteAnnouncementButton } from "@/components/admin/DeleteAnnouncementB
 export const dynamic = "force-dynamic";
 
 export default async function AdminAnnouncementsPage() {
-  await requireAdmin();
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/announcements");
+  }
 
   const announcements = await prisma.announcement.findMany({
     orderBy: { created_at: "desc" },

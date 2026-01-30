@@ -1,10 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminAnalyticsPage() {
-  await requireAdmin();
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/analytics");
+  }
 
   // Fetch platform analytics
   const [

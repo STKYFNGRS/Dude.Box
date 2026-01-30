@@ -1,15 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminStoresPage() {
-  try {
-    await requireAdmin();
-  } catch (error) {
-    console.error("Admin auth failed:", error);
-    throw error;
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/stores");
   }
 
   let stores;
@@ -156,10 +156,10 @@ export default async function AdminStoresPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-foreground">
-                        {store.owner.first_name || "Unknown"}
+                        {store.owner?.first_name || "Unknown"}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {store.owner.email}
+                        {store.owner?.email || "N/A"}
                       </div>
                     </td>
                     <td className="px-6 py-4">

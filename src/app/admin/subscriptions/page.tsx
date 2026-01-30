@@ -1,10 +1,18 @@
 import { prisma } from "@/lib/prisma";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 import { Section } from "@/components/Section";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminSubscriptionsPage() {
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/subscriptions");
+  }
+
   // Fetch all subscriptions with user info
   const subscriptions = await prisma.subscription.findMany({
     orderBy: { created_at: "desc" },

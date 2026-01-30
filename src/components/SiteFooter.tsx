@@ -5,20 +5,20 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-border bg-panel mt-auto">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
-            <h3 className="font-bold text-foreground mb-3">Dude.Box</h3>
-            <p className="text-sm text-muted leading-relaxed">
+            <h3 className="font-bold text-foreground mb-2 text-sm">Dude.Box</h3>
+            <p className="text-xs text-muted leading-snug">
               A marketplace connecting skilled makers with customers who value quality craftsmanship.
             </p>
           </div>
 
           {/* Combined: Resources (Vendors + Support) */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Resources</h3>
-            <ul className="space-y-1.5 text-sm">
+            <h3 className="font-semibold text-foreground mb-2 text-sm">Resources</h3>
+            <ul className="space-y-1 text-xs">
               <li>
                 <Link href="/members/become-vendor" className="text-muted hover:text-accent transition-colors">
                   Become a Vendor
@@ -44,8 +44,8 @@ export function SiteFooter() {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Legal</h3>
-            <ul className="space-y-1.5 text-sm">
+            <h3 className="font-semibold text-foreground mb-2 text-sm">Legal</h3>
+            <ul className="space-y-1 text-xs">
               <li>
                 <Link href="/legal/terms" className="text-muted hover:text-accent transition-colors">
                   Terms of Service
@@ -66,8 +66,8 @@ export function SiteFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border mt-6 pt-6 text-center">
-          <p className="text-sm text-muted">
+        <div className="border-t border-border mt-4 pt-3 text-center">
+          <p className="text-xs text-muted">
             © {currentYear} Dude Dot Box LLC. All rights reserved. · Made for makers
           </p>
         </div>

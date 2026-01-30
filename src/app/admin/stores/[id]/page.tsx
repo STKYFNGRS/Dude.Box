@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin";
-import { notFound } from "next/navigation";
+import { isAdmin } from "@/lib/admin";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ApproveStoreButton } from "@/components/admin/ApproveStoreButton";
 import { RejectStoreButton } from "@/components/admin/RejectStoreButton";
@@ -14,7 +14,11 @@ export default async function AdminStoreDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdmin();
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/stores");
+  }
 
   const { id } = await params;
   const store = await prisma.store.findUnique({

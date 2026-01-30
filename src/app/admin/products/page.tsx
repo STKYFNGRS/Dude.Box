@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FlagProductButton } from "@/components/admin/FlagProductButton";
 import { HideProductButton } from "@/components/admin/HideProductButton";
@@ -7,7 +8,11 @@ import { HideProductButton } from "@/components/admin/HideProductButton";
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductsPage() {
-  await requireAdmin();
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/products");
+  }
 
   const products = await prisma.product.findMany({
     orderBy: { created_at: "desc" },

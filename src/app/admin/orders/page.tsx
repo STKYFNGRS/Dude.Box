@@ -1,10 +1,18 @@
 import { prisma } from "@/lib/prisma";
+import { isAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
 import { Section } from "@/components/Section";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOrdersPage() {
+  // Check admin access - redirect if unauthorized
+  const admin = await isAdmin();
+  if (!admin) {
+    redirect("/portal/login?redirect=/admin/orders");
+  }
+
   // Fetch all orders with user and items info
   const orders = await prisma.order.findMany({
     orderBy: { created_at: "desc" },
