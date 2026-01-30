@@ -44,25 +44,12 @@ export default async function HomePage() {
 
   return (
     <Container className="py-12">
-      {/* Show banner for logged-in users */}
+      {/* Centered welcome message for logged-in users */}
       {session?.user?.email && (
-        <div className="mb-8 card rounded-lg p-6 border-accent">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold mb-1">
-                Welcome back, {session.user.name || "there"}!
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Ready to check your dashboard?
-              </p>
-            </div>
-            <Link
-              href="/members"
-              className="solid-button rounded-full px-6 py-3 text-xs uppercase tracking-[0.25em]"
-            >
-              Go to Dashboard →
-            </Link>
-          </div>
+        <div className="text-center py-4 mb-6">
+          <p className="text-lg text-muted-foreground">
+            Welcome, <span className="text-foreground font-semibold">{session.user.name?.split(' ')[0] || "there"}</span>
+          </p>
         </div>
       )}
       <section className="pb-16 border-b border-border animate-fade-in">
