@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     const metadata = setupIntent.metadata;
     const paymentMethodId = setupIntent.payment_method as string;
 
-    if (!metadata.user_id || metadata.user_id !== session.user.id) {
+    if (!metadata || !metadata.user_id || metadata.user_id !== session.user.id) {
       return NextResponse.json(
         { error: "Invalid setup intent" },
         { status: 400 }
