@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Container } from "@/components/Container";
 import { LoginModal } from "@/components/LoginModal";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -106,6 +106,23 @@ export function SiteHeader() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </button>
+                <button
+                  onClick={async () => {
+                    try {
+                      // Clear cart cookie
+                      await fetch("/api/auth/signout-handler", { method: "POST" });
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                    } catch (error) {
+                      console.error("Failed to clear cart:", error);
+                    }
+                    await signOut({ redirect: false });
+                    window.location.href = "/";
+                  }}
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
+                  aria-label="Sign out"
+                >
+                  Sign Out
+                </button>
               </>
             ) : (
               <>
@@ -201,6 +218,22 @@ export function SiteHeader() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                       Cart
+                    </button>
+                    <button
+                      onClick={async () => {
+                        setIsMobileMenuOpen(false);
+                        try {
+                          await fetch("/api/auth/signout-handler", { method: "POST" });
+                          await new Promise(resolve => setTimeout(resolve, 100));
+                        } catch (error) {
+                          console.error("Failed to clear cart:", error);
+                        }
+                        await signOut({ redirect: false });
+                        window.location.href = "/";
+                      }}
+                      className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                    >
+                      Sign Out
                     </button>
                   </>
                 ) : (
