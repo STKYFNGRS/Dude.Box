@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUpload } from "./ImageUpload";
 
 interface Product {
   id: string;
@@ -10,6 +11,7 @@ interface Product {
   price: any;
   interval: string;
   active: boolean;
+  image_url: string | null;
 }
 
 export function EditProductForm({
@@ -22,6 +24,7 @@ export function EditProductForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageUrl, setImageUrl] = useState(product.image_url || "");
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description || "",
@@ -42,6 +45,7 @@ export function EditProductForm({
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
+          image_url: imageUrl || null,
         }),
       });
 
@@ -68,6 +72,21 @@ export function EditProductForm({
           <span>{error}</span>
         </div>
       )}
+
+      <div>
+        <label className="block text-sm font-semibold mb-2 text-foreground">
+          Product Image
+        </label>
+        <ImageUpload
+          value={imageUrl}
+          onChange={setImageUrl}
+          maxSize={8 * 1024 * 1024}
+          label="Product Image"
+        />
+        <p className="text-xs text-muted mt-2">
+          Upload a clear image of your product. Max 8MB. JPG, PNG, or WebP.
+        </p>
+      </div>
 
       <div>
         <label htmlFor="name" className="block text-sm font-semibold mb-2 text-foreground">
@@ -115,7 +134,7 @@ export function EditProductForm({
             Price <span className="text-error">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-accent font-bold text-base">$</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-medium text-base">$</span>
             <input
               id="price"
               type="number"
@@ -125,7 +144,7 @@ export function EditProductForm({
               onChange={(e) =>
                 setFormData({ ...formData, price: e.target.value })
               }
-              className="input w-full pl-8 text-base font-medium"
+              className="input w-full pl-10 text-base font-medium"
               placeholder="0.00"
               required
               disabled={loading}

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   try {
     const store = await requireVendor();
     const body = await request.json();
-    const { name, description, price, interval, active } = body;
+    const { name, description, price, interval, active, image_url } = body;
 
     if (!name || !price) {
       return NextResponse.json(
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
         price,
         interval: interval || "one_time",
         active: active !== undefined ? active : true,
+        image_url: image_url || null,
         store_id: store.id,
       },
     });

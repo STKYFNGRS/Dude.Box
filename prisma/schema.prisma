@@ -59,6 +59,7 @@ model Product {
   price             Decimal  @db.Decimal(10, 2)
   interval          String   // "month" for subscription, "one_time" for products
   stripe_price_id   String?  // Stripe Price ID for subscriptions
+  image_url         String?  // Product image URL
   active            Boolean  @default(true)
   store_id          String?  // Nullable for legacy products
   moderation_status String   @default("approved") // approved, flagged, hidden

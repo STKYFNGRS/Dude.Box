@@ -15,7 +15,7 @@ export async function PATCH(
     const store = await requireVendor();
     const { id } = await params;
     const body = await request.json();
-    const { name, description, price, interval, active } = body;
+    const { name, description, price, interval, active, image_url } = body;
 
     // Verify product belongs to vendor's store
     const existingProduct = await prisma.product.findUnique({
@@ -37,6 +37,7 @@ export async function PATCH(
         ...(price !== undefined && { price }),
         ...(interval !== undefined && { interval }),
         ...(active !== undefined && { active }),
+        ...(image_url !== undefined && { image_url }),
       },
     });
 

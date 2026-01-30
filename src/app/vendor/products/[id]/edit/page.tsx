@@ -8,13 +8,14 @@ export const dynamic = "force-dynamic";
 export default async function EditProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const store = await requireVendor();
+  const { id } = await params;
 
   const product = await prisma.product.findUnique({
     where: {
-      id: params.id,
+      id,
       store_id: store.id, // Ensure vendor owns this product
     },
   });
