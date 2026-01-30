@@ -89,7 +89,7 @@ export async function POST(request: Request) {
         store_id: store.id,
         product_id: product.id,
         change_type: "product_create",
-        previous_data: null,
+        previous_data: Prisma.JsonNull, // Use Prisma.JsonNull for nullable JSON fields
         new_data: {
           name,
           description,
