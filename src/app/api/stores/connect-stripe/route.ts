@@ -60,6 +60,13 @@ export async function GET(request: Request) {
     stripeAuthUrl.searchParams.set("redirect_uri", redirectUri);
     stripeAuthUrl.searchParams.set("state", storeId); // Pass store ID as state
 
+    console.log("🔗 Stripe Connect OAuth URL:", {
+      clientId,
+      redirectUri,
+      storeId,
+      fullUrl: stripeAuthUrl.toString()
+    });
+
     return NextResponse.redirect(stripeAuthUrl.toString());
   } catch (error) {
     console.error("Error initiating Stripe Connect:", error);
