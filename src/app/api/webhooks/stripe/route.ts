@@ -75,6 +75,14 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log(`💳 Processing payment intent succeeded: ${paymentIntent.id}`);
+        await handlePaymentIntentSucceeded(paymentIntent);
+        console.log(`✅ Successfully processed payment_intent.succeeded`);
+        break;
+      }
+
       case "account.updated": {
         const account = event.data.object as Stripe.Account;
         console.log(`🔗 Processing Stripe Connect account update: ${account.id}`);
@@ -597,6 +605,149 @@ async function handleVendorApplicationPayment(
     console.log(`✅ Successfully processed vendor application for ${store.name}`);
   } catch (error) {
     console.error("Error processing vendor application:", error);
+    throw error;
+  }
+}
+
+async function handlePaymentIntentSucceeded(
+  paymentIntent: Stripe.PaymentIntent
+) {
+  console.log("Processing payment_intent.succeeded for embedded checkout");
+
+  const metadata = paymentIntent.metadata;
+  const storeId = metadata?.storeId;
+  const userId = metadata?.userId;
+  const userEmail = metadata?.userEmail;
+  const itemsJson = metadata?.items;
+
+  if (!storeId || !userId || !itemsJson) {
+    console.error("Missing required metadata in PaymentIntent");
+    return;
+  }
+
+  try {
+    // Parse items from metadata
+    const items = JSON.parse(itemsJson);
+
+    // Get shipping address from payment intent
+    const shipping = paymentIntent.shipping;
+    let shippingAddressId: string | null = null;
+
+    if (shipping) {
+      // Check if address already exists
+      const existingAddress = await prisma.address.findFirst({
+        where: {
+          user_id: userId,
+          address1: shipping.address?.line1 || "",
+          postal_code: shipping.address?.postal_code || "",
+        },
+      });
+
+      if (existingAddress) {
+        shippingAddressId = existingAddress.id;
+      } else {
+        // Create new address
+        const newAddress = await prisma.address.create({
+          data: {
+            user_id: userId,
+            type: "shipping",
+            first_name: shipping.name?.split(" ")[0] || "",
+            last_name: shipping.name?.split(" ").slice(1).join(" ") || "",
+            address1: shipping.address?.line1 || "",
+            address2: shipping.address?.line2 || null,
+            city: shipping.address?.city || "",
+            state: shipping.address?.state || "",
+            postal_code: shipping.address?.postal_code || "",
+            country: shipping.address?.country || "US",
+            phone: shipping.phone || null,
+          },
+        });
+        shippingAddressId = newAddress.id;
+      }
+    }
+
+    // Calculate totals
+    const subtotal = parseFloat(metadata.subtotal || "0");
+    const platformFee = parseFloat(metadata.platformFee || "0");
+    const vendorAmount = parseFloat(metadata.vendorAmount || "0");
+
+    // Create order
+    const order = await prisma.order.create({
+      data: {
+        user_id: userId,
+        store_id: storeId,
+        stripe_payment_intent_id: paymentIntent.id,
+        total: subtotal,
+        platform_fee: platformFee,
+        vendor_amount: vendorAmount,
+        status: "paid",
+        shipping_address_id: shippingAddressId,
+        items: {
+          create: items.map((item: any) => ({
+            product_id: item.productId,
+            quantity: item.quantity,
+            price: 0, // Will be updated below
+          })),
+        },
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+        user: true,
+        store: true,
+      },
+    });
+
+    // Update order items with actual prices
+    for (const orderItem of order.items) {
+      await prisma.orderItem.update({
+        where: { id: orderItem.id },
+        data: { price: orderItem.product.price },
+      });
+    }
+
+    console.log(`✅ Created order ${order.id} for store ${storeId}`);
+
+    // Create platform transaction record
+    await prisma.platformTransaction.create({
+      data: {
+        order_id: order.id,
+        store_id: storeId,
+        gross_amount: subtotal,
+        platform_fee: platformFee,
+        vendor_amount: vendorAmount,
+        fee_percentage: 1.0, // 1%
+        status: "completed",
+      },
+    });
+
+    console.log(`✅ Created platform transaction for order ${order.id}`);
+
+    // Send order confirmation email
+    if (userEmail && order.store) {
+      await sendOrderConfirmation({
+        to: userEmail,
+        customerName: order.user.first_name || "Customer",
+        orderNumber: order.id.slice(-8).toUpperCase(),
+        items: order.items.map((item) => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          price: parseFloat(item.product.price.toString()),
+        })),
+        total: subtotal,
+        storeName: order.store.name,
+      });
+
+      console.log(`✅ Sent order confirmation email to ${userEmail}`);
+    }
+
+    // TODO: Clear cart items for this store
+    // TODO: Send email to vendor about new order
+  } catch (error) {
+    console.error("Error processing payment_intent.succeeded:", error);
     throw error;
   }
 }

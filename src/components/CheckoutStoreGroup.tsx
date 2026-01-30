@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { CheckoutModal } from "./checkout/CheckoutModal";
 
 interface Item {
   id: string;
@@ -33,45 +34,13 @@ export function CheckoutStoreGroup({
   storeNumber: number;
   totalStores: number;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [error, setError] = useState("");
 
-  const handleCheckout = async () => {
-    setLoading(true);
+  const handleCheckout = () => {
     setError("");
-
-    try {
-      // Create checkout session for this store's products
-      const response = await fetch("/api/checkout/create-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          storeId: store.id,
-          items: items.map((item) => ({
-            productId: item.product.id,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session");
-      }
-
-      // Redirect to Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Checkout failed");
-      setLoading(false);
-    }
+    // Open embedded checkout modal instead of redirecting
+    setShowCheckoutModal(true);
   };
 
   return (
@@ -140,11 +109,20 @@ export function CheckoutStoreGroup({
 
       <button
         onClick={handleCheckout}
-        disabled={loading}
-        className="solid-button rounded-full px-8 py-3 text-sm w-full disabled:opacity-50"
+        className="solid-button rounded-full px-8 py-3 text-sm w-full font-semibold uppercase tracking-wider shadow-button hover:shadow-glow transition-all"
       >
-        {loading ? "Processing..." : `Checkout ${store.name}`}
+        Checkout {store.name}
       </button>
+
+      {/* Embedded Checkout Modal */}
+      <CheckoutModal
+        isOpen={showCheckoutModal}
+        onClose={() => setShowCheckoutModal(false)}
+        storeId={store.id}
+        storeName={store.name}
+        items={items}
+        total={total}
+      />
     </div>
   );
 }

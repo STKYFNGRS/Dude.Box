@@ -12,6 +12,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,6 +53,13 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setError(null);
     setSuccessMessage(null);
 
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -84,6 +92,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         // Auto-logged in, close modal
         setEmail("");
         setPassword("");
+        setConfirmPassword("");
         setFirstName("");
         setLastName("");
         onClose();
@@ -174,6 +183,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     setMode("register");
                     setError(null);
                     setSuccessMessage(null);
+                    setPassword("");
+                    setConfirmPassword("");
                   }}
                   className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
                 >
@@ -227,6 +238,17 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 />
                 <span className="text-xs muted">Minimum 8 characters</span>
               </label>
+              <label className="text-sm flex flex-col gap-2">
+                <span className="font-semibold text-foreground">Confirm Password</span>
+                <input
+                  className="input"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  required
+                  minLength={8}
+                />
+              </label>
               {error ? <p className="text-sm text-red-400">{error}</p> : null}
               <button
                 type="submit"
@@ -243,6 +265,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     setMode("login");
                     setError(null);
                     setSuccessMessage(null);
+                    setConfirmPassword("");
                   }}
                   className="text-xs uppercase tracking-[0.2em] text-accent hover:text-foreground transition-colors"
                 >
