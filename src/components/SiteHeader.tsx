@@ -43,7 +43,7 @@ export function SiteHeader() {
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
         <Container className="py-3 flex items-center justify-between">
-          <div className="flex items-center gap-8">
+          <div className="flex items-end gap-8">
             <Link href="https://www.dude.box" aria-label="dude.box home" className="inline-flex items-center">
               <Image
                 src="/Logo.png"
@@ -72,82 +72,10 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3 ml-12">
-            {!mounted || status === "loading" ? (
-              // Show loading state to prevent flash - invisible but maintains layout
-              <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
-                Account
-              </div>
-            ) : status === "authenticated" ? (
-              <>
-                <Link
-                  href="https://www.dude.box/members"
-                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
-                  aria-label="Dashboard"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="https://www.dude.box"
-                  className="outline-button rounded-full p-3"
-                  aria-label="Home"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </Link>
-                <button
-                  onClick={() => setIsCartOpen(true)}
-                  className="outline-button rounded-full p-3"
-                  aria-label="Shopping cart"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={async () => {
-                    try {
-                      // Clear cart cookie
-                      await fetch("/api/auth/signout-handler", { method: "POST" });
-                      await new Promise(resolve => setTimeout(resolve, 100));
-                    } catch (error) {
-                      console.error("Failed to clear cart:", error);
-                    }
-                    await signOut({ callbackUrl: "/" });
-                  }}
-                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-                  aria-label="Sign out"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setIsLoginOpen(true)}
-                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none"
-                  aria-label="Login"
-                >
-                  Login
-                </button>
-                <Link
-                  href="/portal/register"
-                  className="solid-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none inline-flex items-center"
-                  aria-label="Sign Up"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Hamburger */}
+          {/* Hamburger Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+            className="p-2 text-foreground hover:text-primary transition-colors"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -162,9 +90,9 @@ export function SiteHeader() {
           </button>
         </Container>
 
-        {/* Mobile Menu */}
+        {/* Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background">
+          <div className="border-t border-border bg-background">
             <Container className="py-4">
               <nav className="flex flex-col gap-4 mb-4 pb-4 border-b border-border">
                 <Link
