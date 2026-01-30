@@ -100,6 +100,7 @@ export async function POST(request: Request) {
         },
       ],
       default_payment_method: paymentMethodId,
+      expand: ['latest_invoice'], // Expand to get full subscription details
       metadata: {
         type: "vendor_subscription",
         user_id: user.id,
@@ -120,6 +121,10 @@ export async function POST(request: Request) {
     });
 
     // 4. Create subscription record in database
+    const currentPeriodEnd = subscription.current_period_end 
+      ? new Date(subscription.current_period_end * 1000)
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Default to 30 days from now
+
     await prisma.subscription.create({
       data: {
         user_id: user.id,
@@ -127,7 +132,7 @@ export async function POST(request: Request) {
         stripe_subscription_id: subscription.id,
         stripe_customer_id: subscription.customer as string,
         status: subscription.status,
-        current_period_end: new Date(subscription.current_period_end * 1000),
+        current_period_end: currentPeriodEnd,
         cancel_at_period_end: false,
       },
     });
