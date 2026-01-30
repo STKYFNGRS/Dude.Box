@@ -75,6 +75,28 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      case "account.updated": {
+        const account = event.data.object as Stripe.Account;
+        console.log(`🔗 Processing Stripe Connect account update: ${account.id}`);
+        
+        // Check if account is fully onboarded (can accept charges and payouts)
+        if (account.charges_enabled && account.payouts_enabled) {
+          // Find store by Stripe account ID and mark as onboarded
+          const store = await prisma.store.findUnique({
+            where: { stripe_account_id: account.id },
+          });
+          
+          if (store && !store.stripe_onboarded) {
+            await prisma.store.update({
+              where: { id: store.id },
+              data: { stripe_onboarded: true },
+            });
+            console.log(`✅ Marked store ${store.name} as Stripe onboarded`);
+          }
+        }
+        break;
+      }
+
       default:
         console.log(`ℹ️  Unhandled event type: ${event.type}`);
     }

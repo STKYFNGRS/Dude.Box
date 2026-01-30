@@ -17,6 +17,7 @@
     "@anthropic-ai/sdk": "^0.72.0",
     "@easypost/api": "^8.4.0",
     "@prisma/client": "^5.22.0",
+    "@stripe/connect-js": "^3.3.32",
     "@stripe/stripe-js": "^8.6.4",
     "@uploadthing/react": "^7.3.3",
     "bcryptjs": "^2.4.3",

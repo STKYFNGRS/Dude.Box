@@ -2,6 +2,7 @@ import { requireVendor } from "@/lib/vendor";
 import { EditStoreForm } from "@/components/vendor/EditStoreForm";
 import { StoreCustomizationForm } from "@/components/vendor/StoreCustomizationForm";
 import { DeleteStoreButton } from "@/components/vendor/DeleteStoreButton";
+import { StripeConnectOnboarding } from "@/components/vendor/StripeConnectOnboarding";
 
 export const dynamic = "force-dynamic";
 
@@ -52,15 +53,10 @@ export default async function VendorSettingsPage() {
               </div>
             ) : (
               <div>
-                <span className="text-amber-500 font-medium">
+                <span className="text-amber-500 font-medium mb-4 block">
                   Not Connected
                 </span>
-                <a
-                  href={`/api/stores/connect-stripe?storeId=${store.id}`}
-                  className="block mt-3 solid-button rounded-full px-6 py-2 text-sm w-fit"
-                >
-                  Connect Stripe Account
-                </a>
+                <StripeConnectOnboarding />
               </div>
             )}
           </div>
