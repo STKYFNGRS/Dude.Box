@@ -59,6 +59,24 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate all required metadata fields exist
+    const requiredFields = [
+      'user_id', 'subdomain', 'name', 'contact_email',
+      'application_fee_price', 'monthly_subscription_stripe_price_id'
+    ];
+
+    for (const field of requiredFields) {
+      if (!metadata[field]) {
+        console.error(`❌ confirm-application: Missing required metadata field: ${field}`);
+        return NextResponse.json(
+          { error: `Invalid application data: missing ${field}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    console.log("✅ confirm-application: All metadata fields validated");
+
     const user = await prisma.user.findUnique({
       where: { id: metadata.user_id },
       include: { owned_stores: true },
@@ -95,8 +113,24 @@ export async function POST(request: Request) {
       },
     });
 
+    if (applicationFeeCharge.status === "requires_action") {
+      console.error("❌ confirm-application: Payment requires additional authentication");
+      return NextResponse.json(
+        { error: "Payment requires additional authentication" },
+        { status: 400 }
+      );
+    }
+
+    if (applicationFeeCharge.status === "processing") {
+      console.error("❌ confirm-application: Payment is still processing");
+      return NextResponse.json(
+        { error: "Payment is still processing. Please wait." },
+        { status: 400 }
+      );
+    }
+
     if (applicationFeeCharge.status !== "succeeded") {
-      console.error("❌ confirm-application: Application fee charge failed:", applicationFeeCharge);
+      console.error("❌ confirm-application: Application fee charge failed:", applicationFeeCharge.status);
       return NextResponse.json(
         { error: "Payment failed. Please try again." },
         { status: 400 }
@@ -123,41 +157,52 @@ export async function POST(request: Request) {
 
     console.log("✅ confirm-application: Subscription created:", subscription.id);
 
-    // 3. Create the store in pending status
-    console.log("🔵 confirm-application: Creating store in database...");
-    const store = await prisma.store.create({
-      data: {
-        name: metadata.name,
-        subdomain: metadata.subdomain,
-        description: metadata.description || null,
-        contact_email: metadata.contact_email,
-        owner_id: user.id,
-        status: "pending",
-        stripe_onboarded: false,
-      },
-    });
-
-    // 4. Create subscription record in database
-    // Access current_period_end safely
+    // Access current_period_end safely for later use
     const periodEnd = (subscription as any).current_period_end || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
     const currentPeriodEnd = new Date(periodEnd * 1000);
 
-    await prisma.subscription.create({
-      data: {
-        user_id: user.id,
-        product_id: store.id, // Link to store
-        stripe_subscription_id: subscription.id,
-        stripe_customer_id: subscription.customer as string,
-        status: subscription.status,
-        current_period_end: currentPeriodEnd,
-        cancel_at_period_end: false,
-      },
-    });
+    // 3-5. Wrap all database operations in a transaction for consistency
+    console.log("🔵 confirm-application: Creating store and updating records in transaction...");
+    const store = await prisma.$transaction(async (tx) => {
+      // Create the store in pending status with complete payment tracking
+      const newStore = await tx.store.create({
+        data: {
+          name: metadata.name,
+          subdomain: metadata.subdomain,
+          description: metadata.description || null,
+          contact_email: metadata.contact_email,
+          owner_id: user.id,
+          status: "pending",
+          stripe_onboarded: false,
+          // Payment tracking fields
+          application_paid: true,
+          application_payment_id: applicationFeeCharge.id,
+          monthly_subscription_id: subscription.id,
+          subscription_status: "active",
+          terms_accepted_at: new Date(),
+        },
+      });
 
-    // 5. Update user role to vendor
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { role: "vendor" },
+      // Create subscription record in database
+      await tx.subscription.create({
+        data: {
+          user_id: user.id,
+          product_id: newStore.id, // Link to store
+          stripe_subscription_id: subscription.id,
+          stripe_customer_id: subscription.customer as string,
+          status: subscription.status,
+          current_period_end: currentPeriodEnd,
+          cancel_at_period_end: false,
+        },
+      });
+
+      // Update user role to vendor
+      await tx.user.update({
+        where: { id: user.id },
+        data: { role: "vendor" },
+      });
+
+      return newStore;
     });
 
     console.log("✅ confirm-application: Store created:", store.id);

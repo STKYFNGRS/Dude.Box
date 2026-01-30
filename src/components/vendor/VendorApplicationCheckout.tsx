@@ -89,6 +89,7 @@ function CheckoutForm({
       }
 
       console.log("✅ Application processed successfully!");
+      setIsProcessing(false);
       onSuccess();
     } catch (err) {
       console.error("❌ Exception in handleSubmit:", err);
