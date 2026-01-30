@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -59,8 +60,17 @@ export default async function StoreProductsPage({
               href={`${basePath}/products/${product.id}`}
               className="card rounded-lg overflow-hidden hover:border-primary/50 transition-colors group"
             >
-              <div className="aspect-square bg-border/50 flex items-center justify-center">
-                <span className="text-6xl">📦</span>
+              <div className="aspect-square bg-border/50 flex items-center justify-center relative overflow-hidden">
+                {product.image_url ? (
+                  <Image
+                    src={product.image_url}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="text-6xl">📦</span>
+                )}
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">

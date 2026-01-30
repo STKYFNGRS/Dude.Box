@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { headers } from "next/headers";
 
@@ -52,8 +53,17 @@ export default async function ProductDetailPage({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Product Image */}
-        <div className="aspect-square bg-border/50 rounded-lg flex items-center justify-center">
-          <span className="text-9xl">📦</span>
+        <div className="aspect-square bg-border/50 rounded-lg flex items-center justify-center relative overflow-hidden">
+          {product.image_url ? (
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <span className="text-9xl">📦</span>
+          )}
         </div>
 
         {/* Product Info */}

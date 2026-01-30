@@ -20,11 +20,14 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { priceId, storeId } = body;
+    const { priceId, storeId, items } = body;
 
-    if (!priceId) {
+    // Check if this is a marketplace checkout (items array) or subscription checkout (priceId)
+    const isMarketplaceCheckout = items && Array.isArray(items) && items.length > 0;
+
+    if (!isMarketplaceCheckout && !priceId) {
       return NextResponse.json(
-        { error: "Price ID is required" },
+        { error: "Price ID or items array is required" },
         { status: 400 }
       );
     }
@@ -87,46 +90,120 @@ export async function POST(req: NextRequest) {
 
     // Log checkout attempt
     console.log(`Creating checkout session for user: ${user.email}`);
-    console.log(`Using Stripe Price ID: ${priceId}`);
+    if (isMarketplaceCheckout) {
+      console.log(`Marketplace checkout with ${items.length} items`);
+    } else {
+      console.log(`Using Stripe Price ID: ${priceId}`);
+    }
     if (store) {
       console.log(`Marketplace checkout for store: ${store.name} (${store.subdomain})`);
     }
 
     // Build checkout session config
-    const checkoutConfig: any = {
-      mode: "subscription",
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
+    let checkoutConfig: any;
+
+    if (isMarketplaceCheckout && store) {
+      // Marketplace one-time payment checkout
+      // Fetch products to calculate totals
+      const products = await prisma.product.findMany({
+        where: {
+          id: { in: items.map((item: any) => item.productId) },
+          store_id: storeId,
+          active: true,
         },
-      ],
-      customer_email: session.user.email,
-      shipping_address_collection: {
-        allowed_countries: ['US', 'CA'], // US and Canada
-      },
-      metadata: {
-        userId: user.id,
-        ...(storeId && { storeId }),
-      },
-      subscription_data: {
+      });
+
+      if (products.length !== items.length) {
+        return NextResponse.json(
+          { error: "Some products not found or inactive" },
+          { status: 400 }
+        );
+      }
+
+      // Calculate line items and totals
+      const lineItems = items.map((item: any) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) throw new Error("Product mismatch");
+        
+        return {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: product.name,
+              description: product.description || undefined,
+              images: product.image_url ? [product.image_url] : undefined,
+            },
+            unit_amount: dollarsToCents(parseFloat(product.price.toString())),
+          },
+          quantity: item.quantity,
+        };
+      });
+
+      // Calculate total and platform fee
+      const subtotal = items.reduce((sum: number, item: any) => {
+        const product = products.find((p) => p.id === item.productId);
+        return sum + parseFloat(product!.price.toString()) * item.quantity;
+      }, 0);
+
+      const fees = calculatePlatformFees(subtotal);
+
+      checkoutConfig = {
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: lineItems,
+        customer_email: session.user.email,
+        shipping_address_collection: {
+          allowed_countries: ['US', 'CA'],
+        },
+        payment_intent_data: {
+          application_fee_amount: dollarsToCents(fees.platformFee),
+          transfer_data: {
+            destination: store.stripe_account_id,
+          },
+          metadata: {
+            userId: user.id,
+            storeId: store.id,
+            subtotal: subtotal.toFixed(2),
+            platformFee: fees.platformFee.toFixed(2),
+            vendorAmount: fees.vendorAmount.toFixed(2),
+          },
+        },
+        metadata: {
+          userId: user.id,
+          storeId: store.id,
+          type: "marketplace_order",
+        },
+        success_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/cart/checkout`,
+      };
+    } else {
+      // Subscription checkout (existing logic)
+      checkoutConfig = {
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        customer_email: session.user.email,
+        shipping_address_collection: {
+          allowed_countries: ['US', 'CA'],
+        },
         metadata: {
           userId: user.id,
           ...(storeId && { storeId }),
         },
-      },
-      success_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/products/subscription-box`,
-    };
-
-    // If marketplace checkout, add Stripe Connect payment_intent_data
-    // Note: For subscriptions, we handle the platform fee at the invoice level in webhooks
-    // For one-time payments, we would use payment_intent_data here
-    if (store && store.stripe_account_id) {
-      // For subscription-based marketplace, platform fee is handled via application_fee_percent
-      // or via invoice webhooks. We'll track this in the Order/PlatformTransaction models.
-      checkoutConfig.metadata.connectedAccountId = store.stripe_account_id;
+        subscription_data: {
+          metadata: {
+            userId: user.id,
+            ...(storeId && { storeId }),
+          },
+        },
+        success_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_DOMAIN || "http://localhost:3000"}/products/subscription-box`,
+      };
     }
 
     // Create Stripe Checkout Session

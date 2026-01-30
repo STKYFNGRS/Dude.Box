@@ -73,13 +73,39 @@ export default async function StoreLayout({
   // Check if current user is the store owner
   const session = await getServerSession(authOptions);
   
-  // Fetch store by subdomain
+  // Fetch store by subdomain with customization fields
   const store = await prisma.store.findUnique({
     where: {
       subdomain,
       status: "approved", // Only show approved stores
     },
     include: {
+      owner: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+    // Include customization fields
+    select: {
+      id: true,
+      name: true,
+      subdomain: true,
+      description: true,
+      logo_url: true,
+      banner_url: true,
+      contact_email: true,
+      shipping_policy: true,
+      return_policy: true,
+      custom_colors_enabled: true,
+      primary_color: true,
+      secondary_color: true,
+      background_color: true,
+      text_color: true,
+      custom_text: true,
       owner: {
         select: {
           id: true,
@@ -100,6 +126,34 @@ export default async function StoreLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Apply custom colors if enabled */}
+      {store.custom_colors_enabled && (
+        <style jsx global>{`
+          :root {
+            ${store.primary_color ? `--color-primary: ${store.primary_color};` : ''}
+            ${store.secondary_color ? `--color-secondary: ${store.secondary_color};` : ''}
+            ${store.background_color ? `--color-background: ${store.background_color};` : ''}
+            ${store.text_color ? `--color-text: ${store.text_color};` : ''}
+          }
+          
+          /* Apply custom colors to common elements */
+          .solid-button, .outline-button:hover {
+            ${store.primary_color ? `background-color: ${store.primary_color} !important;` : ''}
+          }
+          
+          .outline-button {
+            ${store.primary_color ? `border-color: ${store.primary_color} !important; color: ${store.primary_color} !important;` : ''}
+          }
+          
+          .text-primary, a.text-primary {
+            ${store.primary_color ? `color: ${store.primary_color} !important;` : ''}
+          }
+          
+          ${store.background_color ? `body { background-color: ${store.background_color} !important; }` : ''}
+          ${store.text_color ? `.text-foreground, h1, h2, h3, h4, h5, h6, p { color: ${store.text_color} !important; }` : ''}
+        `}</style>
+      )}
+      
       {/* Store Header */}
       <StoreHeader 
         store={{

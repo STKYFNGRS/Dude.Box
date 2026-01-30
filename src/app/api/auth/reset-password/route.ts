@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { verifyPasswordResetToken, markTokenAsUsed } from "@/lib/password-reset";
 
 export async function POST(request: Request) {
   try {
     const { resetToken, customerId, password } = await request.json();
 
     // Validate required fields
-    if (!customerId || !password) {
+    if (!password || !resetToken) {
       return NextResponse.json(
         { error: "Invalid reset request." },
         { status: 400 }
@@ -22,42 +23,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate reset token is provided
-    if (!resetToken) {
+    // Verify reset token from database
+    const email = await verifyPasswordResetToken(resetToken);
+    
+    if (!email) {
       return NextResponse.json(
-        { error: "Invalid reset link." },
+        { error: "Invalid or expired reset link. Please request a new password reset." },
         { status: 400 }
       );
     }
 
-    // Find user by ID
+    // Find user by email from verified token
     const user = await prisma.user.findUnique({
-      where: { id: customerId },
+      where: { email },
     });
 
     if (!user) {
+      return NextResponse.json(
+        { error: "User not found." },
+        { status: 404 }
+      );
+    }
+
+    // Verify customerId matches if provided (for backward compatibility)
+    if (customerId && user.id !== customerId) {
       return NextResponse.json(
         { error: "Invalid reset request." },
         { status: 400 }
       );
     }
-
-    // TODO: Verify reset token from database
-    // This requires adding reset_token and reset_token_expiry fields to User model
-    // For now, we're accepting the token from the email link
-    // In a future phase, we should:
-    // 1. Add reset_token and reset_token_expiry fields to User schema
-    // 2. Verify token matches and hasn't expired
-    // 3. Invalidate token after successful reset
-    // 
-    // Current flow:
-    // 1. User requests password reset (sends email with token)
-    // 2. Token is generated and sent via email link
-    // 3. User clicks link with token in URL
-    // 4. This endpoint accepts the token and resets password
-    //
-    // Security note: In production, this should verify the token against
-    // a stored hash in the database and check expiration time
 
     // Hash new password
     const passwordHash = await bcrypt.hash(password, 10);
@@ -70,6 +64,9 @@ export async function POST(request: Request) {
         updated_at: new Date(),
       },
     });
+
+    // Mark token as used to prevent reuse
+    await markTokenAsUsed(resetToken);
 
     console.log(`✅ Password reset successful for: ${user.email}`);
 

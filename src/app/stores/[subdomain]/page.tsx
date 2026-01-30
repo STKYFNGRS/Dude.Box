@@ -37,6 +37,35 @@ export default async function StorePage({
         },
       },
     },
+    // Include custom_text for display
+    select: {
+      id: true,
+      subdomain: true,
+      name: true,
+      description: true,
+      maker_bio: true,
+      custom_text: true,
+      products: {
+        where: { active: true },
+        take: 6,
+        orderBy: { created_at: "desc" },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          interval: true,
+          image_url: true,
+        },
+      },
+      owner: {
+        select: {
+          first_name: true,
+          last_name: true,
+          profile_image_url: true,
+        },
+      },
+    },
   });
 
   if (!store) {
@@ -50,6 +79,14 @@ export default async function StorePage({
         <h1 className="text-4xl font-bold mb-4">Welcome to {store.name}</h1>
         {store.description && (
           <p className="text-lg text-muted-foreground">{store.description}</p>
+        )}
+        {/* Custom welcome message from vendor */}
+        {store.custom_text && (
+          <div className="mt-6 p-6 card rounded-lg">
+            <p className="text-base text-foreground whitespace-pre-wrap italic">
+              "{store.custom_text}"
+            </p>
+          </div>
         )}
       </div>
 
@@ -110,8 +147,17 @@ export default async function StorePage({
                 href={`${basePath}/products/${product.id}`}
                 className="card rounded-lg overflow-hidden hover:border-primary/50 transition-colors group"
               >
-                <div className="aspect-square bg-border/50 flex items-center justify-center">
-                  <span className="text-4xl">📦</span>
+                <div className="aspect-square bg-border/50 flex items-center justify-center relative overflow-hidden">
+                  {product.image_url ? (
+                    <Image
+                      src={product.image_url}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="text-4xl">📦</span>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">

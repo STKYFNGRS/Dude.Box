@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { createPasswordResetToken } from "@/lib/password-reset";
 
 export async function POST(request: Request) {
   try {
@@ -27,19 +27,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     }
 
-    // Generate secure reset token (32 bytes = 256 bits)
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    
-    // Token expires in 1 hour
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-
-    // NOTE: For production, you should store the reset token in the database
-    // and verify it on the reset password page. For now, we're sending the
-    // token directly in the email. Consider adding reset_token and
-    // reset_token_expiry fields to the User model for enhanced security.
+    // Generate secure reset token and store in database
+    // Token expires in 15 minutes
+    const resetToken = await createPasswordResetToken(normalizedEmail);
     
     console.log(`Password reset requested for: ${user.email}`);
-    console.log(`Reset token generated, expires at: ${expiresAt.toISOString()}`);
+    console.log(`Reset token generated and stored in database`);
 
     // Send password reset email
     try {

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireVendor } from "@/lib/vendor";
 import { moderateContent } from "@/lib/ai-moderation";
 import { sendModerationAlertEmail, sendVendorContentHiddenEmail, sendVendorContentFlaggedEmail } from "@/lib/email";
+import { productSchema, validateData } from "@/lib/validation";
 
 export const dynamic = 'force-dynamic';
 
@@ -31,14 +32,17 @@ export async function POST(request: Request) {
   try {
     const store = await requireVendor();
     const body = await request.json();
-    const { name, description, price, interval, active, image_url } = body;
-
-    if (!name || !price) {
+    
+    // Validate input with Zod schema
+    const validation = validateData(productSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Name and price are required" },
+        { error: validation.error },
         { status: 400 }
       );
     }
+    
+    const { name, description, price, interval, active, image_url } = validation.data;
 
     const product = await prisma.product.create({
       data: {

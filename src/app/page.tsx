@@ -81,16 +81,14 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="card-hover rounded-2xl p-8 border-2 border-border shadow-card">
-            <div className="aspect-[4/5] rounded-xl border-2 border-accent/20 bg-gradient-to-br from-panel to-background relative overflow-hidden flex items-center justify-center group">
+            <div className="aspect-[4/5] rounded-xl border-2 border-accent/20 relative overflow-hidden group">
+              <Image
+                src="/header.jpg"
+                alt="Storefront preview"
+                fill
+                className="object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 border-2 border-accent/30 flex items-center justify-center">
-                  <span className="text-2xl">🏪</span>
-                </div>
-                <span className="text-xs uppercase tracking-[0.3em] text-muted font-semibold">
-                  Storefront preview
-                </span>
-              </div>
             </div>
             <div className="pt-5 text-center">
               <p className="text-sm text-accent font-medium">yourstore.dude.box</p>

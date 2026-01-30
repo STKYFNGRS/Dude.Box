@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
     signOut: "/",
     // Default callback after sign-in is now /members (member dashboard)
   },
-  debug: true, // Enable in production to debug sign-out issues
+  debug: process.env.NODE_ENV !== 'production', // Only enable debug in development
   events: {
     async signOut() {
       // Log sign-out event for debugging

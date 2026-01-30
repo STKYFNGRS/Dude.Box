@@ -41,14 +41,35 @@ export function CheckoutStoreGroup({
     setError("");
 
     try {
-      // For now, this is a placeholder - we'll implement proper checkout in webhook updates
-      // In a real implementation, we'd create a checkout session for this specific store
-      alert(
-        `Checkout for ${store.name} - This feature requires Stripe Connect setup and will be completed in testing phase.`
-      );
+      // Create checkout session for this store's products
+      const response = await fetch("/api/checkout/create-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          storeId: store.id,
+          items: items.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Checkout failed");
-    } finally {
       setLoading(false);
     }
   };
