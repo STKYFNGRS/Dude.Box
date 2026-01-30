@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/Container";
 import { StoreFooter } from "@/components/StoreFooter";
 import { StoreHeader } from "@/components/StoreHeader";
+import { StoreCustomStyles } from "@/components/StoreCustomStyles";
 import Image from "next/image";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
@@ -127,32 +128,13 @@ export default async function StoreLayout({
   return (
     <div className="min-h-screen flex flex-col">
       {/* Apply custom colors if enabled */}
-      {store.custom_colors_enabled && (
-        <style jsx global>{`
-          :root {
-            ${store.primary_color ? `--color-primary: ${store.primary_color};` : ''}
-            ${store.secondary_color ? `--color-secondary: ${store.secondary_color};` : ''}
-            ${store.background_color ? `--color-background: ${store.background_color};` : ''}
-            ${store.text_color ? `--color-text: ${store.text_color};` : ''}
-          }
-          
-          /* Apply custom colors to common elements */
-          .solid-button, .outline-button:hover {
-            ${store.primary_color ? `background-color: ${store.primary_color} !important;` : ''}
-          }
-          
-          .outline-button {
-            ${store.primary_color ? `border-color: ${store.primary_color} !important; color: ${store.primary_color} !important;` : ''}
-          }
-          
-          .text-primary, a.text-primary {
-            ${store.primary_color ? `color: ${store.primary_color} !important;` : ''}
-          }
-          
-          ${store.background_color ? `body { background-color: ${store.background_color} !important; }` : ''}
-          ${store.text_color ? `.text-foreground, h1, h2, h3, h4, h5, h6, p { color: ${store.text_color} !important; }` : ''}
-        `}</style>
-      )}
+      <StoreCustomStyles
+        customColorsEnabled={store.custom_colors_enabled || false}
+        primaryColor={store.primary_color}
+        secondaryColor={store.secondary_color}
+        backgroundColor={store.background_color}
+        textColor={store.text_color}
+      />
       
       {/* Store Header */}
       <StoreHeader 
