@@ -47,6 +47,9 @@ export function BecomeVendorForm() {
     e.preventDefault();
     setError("");
     
+    console.log("🔵 BecomeVendorForm: Opening checkout modal");
+    console.log("Form data:", formData);
+    
     // Show embedded checkout
     setShowCheckout(true);
   };

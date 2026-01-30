@@ -6,6 +6,11 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
+// Validate Stripe key exists
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+  console.error("❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured");
+}
+
 interface VendorApplicationData {
   subdomain: string;
   name: string;
@@ -184,9 +189,13 @@ export function VendorApplicationCheckout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     // Create SetupIntent when component mounts
     async function createSetupIntent() {
       try {
+        console.log("🔵 VendorCheckout: Initializing payment...");
+        
         const response = await fetch("/api/vendor/create-setup-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -195,22 +204,34 @@ export function VendorApplicationCheckout({
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to initialize payment");
-        }
+        if (!cancelled) {
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to initialize payment");
+          }
 
-        setClientSecret(data.clientSecret);
-        setApplicationFee(data.applicationFee);
-        setMonthlySubscription(data.monthlySubscription);
+          console.log("✅ VendorCheckout: Payment initialized");
+          setClientSecret(data.clientSecret);
+          setApplicationFee(data.applicationFee);
+          setMonthlySubscription(data.monthlySubscription);
+        }
       } catch (err) {
-        onError(err instanceof Error ? err.message : "Failed to initialize payment");
+        if (!cancelled) {
+          console.error("❌ VendorCheckout: Initialization failed:", err);
+          onError(err instanceof Error ? err.message : "Failed to initialize payment");
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     }
 
     createSetupIntent();
-  }, [applicationData, onError]);
+    
+    return () => {
+      cancelled = true;
+    };
+  }, []); // Empty dependency array - only run once on mount
 
   if (isLoading) {
     return (

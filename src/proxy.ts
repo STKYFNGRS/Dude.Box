@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
 
@@ -79,3 +79,6 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$).*)",
   ],
 };
+
+// For backwards compatibility
+export { middleware as proxy };

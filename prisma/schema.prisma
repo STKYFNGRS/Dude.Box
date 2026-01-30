@@ -48,6 +48,8 @@ model PlatformProduct {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   
+  subscriptions   Subscription[]
+  
   @@index([type])
   @@index([active])
 }
@@ -89,7 +91,8 @@ model Subscription {
   created_at             DateTime @default(now())
   updated_at             DateTime @updatedAt
   
-  user User @relation(fields: [user_id], references: [id])
+  user             User            @relation(fields: [user_id], references: [id])
+  platform_product PlatformProduct @relation(fields: [product_id], references: [id])
   
   @@index([user_id])
   @@index([stripe_subscription_id])
