@@ -133,12 +133,13 @@ async function handleCheckoutSessionCompleted(
     return;
   }
 
-  // Check if this is a vendor application payment
-  if (session.metadata?.type === "vendor_application") {
-    console.log("🏪 Processing vendor application payment");
-    await handleVendorApplicationPayment(session);
-    return;
-  }
+  // DEPRECATED: Old vendor application webhook handler (replaced by embedded checkout flow)
+  // Vendor applications now use SetupIntent + direct API call in /api/vendor/confirm-application
+  // if (session.metadata?.type === "vendor_application") {
+  //   console.log("🏪 Processing vendor application payment");
+  //   await handleVendorApplicationPayment(session);
+  //   return;
+  // }
 
   // Get the subscription object to access subscription details
   const subscriptionId = session.subscription as string;
@@ -527,6 +528,10 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   // TODO: Send email notification to customer about payment failure
 }
 
+// DEPRECATED: Old vendor application webhook handler (replaced by embedded checkout flow)
+// Vendor applications now use SetupIntent + direct API call in /api/vendor/confirm-application
+// This function is no longer used but kept for reference
+/*
 async function handleVendorApplicationPayment(
   session: Stripe.Checkout.Session
 ) {
@@ -608,6 +613,7 @@ async function handleVendorApplicationPayment(
     throw error;
   }
 }
+*/
 
 async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent

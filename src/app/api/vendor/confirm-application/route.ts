@@ -161,9 +161,36 @@ export async function POST(request: Request) {
     const periodEnd = (subscription as any).current_period_end || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
     const currentPeriodEnd = new Date(periodEnd * 1000);
 
+    // Get the monthly subscription platform product for the subscription record
+    console.log("🔵 confirm-application: Fetching platform product...");
+    const monthlyProduct = await prisma.platformProduct.findFirst({
+      where: { 
+        stripe_price_id: metadata.monthly_subscription_stripe_price_id,
+        active: true 
+      },
+    });
+
+    if (!monthlyProduct) {
+      console.error("❌ confirm-application: Monthly subscription product not found");
+      return NextResponse.json(
+        { error: "Platform configuration error. Please contact support." },
+        { status: 500 }
+      );
+    }
+
+    console.log("✅ confirm-application: Platform product found:", monthlyProduct.id);
+
     // 3-5. Wrap all database operations in a transaction for consistency
     console.log("🔵 confirm-application: Creating store and updating records in transaction...");
     const store = await prisma.$transaction(async (tx) => {
+      // Check one more time inside the transaction to prevent race conditions
+      const existingStore = await tx.store.findFirst({
+        where: { owner_id: user.id },
+      });
+
+      if (existingStore) {
+        throw new Error("Store already exists for this user");
+      }
       // Create the store in pending status with complete payment tracking
       const newStore = await tx.store.create({
         data: {
@@ -179,6 +206,7 @@ export async function POST(request: Request) {
           application_payment_id: applicationFeeCharge.id,
           monthly_subscription_id: subscription.id,
           subscription_status: "active",
+          next_billing_date: currentPeriodEnd,
           terms_accepted_at: new Date(),
         },
       });
@@ -187,7 +215,7 @@ export async function POST(request: Request) {
       await tx.subscription.create({
         data: {
           user_id: user.id,
-          product_id: newStore.id, // Link to store
+          product_id: monthlyProduct.id, // FIX: Use platform product ID, not store ID
           stripe_subscription_id: subscription.id,
           stripe_customer_id: subscription.customer as string,
           status: subscription.status,
@@ -219,7 +247,8 @@ export async function POST(request: Request) {
       subdomain: store.subdomain,
     });
   } catch (error: any) {
-    console.error("❌❌❌ Error confirming vendor application:", error);
+    const setupIntentId = (await request.json()).setupIntentId || "unknown";
+    console.error(`❌❌❌ Error confirming vendor application for setupIntent: ${setupIntentId}`);
     console.error("Error type:", error.type);
     console.error("Error message:", error.message);
     console.error("Error stack:", error.stack);
