@@ -55,17 +55,17 @@ export function SiteHeader() {
                 unoptimized
               />
             </Link>
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
+            {/* Navigation */}
+            <nav className="hidden md:flex items-center gap-4 lg:gap-8">
               <Link
                 href="/marketplace"
-                className="text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+                className="text-sm lg:text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 Marketplace
               </Link>
               <Link
                 href="/stores"
-                className="text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+                className="text-sm lg:text-base font-medium text-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 Browse Stores
               </Link>
@@ -94,22 +94,6 @@ export function SiteHeader() {
         {isMobileMenuOpen && (
           <div className="border-t border-border bg-background">
             <Container className="py-4">
-              <nav className="flex flex-col gap-4 mb-4 pb-4 border-b border-border">
-                <Link
-                  href="/marketplace"
-                  className="text-base font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Marketplace
-                </Link>
-                <Link
-                  href="/stores"
-                  className="text-base font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Browse Stores
-                </Link>
-              </nav>
               <div className="flex flex-col gap-3">
                 {!mounted || status === "loading" ? (
                   <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
