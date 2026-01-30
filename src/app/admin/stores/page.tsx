@@ -203,7 +203,6 @@ export default async function AdminStoresPage() {
                       <Link
                         href={`/admin/stores/${store.id}`}
                         className="text-sm text-accent hover:text-foreground transition-colors font-medium"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         View Details →
                       </Link>
