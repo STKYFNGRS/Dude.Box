@@ -146,8 +146,7 @@ export default async function AdminStoresPage() {
                 {stores.map((store) => (
                   <tr 
                     key={store.id}
-                    className="group hover:bg-hover/50 transition-colors cursor-pointer"
-                    onClick={() => window.location.href = `/admin/stores/${store.id}`}
+                    className="group hover:bg-hover/50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="font-medium text-foreground group-hover:text-accent transition-colors">{store.name}</div>
