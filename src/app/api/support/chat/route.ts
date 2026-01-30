@@ -3,10 +3,6 @@ import Anthropic from "@anthropic-ai/sdk";
 
 export const dynamic = "force-dynamic";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 // Knowledge base for common questions
 const KNOWLEDGE_BASE = `
 You are a helpful customer support assistant for Dude.Box, an e-commerce marketplace platform.
@@ -64,6 +60,11 @@ export async function POST(request: Request) {
         { status: 503 }
       );
     }
+
+    // Initialize Anthropic SDK after verifying API key exists
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
 
     const body = await request.json();
     const { messages } = body;

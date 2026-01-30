@@ -41,7 +41,7 @@ export async function GET(request: Request) {
     }
 
     // Build Stripe Connect OAuth URL
-    const clientId = process.env.STRIPE_CONNECT_CLIENT_ID;
+    const clientId = process.env.STRIPE_CONNECT_CLIENT_ID?.trim();
     
     if (!clientId) {
       console.error("STRIPE_CONNECT_CLIENT_ID not configured");

@@ -16,7 +16,13 @@ export default async function AdminStoresPage() {
   try {
     stores = await prisma.store.findMany({
       orderBy: { created_at: "desc" },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        subdomain: true,
+        status: true,
+        stripe_onboarded: true,
+        created_at: true,
         owner: {
           select: {
             first_name: true,
@@ -33,8 +39,27 @@ export default async function AdminStoresPage() {
       },
     });
   } catch (error) {
-    console.error("Failed to fetch stores:", error);
-    throw new Error(`Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error("Failed to fetch stores - Error details:", {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      error
+    });
+    // Return a more informative error page instead of throwing
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-error">Error Loading Stores</h1>
+          <p className="text-muted-foreground">
+            Failed to load store data. Please try refreshing the page.
+          </p>
+        </div>
+        <div className="card rounded-lg p-6 border-error/20">
+          <p className="text-sm text-error">
+            {error instanceof Error ? error.message : 'An unknown error occurred'}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const pendingCount = stores.filter((s) => s.status === "pending").length;
