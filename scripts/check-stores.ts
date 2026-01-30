@@ -9,7 +9,8 @@ async function main() {
     include: {
       owner: {
         select: {
-          name: true,
+          first_name: true,
+          last_name: true,
           email: true,
           role: true,
         },
@@ -31,7 +32,7 @@ async function main() {
       console.log(`  - Name: ${store.name}`);
       console.log(`  - Status: ${store.status}`);
       console.log(`  - Application Paid: ${store.application_paid}`);
-      console.log(`  - Owner: ${store.owner.name} (${store.owner.email})`);
+      console.log(`  - Owner: ${store.owner.first_name} ${store.owner.last_name} (${store.owner.email})`);
       console.log(`  - Owner Role: ${store.owner.role}`);
       console.log(`  - Created: ${store.created_at}`);
       console.log("");
@@ -43,7 +44,8 @@ async function main() {
     where: { id: "cmkxahiw3000010d9lag6glnx" },
     select: {
       id: true,
-      name: true,
+      first_name: true,
+      last_name: true,
       email: true,
       role: true,
       created_at: true,
@@ -53,7 +55,7 @@ async function main() {
   console.log("User from checkout session:");
   if (user) {
     console.log(`  - ID: ${user.id}`);
-    console.log(`  - Name: ${user.name}`);
+    console.log(`  - Name: ${user.first_name} ${user.last_name}`);
     console.log(`  - Email: ${user.email}`);
     console.log(`  - Role: ${user.role} ${user.role === 'vendor' ? '✅' : '❌ (should be vendor)'}`);
   } else {

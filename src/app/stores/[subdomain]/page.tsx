@@ -23,21 +23,6 @@ export default async function StorePage({
       subdomain,
       status: "approved",
     },
-    include: {
-      products: {
-        where: { active: true },
-        take: 6,
-        orderBy: { created_at: "desc" },
-      },
-      owner: {
-        select: {
-          first_name: true,
-          last_name: true,
-          profile_image_url: true,
-        },
-      },
-    },
-    // Include custom_text for display
     select: {
       id: true,
       subdomain: true,

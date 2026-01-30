@@ -80,17 +80,6 @@ export default async function StoreLayout({
       subdomain,
       status: "approved", // Only show approved stores
     },
-    include: {
-      owner: {
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
-    },
-    // Include customization fields
     select: {
       id: true,
       name: true,

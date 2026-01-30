@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminUser } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import { sendStoreApproved } from "@/lib/email";
 import { provisionStoreSubdomain } from "@/lib/dns-provisioning";
 
@@ -11,10 +11,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const admin = await getAdminUser();
-    if (!admin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await requireAdmin();
 
     const { id } = await params;
     const store = await prisma.store.update({

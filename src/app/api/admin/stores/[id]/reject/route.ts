@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminUser } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import { sendStoreRejected } from "@/lib/email";
 
 export const dynamic = 'force-dynamic';
@@ -10,10 +10,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const admin = await getAdminUser();
-    if (!admin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireAdmin();
 
     const { id } = await params;
     const body = await request.json();
