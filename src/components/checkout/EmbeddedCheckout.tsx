@@ -166,7 +166,7 @@ function CheckoutForm({ storeId, storeName, items, total, onSuccess, onError }: 
 interface EmbeddedCheckoutProps {
   storeId: string;
   storeName: string;
-  items: Array<{ productId: string; quantity: number; product: any }>;
+  items: Array<{ id: string; quantity: number; product: any }>;
   total: number;
   onSuccess: () => void;
   onError: (error: string) => void;
@@ -197,7 +197,7 @@ export function EmbeddedCheckout({
           body: JSON.stringify({
             storeId,
             items: items.map((item) => ({
-              productId: item.productId,
+              productId: item.product.id,
               quantity: item.quantity,
             })),
           }),

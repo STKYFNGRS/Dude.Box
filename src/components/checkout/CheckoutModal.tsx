@@ -9,7 +9,7 @@ interface CheckoutModalProps {
   storeId: string;
   storeName: string;
   items: Array<{
-    productId: string;
+    id: string;
     quantity: number;
     product: {
       id: string;
@@ -115,7 +115,7 @@ export function CheckoutModal({
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {items.map((item) => (
                 <div
-                  key={item.productId}
+                  key={item.id}
                   className="flex items-center justify-between text-sm"
                 >
                   <div className="flex-1">
