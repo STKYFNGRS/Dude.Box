@@ -4,45 +4,64 @@ import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { randomUUID } from "crypto";
 
 export const dynamic = 'force-dynamic';
 
 /**
  * Confirms vendor application after SetupIntent succeeds
- * Charges the one-time fee and creates the subscription
+ * DATABASE-FIRST APPROACH: Creates records before charging to prevent data loss
+ * 
+ * Flow:
+ * 1. Validate session and setupIntent
+ * 2. Check idempotency (prevent duplicate processing)
+ * 3. Create store with "pending_payment" status
+ * 4. Charge Stripe application fee
+ * 5. Create Stripe subscription
+ * 6. Update store to "pending" status with payment IDs
+ * 7. Create subscription record in DB
+ * 8. Update user role to vendor
+ * 
+ * If Stripe fails after step 3, we can clean up the pending_payment store
+ * If DB fails after Stripe succeeds, we have payment_id to reconcile manually
  */
 export async function POST(request: Request) {
+  const requestId = randomUUID();
+  let setupIntentId = "unknown";
+  let createdStoreId: string | null = null;
+  
   try {
-    console.log("🔵 confirm-application: Starting...");
+    console.log(`🔵 [${requestId}] confirm-application: Starting...`);
     
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.email) {
-      console.error("❌ confirm-application: No session");
+      console.error(`❌ [${requestId}] No session`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("✅ confirm-application: Session found for", session.user.email);
+    console.log(`✅ [${requestId}] Session found for ${session.user.email}`);
 
     const body = await request.json();
-    const { setupIntentId } = body;
+    setupIntentId = body.setupIntentId;
 
-    console.log("🔵 confirm-application: SetupIntent ID:", setupIntentId);
+    console.log(`🔵 [${requestId}] SetupIntent ID: ${setupIntentId}`);
 
     if (!setupIntentId) {
-      console.error("❌ confirm-application: No setupIntentId provided");
+      console.error(`❌ [${requestId}] No setupIntentId provided`);
       return NextResponse.json(
         { error: "Setup intent ID required" },
         { status: 400 }
       );
     }
 
-    // Retrieve the SetupIntent to get metadata and payment method
-    console.log("🔵 confirm-application: Retrieving SetupIntent from Stripe...");
+    // STEP 1: Retrieve the SetupIntent to get metadata and payment method
+    console.log(`🔵 [${requestId}] Retrieving SetupIntent from Stripe...`);
     const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
-    console.log("✅ confirm-application: SetupIntent retrieved, status:", setupIntent.status);
+    console.log(`✅ [${requestId}] SetupIntent retrieved, status: ${setupIntent.status}`);
 
     if (setupIntent.status !== "succeeded") {
+      console.error(`❌ [${requestId}] SetupIntent not succeeded: ${setupIntent.status}`);
       return NextResponse.json(
         { error: "Payment method not confirmed" },
         { status: 400 }
@@ -52,14 +71,15 @@ export async function POST(request: Request) {
     const metadata = setupIntent.metadata;
     const paymentMethodId = setupIntent.payment_method as string;
 
+    // STEP 2: Validate metadata
     if (!metadata || !metadata.user_id) {
+      console.error(`❌ [${requestId}] Missing metadata or user_id`);
       return NextResponse.json(
         { error: "Invalid setup intent" },
         { status: 400 }
       );
     }
 
-    // Validate all required metadata fields exist
     const requiredFields = [
       'user_id', 'subdomain', 'name', 'contact_email',
       'application_fee_price', 'monthly_subscription_stripe_price_id'
@@ -67,7 +87,7 @@ export async function POST(request: Request) {
 
     for (const field of requiredFields) {
       if (!metadata[field]) {
-        console.error(`❌ confirm-application: Missing required metadata field: ${field}`);
+        console.error(`❌ [${requestId}] Missing required metadata field: ${field}`);
         return NextResponse.json(
           { error: `Invalid application data: missing ${field}` },
           { status: 400 }
@@ -75,7 +95,7 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log("✅ confirm-application: All metadata fields validated");
+    console.log(`✅ [${requestId}] All metadata fields validated`);
 
     const user = await prisma.user.findUnique({
       where: { id: metadata.user_id },
@@ -83,86 +103,45 @@ export async function POST(request: Request) {
     });
 
     if (!user || user.email !== session.user.email) {
+      console.error(`❌ [${requestId}] User not found or email mismatch`);
       return NextResponse.json(
         { error: "Invalid setup intent or unauthorized" },
         { status: 400 }
       );
     }
 
+    // STEP 3: Check idempotency - has this setupIntent been processed?
+    const existingStoreBySetupIntent = await prisma.store.findFirst({
+      where: {
+        OR: [
+          { application_payment_id: setupIntentId },
+          { monthly_subscription_id: setupIntentId }
+        ]
+      }
+    });
+
+    if (existingStoreBySetupIntent) {
+      console.log(`⚠️ [${requestId}] SetupIntent already processed, returning existing store`);
+      return NextResponse.json({
+        success: true,
+        storeId: existingStoreBySetupIntent.id,
+        storeName: existingStoreBySetupIntent.name,
+        subdomain: existingStoreBySetupIntent.subdomain,
+        note: "Application already processed"
+      });
+    }
+
     // Check if user already has a store
     if (user.owned_stores.length > 0) {
+      console.error(`❌ [${requestId}] User already has a store: ${user.owned_stores[0].id}`);
       return NextResponse.json(
         { error: "You already have a store" },
         { status: 400 }
       );
     }
 
-    // 1. Charge the one-time application fee
-    console.log("🔵 confirm-application: Charging application fee...");
-    const applicationFeeCharge = await stripe.paymentIntents.create({
-      amount: Math.round(parseFloat(metadata.application_fee_price) * 100),
-      currency: "usd",
-      customer: setupIntent.customer as string,
-      payment_method: paymentMethodId,
-      off_session: true,
-      confirm: true,
-      description: "Vendor Application Fee - Dude.Box",
-      metadata: {
-        type: "application_fee",
-        user_id: user.id,
-      },
-    });
-
-    if (applicationFeeCharge.status === "requires_action") {
-      console.error("❌ confirm-application: Payment requires additional authentication");
-      return NextResponse.json(
-        { error: "Payment requires additional authentication" },
-        { status: 400 }
-      );
-    }
-
-    if (applicationFeeCharge.status === "processing") {
-      console.error("❌ confirm-application: Payment is still processing");
-      return NextResponse.json(
-        { error: "Payment is still processing. Please wait." },
-        { status: 400 }
-      );
-    }
-
-    if (applicationFeeCharge.status !== "succeeded") {
-      console.error("❌ confirm-application: Application fee charge failed:", applicationFeeCharge.status);
-      return NextResponse.json(
-        { error: "Payment failed. Please try again." },
-        { status: 400 }
-      );
-    }
-
-    console.log("✅ confirm-application: Application fee charged successfully");
-
-    // 2. Create the monthly subscription
-    console.log("🔵 confirm-application: Creating subscription...");
-    const subscription: Stripe.Subscription = await stripe.subscriptions.create({
-      customer: setupIntent.customer as string,
-      items: [
-        {
-          price: metadata.monthly_subscription_stripe_price_id,
-        },
-      ],
-      default_payment_method: paymentMethodId,
-      metadata: {
-        type: "vendor_subscription",
-        user_id: user.id,
-      },
-    });
-
-    console.log("✅ confirm-application: Subscription created:", subscription.id);
-
-    // Access current_period_end safely for later use
-    const periodEnd = (subscription as any).current_period_end || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
-    const currentPeriodEnd = new Date(periodEnd * 1000);
-
-    // Get the monthly subscription platform product for the subscription record
-    console.log("🔵 confirm-application: Fetching platform product...");
+    // Get the monthly subscription platform product
+    console.log(`🔵 [${requestId}] Fetching platform product...`);
     const monthlyProduct = await prisma.platformProduct.findFirst({
       where: { 
         stripe_price_id: metadata.monthly_subscription_stripe_price_id,
@@ -171,43 +150,155 @@ export async function POST(request: Request) {
     });
 
     if (!monthlyProduct) {
-      console.error("❌ confirm-application: Monthly subscription product not found");
+      console.error(`❌ [${requestId}] Monthly subscription product not found`);
       return NextResponse.json(
         { error: "Platform configuration error. Please contact support." },
         { status: 500 }
       );
     }
 
-    console.log("✅ confirm-application: Platform product found:", monthlyProduct.id);
+    console.log(`✅ [${requestId}] Platform product found: ${monthlyProduct.id}`);
 
-    // 3-5. Wrap all database operations in a transaction for consistency
-    console.log("🔵 confirm-application: Creating store and updating records in transaction...");
-    const store = await prisma.$transaction(async (tx) => {
-      // Check one more time inside the transaction to prevent race conditions
-      const existingStore = await tx.store.findFirst({
-        where: { owner_id: user.id },
+    // STEP 4: DATABASE-FIRST - Create store with pending_payment status
+    // This creates the record BEFORE charging, so we can track partial completions
+    console.log(`🔵 [${requestId}] Creating store with pending_payment status...`);
+    
+    const pendingStore = await prisma.store.create({
+      data: {
+        name: metadata.name,
+        subdomain: metadata.subdomain,
+        description: metadata.description || null,
+        contact_email: metadata.contact_email,
+        owner_id: user.id,
+        status: "pending_payment", // Special status to indicate payment in progress
+        stripe_onboarded: false,
+        application_paid: false,
+        terms_accepted_at: new Date(),
+      },
+    });
+
+    createdStoreId = pendingStore.id;
+    console.log(`✅ [${requestId}] Store created with pending_payment status: ${createdStoreId}`);
+
+    // STEP 5: Now charge Stripe application fee
+    console.log(`🔵 [${requestId}] Charging application fee...`);
+    let applicationFeeCharge: Stripe.PaymentIntent;
+    
+    try {
+      applicationFeeCharge = await stripe.paymentIntents.create({
+        amount: Math.round(parseFloat(metadata.application_fee_price) * 100),
+        currency: "usd",
+        customer: setupIntent.customer as string,
+        payment_method: paymentMethodId,
+        off_session: true,
+        confirm: true,
+        description: `Vendor Application Fee - ${metadata.name}`,
+        metadata: {
+          type: "application_fee",
+          user_id: user.id,
+          store_id: pendingStore.id,
+          request_id: requestId,
+          setupIntent_id: setupIntentId,
+        },
       });
 
-      if (existingStore) {
-        throw new Error("Store already exists for this user");
+      if (applicationFeeCharge.status === "requires_action") {
+        console.error(`❌ [${requestId}] Payment requires additional authentication`);
+        // Clean up pending store
+        await prisma.store.delete({ where: { id: pendingStore.id } });
+        return NextResponse.json(
+          { error: "Payment requires additional authentication" },
+          { status: 400 }
+        );
       }
-      // Create the store in pending status with complete payment tracking
-      const newStore = await tx.store.create({
+
+      if (applicationFeeCharge.status === "processing") {
+        console.error(`❌ [${requestId}] Payment is still processing`);
+        // Clean up pending store
+        await prisma.store.delete({ where: { id: pendingStore.id } });
+        return NextResponse.json(
+          { error: "Payment is still processing. Please wait." },
+          { status: 400 }
+        );
+      }
+
+      if (applicationFeeCharge.status !== "succeeded") {
+        console.error(`❌ [${requestId}] Application fee charge failed: ${applicationFeeCharge.status}`);
+        // Clean up pending store
+        await prisma.store.delete({ where: { id: pendingStore.id } });
+        return NextResponse.json(
+          { error: "Payment failed. Please try again." },
+          { status: 400 }
+        );
+      }
+
+      console.log(`✅ [${requestId}] Application fee charged successfully: ${applicationFeeCharge.id}`);
+    } catch (stripeError: any) {
+      console.error(`❌ [${requestId}] Stripe application fee error:`, stripeError.message);
+      // Clean up pending store
+      await prisma.store.delete({ where: { id: pendingStore.id } });
+      throw stripeError;
+    }
+
+    // STEP 6: Create the monthly subscription
+    console.log(`🔵 [${requestId}] Creating subscription...`);
+    let subscription: Stripe.Subscription;
+    
+    try {
+      subscription = await stripe.subscriptions.create({
+        customer: setupIntent.customer as string,
+        items: [
+          {
+            price: metadata.monthly_subscription_stripe_price_id,
+          },
+        ],
+        default_payment_method: paymentMethodId,
+        metadata: {
+          type: "vendor_subscription",
+          user_id: user.id,
+          store_id: pendingStore.id,
+          request_id: requestId,
+        },
+      });
+
+      console.log(`✅ [${requestId}] Subscription created: ${subscription.id}`);
+    } catch (stripeError: any) {
+      console.error(`❌ [${requestId}] Stripe subscription error:`, stripeError.message);
+      console.error(`⚠️ [${requestId}] CRITICAL: Application fee charged but subscription failed!`);
+      console.error(`⚠️ [${requestId}] Payment ID: ${applicationFeeCharge.id}`);
+      console.error(`⚠️ [${requestId}] Store ID: ${pendingStore.id}`);
+      console.error(`⚠️ [${requestId}] Manual intervention required to refund or retry`);
+      
+      // Don't delete store - mark as payment_failed for manual review
+      await prisma.store.update({
+        where: { id: pendingStore.id },
         data: {
-          name: metadata.name,
-          subdomain: metadata.subdomain,
-          description: metadata.description || null,
-          contact_email: metadata.contact_email,
-          owner_id: user.id,
-          status: "pending",
-          stripe_onboarded: false,
-          // Payment tracking fields
+          status: "payment_failed",
+          application_payment_id: applicationFeeCharge.id,
+        },
+      });
+      
+      throw stripeError;
+    }
+
+    // Access current_period_end safely
+    const periodEnd = (subscription as any).current_period_end || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
+    const currentPeriodEnd = new Date(periodEnd * 1000);
+
+    // STEP 7: Update store and create related records in transaction
+    console.log(`🔵 [${requestId}] Updating store and creating records in transaction...`);
+    
+    const finalStore = await prisma.$transaction(async (tx) => {
+      // Update store to pending status with payment info
+      const updatedStore = await tx.store.update({
+        where: { id: pendingStore.id },
+        data: {
+          status: "pending", // Now pending admin approval
           application_paid: true,
           application_payment_id: applicationFeeCharge.id,
           monthly_subscription_id: subscription.id,
           subscription_status: "active",
           next_billing_date: currentPeriodEnd,
-          terms_accepted_at: new Date(),
         },
       });
 
@@ -215,7 +306,7 @@ export async function POST(request: Request) {
       await tx.subscription.create({
         data: {
           user_id: user.id,
-          product_id: monthlyProduct.id, // FIX: Use platform product ID, not store ID
+          product_id: monthlyProduct.id,
           stripe_subscription_id: subscription.id,
           stripe_customer_id: subscription.customer as string,
           status: subscription.status,
@@ -230,28 +321,31 @@ export async function POST(request: Request) {
         data: { role: "vendor" },
       });
 
-      return newStore;
+      return updatedStore;
     });
 
-    console.log("✅ confirm-application: Store created:", store.id);
-    console.log("🔵 confirm-application: Updating user role to vendor...");
-    console.log(`✅✅✅ Vendor application completed for user ${user.email}`);
-    console.log(`   Store: ${store.name} (${store.subdomain})`);
-    console.log(`   Application fee: $${metadata.application_fee_price}`);
+    console.log(`✅ [${requestId}] Transaction completed successfully`);
+    console.log(`🎉🎉🎉 [${requestId}] Vendor application completed for ${user.email}`);
+    console.log(`   Store: ${finalStore.name} (${finalStore.subdomain})`);
+    console.log(`   Application fee: $${metadata.application_fee_price} - ${applicationFeeCharge.id}`);
     console.log(`   Subscription: ${subscription.id}`);
 
     return NextResponse.json({
       success: true,
-      storeId: store.id,
-      storeName: store.name,
-      subdomain: store.subdomain,
+      storeId: finalStore.id,
+      storeName: finalStore.name,
+      subdomain: finalStore.subdomain,
     });
+    
   } catch (error: any) {
-    const setupIntentId = (await request.json()).setupIntentId || "unknown";
-    console.error(`❌❌❌ Error confirming vendor application for setupIntent: ${setupIntentId}`);
-    console.error("Error type:", error.type);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
+    console.error(`❌❌❌ [${requestId}] Error confirming vendor application`);
+    console.error(`   SetupIntent: ${setupIntentId}`);
+    console.error(`   Store ID: ${createdStoreId || "not created"}`);
+    console.error(`   Error type: ${error.type || "Unknown"}`);
+    console.error(`   Error message: ${error.message}`);
+    if (error.stack) {
+      console.error(`   Error stack: ${error.stack}`);
+    }
     
     // Handle specific Stripe errors
     if (error.type === "StripeCardError") {
@@ -266,7 +360,8 @@ export async function POST(request: Request) {
       { 
         error: "Failed to process application. Please contact support.",
         details: error.message,
-        type: error.type || "Unknown"
+        type: error.type || "Unknown",
+        requestId: requestId,
       },
       { status: 500 }
     );

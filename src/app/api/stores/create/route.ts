@@ -9,8 +9,20 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * DEPRECATED ROUTE - DO NOT USE
+ * 
+ * This route is deprecated and should not be used for new vendor applications.
+ * It bypasses payment processing and can cause financial data inconsistencies.
+ * 
+ * Use /api/vendor/confirm-application instead for the proper payment flow.
+ * 
+ * This route is kept only for backward compatibility and admin purposes.
+ */
 export async function POST(request: Request) {
   try {
+    console.warn("⚠️ DEPRECATED: /api/stores/create route was called. This route bypasses payment!");
+    
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,6 +36,21 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+    
+    // SECURITY: Only allow admins to use this route
+    if (!user.is_admin) {
+      console.error(`❌ Non-admin user ${user.email} attempted to use deprecated /api/stores/create route`);
+      return NextResponse.json(
+        { 
+          error: "This route is deprecated. Please use the vendor application form at /members/become-vendor",
+          deprecated: true,
+        },
+        { status: 403 }
+      );
+    }
+    
+    console.warn(`⚠️ Admin ${user.email} is creating store without payment via deprecated route`);
+
 
     // Check if user already has a store
     if (user.owned_stores.length > 0) {

@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+// Validate Stripe key at module load
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
-// Validate Stripe key exists
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-  console.error("❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured");
+if (!stripePublishableKey) {
+  console.error("❌ CRITICAL: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured");
 }
+
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 interface VendorApplicationData {
   subdomain: string;
@@ -41,6 +43,8 @@ function CheckoutForm({
     e.preventDefault();
 
     if (!stripe || !elements) {
+      console.error("❌ Stripe not initialized");
+      onError("Payment system not ready. Please refresh the page and try again.");
       return;
     }
 
@@ -183,6 +187,30 @@ export function VendorApplicationCheckout({
   onSuccess,
   onError,
 }: VendorApplicationCheckoutProps) {
+  // Show error if Stripe key is missing
+  if (!stripePublishableKey || !stripePromise) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="bg-background rounded-lg p-8 max-w-md mx-4 border border-error">
+          <div className="text-center">
+            <div className="text-error text-5xl mb-4">⚠️</div>
+            <h2 className="text-xl font-bold text-foreground mb-2">
+              Configuration Error
+            </h2>
+            <p className="text-muted-foreground mb-4">
+              Payment system is not properly configured. Please contact support.
+            </p>
+            <button
+              onClick={() => onError("Payment system configuration error")}
+              className="solid-button rounded-full px-6 py-2"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [applicationFee, setApplicationFee] = useState<{ amount: number; name: string } | null>(null);
   const [monthlySubscription, setMonthlySubscription] = useState<{ amount: number; name: string } | null>(null);

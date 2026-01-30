@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { VendorApplicationCheckout } from "./vendor/VendorApplicationCheckout";
+import { CheckoutErrorBoundary } from "./ErrorBoundary";
 
 export function BecomeVendorForm() {
   const router = useRouter();
@@ -45,13 +46,50 @@ export function BecomeVendorForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     
-    console.log("🔵 BecomeVendorForm: Opening checkout modal");
-    console.log("Form data:", formData);
-    
-    // Show embedded checkout
-    setShowCheckout(true);
+    try {
+      setError("");
+      
+      // Explicit validation before showing modal
+      if (!formData.subdomain || formData.subdomain.length < 3) {
+        setError("Please enter a subdomain (at least 3 characters)");
+        return;
+      }
+      
+      if (!formData.name || formData.name.trim().length === 0) {
+        setError("Please enter your store name");
+        return;
+      }
+      
+      if (!formData.contact_email || !formData.contact_email.includes("@")) {
+        setError("Please enter a valid contact email");
+        return;
+      }
+      
+      if (!termsAccepted) {
+        setError("Please accept the terms and conditions to continue");
+        return;
+      }
+      
+      if (subdomainAvailable === false) {
+        setError("This subdomain is not available. Please choose another one.");
+        return;
+      }
+      
+      if (checkingSubdomain) {
+        setError("Please wait while we check subdomain availability");
+        return;
+      }
+      
+      console.log("🔵 BecomeVendorForm: Opening checkout modal");
+      console.log("Form data:", formData);
+      
+      // Show embedded checkout
+      setShowCheckout(true);
+    } catch (err) {
+      console.error("Error in handleSubmit:", err);
+      setError("An unexpected error occurred. Please try again.");
+    }
   };
 
   const handleCheckoutSuccess = () => {
@@ -324,18 +362,20 @@ export function BecomeVendorForm() {
               </div>
             </div>
 
-            {/* Checkout Content */}
+            {/* Checkout Content with Error Boundary */}
             <div className="p-6">
               {error && (
                 <div className="bg-error/10 text-error border border-error/20 p-4 rounded-lg text-sm mb-6 animate-fade-in">
                   {error}
                 </div>
               )}
-              <VendorApplicationCheckout
-                applicationData={formData}
-                onSuccess={handleCheckoutSuccess}
-                onError={handleCheckoutError}
-              />
+              <CheckoutErrorBoundary>
+                <VendorApplicationCheckout
+                  applicationData={formData}
+                  onSuccess={handleCheckoutSuccess}
+                  onError={handleCheckoutError}
+                />
+              </CheckoutErrorBoundary>
             </div>
           </div>
         </div>
