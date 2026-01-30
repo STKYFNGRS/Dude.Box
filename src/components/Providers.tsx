@@ -14,8 +14,8 @@ export function Providers({
   return (
     <SessionProvider
       session={session}
-      refetchInterval={300}
-      refetchOnWindowFocus={true}
+      refetchInterval={0}
+      refetchOnWindowFocus={false}
     >
       {children}
     </SessionProvider>

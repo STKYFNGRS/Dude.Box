@@ -5,6 +5,7 @@ import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true, // Required for custom domain/subdomain deployments
   session: { 
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -12,7 +13,9 @@ export const authOptions: NextAuthOptions = {
   },
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      name: process.env.NODE_ENV === 'production' 
+        ? `__Secure-next-auth.session-token`
+        : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -81,7 +84,7 @@ export const authOptions: NextAuthOptions = {
     signOut: "/",
     // Default callback after sign-in is now /members (member dashboard)
   },
-  debug: false,
+  debug: true, // Enable in production to debug sign-out issues
   events: {
     async signOut() {
       // Log sign-out event for debugging
