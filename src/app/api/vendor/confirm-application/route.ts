@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import Stripe from "stripe";
 
 export const dynamic = 'force-dynamic';
 
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Create the monthly subscription
-    const subscription = await stripe.subscriptions.create({
+    const subscription: Stripe.Subscription = await stripe.subscriptions.create({
       customer: setupIntent.customer as string,
       items: [
         {
@@ -100,7 +101,6 @@ export async function POST(request: Request) {
         },
       ],
       default_payment_method: paymentMethodId,
-      expand: ['latest_invoice'], // Expand to get full subscription details
       metadata: {
         type: "vendor_subscription",
         user_id: user.id,
