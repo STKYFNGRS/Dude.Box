@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
           allowed_countries: ['US', 'CA'],
         },
         payment_intent_data: {
-          application_fee_amount: dollarsToCents(fees.platformFee),
+          application_fee_amount: dollarsToCents(fees.platform_fee),
           transfer_data: {
             destination: store.stripe_account_id,
           },
@@ -164,8 +164,8 @@ export async function POST(req: NextRequest) {
             userId: user.id,
             storeId: store.id,
             subtotal: subtotal.toFixed(2),
-            platformFee: fees.platformFee.toFixed(2),
-            vendorAmount: fees.vendorAmount.toFixed(2),
+            platformFee: fees.platform_fee.toFixed(2),
+            vendorAmount: fees.vendor_amount.toFixed(2),
           },
         },
         metadata: {
