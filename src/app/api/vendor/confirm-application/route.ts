@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     const metadata = setupIntent.metadata;
     const paymentMethodId = setupIntent.payment_method as string;
 
-    if (!metadata || !metadata.user_id || metadata.user_id !== session.user.id) {
+    if (!metadata || !metadata.user_id) {
       return NextResponse.json(
         { error: "Invalid setup intent" },
         { status: 400 }
@@ -53,8 +53,11 @@ export async function POST(request: Request) {
       include: { owned_stores: true },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user || user.email !== session.user.email) {
+      return NextResponse.json(
+        { error: "Invalid setup intent or unauthorized" },
+        { status: 400 }
+      );
     }
 
     // Check if user already has a store
