@@ -15,7 +15,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 interface CheckoutFormProps {
   storeId: string;
   storeName: string;
-  items: Array<{ productId: string; quantity: number; product: any }>;
+  items: Array<{ id: string; quantity: number; product: any }>;
   total: number;
   onSuccess: () => void;
   onError: (error: string) => void;
