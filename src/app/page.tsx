@@ -90,10 +90,6 @@ export default async function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
-            <div className="pt-5 text-center">
-              <p className="text-sm text-accent font-medium">yourstore.dude.box</p>
-              <p className="text-xs text-muted mt-1">Your own branded storefront</p>
-            </div>
           </div>
         </div>
       </section>
