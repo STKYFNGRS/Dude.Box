@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { requireVendor } from "@/lib/vendor";
 import { moderateContent } from "@/lib/ai-moderation";
 import { sendModerationAlertEmail, sendVendorContentFlaggedEmail } from "@/lib/email";
@@ -88,8 +89,8 @@ export async function PATCH(request: Request) {
       data: {
         store_id: store.id,
         change_type: "store_info",
-        previous_data: previousData,
-        new_data: newData,
+        previous_data: previousData as Prisma.InputJsonValue,
+        new_data: newData as Prisma.InputJsonValue,
         moderation_severity: moderationResult.severity,
         moderation_reason: moderationResult.reason,
         status: moderationResult.severity === "clean" ? "approved" : "pending",

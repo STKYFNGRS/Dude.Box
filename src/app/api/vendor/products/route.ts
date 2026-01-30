@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { requireVendor } from "@/lib/vendor";
 import { moderateContent } from "@/lib/ai-moderation";
 import { sendModerationAlertEmail, sendVendorContentFlaggedEmail } from "@/lib/email";
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
           price: price.toString(),
           interval,
           image_url,
-        },
+        } as Prisma.InputJsonValue,
         moderation_severity: moderationResult.severity,
         moderation_reason: moderationResult.reason,
         status: moderationResult.severity === "clean" ? "approved" : "pending",
