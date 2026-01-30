@@ -114,8 +114,8 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
           <label htmlFor="price" className="block text-sm font-semibold mb-2 text-foreground">
             Price <span className="text-error">*</span>
           </label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-medium text-base">$</span>
+          <div className="relative flex items-center">
+            <span className="absolute left-4 text-muted font-medium text-base pointer-events-none">$</span>
             <input
               id="price"
               type="number"
