@@ -14,6 +14,7 @@ interface Product {
   description: string | null;
   price: any;
   interval: string;
+  image_url: string | null;
   store: {
     id: string;
     name: string;

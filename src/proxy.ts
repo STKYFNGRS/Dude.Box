@@ -20,16 +20,26 @@ export default function middleware(request: NextRequest) {
   let response: NextResponse;
   
   if (isSubdomain) {
-    // Security: This rewrite is safe because:
-    // 1. Store pages validate subdomain exists in database
-    // 2. Only approved stores (status="approved") are accessible
-    // 3. Reserved subdomains are blocked during store creation
-    // 4. No user input is executed - only database queries
-    
-    // Rewrite subdomain requests to /stores/[subdomain]
-    // This allows subdomain.dude.box to load /stores/subdomain pages
-    url.pathname = `/stores/${subdomain}${url.pathname}`;
-    response = NextResponse.rewrite(url);
+    // Redirect cart/checkout/portal paths to www domain (store-agnostic features)
+    if (url.pathname.startsWith('/cart') || 
+        url.pathname.startsWith('/checkout') ||
+        url.pathname.startsWith('/portal') ||
+        url.pathname.startsWith('/members')) {
+      const wwwUrl = url.clone();
+      wwwUrl.host = hostname.replace(subdomain, 'www');
+      response = NextResponse.redirect(wwwUrl);
+    } else {
+      // Security: This rewrite is safe because:
+      // 1. Store pages validate subdomain exists in database
+      // 2. Only approved stores (status="approved") are accessible
+      // 3. Reserved subdomains are blocked during store creation
+      // 4. No user input is executed - only database queries
+      
+      // Rewrite subdomain requests to /stores/[subdomain]
+      // This allows subdomain.dude.box to load /stores/subdomain pages
+      url.pathname = `/stores/${subdomain}${url.pathname}`;
+      response = NextResponse.rewrite(url);
+    }
   } else {
     response = NextResponse.next();
   }
