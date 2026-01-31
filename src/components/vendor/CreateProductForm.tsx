@@ -125,7 +125,7 @@ export function CreateProductForm({ storeId }: { storeId: string }) {
               onChange={(e) =>
                 setFormData({ ...formData, price: e.target.value })
               }
-              className="input w-full pl-10 text-base font-medium"
+              className="input w-full pl-12 text-base font-medium"
               placeholder="0.00"
               required
               disabled={loading}

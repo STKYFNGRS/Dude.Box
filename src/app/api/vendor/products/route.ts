@@ -144,7 +144,7 @@ export async function POST(request: Request) {
         pending: true
       }, { status: 201 });
     } else {
-      // Severe violation - block completely
+      // Severe violation - queue for urgent review (don't auto-delete)
       await sendModerationAlertEmail({
         type: "product",
         severity: "severe",
@@ -163,19 +163,12 @@ export async function POST(request: Request) {
         reason: moderationResult.reason,
       });
 
-      // Delete the blocked product
-      await prisma.product.delete({
-        where: { id: product.id },
-      });
-
-      await prisma.storeChangeRequest.delete({
-        where: { id: changeRequest.id },
-      });
-
       return NextResponse.json({ 
-        error: "Product blocked due to policy violation. Check your email for details.",
-        reason: moderationResult.reason
-      }, { status: 400 });
+        product,
+        message: "Product requires admin review before publishing. Check your email for details.",
+        pending: true,
+        severity: "severe"
+      }, { status: 201 });
     }
   } catch (error) {
     console.error("Error creating product:", error);

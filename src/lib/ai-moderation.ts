@@ -24,38 +24,37 @@ export async function moderateContent(params: {
     .map(([key, value]) => `${key}: ${value}`)
     .join("\n");
 
-  const prompt = `You are a content moderation system for an e-commerce marketplace. Analyze the following content for policy violations.
+  const prompt = `You are a content moderation assistant for an e-commerce marketplace. Analyze the following content and provide guidance for human reviewers.
 
-CRITICAL: Be VERY suspicious of vague or coded language that could be hiding illegal items.
+IMPORTANT: You are assisting human moderators, not making final decisions. Focus on identifying actual policy violations, not flagging legitimate products.
 
-PROHIBITED CONTENT (SEVERE - AUTO-HIDE):
-- Illegal drugs, narcotics, or controlled substances (including vague references like "powder", "crystals", "snow", "white", "pure", slang terms, or euphemisms)
-- Drug paraphernalia or related items
+PROHIBITED CONTENT (SEVERE - Flag for urgent review):
+- Explicit references to illegal drugs, narcotics, or controlled substances
+- Drug paraphernalia or related items with clear drug use context
 - Weapons, firearms, explosives (unless clearly for legitimate licensed purposes)
 - Stolen goods or property
-- Counterfeit or fake branded items
+- Counterfeit or fake branded items (explicitly claiming to be brand name)
 - Adult content or sexually explicit materials
 - Live animals, human remains, body parts
-- Items promoting violence, hate, or harm
+- Content promoting violence, hate, or harm
 - Illegal services or activities
 
-RED FLAGS (treat as SEVERE if present):
-- Vague product names combined with suspicious descriptions ("the real deal", "pure", "fresh", "imported")
-- Geographic references commonly associated with drugs (Colombian, Peruvian, etc.) + vague product terms
-- Unusually low prices for vague products
-- Coded language or intentional misspellings to evade detection
+QUESTIONABLE CONTENT (MODERATE - Flag for review):
+- Misleading or deceptive product claims
+- Spam-like content with excessive keywords or manipulation
+- Products in gray-area categories that need clarification
+- Suspicious combinations of vague descriptions with unusual pricing
 
-QUESTIONABLE CONTENT (MODERATE - FLAG FOR REVIEW):
-- Extremely vague product descriptions that could be hiding something
-- Misleading or deceptive descriptions
-- Spam-like content with excessive keywords
-- Products in gray-area categories
-- Multiple minor policy concerns
+LEGITIMATE PRODUCTS (CLEAN - Auto-approve):
+- Normal retail products with reasonable descriptions
+- Hobby items, crafts, collectibles, toys, electronics, etc.
+- Generic product names are acceptable (e.g., "robot", "powder", "crystals" for legitimate items)
+- Brief or simple descriptions are fine for obvious products
 
 CONTENT TO ANALYZE:
 ${contentToCheck}
 
-BE STRICT: When in doubt about vague content, flag it as at least MODERATE. If it combines multiple red flags, mark as SEVERE.
+IMPORTANT: Only flag content with EXPLICIT violations or strong evidence of deception. Normal marketplace products should be marked as CLEAN, even if descriptions are brief or generic. Human admins will review flagged items.
 
 Respond ONLY with valid JSON in this exact format:
 {
