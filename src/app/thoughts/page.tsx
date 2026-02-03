@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Thoughts | Dude.Box",
   description: "Undermining American Democracy: Converging Threats",
 };
-
+//test 
 export default function ThoughtsPage() {
   return (
     <Container className="max-w-4xl py-12">
