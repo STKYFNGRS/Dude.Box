@@ -9,6 +9,97 @@ export const metadata: Metadata = {
 export default function ThoughtsPage() {
   return (
     <Container className="max-w-4xl py-12">
+      {/* Article Navigation */}
+      <nav className="mb-12 card p-6 rounded-lg">
+        <h2 className="section-title text-2xl mb-6 text-accent">Related Articles</h2>
+        <div className="space-y-6">
+          {/* Democracy & Politics */}
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-foreground">Democracy & Political Systems</h3>
+            <ul className="space-y-3 pl-4">
+              <li>
+                <a 
+                  href="/articles/OnNationsandKings.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:text-foreground transition-colors inline-flex items-start gap-2"
+                >
+                  <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <span className="font-medium">On Nations and Kings</span>
+                    <p className="text-sm text-muted mt-1">A biblical examination of political power and governance through the Books of Kings, revealing timeless warnings about corrupt leadership, the dangers of political power divorced from divine authority, and the cyclical tragedy of nations that reject God's kingship.</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Unity & Division */}
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-foreground">Unity, Division & Social Cohesion</h3>
+            <ul className="space-y-3 pl-4">
+              <li>
+                <a 
+                  href="/articles/Unity.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:text-foreground transition-colors inline-flex items-start gap-2"
+                >
+                  <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <span className="font-medium">The Power of Unity</span>
+                    <p className="text-sm text-muted mt-1">An exploration of how social cohesion drives national prosperity, contrasting America's mid-20th century unity and achievements with today's polarization and gridlock. Examines how division undermines progress and how Christ's teachings on compassion and unity offer a path forward.</p>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/articles/UnitedWeStand.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:text-foreground transition-colors inline-flex items-start gap-2"
+                >
+                  <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <span className="font-medium">United We Stand, Divided We Fall</span>
+                    <p className="text-sm text-muted mt-1">An analysis of America's deep cultural and political divisions over guns, abortion, and LGBTQ rights, showing how congressional gridlock mirrors societal fractures. Uses the biblical concept of "hardened hearts" to diagnose modern partisan paralysis and calls for renewed empathy over ideological rigidity.</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Judgment & Morality */}
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-foreground">Judgment, Mercy & Moral Discernment</h3>
+            <ul className="space-y-3 pl-4">
+              <li>
+                <a 
+                  href="/articles/judgement.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:text-foreground transition-colors inline-flex items-start gap-2"
+                >
+                  <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <span className="font-medium">What is the Final Judgement?</span>
+                    <p className="text-sm text-muted mt-1">A theological exploration of biblical judgment and mercy, addressing the tension between "don't judge me" culture and harsh condemnation. Discusses God as the righteous judge, the importance of self-examination and repentance, and how to exercise righteous discernment with humility rather than hypocritical condemnation.</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
       <article className="space-y-8">
         {/* Title */}
         <header className="border-b border-border pb-8">
