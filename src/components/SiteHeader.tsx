@@ -69,6 +69,7 @@ export function SiteHeader() {
               >
                 Browse Stores
               </Link>
+       
             </nav>
           </div>
 
@@ -95,6 +96,27 @@ export function SiteHeader() {
           <div className="border-t border-border bg-background">
             <Container className="py-4">
               <div className="flex flex-col gap-3">
+                <Link
+                  href="/marketplace"
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/stores"
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Browse Stores
+                </Link>
+                <Link
+                  href="/epstein"
+                  className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none text-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Documents
+                </Link>
                 {!mounted || status === "loading" ? (
                   <div className="outline-button rounded-full px-5 py-2 text-xs uppercase tracking-[0.25em] leading-none opacity-0 pointer-events-none">
                     Account
