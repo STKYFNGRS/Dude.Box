@@ -1,77 +1,42 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
-import { getServerSession } from "next-auth";
-import { headers } from "next/headers";
+import { Inter, Rajdhani } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { Providers } from "@/components/Providers";
-import { SupportChatWidget } from "@/components/SupportChatWidget";
-import { authOptions } from "@/lib/auth";
 
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const serif = Fraunces({
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const rajdhani = Rajdhani({
   subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["600", "700", "900"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
-  title: "dude.box | Marketplace for Makers",
+  title: "Dude.Box - Defense News, Global Conflicts & More",
   description:
-    "A marketplace where skilled craftsmen sell quality products. Get your own storefront, connect your payment account, and reach customers who value craftsmanship.",
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
-  manifest: '/site.webmanifest',
-  themeColor: '#0f1628',
+    "Your tactical content hub for defense news, global conflict tracking, DIY projects, gear reviews, and military history.",
+  keywords: [
+    "defense news",
+    "global conflicts",
+    "military",
+    "DIY",
+    "tactical",
+    "gear reviews",
+  ],
+  manifest: "/manifest.json",
 };
 
-// Force dynamic rendering to prevent caching of auth state
-export const dynamic = 'force-dynamic';
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Fetch server session to pass to client
-  const session = await getServerSession(authOptions);
-  
-  // Detect if we're on a vendor subdomain
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "";
-  
-  // Check if this is a vendor subdomain (not www, not bare domain, not localhost)
-  const isVendorSubdomain = 
-    hostname.includes(".dude.box") && 
-    !hostname.startsWith("www.") && 
-    hostname !== "dude.box" &&
-    !hostname.includes("localhost") &&
-    !hostname.includes("127.0.0.1") &&
-    !hostname.includes("vercel.app");
-
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
-      <body className="bg-background text-foreground">
-        <Providers session={session}>
-          <div className="min-h-screen flex flex-col">
-            {/* Hide SiteHeader on vendor subdomains, but keep it mounted for client functionality */}
-            <div style={{ display: isVendorSubdomain ? 'none' : 'block' }}>
-              <SiteHeader />
-            </div>
-            <main className="flex-1">{children}</main>
-            {/* Hide SiteFooter on vendor subdomains (store layout has its own footer) */}
-            {!isVendorSubdomain && <SiteFooter />}
-          </div>
-          <SupportChatWidget />
+    <html lang="en" className="dark">
+      <body
+        className={`${inter.variable} ${rajdhani.variable} font-sans min-h-screen`}
+      >
+        <Providers>
+          {children}
         </Providers>
       </body>
     </html>

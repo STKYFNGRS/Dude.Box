@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,398 +7,462 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Customer accounts
-model User {
-  id                 String    @id @default(cuid())
-  email              String    @unique
-  password_hash      String
-  first_name         String?
-  last_name          String?
-  phone              String?
-  profile_image_url  String?   // User profile picture
-  stripe_customer_id String?   @unique
-  is_admin           Boolean   @default(false)
-  role               String    @default("customer") // customer, vendor, admin
-  created_at         DateTime  @default(now())
-  updated_at         DateTime  @updatedAt
-  
-  subscriptions       Subscription[]
-  orders              Order[]
-  addresses           Address[]
-  returns             Return[]
-  announcements       Announcement[]
-  owned_stores        Store[]              @relation("StoreOwner")
-  approved_stores     Store[]              @relation("StoreApprover")
-  carts               Cart[]
-  reviewed_changes    StoreChangeRequest[] @relation("ChangeReviewer")
+// ─── Auth.js v5 Models ───────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
 }
 
-// Platform products (Dude.Box's own revenue items)
-model PlatformProduct {
-  id              String   @id @default(cuid())
-  name            String
-  description     String?
-  price           Decimal  @db.Decimal(10, 2)
-  stripe_price_id String   @unique
-  type            String   // "application_fee", "monthly_subscription", "platform_fee"
-  interval        String?  // "month", "year", "one_time"
-  active          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  
-  subscriptions   Subscription[]
-  
-  @@index([type])
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  authenticators Authenticator[]
+  articles       Article[]       @relation("AuthoredArticles")
+  bookmarks      Bookmark[]
+  pushSubs           PushSubscription[]
+  keyPair            UserKeyPair?
+  conversations      ConversationMember[]
+  sentMessages       DirectMessage[]
+  channelMemberships ChannelMember[]
+  channelMessages    ChannelMessage[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @id
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, credentialID])
+}
+
+// ─── Content Models ──────────────────────────────────────────────────
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+model Article {
+  id               String        @id @default(cuid())
+  title            String
+  slug             String        @unique
+  content          String        @db.Text
+  excerpt          String?       @db.Text
+  featuredImage    String?
+  categoryId       String
+  authorId         String
+  status           ArticleStatus @default(DRAFT)
+  publishedAt      DateTime?
+  readingTime      Int?
+  sourceUrl        String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  category  Category   @relation(fields: [categoryId], references: [id])
+  author    User       @relation("AuthoredArticles", fields: [authorId], references: [id])
+  tags      ArticleTag[]
+  bookmarks Bookmark[]
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([categoryId])
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique
+  slug        String @unique
+  description String?
+  icon        String?
+  sortOrder   Int    @default(0)
+
+  articles    Article[]
+  aiDrafts    AIDraft[]
+  newsSources NewsSource[]
+
+  @@index([slug])
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  articles ArticleTag[]
+
+  @@index([slug])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+}
+
+// ─── AI Content Pipeline ─────────────────────────────────────────────
+
+enum DraftStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+}
+
+model AIDraft {
+  id               String      @id @default(cuid())
+  prompt           String      @db.Text
+  generatedContent String      @db.Text
+  generatedTitle   String?
+  generatedExcerpt String?
+  categoryId       String?
+  status           DraftStatus @default(PENDING_REVIEW)
+  adminNotes       String?     @db.Text
+  createdAt        DateTime    @default(now())
+  reviewedAt       DateTime?
+
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([status])
+}
+
+model Bookmark {
+  userId    String
+  articleId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, articleId])
+}
+
+// ─── News Aggregation ────────────────────────────────────────────────
+
+model NewsSource {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  feedUrl     String
+  categoryId  String?
+  active      Boolean  @default(true)
+  lastFetched DateTime?
+  createdAt   DateTime @default(now())
+
+  category Category?    @relation(fields: [categoryId], references: [id])
+  items    NewsFeedItem[]
+
+  @@unique([feedUrl])
   @@index([active])
 }
 
-// Vendor products (store inventory)
-model Product {
-  id                String   @id @default(cuid())
-  name              String
-  description       String?
-  price             Decimal  @db.Decimal(10, 2)
-  interval          String   // "month" for subscription, "one_time" for products
-  stripe_price_id   String?  // Stripe Price ID for subscriptions
-  image_url         String?  // Product image URL
-  active            Boolean  @default(true)
-  store_id          String?  // Nullable for legacy products
-  moderation_status String   @default("approved") // approved, flagged, hidden
-  flagged_reason    String?
-  
-  // Draft fields for pending changes
-  has_pending_changes Boolean  @default(false)
-  draft_name          String?
-  draft_description   String?
-  draft_price         Decimal? @db.Decimal(10, 2)
-  draft_image_url     String?
-  
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  
-  store       Store?      @relation(fields: [store_id], references: [id])
-  order_items OrderItem[]
-  cart_items  CartItem[]
-  
-  @@index([store_id])
-  @@index([store_id, active])
-}
-
-// Active recurring subscriptions
-model Subscription {
-  id                     String   @id @default(cuid())
-  user_id                String
-  product_id             String
-  stripe_subscription_id String   @unique
-  stripe_customer_id     String
-  status                 String   // active, paused, cancelled, past_due
-  current_period_end     DateTime
-  cancel_at_period_end   Boolean  @default(false)
-  created_at             DateTime @default(now())
-  updated_at             DateTime @updatedAt
-  
-  user             User            @relation(fields: [user_id], references: [id])
-  platform_product PlatformProduct @relation(fields: [product_id], references: [id])
-  
-  @@index([user_id])
-  @@index([stripe_subscription_id])
-}
-
-// Order history
-model Order {
-  id                       String   @id @default(cuid())
-  user_id                  String
-  store_id                 String?  // For marketplace orders
-  stripe_payment_intent_id String?
-  total                    Decimal  @db.Decimal(10, 2)
-  platform_fee             Decimal? @db.Decimal(10, 2)
-  vendor_amount            Decimal? @db.Decimal(10, 2)
-  status                   String   // pending, paid, shipped, delivered, cancelled
-  shipping_address_id      String?
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
-  
-  user                 User                  @relation(fields: [user_id], references: [id])
-  store                Store?                @relation(fields: [store_id], references: [id])
-  items                OrderItem[]
-  shipping_address     Address?              @relation(fields: [shipping_address_id], references: [id])
-  returns              Return[]
-  platform_transaction PlatformTransaction?
-  
-  @@index([user_id])
-  @@index([store_id])
-  @@index([store_id, created_at])
-}
-
-// Line items for orders
-model OrderItem {
-  id         String  @id @default(cuid())
-  order_id   String
-  product_id String
-  quantity   Int     @default(1)
-  price      Decimal @db.Decimal(10, 2)
-  
-  order   Order   @relation(fields: [order_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
-  
-  @@index([order_id])
-}
-
-// Shipping and billing addresses
-model Address {
+model NewsFeedItem {
   id          String   @id @default(cuid())
-  user_id     String
-  type        String   // "shipping" or "billing"
-  first_name  String
-  last_name   String
-  address1    String
-  address2    String?
-  city        String
-  state       String
-  postal_code String
-  country     String   @default("US")
-  phone       String?
-  is_default  Boolean  @default(false)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  
-  user   User    @relation(fields: [user_id], references: [id])
-  orders Order[]
-  
-  @@index([user_id])
+  sourceId    String
+  title       String
+  url         String
+  description String?  @db.Text
+  imageUrl    String?
+  publishedAt DateTime
+  fetchedAt   DateTime @default(now())
+
+  source NewsSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, url])
+  @@index([publishedAt])
 }
 
-// Investor/partner inquiries
-model InvestorInquiry {
-  id         String   @id @default(cuid())
-  name       String
-  email      String
-  company    String?
-  message    String
-  status     String   @default("new") // new, contacted, closed
-  created_at DateTime @default(now())
+// ─── Curated News (AI-Aggregated) ────────────────────────────────────
+
+model CuratedNewsItem {
+  id           String   @id @default(cuid())
+  title        String
+  summary      String   @db.Text
+  originalUrl  String
+  sourceName   String
+  region       String   @default("Global")
+  topic        String   @default("General")
+  importance   Int      @default(3)
+  imageUrl     String?
+  curatedAt    DateTime @default(now())
+  rawFeedItemId String?
+
+  @@index([curatedAt])
+  @@index([topic])
+  @@index([importance])
+  @@index([region])
 }
 
-// Return requests and refunds
-model Return {
-  id                String   @id @default(cuid())
-  order_id          String
-  user_id           String
-  reason            String   @db.Text
-  status            String   @default("requested") // requested, approved, rejected, label_sent, in_transit, received, refunded, cancelled
-  refund_amount     Decimal? @db.Decimal(10, 2)
-  stripe_refund_id  String?  @unique
-  tracking_number   String?
-  label_url         String?
-  carrier           String?
-  admin_notes       String?  @db.Text
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  
-  order             Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  user              User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  
-  @@index([user_id])
-  @@index([order_id])
+// ─── Conflict Map & Situational Awareness ────────────────────────────
+
+enum ZoneStatus {
+  ACTIVE
+  MONITORING
+  RESOLVED
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum ConflictType {
+  WAR
+  INSURGENCY
+  CIVIL_UNREST
+  TERRITORIAL
+  CYBER
+}
+
+enum EventType {
+  CONFLICT
+  PROTEST
+  DISASTER
+  MILITARY
+}
+
+enum DataSourceType {
+  ACLED
+  UCDP
+  USGS
+  FIRMS
+  GDELT
+}
+
+model ConflictZone {
+  id           String       @id @default(cuid())
+  name         String
+  description  String?      @db.Text
+  lat          Float
+  lng          Float
+  region       String
+  countryCode  String?
+  status       ZoneStatus   @default(ACTIVE)
+  severity     Severity     @default(MEDIUM)
+  baselineRisk Int          @default(50)
+  conflictType ConflictType @default(WAR)
+  lastUpdated  DateTime     @default(now())
+  createdAt    DateTime     @default(now())
+
+  events ConflictEvent[]
+
   @@index([status])
+  @@index([countryCode])
+  @@index([region])
 }
 
-// News and announcements for members
-model Announcement {
-  id         String   @id @default(cuid())
+model ConflictEvent {
+  id         String    @id @default(cuid())
+  zoneId     String?
   title      String
-  content    String   @db.Text
-  excerpt    String?
-  author_id  String
-  published  Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  
-  author User @relation(fields: [author_id], references: [id])
-  
-  @@index([published, created_at])
+  description String?  @db.Text
+  date       DateTime
+  sourceUrl  String?
+  severity   Severity  @default(MEDIUM)
+  eventType  EventType @default(CONFLICT)
+  lat        Float
+  lng        Float
+  source     DataSourceType?
+  externalId String?
+
+  zone ConflictZone? @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+
+  @@unique([source, externalId])
+  @@index([date])
+  @@index([eventType])
+  @@index([zoneId])
 }
 
-// Vendor stores (marketplace)
-model Store {
-  id                    String    @id @default(cuid())
-  owner_id              String
-  subdomain             String    @unique  // "storename" in storename.dude.box
-  name                  String               // Display name
-  description           String?   @db.Text
-  logo_url              String?
-  banner_url            String?
-  
-  // Stripe Connect
-  stripe_account_id     String?   @unique  // Connected account ID
-  stripe_onboarded      Boolean   @default(false)
-  
-  // Approval workflow
-  status                String    @default("pending") // pending, approved, suspended
-  approved_at           DateTime?
-  approved_by           String?
-  
-  // Contact
-  contact_email         String
-  
-  // Settings
-  shipping_policy       String?   @db.Text
-  return_policy         String?   @db.Text
-  maker_bio             String?   @db.Text // About the maker/vendor
-  
-  // Subscription tracking
-  setup_fee_paid        Boolean   @default(false)
-  setup_fee_date        DateTime?
-  application_paid       Boolean   @default(false) // Vendor paid $5 application fee
-  application_payment_id String?   @unique // Stripe payment intent ID for application
-  monthly_subscription_id String?  @unique // Stripe subscription ID for monthly fee
-  subscription_status   String    @default("inactive") // inactive, active, past_due, cancelled
-  next_billing_date     DateTime?
-  
-  // Legal acceptance
-  terms_accepted_at     DateTime? // When vendor accepted terms
-  
-  // Customization
-  custom_colors_enabled Boolean  @default(false)
-  primary_color         String?  // Hex color for buttons
-  secondary_color       String?  // Hex color for accents
-  background_color      String?  // Hex color for background
-  text_color            String?  // Hex color for text
-  custom_text           String?  @db.Text // Custom welcome message
-  
-  created_at            DateTime  @default(now())
-  updated_at            DateTime  @updatedAt
-  
-  owner                 User                 @relation("StoreOwner", fields: [owner_id], references: [id])
-  approver              User?                @relation("StoreApprover", fields: [approved_by], references: [id])
-  products              Product[]
-  orders                Order[]
-  cart_items            CartItem[]
-  change_requests       StoreChangeRequest[]
-  
-  @@index([owner_id])
-  @@index([subdomain])
-  @@index([status])
+model CountryBrief {
+  id           String   @id @default(cuid())
+  countryCode  String   @unique
+  ciiScore     Float    @default(0)
+  ciiBreakdown Json?
+  aiSummary    String?  @db.Text
+  topHeadlines Json?
+  computedAt   DateTime @default(now())
+
+  @@index([countryCode])
 }
 
-// Platform fee tracking (marketplace)
-model PlatformTransaction {
-  id                    String   @id @default(cuid())
-  order_id              String   @unique
-  store_id              String
-  
-  gross_amount          Decimal  @db.Decimal(10, 2)  // Total order amount
-  platform_fee          Decimal  @db.Decimal(10, 2)  // Fee kept by platform
-  vendor_amount         Decimal  @db.Decimal(10, 2)  // Amount to vendor
-  fee_percentage        Decimal  @db.Decimal(5, 2)   // Fee % at time of transaction
-  
-  stripe_transfer_id    String?  @unique
-  status                String   @default("pending") // pending, completed, failed
-  
-  created_at            DateTime @default(now())
-  
-  order                 Order    @relation(fields: [order_id], references: [id])
-  
-  @@index([store_id])
-  @@index([order_id])
+model DataLayerSource {
+  id                   String         @id @default(cuid())
+  name                 String
+  apiUrl               String
+  type                 DataSourceType
+  active               Boolean        @default(true)
+  lastFetched          DateTime?
+  lastError            String?
+  fetchIntervalMinutes Int            @default(30)
+  createdAt            DateTime       @default(now())
+
+  @@index([type])
 }
 
-// Shopping cart (marketplace)
-model Cart {
-  id         String   @id @default(cuid())
-  user_id    String?  // Nullable for guest carts
-  session_id String?  @unique // For guest tracking
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  
-  user       User?    @relation(fields: [user_id], references: [id])
-  items      CartItem[]
-  
-  @@index([user_id])
-  @@index([session_id])
+// ─── Encrypted Messaging ─────────────────────────────────────────────
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  ConversationMember[]
+  messages DirectMessage[]
 }
 
-// Cart items (marketplace)
-model CartItem {
-  id         String  @id @default(cuid())
-  cart_id    String
-  product_id String
-  store_id   String
-  quantity   Int     @default(1)
-  
-  cart       Cart    @relation(fields: [cart_id], references: [id], onDelete: Cascade)
-  product    Product @relation(fields: [product_id], references: [id])
-  store      Store   @relation(fields: [store_id], references: [id])
-  
-  @@index([cart_id])
-  @@index([product_id])
+model ConversationMember {
+  id             String    @id @default(cuid())
+  conversationId String
+  userId         String
+  joinedAt       DateTime  @default(now())
+  lastReadAt     DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
 }
 
-// Moderation logs (AI content monitoring)
-model ModerationLog {
-  id            String   @id @default(cuid())
-  product_id    String?
-  store_id      String?
-  content_type  String   // "product" or "store"
-  is_violation  Boolean
-  severity      String   // "severe", "moderate", "clean"
-  categories    String?  // Comma-separated violation categories
-  reason        String   @db.Text
-  confidence    Float    // 0.0 to 1.0
-  checked_at    DateTime @default(now())
-  
-  @@index([product_id])
-  @@index([store_id])
-  @@index([is_violation, severity])
+model DirectMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  ciphertext     String   @db.Text
+  iv             String
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
 }
 
-// Store change requests (queue for admin review)
-model StoreChangeRequest {
+model UserKeyPair {
   id                  String   @id @default(cuid())
-  store_id            String
-  
-  // What's being changed
-  change_type         String   // "store_info", "product_create", "product_update", "product_delete"
-  
-  // Change data (JSON)
-  previous_data       Json?    // Original values (null for creates)
-  new_data            Json     // Proposed changes
-  
-  // Product-specific fields
-  product_id          String?  // For product updates/deletes
-  
-  // Review workflow
-  status              String   @default("pending") // pending, approved, rejected
-  reviewed_by         String?
-  reviewed_at         DateTime?
-  rejection_reason    String?  @db.Text
-  
-  // AI Moderation
-  moderation_severity String?  // clean, moderate, severe
-  moderation_reason   String?  @db.Text
-  auto_approved       Boolean  @default(false)
-  
-  created_at          DateTime @default(now())
-  
-  store               Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
-  reviewer            User?    @relation("ChangeReviewer", fields: [reviewed_by], references: [id])
-  
-  @@index([store_id])
-  @@index([status])
-  @@index([change_type])
-  @@index([store_id, status])
+  userId              String   @unique
+  publicKey           String   @db.Text
+  encryptedPrivateKey String   @db.Text
+  createdAt           DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// Password reset tokens (security)
-model PasswordResetToken {
-  id         String   @id @default(cuid())
-  email      String
-  token      String   @unique
-  expires_at DateTime
-  used       Boolean  @default(false)
-  created_at DateTime @default(now())
-  
-  @@index([email])
-  @@index([token])
-  @@index([expires_at])
+// ─── Channel Chat (The Conversation) ─────────────────────────────────
+
+model Channel {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  members  ChannelMember[]
+  messages ChannelMessage[]
+
+  @@index([slug])
+}
+
+model ChannelMember {
+  id         String    @id @default(cuid())
+  channelId  String
+  userId     String
+  joinedAt   DateTime  @default(now())
+  lastReadAt DateTime?
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, userId])
+  @@index([userId])
+}
+
+model ChannelMessage {
+  id        String   @id @default(cuid())
+  channelId String
+  userId    String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([channelId, createdAt])
+  @@index([userId])
+}
+
+// ─── Push Notifications ──────────────────────────────────────────────
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String
+  keysJson  String   @db.Text
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

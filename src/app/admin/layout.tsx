@@ -1,113 +1,70 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { isAdmin } from "@/lib/admin";
-import { Container } from "@/components/Container";
+export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Admin Dashboard | dude.box",
-  description: "Administrative dashboard for dude.box",
-};
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
+import Link from "next/link";
+import { AdminSidebar } from "./_components/AdminSidebar";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Check if user is admin
-  const admin = await isAdmin();
-  
-  if (!admin) {
-    redirect("/portal/login");
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  if (session.user.role !== "ADMIN") {
+    return (
+      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
+        <div className="bg-[#111827] p-8 rounded-lg border border-[#374151] text-center max-w-md">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
+          <p className="text-gray-400 mb-6">
+            You do not have administrator privileges to access this area.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-4 py-2 bg-[#1f2937] text-gray-300 rounded-lg hover:bg-[#374151] transition-colors"
+          >
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Container className="py-8">
-      <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
-        {/* Sidebar Navigation */}
-        <aside className="card rounded-lg p-6 h-fit">
-          <div className="flex flex-col gap-6">
-            <div>
-              <h2 className="text-xs uppercase tracking-[0.3em] muted pb-2">Admin</h2>
-              <h1 className="section-title text-2xl">Dashboard</h1>
-            </div>
-            
-            <nav className="flex flex-col gap-2">
-              <Link
-                href="/admin"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Overview
-              </Link>
-              <Link
-                href="/admin/subscriptions"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Subscriptions
-              </Link>
-              <Link
-                href="/admin/orders"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Orders
-              </Link>
-              <Link
-                href="/admin/returns"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Returns
-              </Link>
-              <Link
-                href="/admin/customers"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Customers
-              </Link>
-              <Link
-                href="/admin/announcements"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Announcements
-              </Link>
-              <Link
-                href="/admin/stores"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Stores
-              </Link>
-              <Link
-                href="/admin/change-requests"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Change Requests
-              </Link>
-              <Link
-                href="/admin/products"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Products
-              </Link>
-              <Link
-                href="/admin/analytics"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                Analytics
-              </Link>
-            </nav>
-
-            <div className="pt-4 border-t border-border">
-              <Link
-                href="/portal"
-                className="text-sm px-3 py-2 rounded hover:bg-accent/10 hover:text-accent transition-colors flex items-center gap-2"
-              >
-                ← Back to Portal
-              </Link>
-            </div>
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <main>{children}</main>
+    <SessionProvider>
+      <div className="flex min-h-screen bg-[#0a0f1a]">
+        <AdminSidebar
+          user={{
+            name: session.user.name,
+            email: session.user.email,
+            image: session.user.image,
+          }}
+        />
+        <main className="flex-1 overflow-y-auto min-h-screen">
+          <div className="p-6 lg:p-8">{children}</div>
+        </main>
       </div>
-    </Container>
+    </SessionProvider>
   );
 }
