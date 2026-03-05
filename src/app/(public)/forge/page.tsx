@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
 import {
   Flame,
   Swords,
@@ -91,25 +90,12 @@ const QUOTES = [
 function AnimatedSection({
   children,
   className = "",
-  delay = 0,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
 export default function ForgePage() {
@@ -177,10 +163,7 @@ export default function ForgePage() {
                   <div
                     className={`glass-card p-6 border ${pillar.border}`}
                   >
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} rounded-2xl`}
-                    />
-                    <div className="relative z-10 flex items-start gap-4">
+                    <div className="flex items-start gap-4">
                       <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 border border-white/5 shrink-0">
                         <Icon className={`w-5 h-5 ${pillar.iconColor}`} />
                       </div>

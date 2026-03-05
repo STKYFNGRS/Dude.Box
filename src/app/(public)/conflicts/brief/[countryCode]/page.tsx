@@ -207,10 +207,10 @@ export default function CountryBriefPage() {
             {error ?? "No brief data available"}
           </p>
           <Link
-            href="/conflicts"
+            href="/news"
             className="btn-secondary text-sm"
           >
-            &larr; Back to Map
+            &larr; Back to News
           </Link>
         </div>
       </div>
@@ -223,10 +223,10 @@ export default function CountryBriefPage() {
         {/* Breadcrumb */}
         <div className="mb-6">
           <Link
-            href="/conflicts"
+            href="/news"
             className="text-sm text-tactical-500 hover:text-tactical-400 transition-colors"
           >
-            &larr; Conflict Map
+            &larr; News &amp; Conflict Map
           </Link>
         </div>
 

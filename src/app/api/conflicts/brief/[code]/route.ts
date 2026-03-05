@@ -14,6 +14,41 @@ const COUNTRY_NAMES: Record<string, string> = {
   PL: "Poland", VE: "Venezuela", BR: "Brazil",
 };
 
+function shapeBriefResponse(
+  record: { countryCode: string; ciiScore: number; ciiBreakdown: unknown; aiSummary: string | null; topHeadlines: unknown; computedAt: Date },
+  events: { id: string; title: string; date: Date; severity: string; eventType: string }[]
+) {
+  const breakdown = (record.ciiBreakdown ?? {
+    baselineRisk: 0,
+    conflictScore: 0,
+    unrestScore: 0,
+    newsVelocity: 0,
+  }) as Record<string, number>;
+
+  const rawHeadlines = (record.topHeadlines ?? []) as string[];
+  const headlines = rawHeadlines.map((title) => ({
+    title,
+    url: "",
+    publishedAt: "",
+  }));
+
+  return {
+    countryCode: record.countryCode,
+    ciiScore: record.ciiScore,
+    breakdown,
+    aiSummary: record.aiSummary,
+    headlines,
+    events: events.map((e) => ({
+      id: e.id,
+      title: e.title,
+      date: e.date.toISOString(),
+      severity: e.severity,
+      eventType: e.eventType,
+    })),
+    computedAt: record.computedAt,
+  };
+}
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -22,12 +57,25 @@ export async function GET(
     const { code } = await params;
     const countryCode = code.toUpperCase();
 
+    const zones = await prisma.conflictZone.findMany({
+      where: { countryCode },
+      select: { id: true },
+    });
+    const zoneIds = zones.map((z) => z.id);
+
+    const events = await prisma.conflictEvent.findMany({
+      where: zoneIds.length > 0 ? { zoneId: { in: zoneIds } } : { id: "__none__" },
+      orderBy: { date: "desc" },
+      take: 10,
+      select: { id: true, title: true, date: true, severity: true, eventType: true },
+    });
+
     const cached = await prisma.countryBrief.findUnique({
       where: { countryCode },
     });
 
     if (cached && Date.now() - cached.computedAt.getTime() < ONE_HOUR_MS) {
-      return NextResponse.json(cached);
+      return NextResponse.json(shapeBriefResponse(cached, events));
     }
 
     const cii = await computeCII(countryCode);
@@ -69,7 +117,7 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(brief);
+    return NextResponse.json(shapeBriefResponse(brief, events));
   } catch (error) {
     console.error("Failed to generate country brief:", error);
     return NextResponse.json(

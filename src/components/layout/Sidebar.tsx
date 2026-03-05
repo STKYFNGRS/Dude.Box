@@ -25,9 +25,9 @@ import {
 const NAV_ITEMS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/news", label: "News", icon: Newspaper },
-  { href: "/workshop", label: "The Workshop", icon: Wrench },
-  { href: "/forge", label: "The Forge", icon: Flame },
-  { href: "/conversation", label: "The Conversation", icon: MessageSquare },
+  { href: "/workshop", label: "Workshop", icon: Wrench },
+  { href: "/forge", label: "Forge", icon: Flame },
+  { href: "/conversation", label: "Conversation", icon: MessageSquare },
 ] as const;
 
 const SIDEBAR_COLLAPSED_W = 72;

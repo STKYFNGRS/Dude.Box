@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Newspaper,
   Wrench,
@@ -31,58 +31,38 @@ const CATEGORIES = [
     icon: Newspaper,
     description:
       "Live AI-curated global news, conflict tracking, and real-time video feeds from around the world.",
-    gradient: "from-tactical-500/20 via-tactical-600/10 to-transparent",
     border: "border-tactical-500/20 hover:border-tactical-500/40",
     iconColor: "text-tactical-400",
-    glow: "group-hover:shadow-glow",
   },
   {
-    name: "The Workshop",
+    name: "Workshop",
     slug: "workshop",
     icon: Wrench,
     description:
       "Gaming, gear reviews, DIY builds, and hands-on projects. The place to tinker, test, and create.",
-    gradient: "from-amber-500/20 via-amber-600/10 to-transparent",
     border: "border-amber-500/20 hover:border-amber-500/40",
     iconColor: "text-amber-400",
-    glow: "group-hover:shadow-glow-amber",
   },
   {
-    name: "The Forge",
+    name: "Forge",
     slug: "forge",
     icon: Flame,
     description:
       "Tactical strategy, military history, timeless philosophy, and matters of faith. A thinking man's corner.",
-    gradient: "from-orange-500/20 via-red-600/10 to-transparent",
     border: "border-orange-500/20 hover:border-orange-500/40",
     iconColor: "text-orange-400",
-    glow: "group-hover:shadow-[0_0_20px_rgba(249,115,22,0.15)]",
   },
 ];
 
 function AnimatedSection({
   children,
   className = "",
-  delay = 0,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.7, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
 export default function HomePage() {
@@ -112,23 +92,7 @@ export default function HomePage() {
         style={{ opacity: heroOpacity, scale: heroScale }}
         className="relative h-screen flex items-center justify-center overflow-hidden"
       >
-        {/* Animated gradient mesh */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-tactical-950/80 via-[var(--background)] to-steel-950/60" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-tactical-500/5 rounded-full blur-[120px] animate-float" />
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-steel-500/5 rounded-full blur-[100px] animate-float [animation-delay:2s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-tactical-500/3 rounded-full blur-[150px]" />
-        </div>
-
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+        <div className="absolute inset-0 bg-[var(--background)]" />
 
         <div className="relative z-10 text-center px-6">
           <motion.div
@@ -206,12 +170,9 @@ export default function HomePage() {
                 <AnimatedSection key={cat.slug} delay={i * 0.15}>
                   <Link
                     href={`/${cat.slug}`}
-                    className={`group block glass-card p-8 h-full border ${cat.border} ${cat.glow} transition-all duration-500`}
+                    className={`group block glass-card p-8 h-full border ${cat.border}`}
                   >
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                    />
-                    <div className="relative z-10">
+                    <div>
                       <div className="flex items-center gap-3 mb-4">
                         <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 border border-white/5">
                           <Icon className={`w-6 h-6 ${cat.iconColor}`} />
@@ -223,9 +184,9 @@ export default function HomePage() {
                       <p className="text-gray-400 text-sm leading-relaxed">
                         {cat.description}
                       </p>
-                      <div className="mt-6 flex items-center gap-2 text-sm font-medium text-gray-500 group-hover:text-gray-300 transition-colors">
+                      <div className="mt-6 flex items-center gap-2 text-sm font-medium text-gray-500">
                         <span>Explore</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4" />
                       </div>
                     </div>
                   </Link>

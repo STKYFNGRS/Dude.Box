@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Wrench,
   Gamepad2,
@@ -81,25 +81,12 @@ const SUB_SECTIONS = [
 function AnimatedSection({
   children,
   className = "",
-  delay = 0,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
 export default function WorkshopPage() {
@@ -159,10 +146,7 @@ export default function WorkshopPage() {
                 <div
                   className={`glass-card p-6 border ${section.border} h-full`}
                 >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${section.gradient} rounded-2xl`}
-                  />
-                  <div className="relative z-10">
+                  <div>
                     <div className="flex items-center gap-3 mb-3">
                       <Icon className={`w-5 h-5 ${section.accent}`} />
                       <h3 className="font-display text-xl font-bold text-white">
