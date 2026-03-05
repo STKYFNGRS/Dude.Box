@@ -136,10 +136,14 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-none">
-              DUDE
-              <span className="text-gradient-green">.BOX</span>
-            </h1>
+            <Image
+              src="/Logo.png"
+              alt="Dude.Box"
+              width={500}
+              height={120}
+              className="mx-auto w-[280px] sm:w-[360px] md:w-[440px] lg:w-[500px] h-auto"
+              priority
+            />
           </motion.div>
           <motion.p
             initial={{ opacity: 0, y: 15 }}
@@ -147,9 +151,9 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-6 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
           >
-            Global intelligence. Hands-on builds. Deep thinking.
+            News worth reading. Projects worth building. Ideas worth exploring.
             <br className="hidden sm:block" />
-            Everything a man needs in one tactical hub.
+            Your daily dose of everything interesting.
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
@@ -161,7 +165,7 @@ export default function HomePage() {
               href="/news"
               className="btn-primary text-base px-8 py-3 rounded-xl flex items-center gap-2 group"
             >
-              Enter the Feed
+              Dive In
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>

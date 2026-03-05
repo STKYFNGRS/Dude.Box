@@ -136,12 +136,8 @@ export default function ForgePage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-b from-orange-900/8 via-[var(--background)] to-transparent" />
-        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-orange-500/3 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-red-500/3 rounded-full blur-[100px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6 py-20 text-center">
+      <div className="border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-6 py-20 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-6">
               <Flame className="w-8 h-8 text-orange-400" />
             </div>

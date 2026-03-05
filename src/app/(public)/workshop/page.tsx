@@ -132,11 +132,8 @@ export default function WorkshopPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-[var(--background)] to-transparent" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6 py-20">
+      <div className="border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-6 py-20">
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20">
                 <Wrench className="w-7 h-7 text-amber-400" />
