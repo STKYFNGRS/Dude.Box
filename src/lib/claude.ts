@@ -69,7 +69,7 @@ export async function curateNewsFeed(
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 4096,
+    max_tokens: 16384,
     system: `You are an intelligence analyst curating a global news briefing. Analyze the headlines provided, select the most important and diverse stories, and create concise summaries. Assign each story a region, topic, and importance score. Always respond with valid JSON.`,
     messages: [
       {
@@ -87,7 +87,7 @@ Return a JSON array of objects with these fields:
 - topic: One of: "Conflict", "Politics", "Economics", "Security", "Technology", "Environment", "Society"
 - importance: 1-5 (5 = critical breaking news, 1 = low priority)
 
-Select the 10-20 most newsworthy items. Skip duplicates and trivial stories.`,
+Select 30-50 items for a comprehensive global briefing. Cover ALL regions (Americas, Europe, Middle East, Africa, Asia Pacific) and ALL topics (Conflict, Politics, Economics, Security, Technology, Environment, Society). Prioritize diversity of coverage. Skip duplicates but include as many distinct stories as possible.`,
       },
     ],
   });

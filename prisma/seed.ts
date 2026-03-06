@@ -62,56 +62,56 @@ async function main() {
 
   const newsSources = [
     // Defense & Military
-    { name: "Defense One", url: "https://www.defenseone.com", feedUrl: "https://www.defenseone.com/rss/" },
     { name: "Breaking Defense", url: "https://breakingdefense.com", feedUrl: "https://breakingdefense.com/feed/" },
     { name: "The War Zone", url: "https://www.twz.com", feedUrl: "https://www.twz.com/feed" },
     { name: "Military Times", url: "https://www.militarytimes.com", feedUrl: "https://www.militarytimes.com/arc/outboundfeeds/rss/" },
     // Global Wire Services
-    { name: "Reuters World", url: "https://www.reuters.com", feedUrl: "https://www.reutersagency.com/feed/" },
-    { name: "AP News", url: "https://apnews.com", feedUrl: "https://rsshub.app/apnews/topics/world-news" },
     { name: "AFP (France 24)", url: "https://www.france24.com", feedUrl: "https://www.france24.com/en/rss" },
+    { name: "Google News World", url: "https://news.google.com", feedUrl: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en" },
+    { name: "Google News US", url: "https://news.google.com", feedUrl: "https://news.google.com/rss/topics/CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE?hl=en-US&gl=US&ceid=US:en" },
     // Americas
     { name: "BBC World News", url: "https://www.bbc.com/news/world", feedUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
-    { name: "CNN", url: "https://www.cnn.com", feedUrl: "http://rss.cnn.com/rss/edition_world.rss" },
-    { name: "Fox News", url: "https://www.foxnews.com", feedUrl: "https://moxie.foxnews.com/google-publisher/world.xml" },
-    { name: "NPR News", url: "https://www.npr.org", feedUrl: "https://feeds.npr.org/1004/rss.xml" },
+    { name: "BBC US & Canada", url: "https://www.bbc.com/news/us-canada", feedUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
+    { name: "CNN World", url: "https://www.cnn.com", feedUrl: "http://rss.cnn.com/rss/edition_world.rss" },
+    { name: "CNN US", url: "https://www.cnn.com/us", feedUrl: "http://rss.cnn.com/rss/cnn_us.rss" },
+    { name: "Fox News World", url: "https://www.foxnews.com", feedUrl: "https://moxie.foxnews.com/google-publisher/world.xml" },
+    { name: "Fox News US", url: "https://www.foxnews.com/us", feedUrl: "https://moxie.foxnews.com/google-publisher/us.xml" },
+    { name: "NPR News", url: "https://www.npr.org", feedUrl: "https://feeds.npr.org/1001/rss.xml" },
     { name: "The Hill", url: "https://thehill.com", feedUrl: "https://thehill.com/feed/" },
     { name: "Washington Post", url: "https://www.washingtonpost.com", feedUrl: "https://feeds.washingtonpost.com/rss/world" },
-    { name: "New York Times", url: "https://www.nytimes.com", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
-    { name: "USA Today", url: "https://www.usatoday.com", feedUrl: "http://rssfeeds.usatoday.com/UsatodaycomWorld-TopStories" },
+    { name: "New York Times World", url: "https://www.nytimes.com", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
+    { name: "New York Times US", url: "https://www.nytimes.com/section/us", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml" },
+    { name: "New York Times Tech", url: "https://www.nytimes.com/section/technology", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml" },
     { name: "Politico", url: "https://www.politico.com", feedUrl: "https://rss.politico.com/politics-news.xml" },
-    { name: "Bloomberg", url: "https://www.bloomberg.com", feedUrl: "https://feeds.bloomberg.com/politics/news.rss" },
     { name: "CBC News", url: "https://www.cbc.ca/news", feedUrl: "https://www.cbc.ca/cmlink/rss-world" },
-    { name: "Infobae (Latin America)", url: "https://www.infobae.com", feedUrl: "https://www.infobae.com/feeds/rss/" },
-    { name: "Reuters Latin America", url: "https://www.reuters.com", feedUrl: "https://rsshub.app/reuters/world/americas" },
     // Europe
     { name: "The Guardian World", url: "https://www.theguardian.com/world", feedUrl: "https://www.theguardian.com/world/rss" },
+    { name: "The Guardian US", url: "https://www.theguardian.com/us-news", feedUrl: "https://www.theguardian.com/us-news/rss" },
+    { name: "The Guardian Environment", url: "https://www.theguardian.com/environment", feedUrl: "https://www.theguardian.com/environment/rss" },
     { name: "Euronews", url: "https://www.euronews.com", feedUrl: "https://www.euronews.com/rss" },
     { name: "Deutsche Welle", url: "https://www.dw.com", feedUrl: "https://rss.dw.com/rdf/rss-en-world" },
     { name: "TASS (Russia)", url: "https://tass.com", feedUrl: "https://tass.com/rss/v2.xml" },
     { name: "The Telegraph", url: "https://www.telegraph.co.uk", feedUrl: "https://www.telegraph.co.uk/news/rss.xml" },
     // Middle East
     { name: "Al Jazeera", url: "https://www.aljazeera.com", feedUrl: "https://www.aljazeera.com/xml/rss/all.xml" },
-    { name: "Al Arabiya", url: "https://english.alarabiya.net", feedUrl: "https://english.alarabiya.net/tools/rss" },
     { name: "Times of Israel", url: "https://www.timesofisrael.com", feedUrl: "https://www.timesofisrael.com/feed/" },
-    { name: "TRT World", url: "https://www.trtworld.com", feedUrl: "https://www.trtworld.com/rss" },
-    { name: "Tehran Times", url: "https://www.tehrantimes.com", feedUrl: "https://www.tehrantimes.com/rss" },
+    { name: "Middle East Eye", url: "https://www.middleeasteye.net", feedUrl: "https://www.middleeasteye.net/rss" },
+    { name: "Jerusalem Post", url: "https://www.jpost.com", feedUrl: "https://www.jpost.com/rss/rssfeedsfrontpage.aspx" },
     // Africa
     { name: "Africa News", url: "https://www.africanews.com", feedUrl: "https://www.africanews.com/feed/" },
-    { name: "AllAfrica", url: "https://allafrica.com", feedUrl: "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf" },
     { name: "Daily Maverick", url: "https://www.dailymaverick.co.za", feedUrl: "https://www.dailymaverick.co.za/rss/" },
     { name: "Punch Nigeria", url: "https://punchng.com", feedUrl: "https://punchng.com/feed/" },
-    { name: "Nation Kenya", url: "https://nation.africa", feedUrl: "https://nation.africa/rss.xml" },
     // Asia-Pacific
     { name: "South China Morning Post", url: "https://www.scmp.com", feedUrl: "https://www.scmp.com/rss/91/feed" },
     { name: "Channel News Asia", url: "https://www.channelnewsasia.com", feedUrl: "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml" },
     { name: "NHK World", url: "https://www3.nhk.or.jp/nhkworld/", feedUrl: "https://www3.nhk.or.jp/rss/news/cat0.xml" },
     { name: "Yonhap News", url: "https://en.yna.co.kr", feedUrl: "https://en.yna.co.kr/RSS/news.xml" },
-    { name: "Hindustan Times", url: "https://www.hindustantimes.com", feedUrl: "https://www.hindustantimes.com/rss/world-news/rssfeed.xml" },
     { name: "NDTV", url: "https://www.ndtv.com", feedUrl: "https://feeds.feedburner.com/ndtvnews-world-news" },
-    { name: "Xinhua", url: "https://english.news.cn", feedUrl: "https://rsshub.app/xinhuanet/english/world" },
     { name: "ABC Australia", url: "https://www.abc.net.au/news", feedUrl: "https://www.abc.net.au/news/feed/2942460/rss.xml" },
-    { name: "Nikkei Asia", url: "https://asia.nikkei.com", feedUrl: "https://asia.nikkei.com/rss" },
+    // Tech & Science
+    { name: "Ars Technica", url: "https://arstechnica.com", feedUrl: "https://feeds.arstechnica.com/arstechnica/index" },
+    { name: "The Verge", url: "https://www.theverge.com", feedUrl: "https://www.theverge.com/rss/index.xml" },
+    { name: "Wired", url: "https://www.wired.com", feedUrl: "https://www.wired.com/feed/rss" },
     // Economics & Analysis
     { name: "Foreign Policy", url: "https://foreignpolicy.com", feedUrl: "https://foreignpolicy.com/feed/" },
     { name: "The Economist World", url: "https://www.economist.com", feedUrl: "https://www.economist.com/international/rss.xml" },
@@ -128,7 +128,30 @@ async function main() {
     });
   }
 
-  console.log("✅ News sources seeded");
+  // Deactivate known-broken sources that may exist from previous seeds
+  const brokenFeedUrls = [
+    "https://www.defenseone.com/rss/",
+    "https://www.reutersagency.com/feed/",
+    "https://rsshub.app/apnews/topics/world-news",
+    "https://rsshub.app/reuters/world/americas",
+    "https://rsshub.app/xinhuanet/english/world",
+    "http://rssfeeds.usatoday.com/UsatodaycomWorld-TopStories",
+    "https://english.alarabiya.net/tools/rss",
+    "https://www.trtworld.com/rss",
+    "https://www.tehrantimes.com/rss",
+    "https://nation.africa/rss.xml",
+    "https://www.infobae.com/feeds/rss/",
+    "https://www.hindustantimes.com/rss/world-news/rssfeed.xml",
+    "https://asia.nikkei.com/rss",
+    "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+    "https://feeds.bloomberg.com/politics/news.rss",
+  ];
+  await prisma.newsSource.updateMany({
+    where: { feedUrl: { in: brokenFeedUrls } },
+    data: { active: false },
+  });
+
+  console.log("✅ News sources seeded (broken sources deactivated)");
 
   // Seed sample conflict zones
   const conflictZones = [

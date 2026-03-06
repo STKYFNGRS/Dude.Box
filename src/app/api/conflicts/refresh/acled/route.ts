@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
       const errBody = await response.text().catch(() => "");
       throw new Error(
         `ACLED API returned ${response.status}. This usually means your ACLED account ` +
-        `needs API access enabled at https://developer.acleddata.com/. ` +
+        `needs API access enabled. Log in at https://acleddata.com and check your account settings. ` +
         `Response: ${errBody.slice(0, 200)}`
       );
     }

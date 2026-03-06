@@ -16,6 +16,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Clean up stale curated items (older than 24 hours) so briefing stays fresh
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const { count: deleted } = await prisma.curatedNewsItem.deleteMany({
+      where: { curatedAt: { lt: oneDayAgo } },
+    });
+    if (deleted > 0) console.log(`Cleaned up ${deleted} stale curated items`);
+
     const recentItems = await prisma.newsFeedItem.findMany({
       orderBy: { publishedAt: "desc" },
       take: 150,
@@ -34,6 +41,7 @@ export async function POST(request: NextRequest) {
     }));
 
     const curated = await curateNewsFeed(feedForAI);
+    console.log(`AI curation returned ${curated.length} items from ${feedForAI.length} feed items`);
 
     let created = 0;
     for (const item of curated) {

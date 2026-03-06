@@ -37,12 +37,13 @@ export async function GET(request: NextRequest) {
       countryCode: e.countryCode ?? e.zone?.countryCode ?? null,
     }));
 
-    // Deduplicate: keep highest-severity event per country+type+day
+    // Deduplicate: keep highest-severity event per country+type+day+location
     const SEVERITY_RANK: Record<string, number> = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
     const deduped = new Map<string, (typeof enriched)[number]>();
     for (const ev of enriched) {
       const day = new Date(ev.date).toISOString().slice(0, 10);
-      const key = `${ev.countryCode ?? "UNK"}_${ev.eventType}_${day}`;
+      const locKey = `${Math.round(ev.lat)}_${Math.round(ev.lng)}`;
+      const key = `${ev.countryCode ?? "UNK"}_${ev.eventType}_${day}_${locKey}`;
       const existing = deduped.get(key);
       if (!existing || (SEVERITY_RANK[ev.severity] ?? 0) > (SEVERITY_RANK[existing.severity] ?? 0)) {
         deduped.set(key, ev);
