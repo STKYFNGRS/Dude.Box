@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import FloatingChat from "@/components/chat/FloatingChat";
+import LayerTogglePanel from "@/components/maps/LayerTogglePanel";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Layers,
-  Radio,
   Newspaper,
   Clock,
   ArrowRight,
@@ -47,6 +48,7 @@ interface ConflictEvent {
   id: string; title: string; description: string | null;
   date: string; lat: number; lng: number;
   severity: string; eventType: string;
+  countryCode?: string | null;
 }
 interface NewsItem {
   id: string; title: string; url: string;
@@ -84,7 +86,7 @@ const LIVE_FEEDS: LiveFeed[] = [
   { name: "India Today", videoId: "cj2EaznuJpE", description: "Live English news from India's leading news network." },
   { name: "Hindustan Times", videoId: "6vOhlJvIAFc", description: "Breaking news and analysis from Hindustan Times." },
   { name: "CGTN", videoId: "BOy2xDU1LC8", description: "China Global Television Network — English news, 24/7." },
-  { name: "RT News", embedUrl: "https://rumble.com/embed/vtp5hp/?pub=4", description: "Russian perspective on international news via Rumble." },
+  { name: "RT News", embedUrl: "https://rumble.com/embed/vtp5hp/?pub=4&autoplay=2", description: "24/7 Russian perspective on international news. Watch direct at rt.com/on-air if embed is unavailable." },
 ];
 
 const TOPIC_FILTERS = [
@@ -172,8 +174,17 @@ function AnimatedSection({
   );
 }
 
+const LAYER_TYPE_MAP: Record<string, string[]> = {
+  "active-conflicts": ["CONFLICT", "WAR", "CIVIL_UNREST", "INSURGENCY", "TERRITORIAL", "CYBER"],
+  "protests-unrest": ["PROTEST"],
+  "military": ["MILITARY"],
+  "natural-disasters": ["DISASTER"],
+};
+
 export default function NewsPage() {
+  const router = useRouter();
   const [layersOpen, setLayersOpen] = useState(false);
+  const [enabledLayers, setEnabledLayers] = useState<string[]>([]);
   const [zones, setZones] = useState<ConflictZone[]>([]);
   const [events, setEvents] = useState<ConflictEvent[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -182,6 +193,7 @@ export default function NewsPage() {
   const [articles, setArticles] = useState<ArticleItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTopic, setActiveTopic] = useState("all");
+  const [briefingTab, setBriefingTab] = useState<"briefing" | "live">("briefing");
   const [showVideoSection, setShowVideoSection] = useState(false);
 
   useEffect(() => {
@@ -248,12 +260,12 @@ export default function NewsPage() {
               }))
         );
 
-        // Lazy auto-refresh: if the newest feed item is older than 1 hour, re-fetch in background
         const allFeedDates = (flattenedNews as NewsItem[]).map((n) => new Date(n.publishedAt).getTime());
         const newest = allFeedDates.length > 0 ? Math.max(...allFeedDates) : 0;
         if (newest > 0 && Date.now() - newest > 3600000) {
           fetch("/api/news/refresh", { method: "POST" }).catch(() => {});
           fetch("/api/news/curate", { method: "POST" }).catch(() => {});
+          fetch("/api/conflicts/refresh-all", { method: "POST" }).catch(() => {});
         }
       } catch {
         /* silently degrade */
@@ -264,19 +276,50 @@ export default function NewsPage() {
     fetchData();
   }, []);
 
-  const markers: MapMarker[] = useMemo(() => {
+  const allMarkers: MapMarker[] = useMemo(() => {
     const zoneMarkers: MapMarker[] = zones.map((z) => ({
       lat: z.lat, lng: z.lng, label: z.name,
       severity: (["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(z.severity) ? z.severity : "MEDIUM") as MapMarker["severity"],
       type: z.conflictType,
+      countryCode: z.countryCode ?? undefined,
     }));
     const eventMarkers: MapMarker[] = events.map((e) => ({
       lat: e.lat, lng: e.lng, label: e.title,
       severity: (["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(e.severity) ? e.severity : "LOW") as MapMarker["severity"],
       type: e.eventType,
+      countryCode: e.countryCode ?? undefined,
     }));
     return [...zoneMarkers, ...eventMarkers];
   }, [zones, events]);
+
+  const markers = useMemo(() => {
+    const enabledTypes = new Set<string>();
+    for (const [layerId, types] of Object.entries(LAYER_TYPE_MAP)) {
+      if (enabledLayers.includes(layerId)) {
+        types.forEach((t) => enabledTypes.add(t));
+      }
+    }
+    if (enabledTypes.size === 0) return allMarkers;
+    return allMarkers.filter((m) => enabledTypes.has(m.type));
+  }, [allMarkers, enabledLayers]);
+
+  const handleMarkerClick = useCallback(
+    (m: MapMarker) => {
+      if (m.countryCode) router.push(`/conflicts/brief/${m.countryCode}`);
+    },
+    [router]
+  );
+
+  const handleClusterNavigate = useCallback(
+    (countryCode: string) => {
+      router.push(`/conflicts/brief/${countryCode}`);
+    },
+    [router]
+  );
+
+  const handleLayersChange = useCallback((ids: string[]) => {
+    setEnabledLayers(ids);
+  }, []);
 
   const filteredCurated = useMemo(() => {
     if (activeTopic === "all") return curated;
@@ -284,7 +327,7 @@ export default function NewsPage() {
   }, [curated, activeTopic]);
 
   const sortedCii = useMemo(
-    () => [...cii].sort((a, b) => b.score - a.score).slice(0, 10),
+    () => [...cii].filter((e) => e.score > 0).sort((a, b) => b.score - a.score),
     [cii]
   );
 
@@ -354,20 +397,15 @@ export default function NewsPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-2 left-4 z-30 w-52 glass-panel rounded-xl p-4"
+                  className="absolute top-2 left-4 z-[1000] w-56 glass-panel rounded-xl p-3"
                 >
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2">
                     <h4 className="text-xs font-bold text-white uppercase tracking-wider">Layers</h4>
                     <button onClick={() => setLayersOpen(false)} className="text-gray-500 hover:text-white">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                  {["Conflicts", "Protests", "Military", "Disasters"].map((layer) => (
-                    <label key={layer} className="flex items-center gap-2 py-1.5 cursor-pointer text-xs text-gray-400 hover:text-white transition-colors">
-                      <input type="checkbox" defaultChecked className="rounded border-white/10 bg-white/5 text-tactical-500 focus:ring-tactical-600/50 w-3.5 h-3.5" />
-                      {layer}
-                    </label>
-                  ))}
+                  <LayerTogglePanel onChange={handleLayersChange} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -376,251 +414,221 @@ export default function NewsPage() {
                 <div className="w-8 h-8 border-2 border-tactical-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : (
-              <DynamicFlatMap markers={markers} />
+              <DynamicFlatMap
+                markers={markers}
+                onMarkerClick={handleMarkerClick}
+                onClusterNavigate={handleClusterNavigate}
+                enabledLayers={enabledLayers}
+              />
             )}
           </div>
         </div>
 
-        {/* Intel Sidebar */}
-        <aside className="w-80 min-w-[280px] border-l border-white/5 glass-panel overflow-hidden hidden lg:flex flex-col">
+        {/* CII Sidebar */}
+        <aside className="w-72 min-w-[260px] border-l border-white/5 glass-panel overflow-hidden hidden lg:flex flex-col">
+          <div className="px-4 py-3 border-b border-white/5">
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+              <TrendingUp className="w-3 h-3 text-amber-500" />
+              Conflict Instability Index
+            </h3>
+          </div>
           {loading ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center flex-1">
               <div className="w-6 h-6 border-2 border-tactical-500 border-t-transparent rounded-full animate-spin" />
             </div>
+          ) : sortedCii.length === 0 ? (
+            <div className="p-4 text-center text-xs text-gray-600">No CII data available</div>
           ) : (
-            <>
-              <div className="flex-1 overflow-y-auto">
-                <div className="px-4 py-3 border-b border-white/5">
-                  <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                    <Radio className="w-3 h-3 text-tactical-500" />
-                    Intel Feed
-                  </h3>
-                </div>
-                <div className="divide-y divide-white/5">
-                  {news.length === 0 ? (
-                    <div className="p-4 text-center text-xs text-gray-600">No recent intel</div>
-                  ) : (
-                    news.slice(0, 20).map((item) => (
-                      <a
-                        key={item.id}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block px-4 py-2.5 hover:bg-white/[0.02] transition-colors group"
-                      >
-                        <p className="text-xs text-gray-400 group-hover:text-white transition-colors line-clamp-2 leading-relaxed">
-                          {item.title}
-                        </p>
-                        <div className="mt-1 flex items-center gap-2 text-[10px] text-gray-600">
-                          <span>{item.source}</span>
-                          <span>&middot;</span>
-                          <span>{timeAgo(item.publishedAt)}</span>
-                        </div>
-                      </a>
-                    ))
-                  )}
-                </div>
-              </div>
-              {sortedCii.length > 0 && (
-                <div className="border-t border-white/5">
-                  <div className="px-4 py-3 border-b border-white/5">
-                    <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                      <TrendingUp className="w-3 h-3 text-amber-500" />
-                      CII Index
-                    </h3>
-                  </div>
-                  <div className="max-h-44 overflow-y-auto divide-y divide-white/[0.03]">
-                    {sortedCii.map((entry) => {
-                      const color =
-                        entry.score >= 75 ? "text-red-400" : entry.score >= 50 ? "text-orange-400" : entry.score >= 25 ? "text-yellow-400" : "text-green-400";
-                      const barColor =
-                        entry.score >= 75 ? "bg-red-500" : entry.score >= 50 ? "bg-orange-500" : entry.score >= 25 ? "bg-yellow-500" : "bg-green-500";
-                      return (
-                        <Link
-                          key={entry.countryCode}
-                          href={`/conflicts/brief/${entry.countryCode}`}
-                          className="flex items-center gap-3 px-4 py-2 hover:bg-white/[0.02] transition-colors"
-                        >
-                          <span className="text-[10px] font-mono font-bold text-gray-500 w-6">{entry.countryCode}</span>
-                          <div className="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                            <div className={`h-full rounded-full ${barColor}`} style={{ width: `${entry.score}%` }} />
-                          </div>
-                          <span className={`text-[10px] font-mono font-bold ${color} w-6 text-right`}>{entry.score}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </>
+            <div className="flex-1 overflow-y-auto divide-y divide-white/[0.03]">
+              {sortedCii.map((entry, i) => {
+                const color =
+                  entry.score >= 75 ? "text-red-400" : entry.score >= 50 ? "text-orange-400" : entry.score >= 25 ? "text-yellow-400" : "text-green-400";
+                const barColor =
+                  entry.score >= 75 ? "bg-red-500" : entry.score >= 50 ? "bg-orange-500" : entry.score >= 25 ? "bg-yellow-500" : "bg-green-500";
+                return (
+                  <Link
+                    key={entry.countryCode}
+                    href={`/conflicts/brief/${entry.countryCode}`}
+                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors group"
+                  >
+                    <span className="text-[10px] font-mono text-gray-600 w-4 text-right">{i + 1}</span>
+                    <span className="text-[10px] font-mono font-bold text-gray-400 group-hover:text-white w-6">{entry.countryCode}</span>
+                    <div className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                      <div className={`h-full rounded-full ${barColor}`} style={{ width: `${entry.score}%` }} />
+                    </div>
+                    <span className={`text-xs font-mono font-bold ${color} w-7 text-right`}>{entry.score}</span>
+                  </Link>
+                );
+              })}
+            </div>
           )}
         </aside>
       </section>
 
-      {/* AI-Curated News Feed */}
+      {/* Briefing + Live Feeds (Tabbed) */}
       <section className="max-w-6xl mx-auto px-6 py-16">
         <AnimatedSection>
           <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="font-display text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setBriefingTab("briefing")}
+                className={`font-display text-3xl font-bold tracking-tight flex items-center gap-3 transition-colors duration-200 ${
+                  briefingTab === "briefing" ? "text-white" : "text-gray-600 hover:text-gray-400"
+                }`}
+              >
                 BRIEFING
-                <span className="text-[10px] font-mono font-normal text-tactical-500 bg-tactical-500/10 px-2 py-0.5 rounded-full border border-tactical-500/20">
-                  AI-CURATED
-                </span>
-              </h2>
-              <div className="mt-2 h-0.5 w-12 bg-tactical-500/50 rounded-full" />
+                {briefingTab === "briefing" && (
+                  <span className="text-[10px] font-mono font-normal text-tactical-500 bg-tactical-500/10 px-2 py-0.5 rounded-full border border-tactical-500/20">
+                    AI-CURATED
+                  </span>
+                )}
+              </button>
+              <span className="text-gray-700 text-2xl font-light">/</span>
+              <button
+                onClick={() => setBriefingTab("live")}
+                className={`font-display text-3xl font-bold tracking-tight flex items-center gap-3 transition-colors duration-200 ${
+                  briefingTab === "live" ? "text-white" : "text-gray-600 hover:text-gray-400"
+                }`}
+              >
+                {briefingTab === "live" && (
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600" />
+                  </span>
+                )}
+                LIVE FEEDS
+              </button>
             </div>
           </div>
+          <div className="h-0.5 w-12 rounded-full mb-8" style={{ background: briefingTab === "briefing" ? "rgba(34,197,94,0.5)" : "rgba(239,68,68,0.5)" }} />
         </AnimatedSection>
 
-        {/* Topic filters */}
-        <AnimatedSection delay={0.1}>
-          <div className="flex gap-1.5 mb-8 overflow-x-auto pb-2">
-            {TOPIC_FILTERS.map((filter) => {
-              const Icon = filter.icon;
-              const isActive = activeTopic === filter.id;
-              return (
-                <button
-                  key={filter.id}
-                  onClick={() => setActiveTopic(filter.id)}
-                  className={`relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors duration-200 ${
-                    isActive
-                      ? "text-white"
-                      : "text-gray-600 hover:text-gray-300 hover:bg-white/5"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTopic"
-                      className="absolute inset-0 rounded-lg bg-white/5 border border-white/10"
-                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                    />
-                  )}
-                  <Icon className="relative z-10 w-3.5 h-3.5" />
-                  <span className="relative z-10">{filter.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </AnimatedSection>
-
-        {/* Curated items */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTopic}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            {filteredCurated.length > 0 ? (
-              <div className="space-y-3">
-                {filteredCurated.map((item, i) => {
-                  const badge = importanceBadge(item.importance);
+        {briefingTab === "briefing" ? (
+          <>
+            {/* Topic filters */}
+            <AnimatedSection delay={0.1}>
+              <div className="flex gap-1.5 mb-8 overflow-x-auto pb-2">
+                {TOPIC_FILTERS.map((filter) => {
+                  const Icon = filter.icon;
+                  const isActive = activeTopic === filter.id;
                   return (
-                    <a
-                      key={item.id}
-                      href={item.originalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group block glass-card p-5 hover:border-tactical-500/20"
+                    <button
+                      key={filter.id}
+                      onClick={() => setActiveTopic(filter.id)}
+                      className={`relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors duration-200 ${
+                        isActive
+                          ? "text-white"
+                          : "text-gray-600 hover:text-gray-300 hover:bg-white/5"
+                      }`}
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <span className={`badge border text-[10px] ${badge.cls}`}>{badge.text}</span>
-                            <span className="text-[10px] font-mono text-gray-600">{item.region}</span>
-                            <span className="text-[10px] font-mono text-gray-700">&middot;</span>
-                            <span className="text-[10px] font-mono text-gray-600">{item.topic}</span>
-                          </div>
-                          <h3 className="text-white font-semibold group-hover:text-tactical-400 transition-colors leading-snug">
-                            {item.title}
-                          </h3>
-                          <p className="mt-1.5 text-sm text-gray-500 leading-relaxed line-clamp-2">
-                            {item.summary}
-                          </p>
-                          <div className="mt-2 flex items-center gap-3 text-[10px] text-gray-600">
-                            <span>{item.sourceName}</span>
-                            <span>&middot;</span>
-                            <span>{timeAgo(item.curatedAt)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeTopic"
+                          className="absolute inset-0 rounded-lg bg-white/5 border border-white/10"
+                          transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                      )}
+                      <Icon className="relative z-10 w-3.5 h-3.5" />
+                      <span className="relative z-10">{filter.label}</span>
+                    </button>
                   );
                 })}
               </div>
-            ) : curated.length > 0 ? (
-              <div className="glass-card p-12 text-center">
-                <Filter className="w-8 h-8 text-gray-700 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No stories in this topic. Try another filter.</p>
-              </div>
-            ) : (
-              <div className="glass-card p-12 text-center">
-                <Newspaper className="w-8 h-8 text-gray-700 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">
-                  {news.length > 0
-                    ? "AI curation available. Raw feed items shown in the intel sidebar."
-                    : "News feed is loading. Check back shortly."}
-                </p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </section>
-
-      <div className="section-divider" />
-
-      {/* Live Video Feeds */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
-        <AnimatedSection>
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="font-display text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600" />
-                </span>
-                LIVE FEEDS
-              </h2>
-              <div className="mt-2 h-0.5 w-12 bg-red-500/50 rounded-full" />
-            </div>
-            <button
-              onClick={() => setShowVideoSection(!showVideoSection)}
-              className="text-xs text-gray-500 hover:text-white transition-colors"
-            >
-              {showVideoSection ? "Collapse" : "Expand All"}
-            </button>
-          </div>
-        </AnimatedSection>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {LIVE_FEEDS.map((feed, i) => (
-            <AnimatedSection key={feed.videoId ?? feed.name} delay={i * 0.05}>
-              <div className="glass-card overflow-hidden group hover:border-red-500/20">
-                <div className="relative aspect-video bg-black">
-                  <iframe
-                    src={feed.embedUrl ?? `https://www.youtube.com/embed/${feed.videoId}?autoplay=0&rel=0`}
-                    title={`${feed.name} Live`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="px-4 py-3 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">{feed.name}</h3>
-                    <p className="text-[10px] text-gray-600 mt-0.5 line-clamp-1">{feed.description}</p>
-                  </div>
-                  <span className="text-[9px] uppercase tracking-widest font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
-                    Live
-                  </span>
-                </div>
-              </div>
             </AnimatedSection>
-          ))}
-        </div>
+
+            {/* Curated items */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTopic}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {filteredCurated.length > 0 ? (
+                  <div className="space-y-3">
+                    {filteredCurated.map((item) => {
+                      const badge = importanceBadge(item.importance);
+                      return (
+                        <a
+                          key={item.id}
+                          href={item.originalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group block glass-card p-5 hover:border-tactical-500/20"
+                        >
+                          <div className="flex items-start gap-4">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                <span className={`badge border text-[10px] ${badge.cls}`}>{badge.text}</span>
+                                <span className="text-[10px] font-mono text-gray-600">{item.region}</span>
+                                <span className="text-[10px] font-mono text-gray-700">&middot;</span>
+                                <span className="text-[10px] font-mono text-gray-600">{item.topic}</span>
+                              </div>
+                              <h3 className="text-white font-semibold group-hover:text-tactical-400 transition-colors leading-snug">
+                                {item.title}
+                              </h3>
+                              <p className="mt-1.5 text-sm text-gray-500 leading-relaxed line-clamp-2">
+                                {item.summary}
+                              </p>
+                              <div className="mt-2 flex items-center gap-3 text-[10px] text-gray-600">
+                                <span>{item.sourceName}</span>
+                                <span>&middot;</span>
+                                <span>{timeAgo(item.curatedAt)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                ) : curated.length > 0 ? (
+                  <div className="glass-card p-12 text-center">
+                    <Filter className="w-8 h-8 text-gray-700 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">No stories in this topic. Try another filter.</p>
+                  </div>
+                ) : (
+                  <div className="glass-card p-12 text-center">
+                    <Newspaper className="w-8 h-8 text-gray-700 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">
+                      {news.length > 0
+                        ? "AI curation available. Select a topic to filter."
+                        : "News feed is loading. Check back shortly."}
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {LIVE_FEEDS.map((feed, i) => (
+              <AnimatedSection key={feed.videoId ?? feed.name} delay={i * 0.05}>
+                <div className="glass-card overflow-hidden group hover:border-red-500/20">
+                  <div className="relative aspect-video bg-black">
+                    <iframe
+                      src={feed.embedUrl ?? `https://www.youtube.com/embed/${feed.videoId}?autoplay=0&rel=0`}
+                      title={`${feed.name} Live`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">{feed.name}</h3>
+                      <p className="text-[10px] text-gray-600 mt-0.5 line-clamp-1">{feed.description}</p>
+                    </div>
+                    <span className="text-[9px] uppercase tracking-widest font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
+                      Live
+                    </span>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="section-divider" />

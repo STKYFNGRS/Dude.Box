@@ -288,6 +288,7 @@ enum DataSourceType {
   USGS
   FIRMS
   GDELT
+  AI_NEWS
 }
 
 model ConflictZone {
@@ -313,18 +314,19 @@ model ConflictZone {
 }
 
 model ConflictEvent {
-  id         String    @id @default(cuid())
-  zoneId     String?
-  title      String
-  description String?  @db.Text
-  date       DateTime
-  sourceUrl  String?
-  severity   Severity  @default(MEDIUM)
-  eventType  EventType @default(CONFLICT)
-  lat        Float
-  lng        Float
-  source     DataSourceType?
-  externalId String?
+  id          String    @id @default(cuid())
+  zoneId      String?
+  title       String
+  description String?   @db.Text
+  date        DateTime
+  sourceUrl   String?
+  severity    Severity  @default(MEDIUM)
+  eventType   EventType @default(CONFLICT)
+  lat         Float
+  lng         Float
+  countryCode String?
+  source      DataSourceType?
+  externalId  String?
 
   zone ConflictZone? @relation(fields: [zoneId], references: [id], onDelete: SetNull)
 
@@ -332,6 +334,7 @@ model ConflictEvent {
   @@index([date])
   @@index([eventType])
   @@index([zoneId])
+  @@index([countryCode])
 }
 
 model CountryBrief {

@@ -1,25 +1,39 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import {
+  Crosshair,
+  Flame,
+  MegaphoneOff,
+  Swords,
+  Satellite,
+  Globe2,
+  Plane,
+  Ship,
+  Sun,
+  Thermometer,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export interface LayerConfig {
   id: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   defaultEnabled: boolean;
+  group: "markers" | "overlays";
 }
 
 const LAYERS: LayerConfig[] = [
-  { id: "active-conflicts",   label: "Active Conflicts",    icon: "💥", defaultEnabled: true },
-  { id: "military-bases",     label: "Military Bases",       icon: "🎖️", defaultEnabled: true },
-  { id: "nuclear-facilities", label: "Nuclear Facilities",   icon: "☢️",  defaultEnabled: false },
-  { id: "undersea-cables",    label: "Undersea Cables",      icon: "🌊", defaultEnabled: false },
-  { id: "infrastructure",     label: "Infrastructure",       icon: "🏗️", defaultEnabled: false },
-  { id: "satellite-fires",    label: "Satellite Fires",      icon: "🔥", defaultEnabled: false },
-  { id: "protests-unrest",    label: "Protests / Unrest",    icon: "✊", defaultEnabled: true },
-  { id: "natural-disasters",  label: "Natural Disasters",    icon: "🌪️", defaultEnabled: false },
-  { id: "day-night",          label: "Day / Night",          icon: "🌗", defaultEnabled: false },
-  { id: "cii-heatmap",        label: "CII Heatmap",          icon: "📊", defaultEnabled: false },
+  { id: "active-conflicts", label: "Conflicts", icon: Crosshair, defaultEnabled: true, group: "markers" },
+  { id: "protests-unrest", label: "Protests / Unrest", icon: MegaphoneOff, defaultEnabled: true, group: "markers" },
+  { id: "military", label: "Military", icon: Swords, defaultEnabled: true, group: "markers" },
+  { id: "natural-disasters", label: "Disasters", icon: Flame, defaultEnabled: true, group: "markers" },
+  { id: "viirs-night", label: "Night Lights", icon: Globe2, defaultEnabled: false, group: "overlays" },
+  { id: "viirs-fires", label: "Satellite Fires", icon: Satellite, defaultEnabled: false, group: "overlays" },
+  { id: "sea-surface-temp", label: "Sea Temperature", icon: Thermometer, defaultEnabled: false, group: "overlays" },
+  { id: "day-night", label: "Day / Night", icon: Sun, defaultEnabled: false, group: "overlays" },
+  { id: "flights", label: "Live Flights", icon: Plane, defaultEnabled: false, group: "overlays" },
+  { id: "shipping-lanes", label: "Shipping Lanes", icon: Ship, defaultEnabled: false, group: "overlays" },
 ];
 
 const STORAGE_KEY = "dudebox-map-layers";
@@ -39,8 +53,10 @@ interface LayerTogglePanelProps {
   className?: string;
 }
 
-export default function LayerTogglePanel({ onChange, className = "" }: LayerTogglePanelProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function LayerTogglePanel({
+  onChange,
+  className = "",
+}: LayerTogglePanelProps) {
   const [enabled, setEnabled] = useState<Record<string, boolean>>(() => {
     const saved = loadSaved();
     const initial: Record<string, boolean> = {};
@@ -53,62 +69,96 @@ export default function LayerTogglePanel({ onChange, className = "" }: LayerTogg
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(enabled));
-    } catch {}
-    onChange?.(Object.entries(enabled).filter(([, v]) => v).map(([k]) => k));
+    } catch { /* noop */ }
+    onChange?.(
+      Object.entries(enabled)
+        .filter(([, v]) => v)
+        .map(([k]) => k)
+    );
   }, [enabled, onChange]);
 
   const toggle = useCallback((id: string) => {
     setEnabled((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
-  return (
-    <div
-      className={`bg-panel/95 backdrop-blur border border-panel-border rounded-xl overflow-hidden transition-all duration-300 ${collapsed ? "w-12" : "w-64"} ${className}`}
-    >
-      <button
-        onClick={() => setCollapsed((p) => !p)}
-        className="w-full flex items-center gap-2 px-3 py-3 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-gray-200 transition-colors border-b border-panel-border"
-      >
-        <svg
-          className={`w-4 h-4 transition-transform ${collapsed ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-        </svg>
-        {!collapsed && <span>Layers</span>}
-      </button>
+  const markerLayers = LAYERS.filter((l) => l.group === "markers");
+  const overlayLayers = LAYERS.filter((l) => l.group === "overlays");
 
-      {!collapsed && (
-        <div className="p-2 space-y-0.5 max-h-[70vh] overflow-y-auto scrollbar-thin">
-          {LAYERS.map((layer) => (
-            <button
-              key={layer.id}
-              onClick={() => toggle(layer.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                enabled[layer.id]
-                  ? "bg-tactical-900/40 text-gray-200"
-                  : "text-gray-500 hover:text-gray-400 hover:bg-panel-light/50"
-              }`}
-            >
-              <span className="text-base w-5 text-center">{layer.icon}</span>
-              <span className="flex-1 text-left">{layer.label}</span>
-              <div
-                className={`w-8 h-4 rounded-full relative transition-colors ${
-                  enabled[layer.id] ? "bg-tactical-600" : "bg-panel-light"
+  return (
+    <div className={`space-y-3 ${className}`}>
+      <div>
+        <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1.5">
+          Data
+        </p>
+        <div className="space-y-0.5">
+          {markerLayers.map((layer) => {
+            const Icon = layer.icon;
+            return (
+              <button
+                key={layer.id}
+                onClick={() => toggle(layer.id)}
+                className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                  enabled[layer.id]
+                    ? "text-gray-200 bg-white/5"
+                    : "text-gray-600 hover:text-gray-400 hover:bg-white/[0.02]"
                 }`}
               >
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <span className="flex-1 text-left">{layer.label}</span>
                 <div
-                  className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${
-                    enabled[layer.id] ? "translate-x-4" : "translate-x-0.5"
+                  className={`w-7 h-3.5 rounded-full relative transition-colors ${
+                    enabled[layer.id] ? "bg-tactical-600" : "bg-gray-800"
                   }`}
-                />
-              </div>
-            </button>
-          ))}
+                >
+                  <div
+                    className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-transform ${
+                      enabled[layer.id] ? "translate-x-3.5" : "translate-x-0.5"
+                    }`}
+                  />
+                </div>
+              </button>
+            );
+          })}
         </div>
-      )}
+      </div>
+
+      <div className="border-t border-white/5 pt-2">
+        <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1.5">
+          Overlays
+        </p>
+        <div className="space-y-0.5">
+          {overlayLayers.map((layer) => {
+            const Icon = layer.icon;
+            return (
+              <button
+                key={layer.id}
+                onClick={() => toggle(layer.id)}
+                className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                  enabled[layer.id]
+                    ? "text-gray-200 bg-white/5"
+                    : "text-gray-600 hover:text-gray-400 hover:bg-white/[0.02]"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <span className="flex-1 text-left">{layer.label}</span>
+                <div
+                  className={`w-7 h-3.5 rounded-full relative transition-colors ${
+                    enabled[layer.id] ? "bg-tactical-600" : "bg-gray-800"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-transform ${
+                      enabled[layer.id] ? "translate-x-3.5" : "translate-x-0.5"
+                    }`}
+                  />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
+
+export { LAYERS };

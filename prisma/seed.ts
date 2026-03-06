@@ -66,34 +66,55 @@ async function main() {
     { name: "Breaking Defense", url: "https://breakingdefense.com", feedUrl: "https://breakingdefense.com/feed/" },
     { name: "The War Zone", url: "https://www.twz.com", feedUrl: "https://www.twz.com/feed" },
     { name: "Military Times", url: "https://www.militarytimes.com", feedUrl: "https://www.militarytimes.com/arc/outboundfeeds/rss/" },
-    // Global News
+    // Global Wire Services
     { name: "Reuters World", url: "https://www.reuters.com", feedUrl: "https://www.reutersagency.com/feed/" },
     { name: "AP News", url: "https://apnews.com", feedUrl: "https://rsshub.app/apnews/topics/world-news" },
+    { name: "AFP (France 24)", url: "https://www.france24.com", feedUrl: "https://www.france24.com/en/rss" },
+    // Americas
     { name: "BBC World News", url: "https://www.bbc.com/news/world", feedUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
-    { name: "Al Jazeera", url: "https://www.aljazeera.com", feedUrl: "https://www.aljazeera.com/xml/rss/all.xml" },
-    // Latin America
-    { name: "Reuters Latin America", url: "https://www.reuters.com", feedUrl: "https://rsshub.app/reuters/world/americas" },
-    // Asia
-    { name: "South China Morning Post", url: "https://www.scmp.com", feedUrl: "https://www.scmp.com/rss/91/feed" },
-    { name: "Nikkei Asia", url: "https://asia.nikkei.com", feedUrl: "https://asia.nikkei.com/rss" },
-    // Europe
-    { name: "Euronews", url: "https://www.euronews.com", feedUrl: "https://www.euronews.com/rss" },
-    // Africa
-    { name: "Africa News", url: "https://www.africanews.com", feedUrl: "https://www.africanews.com/feed/" },
-    // Economics & Politics
-    { name: "Foreign Policy", url: "https://foreignpolicy.com", feedUrl: "https://foreignpolicy.com/feed/" },
-    { name: "The Economist World", url: "https://www.economist.com", feedUrl: "https://www.economist.com/international/rss.xml" },
-    // US Politics & General
-    { name: "The Hill", url: "https://thehill.com", feedUrl: "https://thehill.com/feed/" },
-    { name: "Washington Post", url: "https://www.washingtonpost.com", feedUrl: "https://feeds.washingtonpost.com/rss/world" },
-    { name: "New York Times", url: "https://www.nytimes.com", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
     { name: "CNN", url: "https://www.cnn.com", feedUrl: "http://rss.cnn.com/rss/edition_world.rss" },
     { name: "Fox News", url: "https://www.foxnews.com", feedUrl: "https://moxie.foxnews.com/google-publisher/world.xml" },
     { name: "NPR News", url: "https://www.npr.org", feedUrl: "https://feeds.npr.org/1004/rss.xml" },
+    { name: "The Hill", url: "https://thehill.com", feedUrl: "https://thehill.com/feed/" },
+    { name: "Washington Post", url: "https://www.washingtonpost.com", feedUrl: "https://feeds.washingtonpost.com/rss/world" },
+    { name: "New York Times", url: "https://www.nytimes.com", feedUrl: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
     { name: "USA Today", url: "https://www.usatoday.com", feedUrl: "http://rssfeeds.usatoday.com/UsatodaycomWorld-TopStories" },
     { name: "Politico", url: "https://www.politico.com", feedUrl: "https://rss.politico.com/politics-news.xml" },
-    // International
+    { name: "Bloomberg", url: "https://www.bloomberg.com", feedUrl: "https://feeds.bloomberg.com/politics/news.rss" },
+    { name: "CBC News", url: "https://www.cbc.ca/news", feedUrl: "https://www.cbc.ca/cmlink/rss-world" },
+    { name: "Infobae (Latin America)", url: "https://www.infobae.com", feedUrl: "https://www.infobae.com/feeds/rss/" },
+    { name: "Reuters Latin America", url: "https://www.reuters.com", feedUrl: "https://rsshub.app/reuters/world/americas" },
+    // Europe
     { name: "The Guardian World", url: "https://www.theguardian.com/world", feedUrl: "https://www.theguardian.com/world/rss" },
+    { name: "Euronews", url: "https://www.euronews.com", feedUrl: "https://www.euronews.com/rss" },
+    { name: "Deutsche Welle", url: "https://www.dw.com", feedUrl: "https://rss.dw.com/rdf/rss-en-world" },
+    { name: "TASS (Russia)", url: "https://tass.com", feedUrl: "https://tass.com/rss/v2.xml" },
+    { name: "The Telegraph", url: "https://www.telegraph.co.uk", feedUrl: "https://www.telegraph.co.uk/news/rss.xml" },
+    // Middle East
+    { name: "Al Jazeera", url: "https://www.aljazeera.com", feedUrl: "https://www.aljazeera.com/xml/rss/all.xml" },
+    { name: "Al Arabiya", url: "https://english.alarabiya.net", feedUrl: "https://english.alarabiya.net/tools/rss" },
+    { name: "Times of Israel", url: "https://www.timesofisrael.com", feedUrl: "https://www.timesofisrael.com/feed/" },
+    { name: "TRT World", url: "https://www.trtworld.com", feedUrl: "https://www.trtworld.com/rss" },
+    { name: "Tehran Times", url: "https://www.tehrantimes.com", feedUrl: "https://www.tehrantimes.com/rss" },
+    // Africa
+    { name: "Africa News", url: "https://www.africanews.com", feedUrl: "https://www.africanews.com/feed/" },
+    { name: "AllAfrica", url: "https://allafrica.com", feedUrl: "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf" },
+    { name: "Daily Maverick", url: "https://www.dailymaverick.co.za", feedUrl: "https://www.dailymaverick.co.za/rss/" },
+    { name: "Punch Nigeria", url: "https://punchng.com", feedUrl: "https://punchng.com/feed/" },
+    { name: "Nation Kenya", url: "https://nation.africa", feedUrl: "https://nation.africa/rss.xml" },
+    // Asia-Pacific
+    { name: "South China Morning Post", url: "https://www.scmp.com", feedUrl: "https://www.scmp.com/rss/91/feed" },
+    { name: "Channel News Asia", url: "https://www.channelnewsasia.com", feedUrl: "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml" },
+    { name: "NHK World", url: "https://www3.nhk.or.jp/nhkworld/", feedUrl: "https://www3.nhk.or.jp/rss/news/cat0.xml" },
+    { name: "Yonhap News", url: "https://en.yna.co.kr", feedUrl: "https://en.yna.co.kr/RSS/news.xml" },
+    { name: "Hindustan Times", url: "https://www.hindustantimes.com", feedUrl: "https://www.hindustantimes.com/rss/world-news/rssfeed.xml" },
+    { name: "NDTV", url: "https://www.ndtv.com", feedUrl: "https://feeds.feedburner.com/ndtvnews-world-news" },
+    { name: "Xinhua", url: "https://english.news.cn", feedUrl: "https://rsshub.app/xinhuanet/english/world" },
+    { name: "ABC Australia", url: "https://www.abc.net.au/news", feedUrl: "https://www.abc.net.au/news/feed/2942460/rss.xml" },
+    { name: "Nikkei Asia", url: "https://asia.nikkei.com", feedUrl: "https://asia.nikkei.com/rss" },
+    // Economics & Analysis
+    { name: "Foreign Policy", url: "https://foreignpolicy.com", feedUrl: "https://foreignpolicy.com/feed/" },
+    { name: "The Economist World", url: "https://www.economist.com", feedUrl: "https://www.economist.com/international/rss.xml" },
   ];
 
   for (const source of newsSources) {

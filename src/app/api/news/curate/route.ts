@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { curateNewsFeed } from "@/lib/claude";
+import { curateNewsFeed, extractConflictEvents } from "@/lib/claude";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     const recentItems = await prisma.newsFeedItem.findMany({
       orderBy: { publishedAt: "desc" },
-      take: 50,
+      take: 150,
       include: { source: { select: { name: true } } },
     });
 
@@ -56,10 +56,55 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    let eventsCreated = 0;
+    try {
+      const forEventExtraction = curated.map((c) => ({
+        title: c.title,
+        summary: c.summary,
+        region: c.region,
+        topic: c.topic,
+      }));
+
+      const events = await extractConflictEvents(forEventExtraction);
+
+      for (const event of events) {
+        const existing = await prisma.conflictEvent.findFirst({
+          where: {
+            title: { contains: event.title.slice(0, 30), mode: "insensitive" },
+            date: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+          },
+        });
+        if (existing) continue;
+
+        try {
+          await prisma.conflictEvent.create({
+            data: {
+              title: event.title,
+              description: event.description,
+              lat: event.lat,
+              lng: event.lng,
+              countryCode: event.countryCode,
+              severity: event.severity,
+              eventType: event.eventType,
+              source: "AI_NEWS",
+              externalId: `ai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+              date: new Date(),
+            },
+          });
+          eventsCreated++;
+        } catch {
+          // skip duplicate or invalid events
+        }
+      }
+    } catch (err) {
+      console.error("Event extraction failed (non-fatal):", err);
+    }
+
     return NextResponse.json({
       message: "Curation complete",
       processed: feedForAI.length,
       curated: created,
+      eventsCreated,
     });
   } catch (error) {
     console.error("News curation failed:", error);

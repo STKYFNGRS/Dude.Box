@@ -1,36 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { computeCII, getCountryFromHeadline } from "@/lib/conflict-data";
+import { computeCII, COUNTRY_NAMES, getCountryFromHeadline } from "@/lib/conflict-data";
 import { generateCountryBrief } from "@/lib/claude";
+import type { CIIBreakdown } from "@/lib/conflict-data";
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
-const COUNTRY_NAMES: Record<string, string> = {
-  US: "United States", RU: "Russia", CN: "China", UA: "Ukraine",
-  IR: "Iran", IL: "Israel", TW: "Taiwan", KP: "North Korea",
-  SA: "Saudi Arabia", TR: "Turkey", SY: "Syria", YE: "Yemen",
-  MM: "Myanmar", PK: "Pakistan", IN: "India", DE: "Germany",
-  FR: "France", GB: "United Kingdom", JP: "Japan", KR: "South Korea",
-  PL: "Poland", VE: "Venezuela", BR: "Brazil",
-};
-
 function shapeBriefResponse(
-  record: { countryCode: string; ciiScore: number; ciiBreakdown: unknown; aiSummary: string | null; topHeadlines: unknown; computedAt: Date },
+  record: {
+    countryCode: string;
+    ciiScore: number;
+    ciiBreakdown: unknown;
+    aiSummary: string | null;
+    topHeadlines: unknown;
+    computedAt: Date;
+  },
   events: { id: string; title: string; date: Date; severity: string; eventType: string }[]
 ) {
   const breakdown = (record.ciiBreakdown ?? {
-    baselineRisk: 0,
-    conflictScore: 0,
+    conflictIntensity: 0,
+    eventDensity: 0,
     unrestScore: 0,
     newsVelocity: 0,
-  }) as Record<string, number>;
+  }) as CIIBreakdown;
 
-  const rawHeadlines = (record.topHeadlines ?? []) as string[];
-  const headlines = rawHeadlines.map((title) => ({
-    title,
-    url: "",
-    publishedAt: "",
-  }));
+  const rawHeadlines = (record.topHeadlines ?? []) as unknown[];
+  const headlines = rawHeadlines.map((item) => {
+    if (typeof item === "string") {
+      return { title: item, url: "", publishedAt: "" };
+    }
+    const obj = item as { title?: string; publishedAt?: string };
+    return {
+      title: obj.title ?? "",
+      url: "",
+      publishedAt: obj.publishedAt ?? "",
+    };
+  });
 
   return {
     countryCode: record.countryCode,
@@ -57,6 +62,7 @@ export async function GET(
     const { code } = await params;
     const countryCode = code.toUpperCase();
 
+    // Fetch events by countryCode directly on the event, plus via zone linkage
     const zones = await prisma.conflictZone.findMany({
       where: { countryCode },
       select: { id: true },
@@ -64,36 +70,59 @@ export async function GET(
     const zoneIds = zones.map((z) => z.id);
 
     const events = await prisma.conflictEvent.findMany({
-      where: zoneIds.length > 0 ? { zoneId: { in: zoneIds } } : { id: "__none__" },
+      where: {
+        OR: [
+          { countryCode },
+          ...(zoneIds.length > 0 ? [{ zoneId: { in: zoneIds } }] : []),
+        ],
+      },
       orderBy: { date: "desc" },
-      take: 10,
+      take: 20,
       select: { id: true, title: true, date: true, severity: true, eventType: true },
     });
 
+    // Deduplicate events by id (in case both conditions match)
+    const seen = new Set<string>();
+    const uniqueEvents = events.filter((e) => {
+      if (seen.has(e.id)) return false;
+      seen.add(e.id);
+      return true;
+    });
+
+    // Check for cached brief (also recompute if breakdown uses old schema)
+    const forceRefresh = _request.nextUrl.searchParams.get("fresh") === "1";
     const cached = await prisma.countryBrief.findUnique({
       where: { countryCode },
     });
 
-    if (cached && Date.now() - cached.computedAt.getTime() < ONE_HOUR_MS) {
-      return NextResponse.json(shapeBriefResponse(cached, events));
+    const hasNewSchema = cached?.ciiBreakdown &&
+      typeof cached.ciiBreakdown === "object" &&
+      "conflictIntensity" in (cached.ciiBreakdown as Record<string, unknown>);
+
+    if (!forceRefresh && cached && hasNewSchema && Date.now() - cached.computedAt.getTime() < ONE_HOUR_MS) {
+      return NextResponse.json(shapeBriefResponse(cached, uniqueEvents));
     }
 
+    // Compute fresh CII
     const cii = await computeCII(countryCode);
 
+    // Gather recent headlines mentioning this country
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const newsItems = await prisma.newsFeedItem.findMany({
       where: { publishedAt: { gte: sevenDaysAgo } },
       orderBy: { publishedAt: "desc" },
-      take: 200,
-      select: { title: true },
+      take: 300,
+      select: { title: true, publishedAt: true },
     });
 
-    const headlines = newsItems
+    const matchedItems = newsItems
       .filter((item) => getCountryFromHeadline(item.title) === countryCode)
-      .map((item) => item.title)
       .slice(0, 15);
 
-    const countryName = COUNTRY_NAMES[countryCode] || countryCode;
+    const headlines = matchedItems.map((item) => item.title);
+
+    const countryInfo = COUNTRY_NAMES[countryCode];
+    const countryName = countryInfo?.name || countryCode;
     const aiSummary =
       headlines.length > 0
         ? await generateCountryBrief(countryName, headlines)
@@ -105,7 +134,10 @@ export async function GET(
         ciiScore: cii.score,
         ciiBreakdown: cii.breakdown as any,
         aiSummary,
-        topHeadlines: headlines as any,
+        topHeadlines: matchedItems.map((item) => ({
+          title: item.title,
+          publishedAt: item.publishedAt?.toISOString() ?? "",
+        })) as any,
         computedAt: new Date(),
       },
       create: {
@@ -113,11 +145,14 @@ export async function GET(
         ciiScore: cii.score,
         ciiBreakdown: cii.breakdown as any,
         aiSummary,
-        topHeadlines: headlines as any,
+        topHeadlines: matchedItems.map((item) => ({
+          title: item.title,
+          publishedAt: item.publishedAt?.toISOString() ?? "",
+        })) as any,
       },
     });
 
-    return NextResponse.json(shapeBriefResponse(brief, events));
+    return NextResponse.json(shapeBriefResponse(brief, uniqueEvents));
   } catch (error) {
     console.error("Failed to generate country brief:", error);
     return NextResponse.json(

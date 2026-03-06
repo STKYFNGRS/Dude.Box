@@ -59,7 +59,7 @@ export async function curateNewsFeed(
 ): Promise<CuratedItem[]> {
   if (items.length === 0) return [];
 
-  const batch = items.slice(0, 30);
+  const batch = items.slice(0, 80);
   const itemsList = batch
     .map(
       (item, i) =>
@@ -101,6 +101,74 @@ Select the 10-20 most newsworthy items. Skip duplicates and trivial stories.`,
   try {
     const parsed = JSON.parse(jsonMatch[0]);
     return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export interface ExtractedConflictEvent {
+  title: string;
+  description: string;
+  lat: number;
+  lng: number;
+  countryCode: string;
+  severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  eventType: "CONFLICT" | "PROTEST" | "MILITARY" | "DISASTER";
+}
+
+export async function extractConflictEvents(
+  items: { title: string; summary: string; region: string; topic: string }[]
+): Promise<ExtractedConflictEvent[]> {
+  if (items.length === 0) return [];
+
+  const relevant = items.filter((i) =>
+    ["Conflict", "Security", "Politics", "Environment", "Technology", "Society", "Economics"].includes(i.topic)
+  );
+  if (relevant.length === 0) return [];
+
+  const itemsList = relevant
+    .map((item, i) => `[${i + 1}] "${item.title}" — ${item.region} — ${item.summary}`)
+    .join("\n");
+
+  const message = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 8192,
+    system: `You are a geopolitical and domestic intelligence analyst. Extract geolocated events from news summaries worldwide, including DOMESTIC events in every country. You must provide accurate latitude/longitude coordinates and ISO 3166-1 alpha-2 country codes. Extract ALL of the following: armed conflicts, military operations, terrorist attacks, protests and civil unrest, police/law enforcement incidents, government policy actions, legislative battles, court rulings with major impact, natural disasters, industrial accidents, major cyber incidents, economic crises, immigration/border events, and significant societal disruptions. Do NOT focus only on international conflicts — domestic US, European, and other events are equally important. Always respond with valid JSON.`,
+    messages: [
+      {
+        role: "user",
+        content: `Extract geolocated events from these news summaries. Include BOTH international AND domestic events from every country mentioned. For the United States, extract events at the city level (Washington DC, New York, Los Angeles, etc.) — not just "US" generically.
+
+${itemsList}
+
+Return a JSON array of objects with these fields:
+- title: Clear event title (60 chars max)
+- description: 1-2 sentence description
+- lat: Latitude (float, accurate to the city/region level)
+- lng: Longitude (float, accurate to the city/region level)
+- countryCode: ISO 3166-1 alpha-2 code (e.g. "US", "IL", "UA")
+- severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" based on impact
+- eventType: "CONFLICT" | "PROTEST" | "MILITARY" | "DISASTER"
+
+Extract as many locatable events as possible. Include domestic policy events, protests, law enforcement actions, court rulings, economic crises, and disasters — not just wars. Return up to 30 events.`,
+      },
+    ],
+  });
+
+  const text =
+    message.content[0].type === "text" ? message.content[0].text : "";
+
+  const jsonMatch = text.match(/\[[\s\S]*\]/);
+  if (!jsonMatch) return [];
+
+  try {
+    const parsed = JSON.parse(jsonMatch[0]);
+    return Array.isArray(parsed)
+      ? parsed.filter(
+          (e: ExtractedConflictEvent) =>
+            e.lat && e.lng && e.countryCode && e.title
+        )
+      : [];
   } catch {
     return [];
   }

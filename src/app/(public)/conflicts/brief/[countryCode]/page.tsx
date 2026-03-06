@@ -4,38 +4,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
-const COUNTRY_NAMES: Record<string, { name: string; flag: string }> = {
-  US: { name: "United States", flag: "🇺🇸" },
-  RU: { name: "Russia", flag: "🇷🇺" },
-  CN: { name: "China", flag: "🇨🇳" },
-  UA: { name: "Ukraine", flag: "🇺🇦" },
-  IR: { name: "Iran", flag: "🇮🇷" },
-  IL: { name: "Israel", flag: "🇮🇱" },
-  TW: { name: "Taiwan", flag: "🇹🇼" },
-  KP: { name: "North Korea", flag: "🇰🇵" },
-  SA: { name: "Saudi Arabia", flag: "🇸🇦" },
-  TR: { name: "Turkey", flag: "🇹🇷" },
-  SY: { name: "Syria", flag: "🇸🇾" },
-  YE: { name: "Yemen", flag: "🇾🇪" },
-  MM: { name: "Myanmar", flag: "🇲🇲" },
-  PK: { name: "Pakistan", flag: "🇵🇰" },
-  IN: { name: "India", flag: "🇮🇳" },
-  DE: { name: "Germany", flag: "🇩🇪" },
-  FR: { name: "France", flag: "🇫🇷" },
-  GB: { name: "United Kingdom", flag: "🇬🇧" },
-  JP: { name: "Japan", flag: "🇯🇵" },
-  KR: { name: "South Korea", flag: "🇰🇷" },
-  PL: { name: "Poland", flag: "🇵🇱" },
-  VE: { name: "Venezuela", flag: "🇻🇪" },
-  BR: { name: "Brazil", flag: "🇧🇷" },
-};
+import { COUNTRY_NAMES } from "@/lib/conflict-data";
 
 interface BriefData {
   countryCode: string;
   ciiScore: number;
   breakdown: {
-    baselineRisk: number;
-    conflictScore: number;
+    conflictIntensity: number;
+    eventDensity: number;
     unrestScore: number;
     newsVelocity: number;
   };
@@ -166,10 +142,10 @@ function EventTimeline({
 export default function CountryBriefPage() {
   const params = useParams<{ countryCode: string }>();
   const code = params.countryCode?.toUpperCase() ?? "";
-  const country = COUNTRY_NAMES[code] ?? {
-    name: code,
-    flag: "",
-  };
+  const countryInfo = COUNTRY_NAMES[code];
+  const country = countryInfo
+    ? { name: countryInfo.name, flag: countryInfo.flag }
+    : { name: code, flag: "" };
 
   const [brief, setBrief] = useState<BriefData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -250,14 +226,14 @@ export default function CountryBriefPage() {
             <CIIGauge score={brief.ciiScore} />
             <div className="w-full mt-6 space-y-3">
               <BreakdownBar
-                label="Baseline Risk"
-                value={brief.breakdown.baselineRisk}
-                color="bg-amber-500"
+                label="Conflict Intensity"
+                value={brief.breakdown.conflictIntensity}
+                color="bg-red-500"
               />
               <BreakdownBar
-                label="Conflict Score"
-                value={brief.breakdown.conflictScore}
-                color="bg-red-500"
+                label="Event Density"
+                value={brief.breakdown.eventDensity}
+                color="bg-amber-500"
               />
               <BreakdownBar
                 label="Unrest Score"
@@ -309,9 +285,11 @@ export default function CountryBriefPage() {
                           <p className="text-sm text-gray-300 group-hover:text-white transition-colors leading-snug">
                             {h.title}
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
-                            {new Date(h.publishedAt).toLocaleDateString()}
-                          </p>
+                          {h.publishedAt && (
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              {new Date(h.publishedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                            </p>
+                          )}
                         </div>
                       </a>
                     </li>
