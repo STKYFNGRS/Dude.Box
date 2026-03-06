@@ -33,12 +33,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "No feed items to curate", count: 0 });
     }
 
-    const feedForAI = recentItems.map((item) => ({
+    // Pre-deduplicate: collapse near-identical headlines before sending to AI
+    const rawFeed = recentItems.map((item) => ({
       title: item.title,
       url: item.url,
       source: item.source.name,
       description: item.description ?? undefined,
     }));
+
+    const feedForAI: typeof rawFeed = [];
+    const seenNormalized = new Map<string, number>();
+    for (const item of rawFeed) {
+      const words = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 3);
+      const wordSet = new Set(words);
+      let isDupe = false;
+      for (const [existingKey, idx] of seenNormalized) {
+        const existingWords = new Set(existingKey.split("|"));
+        const intersection = [...wordSet].filter(w => existingWords.has(w)).length;
+        const union = new Set([...wordSet, ...existingWords]).size;
+        if (union > 0 && intersection / union > 0.5) {
+          isDupe = true;
+          break;
+        }
+      }
+      if (!isDupe) {
+        seenNormalized.set(words.join("|"), feedForAI.length);
+        feedForAI.push(item);
+      }
+    }
+    console.log(`Pre-dedup: ${rawFeed.length} -> ${feedForAI.length} unique stories`);
 
     const curated = await curateNewsFeed(feedForAI);
     console.log(`AI curation returned ${curated.length} items from ${feedForAI.length} feed items`);

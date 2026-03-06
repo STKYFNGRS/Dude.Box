@@ -70,11 +70,11 @@ export async function curateNewsFeed(
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 16384,
-    system: `You are an intelligence analyst curating a global news briefing. Analyze the headlines provided, select the most important and diverse stories, and create concise summaries. Assign each story a region, topic, and importance score. Always respond with valid JSON.`,
+    system: `You are a global intelligence analyst curating a news briefing for a defense and geopolitics platform. Your PRIMARY audience cares about wars, armed conflicts, military operations, geopolitical crises, protests, natural disasters, and government policy — NOT corporate business disputes or tech industry drama. Always respond with valid JSON.`,
     messages: [
       {
         role: "user",
-        content: `Curate these news items into a briefing. For each item worth covering, provide a summary and metadata.
+        content: `Curate these news items into a global intelligence briefing.
 
 ${itemsList}
 
@@ -87,7 +87,14 @@ Return a JSON array of objects with these fields:
 - topic: One of: "Conflict", "Politics", "Economics", "Security", "Technology", "Environment", "Society"
 - importance: 1-5 (5 = critical breaking news, 1 = low priority)
 
-Select 30-50 items for a comprehensive global briefing. Cover ALL regions (Americas, Europe, Middle East, Africa, Asia Pacific) and ALL topics (Conflict, Politics, Economics, Security, Technology, Environment, Society). Prioritize diversity of coverage. Skip duplicates but include as many distinct stories as possible.`,
+MANDATORY RULES:
+1. PRIORITY ORDER: Active wars and armed conflicts > military operations > protests/civil unrest > government policy > natural disasters > economic crises > technology > corporate news
+2. STRICT DEDUP: If multiple input items cover the SAME underlying story, select ONLY the single best one. Never include more than 1 article per story.
+3. NO CORPORATE OVER-REPRESENTATION: No single company, brand, or corporate entity should appear in more than 1 curated item total. Corporate disputes are LOW priority compared to wars and conflicts.
+4. REGIONAL DIVERSITY: Include stories from at least 4 different regions. Do not let any single country dominate more than 25% of output.
+5. TOPIC DIVERSITY: Include at least 3 different topics. Conflict and Security should make up at least 40% of output if relevant stories exist.
+
+Select 30-50 items for a comprehensive global briefing.`,
       },
     ],
   });
@@ -133,7 +140,7 @@ export async function extractConflictEvents(
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 8192,
-    system: `You are a geopolitical and domestic intelligence analyst. Extract geolocated events from news summaries worldwide, including DOMESTIC events in every country. You must provide accurate latitude/longitude coordinates and ISO 3166-1 alpha-2 country codes. Extract ALL of the following: armed conflicts, military operations, terrorist attacks, protests and civil unrest, police/law enforcement incidents, government policy actions, legislative battles, court rulings with major impact, natural disasters, industrial accidents, major cyber incidents, economic crises, immigration/border events, and significant societal disruptions. Do NOT focus only on international conflicts — domestic US, European, and other events are equally important. Always respond with valid JSON.`,
+    system: `You are a geopolitical and domestic intelligence analyst. Extract geolocated events from news summaries worldwide. You must provide accurate latitude/longitude coordinates and ISO 3166-1 alpha-2 country codes for REAL sovereign nations (never use territory codes like IO, BV, HM, GS, TF, AQ, UM). For events in international waters or oceans, use the country code of the PRIMARY nation involved. Extract: armed conflicts, military operations, terrorist attacks, protests and civil unrest, government policy actions, natural disasters, industrial accidents, immigration/border events. Do NOT extract corporate business disputes, lawsuits, or company news — only events with real-world geopolitical, security, or humanitarian impact. Always respond with valid JSON.`,
     messages: [
       {
         role: "user",
@@ -161,12 +168,14 @@ Extract as many locatable events as possible. Include domestic policy events, pr
   const jsonMatch = text.match(/\[[\s\S]*\]/);
   if (!jsonMatch) return [];
 
+  const INVALID_CODES = new Set(["IO", "BV", "HM", "GS", "TF", "AQ", "UM", "XX"]);
   try {
     const parsed = JSON.parse(jsonMatch[0]);
     return Array.isArray(parsed)
       ? parsed.filter(
           (e: ExtractedConflictEvent) =>
-            e.lat && e.lng && e.countryCode && e.title
+            e.lat && e.lng && e.countryCode && e.title &&
+            !INVALID_CODES.has(e.countryCode)
         )
       : [];
   } catch {

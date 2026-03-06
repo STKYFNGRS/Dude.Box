@@ -115,9 +115,23 @@ export async function GET(
       select: { title: true, publishedAt: true },
     });
 
-    const matchedItems = newsItems
-      .filter((item) => getCountryFromHeadline(item.title) === countryCode)
-      .slice(0, 15);
+    const allMatched = newsItems
+      .filter((item) => getCountryFromHeadline(item.title) === countryCode);
+
+    // Deduplicate similar headlines using Jaccard similarity
+    const matchedItems: typeof allMatched = [];
+    for (const item of allMatched) {
+      const words = new Set(item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 3));
+      let isDupe = false;
+      for (const existing of matchedItems) {
+        const existingWords = new Set(existing.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 3));
+        const intersection = [...words].filter(w => existingWords.has(w)).length;
+        const union = new Set([...words, ...existingWords]).size;
+        if (union > 0 && intersection / union > 0.5) { isDupe = true; break; }
+      }
+      if (!isDupe) matchedItems.push(item);
+      if (matchedItems.length >= 15) break;
+    }
 
     const headlines = matchedItems.map((item) => item.title);
 
